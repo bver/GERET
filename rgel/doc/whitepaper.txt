@@ -1,0 +1,11 @@
+
+concepts
+
+Genotype
+Initialisation
+Operators
+Grammar
+Mapping
+Phenotype (several different ones)
+
+
