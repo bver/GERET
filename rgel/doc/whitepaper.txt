@@ -1,11 +1,66 @@
 
-concepts
+rgel:
+-----
 
-Genotype
-Initialisation
-Operators
-Grammar
-Mapping
-Phenotype (several different ones)
+Genotype 
+(container (mostly numbers vector), save/load )
+initialisation, mutation, crossover, shorten..
 
+Grammar 
+(parsing multiple-grammar bnf files)
+indentation support?
+
+Mappings 
+(influences all above concepts, using Proc closures)
+class SingleMapping
+class LocusMapping
+module BucketPolymorphism
+module IntrinsicPolymorphism
+module NoWrapping ??
+module Wrapping ??
+classes: SingleIntrinsic, LocusIntrinsic, SingleBucket, BucketIntrinsic
+{ :wrapping => 10, :max_allele=>256, ... }
+
+(Phenotype) is a source text (or pcode) only?
+(several different ones)
+invalid mapping (nil) possible (due to wrapping)
+indentation support?
+
+Objectives, ObjectivesVector 
+(w/ Pareto dominance)
+  userFn = proc {|my,other| my <==> other+1 }
+  obj = Objectives.new { :perform => [0.0, :max], :parsimony => [100, :min], :user => [0.0, userFn ] }
+  vector = ObjectivesVector.new obj
+  vector[:parsimony] = 12
+  vector.set { :perform=>3, :user=>5.6 }
+
+Individual 
+(binds Genotype, ObjectivesVector and cached Phenotypes)
+
+Pool 
+(of Individuals)
+merging, decimating..?
+
+Selectors 
+(roulette, SUS, rand, tournament?)
+
+Machine
+vm = Machine.new(code)
+result = vm.run( data )  # data & result .. arrays
+start simple: data ~ row in table
+
+helper classes:
+---------------
+
+Random
+(predefined decisions for testing purposes)
+
+Statistics
+max,min,avg...
+
+
+rgel-parrot binding
+-------------------
+
+ParrotMachine
 
