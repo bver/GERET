@@ -7,17 +7,19 @@ specifically designed for use in clouds
 core concepts:
 --------------
 
-Genotype 
+*** Genotype 
 (container (mostly numbers vector), save/load )
 initialisation, mutation, crossover, shorten..
 Holland's inversion operator?
 
-Grammar 
-(parsing multiple-grammar bnf files)
+*** Grammar 
+(parsing multiple-grammar EBNF+BNTL files)
 indentation support?
 weights support
+EBNF .. production rules
+BNTL .. template library (specific language template) ??
 
-Mappings 
+*** Mappings 
 (influences all above concepts, using Proc closures)
 class SingleMapping
 class LocusMapping
@@ -28,13 +30,28 @@ module Wrapping ??
 classes: SingleIntrinsic, LocusIntrinsic, SingleBucket, BucketIntrinsic
 { :wrapping => 10, :max_allele=>256, ... }
 
-(Phenotype) is a source text (or pcode) only?
+instance variable:
+
+mapping = SingleBucket.new { :wrapping => 10, :max_allele=>256 }
+gen = Genotype.new mapping
+gram = Grammar.new( mapping, 'description.bnf' )
+
+or global class variable:
+
+SingleBucket.new { :wrapping => 10, :max_allele=>256 }
+gen = Genotype.new
+gram = Grammar.new( 'description.bnf' )
+
+??
+
+*** Phenotype
+  is a source text (or pcode) only?
 (several different ones)
 invalid mapping (nil) possible (due to wrapping)
 indentation support?
 pattern library support?
 
-Objectives, ObjectivesVector 
+*** Objectives, ObjectivesVector 
 (w/ Pareto dominance)
   userFn = proc {|my,other| my <==> other+1 }
   obj = Objectives.new { :perform => [0.0, :max], :parsimony => [100, :min], :user => [0.0, userFn ] }
@@ -42,21 +59,21 @@ Objectives, ObjectivesVector
   vector[:parsimony] = 12
   vector.set { :perform=>3, :user=>5.6 }
 
-Individual 
+*** Individual 
 (binds Genotype, ObjectivesVector and cached Phenotypes)
 
-Pool 
+*** Pool 
 (of Individuals)
 merging, decimating..?
 elitism support
 steady state / generational
 lambda+mi, lambda,mi ?
 
-Selectors 
+*** Selectors 
 (roulette, SUS, rand, tournament?)
 replacement strategies
 
-Machine
+*** Machine
 vm = Machine.new( code )
 result = vm.run( data )  # data & result .. arrays
 start simple: data,result ~ row in table
@@ -72,10 +89,10 @@ storage.each  do |row|
   single_objective_value += fitness.run( compare_vector )
 end
 
-Random
+*** Random
 (predefined decisions for testing purposes)
 
-Statistics
+*** Statistics
 max,min,avg...
 diversity measurement?
 selection pressure/intensity measurement
