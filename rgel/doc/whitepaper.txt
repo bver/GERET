@@ -2,13 +2,20 @@
 rgel:
 -----
 
+specifically designed for use in clouds
+
+core concepts:
+--------------
+
 Genotype 
 (container (mostly numbers vector), save/load )
 initialisation, mutation, crossover, shorten..
+Holland's inversion operator?
 
 Grammar 
 (parsing multiple-grammar bnf files)
 indentation support?
+weights support
 
 Mappings 
 (influences all above concepts, using Proc closures)
@@ -25,6 +32,7 @@ classes: SingleIntrinsic, LocusIntrinsic, SingleBucket, BucketIntrinsic
 (several different ones)
 invalid mapping (nil) possible (due to wrapping)
 indentation support?
+pattern library support?
 
 Objectives, ObjectivesVector 
 (w/ Pareto dominance)
@@ -40,27 +48,73 @@ Individual
 Pool 
 (of Individuals)
 merging, decimating..?
+elitism support
+steady state / generational
+lambda+mi, lambda,mi ?
 
 Selectors 
 (roulette, SUS, rand, tournament?)
+replacement strategies
 
 Machine
-vm = Machine.new(code)
+vm = Machine.new( code )
 result = vm.run( data )  # data & result .. arrays
-start simple: data ~ row in table
+start simple: data,result ~ row in table
 
-helper classes:
----------------
+
+Storage
+a simple table-oriented mechanism:
+
+storage.each  do |row|
+  input_data_vector, desired_output_data_vector = row[0...N], row[N...row.size]
+  compare_vector = individual.run( input_data_vector ) 
+  compare_vector.concat( desired_output_data_vector )
+  single_objective_value += fitness.run( compare_vector )
+end
 
 Random
 (predefined decisions for testing purposes)
 
 Statistics
 max,min,avg...
+diversity measurement?
+selection pressure/intensity measurement
 
 
 rgel-parrot binding
 -------------------
 
-ParrotMachine
+ParrotMachine < Machine
+
+
+rgel-sqlite
+-----------
+
+SqliteStorage < Storage
+
+data storage techniques
+
+
+rgel-simpledb
+-------------
+
+SimpleDbStorage < Storage
+http://developer.amazonwebservices.com/connect/entry.jspa?externalID=1435&categoryID=148
+ActiveRecordtoSDB is just a simple wrapper class which implements some extra functionality on top of RightAWS ActiveSDB. The goal is to make it easier to transition the appropriate models of a project from a traditional RDBMS to SimpleDB, by implementing some of the most used functionality of ActiveRecord.
+
+rgel-ebs
+--------
+
+http://aws.amazon.com/ebs/
+Amazon EBS allows you to create storage volumes from 1 GB to 1 TB that can be mounted as devices by Amazon EC2 instances. Multiple volumes can be mounted to the same instance.
+SqliteStorage
+
+
+advanced techniques
+-------------------
+
+diplody (mapping)
+fitness sharing
+diversity preserving operators
+?
 
