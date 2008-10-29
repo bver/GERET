@@ -18,6 +18,26 @@ indentation support?
 weights support
 EBNF .. production rules
 BNTL .. template library (specific language template) ??
+ASR .. abstract syntax rules
+templates/language/templname.bntl
+
+BNTL:
+templates/javascript/if-then.bntl
+if( <0> ) {
+  <1> 
+}
+
+
+ASR:
+statement ::= statement statement |
+              #if-then( bool, statement ) |
+              #if-then-else( bool, statement, statement ) |
+              #while( bool, statement ) |
+              #assignment( variable, expression ) |
+              ...
+bool ::= ...
+
+./asr2bnf.rb my.asr templates/parrot > my.ebnf
 
 *** Mappings 
 (influences all above concepts, using Proc closures)
