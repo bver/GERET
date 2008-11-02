@@ -16,6 +16,7 @@ class Random
   def initialize mode
 
     @core = proc {|max| Kernel::rand max }
+    @mode = mode
 
     case mode
 
@@ -44,7 +45,10 @@ class Random
   end
 
   # gets the remaining sequence for rand() calls (useful only in :deterministic mode)
-  attr_reader :predef 
+  attr_reader :predef
+
+  # gets the mode of the random generator instance
+  attr_reader :mode
 
   # when in :deterministic mode, this method assigns the predefined sequence to the generator.
   #
@@ -53,13 +57,14 @@ class Random
   # arg.first will be the result subsequent rand() call, arg[1] will be the second one, etc.
   #
   def set_predef arg
+    raise 'Random: calling set_predef in wrong mode' if @mode != :deterministic
     @predef = Array.new arg
   end
 
-  # in :stochastic or :repeatable mode, it is same as Kernel::rand(); 
+  # when in :stochastic or :repeatable mode, it is same as Kernel::rand(); 
   # see http://www.rubycentral.com/book/ref_m_kernel.html#Kernel.rand 
   #
-  # in :deterministic mode, it follows the predefined sequence.
+  # when in :deterministic mode, it follows the predefined sequence.
   #
   def rand max=0
     @core.call(max)
