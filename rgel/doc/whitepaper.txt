@@ -54,15 +54,15 @@ instance variable:
 
 mapping = SingleBucket.new { :wrapping => 10, :max_allele=>256 }
 gen = Genotype.new mapping
-gram = Grammar.new( mapping, 'description.bnf' )
+gram = Grammar.new( 'description.bnf', mapping )
 
 or global class variable:
 
-SingleBucket.new { :wrapping => 10, :max_allele=>256 }
+$default_mapping = SingleBucket.new { :wrapping => 10, :max_allele=>256 }
 gen = Genotype.new
 gram = Grammar.new( 'description.bnf' )
 
-??
+both variants supported via mapping=$default_mapping default argument.
 
 *** Phenotype
   is a source text (or pcode) only?

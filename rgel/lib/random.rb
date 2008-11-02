@@ -15,7 +15,7 @@ class Random
     when :deterministic
       @predef = nil
       @core = proc do |max|
-        raise 'Random: set() in :deterministic mode not called' if @predef.nil?
+        raise 'Random: set_predef() in :deterministic mode not called' if @predef.nil?
         raise 'Random: shortage of :deterministic values' if @predef.empty?
 
         max = 1.0 if max == 0
@@ -32,7 +32,7 @@ class Random
 
   attr_reader :predef 
 
-  def set arg
+  def set_predef arg
     @predef = Array.new arg
   end
 

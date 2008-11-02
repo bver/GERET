@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/ruby -w
 
-require 'lib/tc_random'
+require 'test/tc_random'
 
