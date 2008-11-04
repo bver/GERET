@@ -1,0 +1,53 @@
+ 
+key abstraction concepts:
+
+genotype -> phenotype (cached)
+  mapping abstraction ("meaning of genes in chromosome" is in one place) 
+  class Genotype; def initialize( mapping=$default_mapping ) ...
+  genotype.create_phenotype( grammar ).nil? # :failed mapping possible
+
+shared grammar rules
+  syntax abstraction .. ASR "bnf macros" + specific language templates
+  uses "finite" subset of ABNF (EBNF is not good at * ? operators)
+
+  extended.abnf.asr + templates/langXYZ/* --[preprocessor]--> langXYZ.abnf
+      --[parser]--> Grammar instance in application --[renderer]--> canonical_form.abnf
+
+objective vector (effective dominance evaluation ... "cheap" objectives evaluated first)
+  parreto MOEA abstraction
+  Objectives = Struct.new( "Objectives", :parsimony, :rms, :user0 )
+  vector = Objectives.new( 42, 0.34 ) 
+  if vector.dominates( another_vector ) 
+
+Individual = [genotype, all_phenotypes, objective_vector]
+Pool = [Individuals' collection] - initialisation, merging, selection, replacement....
+
+selection / replacement strategies
+  lego bricks (interchangeable)
+
+statistic+reporting helper classes
+
+Data 
+  table abstraction  .. row by row evaluation?
+  (rgel-sqlite, rgel-simpledb? bindings)
+
+universal evaluation Machine 
+  virtual machine abstractions:
+  m = Machine.new( code ) #compilation, etc.
+  dataOut = m.run( dataIn ) #evaluation
+
+  RubyEvalMachine < Machine (slow but easy)
+  subclasses(?) of Machine are in bindings (rgel-parrot binding)
+
+
+bindings:
+rgel-parrot
+rgel-sqlite
+
+
+
+
+
+
+
+
