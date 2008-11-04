@@ -13,9 +13,13 @@ shared grammar rules
   extended.abnf.asr + templates/langXYZ/* --[preprocessor]--> langXYZ.abnf
       --[parser]--> Grammar instance in application --[renderer]--> canonical_form.abnf
 
+  ; wp = 100     weight points for rule
+
 objective vector (effective dominance evaluation ... "cheap" objectives evaluated first)
   parreto MOEA abstraction
   Objectives = Struct.new( "Objectives", :parsimony, :rms, :user0 )
+  default values for objectives? not necessary?
+  directions of optimisation: minimize / maximize? ...user defined <=> optor?
   vector = Objectives.new( 42, 0.34 ) 
   if vector.dominates( another_vector ) 
 
@@ -33,8 +37,10 @@ Data
 
 universal evaluation Machine 
   virtual machine abstractions:
-  m = Machine.new( code ) #compilation, etc.
-  dataOut = m.run( dataIn ) #evaluation
+  m = Machine.new( model_phenotype_code ) #compilation, etc.
+  e = Machine.new( error_evaluation_code ) #compilation, etc. 
+  data_predicted = m.run( data_input ) #model predicting
+  error_objective = e.run( data_predicted + data_expected ) #error computation
 
   RubyEvalMachine < Machine (slow but easy)
   subclasses(?) of Machine are in bindings (rgel-parrot binding)
