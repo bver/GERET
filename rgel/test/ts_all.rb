@@ -2,4 +2,5 @@
 
 require 'test/tc_random'
 require 'test/tc_mapping'
+require 'test/tc_abnf_tokenizer'
 
