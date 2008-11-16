@@ -24,6 +24,8 @@ objective vector (effective dominance evaluation ... "cheap" objectives evaluate
   if vector.dominates( another_vector ) 
 
 Individual = [genotype, all_phenotypes, objective_vector]
+facade over Genotype, Mapping classes
+
 Pool = [Individuals' collection] - initialisation, merging, selection, replacement....
 
 selection / replacement strategies

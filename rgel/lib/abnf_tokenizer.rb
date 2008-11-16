@@ -1,6 +1,7 @@
 
+require 'lib/abnf_types'
+
 module Abnf
-  Token = Struct.new( :type, :data )
   
   class Tokenizer
 

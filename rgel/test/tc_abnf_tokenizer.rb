@@ -3,7 +3,7 @@
 require 'test/unit'
 require 'lib/abnf_tokenizer'
 
-class TC_Mapping < Test::Unit::TestCase
+class TC_AbnfTokenizer < Test::Unit::TestCase
 
   def setup
     @example1 = <<ABNF_TEXT
