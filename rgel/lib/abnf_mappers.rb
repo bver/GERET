@@ -41,7 +41,9 @@ module Mapper
 
     def find_nonterminals_by_depth( tokens, depth )
       indices = []
-      tokens.each_index {|i| indices.push i if tokens[i].type == :symbol and tokens[i].depth==depth }
+      tokens.each_index do |i| 
+        indices.push i if tokens[i].type == :symbol and tokens[i].depth==depth
+      end
       indices
     end
    
