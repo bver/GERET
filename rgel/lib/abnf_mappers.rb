@@ -36,7 +36,7 @@ module Mapper
       rule = @grammar.fetch(symbol) 
       alt_index = genome.shift.divmod( rule.size ).last 
       rule_alt = rule[ alt_index ]
-      return rule_alt.map {|t| Abnf::Token.new(t.type,t.data) }, genome
+      return rule_alt.deep_copy, genome
     end
 
     def find_nonterminals_by_depth( tokens, depth )

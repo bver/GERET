@@ -21,6 +21,9 @@ module Abnf
   end
 
   class RuleAlt < Array
+    def deep_copy
+      map {|t| Abnf::Token.new(t.type,t.data) }     
+    end
   end
 
 end
