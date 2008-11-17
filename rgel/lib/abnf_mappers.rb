@@ -3,7 +3,7 @@ require 'lib/abnf_types'
 
 module Mapper
 
-  class SingleMapper
+  class Base
     def initialize grammar
       @grammar = Abnf::Grammar.new grammar
     end
@@ -27,10 +27,6 @@ module Mapper
     end
   
   protected
-    def pick_locus numof_loci
-      0
-    end
-
     def pick_rule( symbol, genome )
       return nil, nil if genome.empty?
       rule = @grammar.fetch(symbol) 
@@ -47,28 +43,41 @@ module Mapper
       indices
     end
    
+  end # Base
+
+  module LocusFirst
+  protected   
+    def pick_locus numof_loci
+      0
+    end
   end
 
-  class DepthFirst < SingleMapper
-  protected
-
+  module ExtendDepth
+  protected   
     def find_nonterminals tokens
       max = nil
       tokens.each { |t| max = t.depth if t.type==:symbol and ( max.nil? or t.depth>max ) }
       find_nonterminals_by_depth( tokens, max )
     end
-
   end
 
-  class BreadthFirst < SingleMapper
-  protected
-
+  module ExtendBreadth
+  protected   
     def find_nonterminals tokens 
       min = nil
       tokens.each { |t| min = t.depth if t.type==:symbol and ( min.nil? or t.depth<min ) }
       find_nonterminals_by_depth( tokens, min )
     end
-  
   end
 
-end
+  class DepthFirst < Base
+    include LocusFirst
+    include ExtendDepth
+  end
+
+  class BreadthFirst < Base
+    include LocusFirst
+    include ExtendBreadth
+  end
+
+end # Mapper
