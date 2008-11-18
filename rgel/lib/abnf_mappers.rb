@@ -14,7 +14,8 @@ module Mapper
       tokens = [ Abnf::Token.new( :symbol, @grammar.start_symbol, 0 ) ]
       
       until ( selected_indices = find_nonterminals( tokens ) ).empty?
-        selected_index = pick_locus( selected_indices, genome )
+        selected_index, genome = pick_locus( selected_indices, genome )
+        return nil if genome.nil?       
         selected = tokens[selected_index]
         expansion, genome = pick_rule( selected.data, genome )
         return nil if genome.nil?
@@ -28,8 +29,9 @@ module Mapper
   protected
     def pick_rule( symbol, genome )
       return nil, nil if genome.empty?
-      rule = @grammar.fetch(symbol) 
-      alt_index = genome.shift.divmod( rule.size ).last 
+      rule = @grammar.fetch(symbol)
+      poly = polymorphism( symbol, genome.shift )
+      alt_index = poly.divmod( rule.size ).last 
       rule_alt = rule[ alt_index ]
       return rule_alt.deep_copy, genome
     end
@@ -44,18 +46,40 @@ module Mapper
    
   end # Base
 
+  module PolyIntrinsic
+    def polymorphism( symbol, value )
+      value
+    end
+  end
+
+  module PolyBucket
+    def polymorphism( symbol, value )
+      if @bucket.nil?
+        @bucket = {}
+        maxAllele = 1
+        @grammar.each_pair do |sym,alts|
+          @bucket[sym] = maxAllele
+          maxAllele *= alts.size
+        end
+      end
+
+      value.divmod( @bucket[symbol] ).first
+    end
+  end
+ 
   module LocusFirst
   protected   
     def pick_locus( selected_indices, genome )
-      selected_indices.first
+      return selected_indices.first, genome 
     end
   end
 
   module LocusGenetic
   protected   
     def pick_locus( selected_indices, genome )
+      return nil, nil if genome.empty?     
       index = genome.shift.divmod( selected_indices.size ).last    
-      selected_indices[index]     
+      return selected_indices[index], genome     
     end
   end
 
@@ -80,21 +104,25 @@ module Mapper
   class DepthFirst < Base
     include LocusFirst
     include ExtendDepth
+    include PolyIntrinsic 
   end
 
   class BreadthFirst < Base
     include LocusFirst
     include ExtendBreadth
+    include PolyIntrinsic 
   end
 
   class DepthLocus < Base
     include LocusGenetic
     include ExtendDepth
+    include PolyIntrinsic 
   end
 
   class BreadthLocus < Base
     include LocusGenetic
     include ExtendBreadth
+    include PolyIntrinsic 
   end
 
 end # Mapper
