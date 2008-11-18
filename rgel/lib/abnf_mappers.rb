@@ -53,16 +53,17 @@ module Mapper
   end
 
   module PolyBucket
-    def polymorphism( symbol, value )
-      if @bucket.nil?
-        @bucket = {}
-        maxAllele = 1
-        @grammar.each_pair do |sym,alts|
-          @bucket[sym] = maxAllele
-          maxAllele *= alts.size
-        end
+    def init_bucket
+      @bucket = {}
+      @maxAllele = 1
+      @grammar.each_pair do |sym,alts|
+        @bucket[sym] = @maxAllele
+        @maxAllele *= alts.size
       end
+    end
 
+    def polymorphism( symbol, value )
+      init_bucket if @bucket.nil?
       value.divmod( @bucket[symbol] ).first
     end
   end
