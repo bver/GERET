@@ -14,8 +14,7 @@ module Mapper
       tokens = [ Abnf::Token.new( :symbol, @grammar.start_symbol, 0 ) ]
       
       until ( selected_indices = find_nonterminals( tokens ) ).empty?
-        symbol_index = pick_locus( selected_indices.size )
-        selected_index = selected_indices[symbol_index] 
+        selected_index = pick_locus( selected_indices, genome )
         selected = tokens[selected_index]
         expansion, genome = pick_rule( selected.data, genome )
         return nil if genome.nil?
@@ -47,8 +46,16 @@ module Mapper
 
   module LocusFirst
   protected   
-    def pick_locus numof_loci
-      0
+    def pick_locus( selected_indices, genome )
+      selected_indices.first
+    end
+  end
+
+  module LocusGenetic
+  protected   
+    def pick_locus( selected_indices, genome )
+      index = genome.shift.divmod( selected_indices.size ).last    
+      selected_indices[index]     
     end
   end
 
@@ -77,6 +84,16 @@ module Mapper
 
   class BreadthFirst < Base
     include LocusFirst
+    include ExtendBreadth
+  end
+
+  class DepthLocus < Base
+    include LocusGenetic
+    include ExtendDepth
+  end
+
+  class BreadthLocus < Base
+    include LocusGenetic
     include ExtendBreadth
   end
 
