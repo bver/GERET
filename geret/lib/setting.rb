@@ -1,6 +1,6 @@
 
 #
-# class Mapping holds the genotype-phenotype mapping configuration. 
+# class Setting holds the genotype-phenotype mapping configuration. 
 # Currently it consists of these items:
 #
 # codon_style - defines meaning of the codon values. Supported values are 
@@ -23,7 +23,7 @@
 # possible values are :fail (no phenotype is created) 
 # or :fading_0 (all rule and/or locus values are zeroed - requires non-recursive rules with index 0)
 #
-class Mapping < Struct.new( :codon_style, :expansion_style, :bucket_rule, :max_rule, :max_locus, :max_wrappings, :overrun )
+class Setting < Struct.new( :codon_style, :expansion_style, :bucket_rule, :max_rule, :max_locus, :max_wrappings, :overrun )
 
   def initialize *args
     super
