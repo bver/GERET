@@ -5,13 +5,13 @@ module Mapper
 
   class Base
     def initialize grammar
-      @grammar = Abnf::Grammar.new grammar
+      @grammar = Grammar.new grammar
     end
   
     attr_reader :grammar
 
     def phenotype genome
-      tokens = [ Abnf::Token.new( :symbol, @grammar.start_symbol, 0 ) ]
+      tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
       
       until ( selected_indices = find_nonterminals( tokens ) ).empty?
         selected_index, genome = pick_locus( selected_indices, genome )

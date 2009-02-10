@@ -91,7 +91,7 @@ module Abnf
           if extractors.class == Array
             tokens.concat tokenize( data, extractors ) #recursion
           else
-            tokens.push Token.new( extractors, data )
+            tokens.push Mapper::Token.new( extractors, data )
           end
           text = text[ consumed.size...text.size ]
           break

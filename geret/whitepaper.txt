@@ -35,7 +35,7 @@ statistic+reporting helper classes
 
 Data 
   table abstraction  .. row by row evaluation?
-  (rgel-sqlite, rgel-simpledb? bindings)
+  (geret-sqlite, geret-simpledb? bindings)
 
 universal evaluation Machine 
   virtual machine abstractions:
@@ -45,12 +45,12 @@ universal evaluation Machine
   error_objective = e.run( data_predicted + data_expected ) #error computation
 
   RubyEvalMachine < Machine (slow but easy)
-  subclasses(?) of Machine are in bindings (rgel-parrot binding)
+  subclasses(?) of Machine are in bindings (geret-parrot binding)
 
 
 bindings:
-rgel-parrot
-rgel-sqlite
+geret-parrot
+geret-sqlite
 
 
 

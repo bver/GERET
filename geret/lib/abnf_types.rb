@@ -1,5 +1,5 @@
 
-module Abnf
+module Mapper
 
   Token = Struct.new( :type, :data, :depth )
   
@@ -22,7 +22,7 @@ module Abnf
 
   class RuleAlt < Array
     def deep_copy
-      map {|t| Abnf::Token.new(t.type,t.data) }     
+      map {|t| Token.new(t.type,t.data) }     
     end
   end
 

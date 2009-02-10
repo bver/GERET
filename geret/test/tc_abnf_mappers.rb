@@ -3,26 +3,26 @@
 require 'test/unit'
 require 'lib/abnf_mappers'
 
-class TC_AbnfMappers < Test::Unit::TestCase
+class TC_Mappers < Test::Unit::TestCase
 
   def setup
-    @grammar = Abnf::Grammar.new( { 
-      'expr' => Abnf::Rule.new( [ 
-                  Abnf::RuleAlt.new( [ Abnf::Token.new( :literal, 'x' ) ] ),
-                  Abnf::RuleAlt.new( [ Abnf::Token.new( :literal, 'y' ) ] ),
-                  Abnf::RuleAlt.new( [ 
-                    Abnf::Token.new( :literal, '(' ), 
-                    Abnf::Token.new( :symbol, 'expr' ),
-                    Abnf::Token.new( :literal, ' ' ),                   
-                    Abnf::Token.new( :symbol, 'op' ),                  
-                    Abnf::Token.new( :symbol, 'expr' ),                   
-                    Abnf::Token.new( :literal, ')' ) 
+    @grammar = Mapper::Grammar.new( { 
+      'expr' => Mapper::Rule.new( [ 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'x' ) ] ),
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'y' ) ] ),
+                  Mapper::RuleAlt.new( [ 
+                    Mapper::Token.new( :literal, '(' ), 
+                    Mapper::Token.new( :symbol, 'expr' ),
+                    Mapper::Token.new( :literal, ' ' ),                   
+                    Mapper::Token.new( :symbol, 'op' ),                  
+                    Mapper::Token.new( :symbol, 'expr' ),                   
+                    Mapper::Token.new( :literal, ')' ) 
                   ] )
                 ] ),
 
-       'op'  => Abnf::Rule.new( [ 
-                  Abnf::RuleAlt.new( [ Abnf::Token.new( :literal, '+' ) ] ),
-                  Abnf::RuleAlt.new( [ Abnf::Token.new( :literal, '*' ) ] )
+       'op'  => Mapper::Rule.new( [ 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '+' ) ] ),
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '*' ) ] )
                 ] )
     }, 'expr' )
 
