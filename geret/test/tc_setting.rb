@@ -1,15 +1,15 @@
 #!/usr/bin/ruby
 
 require 'test/unit'
-require 'lib/mapping'
+require 'lib/setting'
 
-class TC_Mapping < Test::Unit::TestCase
+class TC_Setting < Test::Unit::TestCase
 
   def setup
   end
 
   def test_defaults_and_set
-    m = Mapping.new
+    m = Setting.new
     assert_equal( :rule, m.codon_style )
     assert_equal( :depth, m.expansion_style )
     assert_equal( false, m.bucket_rule )   
@@ -36,7 +36,7 @@ class TC_Mapping < Test::Unit::TestCase
   end
 
   def test_param_ctor
-    m = Mapping.new( :rule_locus, :breath, false, 30, 15, 55, :fading_0 )
+    m = Setting.new( :rule_locus, :breath, false, 30, 15, 55, :fading_0 )
     assert_equal( :rule_locus, m.codon_style )
     assert_equal( :breath, m.expansion_style )    
     assert_equal( false, m.bucket_rule )   
@@ -47,7 +47,7 @@ class TC_Mapping < Test::Unit::TestCase
   end
 
   def test_param_ctor_half
-    m = Mapping.new( :rule_locus, :depth, false, 30 )
+    m = Setting.new( :rule_locus, :depth, false, 30 )
     assert_equal( :rule_locus, m.codon_style )
     assert_equal( :depth, m.expansion_style )
     assert_equal( false, m.bucket_rule )   

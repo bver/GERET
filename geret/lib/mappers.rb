@@ -1,5 +1,5 @@
 
-require 'lib/abnf_types'
+require 'lib/mapper_types'
 
 module Mapper
 

@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
 require 'test/unit'
-require 'lib/abnf_mappers'
+require 'lib/mappers'
 
 class TC_Mappers < Test::Unit::TestCase
 
