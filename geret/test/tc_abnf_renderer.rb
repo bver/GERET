@@ -1,10 +1,9 @@
 #!/usr/bin/ruby
 
 require 'test/unit'
-require 'lib/abnf_parser'
-require 'lib/abnf_tokenizer'
+require 'lib/abnf_renderer'
 
-class TC_AbnfParser < Test::Unit::TestCase
+class TC_AbnfRenderer < Test::Unit::TestCase
 
   def test_basic
      grammar = Mapper::Grammar.new( { 
@@ -27,13 +26,16 @@ class TC_AbnfParser < Test::Unit::TestCase
     }, 'expr' )
 
     example = <<ABNF_TEXT
-       expr = "x" / "y" / "(" expr op expr ")"
-       op = "+" / "*"
+op = "+"
+op =/ "*"
+
+expr = "x"
+expr =/ "y"
+expr =/ "(" expr op expr ")"
+
 ABNF_TEXT
 
-    tokeniser = Abnf::Tokenizer.new 
-    parser = Abnf::Parser.new
-    assert_equal( grammar, parser.parse( tokeniser.tokenize( example ) ) )
+    assert_equal( example, Abnf::Renderer.canonical(grammar) )
 
   end
 
