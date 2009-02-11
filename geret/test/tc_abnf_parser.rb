@@ -2,8 +2,9 @@
 
 require 'test/unit'
 require 'lib/abnf_parser'
+require 'lib/abnf_tokenizer'
 
-class TC_AbnfTokenizer < Test::Unit::TestCase
+class TC_AbnfParser < Test::Unit::TestCase
 
   def test_basic
      grammar = Mapper::Grammar.new( { 
@@ -30,8 +31,9 @@ class TC_AbnfTokenizer < Test::Unit::TestCase
        op = "+" / "*"
 ABNF_TEXT
 
-    p = Abnf::Parser.new
-    assert_equal( grammar, p.parse( example ) )
+    tokeniser = Abnf::Tokenizer.new 
+    parser = Abnf::Parser.new
+    assert_equal( grammar, parser.parse( tokeniser.tokenize( example ) ) )
 
   end
 

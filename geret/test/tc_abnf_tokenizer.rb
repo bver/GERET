@@ -38,7 +38,7 @@ ABNF_TEXT
 
   def test_basic
     tokenizer = Abnf::Tokenizer.new
-    token_stream = tokenizer.tokenize(  @example1 )
+    token_stream = tokenizer.tokenize( @example1 )
 
     #;start symbol
     assert_equal( Mapper::Token.new( :comment, 'start symbol' ), token_stream.shift )
