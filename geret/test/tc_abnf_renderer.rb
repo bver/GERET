@@ -3,25 +3,27 @@
 require 'test/unit'
 require 'lib/abnf_renderer'
 
+include Mapper
+
 class TC_AbnfRenderer < Test::Unit::TestCase
 
   def test_basic
-     grammar = Mapper::Grammar.new( { 
-      'expr' => Mapper::Rule.new( [ 
-                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'x' ) ] ),
-                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'y' ) ] ),
-                  Mapper::RuleAlt.new( [ 
-                    Mapper::Token.new( :literal, '(' ), 
-                    Mapper::Token.new( :symbol, 'expr' ),
-                    Mapper::Token.new( :symbol, 'op' ),                  
-                    Mapper::Token.new( :symbol, 'expr' ),                   
-                    Mapper::Token.new( :literal, ')' ) 
+     grammar = Grammar.new( { 
+      'expr' => Rule.new( [ 
+                  RuleAlt.new( [ Token.new( :literal, 'x' ) ] ),
+                  RuleAlt.new( [ Token.new( :literal, 'y' ) ] ),
+                  RuleAlt.new( [ 
+                    Token.new( :literal, '(' ), 
+                    Token.new( :symbol, 'expr' ),
+                    Token.new( :symbol, 'op' ),                  
+                    Token.new( :symbol, 'expr' ),                   
+                    Token.new( :literal, ')' ) 
                   ] )
                 ] ),
 
-       'op'  => Mapper::Rule.new( [ 
-                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '+' ) ] ),
-                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '*' ) ] )
+       'op'  => Rule.new( [ 
+                  RuleAlt.new( [ Token.new( :literal, '+' ) ] ),
+                  RuleAlt.new( [ Token.new( :literal, '*' ) ] )
                 ] )
     }, 'expr' )
 
