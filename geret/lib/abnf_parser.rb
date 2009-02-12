@@ -5,7 +5,7 @@ include Mapper
 module Abnf
   
   class Parser
-    Slot = Struct.new( "Slot", :name, :rule, :end )
+    Slot = Struct.new( :name, :rule, :end )
    
     def initialize
       @transitions = {
