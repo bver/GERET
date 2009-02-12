@@ -1,31 +1,37 @@
 
-
 require 'lib/mapper_types'
+include Mapper
 
 module Abnf
   
   class Parser
+    Slot = Struct.new( "Slot", :name, :rule, :end )
+   
     def initialize
       @transitions = {
         :start =>    {
-                       :symbol => proc {|g,t| g.rule_name=t.data; return :equals },
-                       :crlf => proc { return :start; }
+                       :symbol => proc {|g,t| g.rule=t; return :equals },
+                       :newline => proc { return :start; }
                      },
         :equals =>   {
-                       :equals => proc {|g,t| g.start_alt; return :elements }
+                       :equals => proc { return :elements }
                      },
         :elements => {
-                       :symbol => proc {|g,t| g.push_token=t; return :elements },
-                       :literal => proc {|g,t| g.push_token=t; return :elements },
-                       :slash =>  proc {|g,t| g.start_alt; return :elements },
-                       :newline => proc {|g,t| g.store_rule; return :start }
+                       :symbol => proc {|g,t| g.tok=t; return :elements },
+                       :literal => proc {|g,t| g.tok=t; return :elements },
+                       :slash =>  proc {|g,t| g.alt; return :elements },
+                       :newline => proc {|g,t| g.store=t; return :start },
+                       :seq_begin =>proc {|g,t| g.group=t; return :elements },
+                       :seq_end =>proc {|g,t| g.store=t; return :elements }                    
                      },
       }
 
     end
 
     def parse stream
-      @gram = Mapper::Grammar.new 
+      @stack = []
+      @iv = 0
+      @gram = Grammar.new 
       state = :start
  
       until stream.empty?
@@ -42,21 +48,30 @@ module Abnf
     
     protected
     
-    def rule_name=( symbol )
-      @rule_name = symbol
-      @rule = Mapper::Rule.new
+    def rule=( token )
+      @stack.push Slot.new( token.data, Rule.new, :newline )
+      alt
     end
 
-    def start_alt
-      @rule.push Mapper::RuleAlt.new
+    def group=( token )
+      name = @stack.last.name + "_grp#{@iv+=1}"
+      self.tok = Token.new( :symbol, name ) 
+      @stack.push Slot.new( name, Rule.new, :seq_end )
+      alt
+    end
+   
+    def alt
+      @stack.last.rule.push RuleAlt.new
     end
 
-    def push_token=( token )
-      @rule.last.push token 
+    def tok=( token )
+      @stack.last.rule.last.push token 
     end
 
-    def store_rule
-      @gram[ @rule_name ] = @rule
+    def store=( token )
+      slot = @stack.pop
+      raise "missing #{slot.end} token" unless token.type == slot.end
+      @gram[ slot.name ] = slot.rule
     end
   end
 
