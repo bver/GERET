@@ -37,6 +37,7 @@ class TC_AbnfParser < Test::Unit::TestCase
 
     example = <<ABNF_TEXT
        expr = "x" / "y" / "(" expr op expr ")"
+
        op = "+" / "*"
 ABNF_TEXT
 
