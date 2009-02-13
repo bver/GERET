@@ -10,19 +10,19 @@ module Abnf
     def initialize
       @transitions = {
         :start =>    {
-                       :symbol => proc {|g,t| g.rule=t; return :equals },
-                       :newline => proc { return :start; }
+                       :symbol => proc {|g,t| g.rule=t; :equals },
+                       :newline => proc { :start }
                      },
         :equals =>   {
-                       :equals => proc { return :elements }
+                       :equals => proc { :elements }
                      },
         :elements => {
-                       :symbol => proc {|g,t| g.tok=t; return :elements },
-                       :literal => proc {|g,t| g.tok=t; return :elements },
-                       :slash =>  proc {|g,t| g.alt; return :elements },
-                       :newline => proc {|g,t| g.store=t; return :start },
-                       :seq_begin =>proc {|g,t| g.group=t; return :elements },
-                       :seq_end =>proc {|g,t| g.store=t; return :elements }                    
+                       :symbol => proc {|g,t| g.tok=t;:elements },
+                       :literal => proc {|g,t| g.tok=t; :elements },
+                       :slash =>  proc {|g,t| g.alt; :elements },
+                       :newline => proc {|g,t| g.store=t; :start },
+                       :seq_begin =>proc {|g,t| g.group=t; :elements },
+                       :seq_end =>proc {|g,t| g.store=t; :elements }                    
                      },
       }
 
@@ -34,14 +34,12 @@ module Abnf
       @gram = Grammar.new 
       state = :start
  
-      until stream.empty?
-        token = stream.shift
+      stream.each do |token|
         next if token.type == :space or token.type == :comment
-
         trans = @transitions.fetch state
         action = trans.fetch( token.type, nil )
         raise "unexpected token #{token.type}" if action.nil?
-        state = action.call( self,token )
+        state = action.call( self, token )
       end
       @gram
     end

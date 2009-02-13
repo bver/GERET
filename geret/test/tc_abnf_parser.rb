@@ -70,5 +70,9 @@ ABNF_TEXT
     #TODO =/ parsing
   end
 
+  def test_mismatching_brackets
+    # ( [) ] and so on
+  end
+
 end
 
