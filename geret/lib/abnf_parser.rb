@@ -14,7 +14,8 @@ module Abnf
                        :newline => proc { :start }
                      },
         :equals =>   {
-                       :equals => proc { :elements }
+                       :equals => proc { :elements },
+                       :eq_slash => proc {|g,t| g.incr; :elements }
                      },
         :elements => {
                        :symbol => proc {|g,t| g.tok=t;:elements },
@@ -51,6 +52,10 @@ module Abnf
       alt
     end
 
+    def incr
+      @stack.last.end = :incremental
+    end
+
     def group=( token )
       name = @stack.last.name + "_grp#{@iv+=1}"
       self.tok = Token.new( :symbol, name ) 
@@ -68,8 +73,16 @@ module Abnf
 
     def store=( token )
       slot = @stack.pop
-      raise "missing #{slot.end} token" unless token.type == slot.end
-      @gram[ slot.name ] = slot.rule
+      case slot.end
+      when token.type
+        @gram[ slot.name ] = slot.rule
+      when :incremental
+        orig_rule = @gram.fetch( slot.name, nil )
+        raise "incremental alternative: #{slot.name} must be defined first" if orig_rule.nil?
+        orig_rule.concat slot.rule
+      else
+        raise "missing #{slot.end} token" unless token.type == slot.end
+      end
     end
   end
 

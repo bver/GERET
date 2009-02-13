@@ -64,6 +64,7 @@ module Abnf
 
         [ /\A\*/m, :asterisk ],
 
+        [ /\A=\//m, :eq_slash ],
         [ /\A=/m, :equals ],
 
         [ /\A\(/m, :seq_begin ],

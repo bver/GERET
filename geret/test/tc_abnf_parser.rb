@@ -13,10 +13,8 @@ class TC_AbnfParser < Test::Unit::TestCase
   def setup
     @tokeniser = Tokenizer.new 
     @parser = Parser.new
-  end
 
-  def test_basic
-     grammar = Grammar.new( { 
+    @grammar1 = Grammar.new( { 
       'expr' => Rule.new( [ 
                   RuleAlt.new( [ Token.new( :literal, 'x' ) ] ),
                   RuleAlt.new( [ Token.new( :literal, 'y' ) ] ),
@@ -35,13 +33,16 @@ class TC_AbnfParser < Test::Unit::TestCase
                 ] )
     }, 'expr' )
 
+  end
+
+  def test_basic
     example = <<ABNF_TEXT
        expr = "x" / "y" / "(" expr op expr ")"
 
        op = "+" / "*"
 ABNF_TEXT
 
-    assert_equal( grammar, @parser.parse( @tokeniser.tokenize( example ) ) )
+    assert_equal( @grammar1, @parser.parse( @tokeniser.tokenize( example ) ) )
 
   end
 
@@ -67,7 +68,14 @@ ABNF_TEXT
   end
     
   def test_incremental
-    #TODO =/ parsing
+    example = <<ABNF_TEXT
+       expr ="x" 
+       op= "+"
+       op =/"*"
+       expr=/ "y" / "(" expr op expr ")"
+ABNF_TEXT
+
+    assert_equal( @grammar1, @parser.parse( @tokeniser.tokenize( example ) ) )
   end
 
   def test_mismatching_brackets

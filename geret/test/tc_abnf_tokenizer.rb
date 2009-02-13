@@ -103,8 +103,7 @@ ABNF_TEXT
     #foo          =/ 1*8(DIGIT/ALPHA) CR LF ; some comment
     assert_equal( Token.new( :symbol, 'foo' ), token_stream.shift )
     assert_equal( Token.new( :space ), token_stream.shift )
-    assert_equal( Token.new( :equals ), token_stream.shift )
-    assert_equal( Token.new( :slash ), token_stream.shift )  
+    assert_equal( Token.new( :eq_slash ), token_stream.shift )
     assert_equal( Token.new( :space ), token_stream.shift )
     assert_equal( Token.new( :number, '1' ), token_stream.shift )   
     assert_equal( Token.new( :asterisk ), token_stream.shift )  
@@ -155,8 +154,7 @@ ABNF_TEXT
     #bar =/ DQUOTE WSP LWSP OCTET CTL CRLF BIT;
     assert_equal( Token.new( :symbol, 'bar' ), token_stream.shift )
     assert_equal( Token.new( :space ), token_stream.shift )       
-    assert_equal( Token.new( :equals ), token_stream.shift )
-    assert_equal( Token.new( :slash ), token_stream.shift )
+    assert_equal( Token.new( :eq_slash ), token_stream.shift )
     assert_equal( Token.new( :space ), token_stream.shift )
     assert_equal( Token.new( :_dquote ), token_stream.shift )
     assert_equal( Token.new( :space ), token_stream.shift )  
