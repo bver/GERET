@@ -194,6 +194,8 @@ ABNF_TEXT
     assert_equal( Token.new( :newline ), token_stream.shift )  
 
     assert_equal( Token.new( :newline ), token_stream.shift )  
+    assert_equal( Token.new( :eof ), token_stream.shift )
+    assert( token_stream.empty? )   
   end
 
   def test_unexpected
@@ -201,6 +203,38 @@ ABNF_TEXT
     assert_equal( "Tokenizer: unexpected tokens near '@chars'", exception.message )
   end
 
+  def test_indent
+    indented = <<INDENT
+       expr = "x" /   
+              "y"
+       op="+"
+INDENT
+  
+    tokenizer = Abnf::Tokenizer.new
+    token_stream = tokenizer.tokenize( indented )
+
+    assert_equal( Token.new( :symbol, 'expr' ), token_stream.shift )
+    assert_equal( Token.new( :space ), token_stream.shift ) 
+    assert_equal( Token.new( :equals ), token_stream.shift )
+    assert_equal( Token.new( :space ), token_stream.shift )
+    assert_equal( Token.new( :literal, 'x' ), token_stream.shift )
+    assert_equal( Token.new( :space ), token_stream.shift )
+    assert_equal( Token.new( :slash ), token_stream.shift )    
+    assert_equal( Token.new( :space ), token_stream.shift )
+    assert_equal( Token.new( :newline ), token_stream.shift ) 
+
+    assert_equal( Token.new( :space ), token_stream.shift )  # important space
+    assert_equal( Token.new( :literal, 'y' ), token_stream.shift )
+    assert_equal( Token.new( :newline ), token_stream.shift )  
+
+    assert_equal( Token.new( :symbol, 'op' ), token_stream.shift )
+    assert_equal( Token.new( :equals ), token_stream.shift )
+    assert_equal( Token.new( :literal, '+' ), token_stream.shift )
+    assert_equal( Token.new( :newline ), token_stream.shift ) 
+
+    assert_equal( Token.new( :eof ), token_stream.shift )
+    assert( token_stream.empty? )   
+  end
  
 end
 

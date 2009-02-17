@@ -63,16 +63,25 @@ ABNF_TEXT
      
   end
 
-  def test_rule_on_more_rows
-    #TODO one rule across :newline token
+  def test_rules_on_more_rows
+    example = <<ABNF_TEXT
+       expr = "x" / 
+              "y" / 
+              "(" expr op expr ")"
+       op = "+" / 
+            "*"
+ABNF_TEXT
+
+    assert_equal( @grammar1, @parser.parse( @tokeniser.tokenize( example ) ) )
   end
     
   def test_incremental
     example = <<ABNF_TEXT
        expr ="x" 
        op= "+"
+       expr=/ "y" 
        op =/"*"
-       expr=/ "y" / "(" expr op expr ")"
+       expr =/"(" expr op expr ")"
 ABNF_TEXT
 
     assert_equal( @grammar1, @parser.parse( @tokeniser.tokenize( example ) ) )

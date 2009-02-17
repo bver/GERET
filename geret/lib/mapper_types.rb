@@ -22,7 +22,7 @@ module Mapper
 
   class RuleAlt < Array
     def deep_copy
-      map {|t| Token.new(t.type,t.data) }     
+      map {|t| Token.new(t.type,t.data) } 
     end
   end
 

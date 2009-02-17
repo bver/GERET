@@ -78,7 +78,17 @@ module Abnf
       ]
     end
 
-    def tokenize( text, rex=@rex )
+    def tokenize( txt )
+      tokens = tokenize_internal( txt, @rex )
+      tokens.push Mapper::Token.new( :eof )    
+    end
+
+    protected
+
+    def tokenize_internal( txt, rex )
+      indentation = /^(\s*)/.match(txt).to_s.size     
+      text = txt.gsub( /^[ \t\f]{0,#{indentation}}/, '' )
+
       tokens = []
       matched = nil
       until text.empty?
@@ -90,7 +100,7 @@ module Abnf
           consumed = matched[0].to_s 
           data = (matched.size>1) ? matched[1].to_s : nil
           if extractors.class == Array
-            tokens.concat tokenize( data, extractors ) #recursion
+            tokens.concat tokenize_internal( data, extractors ) #recursion
           else
             tokens.push Mapper::Token.new( extractors, data )
           end
@@ -99,6 +109,7 @@ module Abnf
         end
         raise "Tokenizer: unexpected tokens near '#{text.slice(0..10)}'" if matched.nil? 
       end
+      
       tokens
     end
 
