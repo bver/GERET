@@ -235,6 +235,10 @@ INDENT
     assert_equal( Token.new( :eof ), token_stream.shift )
     assert( token_stream.empty? )   
   end
- 
+
+  def test_prose_value
+    # todo  <symbol>
+  end
+
 end
 
