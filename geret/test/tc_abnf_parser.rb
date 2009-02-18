@@ -312,7 +312,34 @@ class TC_AbnfParser < Test::Unit::TestCase
   end
 
   def test_undefined_symbol
-    # todo
+ 
+    assert_equal( [], Parser.check_symbols( @grammar1 ) )
+
+    grammar = Grammar.new( { 
+      'foo' => Rule.new( [ 
+                 RuleAlt.new( [ 
+                    Token.new( :symbol, 'foo_opt1' ),
+                    Token.new( :symbol, 'unknown1' ) 
+                 ] )
+               ] ),
+
+      'foo_opt1' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                        Token.new( :literal, 'bar' ) 
+                      ] ),                            
+                      RuleAlt.new( [ 
+                        Token.new( :symbol, 'unk2' ),
+                        Token.new( :literal, 'xyz' ) 
+                      ] )
+                    ] )
+    }, 'foo' )
+   
+    undefineds = Parser.check_symbols( grammar )
+ 
+    assert_equal( 2, undefineds.size )
+    assert( undefineds.include?( 'unknown1' ) )
+    assert( undefineds.include?( 'unk2'  ) )
+
   end
 
   def test_already_defined_symbol

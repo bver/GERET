@@ -58,6 +58,21 @@ module Abnf
       end
       @gram
     end
+
+    def Parser.check_symbols grammar
+      undefs = []
+      defs = grammar.keys
+      grammar.each_value do |rule|
+        rule.each do |alt|
+          alt.each do |token| 
+            next unless token.type == :symbol
+            next if defs.include? token.data 
+            undefs.push token.data 
+          end
+        end
+      end
+      undefs
+    end
     
     protected
     
