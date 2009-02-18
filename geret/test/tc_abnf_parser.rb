@@ -2,8 +2,8 @@
 
 require 'test/unit'
 require 'lib/abnf_parser'
-require 'lib/abnf_tokenizer'
-require 'lib/abnf_renderer'
+require 'lib/abnf_tokenizer' #todo: remove
+require 'lib/abnf_renderer' #todo: remove
 
 include Mapper
 include Abnf
@@ -11,7 +11,7 @@ include Abnf
 class TC_AbnfParser < Test::Unit::TestCase
 
   def setup
-    @tokeniser = Tokenizer.new 
+    @tokeniser = Tokenizer.new #todo: remove 
     @parser = Parser.new
 
     @grammar1 = Grammar.new( { 
@@ -35,7 +35,7 @@ class TC_AbnfParser < Test::Unit::TestCase
 
   end
 
-  def test_basic
+  def test_basic #todo: remove dependencies
     example = <<ABNF_TEXT
        expr = "x" / "y" / "(" expr op expr ")"
 
@@ -46,7 +46,7 @@ ABNF_TEXT
 
   end
 
-  def test_alternatives
+  def test_alternatives #todo: remove dependencies 
      example = %q#symb = "begin" ( "alt1" / "alt2" / "alt3a" "alt3b" ) "end"# + "\n"
 
      canonical = <<ABNF_TEXT
@@ -63,7 +63,7 @@ ABNF_TEXT
      
   end
 
-  def test_rules_on_more_rows
+  def test_rules_on_more_rows #todo: remove dependencies 
     example = <<ABNF_TEXT
        expr = "x" / 
               "y" / 
@@ -75,7 +75,7 @@ ABNF_TEXT
     assert_equal( @grammar1, @parser.parse( @tokeniser.tokenize( example ) ) )
   end
     
-  def test_incremental
+  def test_incremental #todo: remove dependencies 
     example = <<ABNF_TEXT
        expr ="x" 
        op= "+"
@@ -92,8 +92,47 @@ ABNF_TEXT
   end
 
   def test_optionals
+    stream = [
+      Token.new( :symbol, 'foo' ),
+      Token.new( :equals ),
+      Token.new( :opt_begin ),
+      Token.new( :literal, 'abc' ),
+      Token.new( :space ),
+      Token.new( :literal, 'xyz' ),
+      Token.new( :opt_end ),
+      Token.new( :literal, 'end' ),     
+      Token.new( :eof )      
+    ]
+
+    grammar = Grammar.new( { 
+      'foo' => Rule.new( [ 
+                 RuleAlt.new( [ 
+                    Token.new( :symbol, 'foo_opt1' ),
+                    Token.new( :literal, 'end' ) 
+                 ] )
+               ] ),
+
+      'foo_opt1' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                        Token.new( :literal, '' ) 
+                      ] ),                            
+                      RuleAlt.new( [ 
+                        Token.new( :literal, 'abc' ),
+                        Token.new( :literal, 'xyz' ) 
+                      ] )
+                    ] )
+    }, 'foo' )
+   
+    assert_equal( grammar, @parser.parse( stream ) )
+
+  end
+
+  def test_undefined_symbol
     # todo
   end
 
+  def test_already_defined_symbol
+    # todo
+  end
 end
 

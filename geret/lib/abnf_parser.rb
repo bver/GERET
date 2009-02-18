@@ -27,8 +27,11 @@ module Abnf
                        :newline => proc {|g,t| :next_rule },
                        :seq_begin => proc {|g,t| g.group=t; :elements },
                        :seq_end => proc {|g,t| g.store=t; :elements },                    
+                       :opt_begin => proc {|g,t| g.opt=t; :elements },
+                       :opt_end => proc {|g,t| g.store=t; :elements },                    
                        :comment => proc { :elements },  
-                       :space => proc { :elements } 
+                       :space => proc { :elements }, 
+                       :eof => proc { |g,t| g.retype=:eof; g.store=t; :stop }                    
                      },
         :next_rule => {
                        :symbol => proc {|g,t|  g.store=t; g.rule=t; :equals },
@@ -73,7 +76,16 @@ module Abnf
       @stack.push Slot.new( name, Rule.new, :seq_end )
       alt
     end
-   
+
+    def opt=( token )
+      name = @stack.last.name + "_opt#{@iv+=1}"
+      self.tok = Token.new( :symbol, name ) 
+      @stack.push Slot.new( name, Rule.new, :opt_end )
+      alt
+      self.tok = Token.new( :literal, '' )
+      alt
+    end
+    
     def alt
       @stack.last.rule.push RuleAlt.new
     end

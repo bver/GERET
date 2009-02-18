@@ -22,6 +22,9 @@ bar =/ DQUOTE WSP LWSP OCTET CTL CRLF BIT;
 foo2 = "text" foo "text1" "" SP "text3" 
 
 ABNF_TEXT
+ 
+    @tokenizer = Abnf::Tokenizer.new
+   
   end
 
   def test_token
@@ -39,8 +42,7 @@ ABNF_TEXT
   end
 
   def test_basic
-    tokenizer = Abnf::Tokenizer.new
-    token_stream = tokenizer.tokenize( @example1 )
+    token_stream = @tokenizer.tokenize( @example1 )
 
     #;start symbol
     assert_equal( Token.new( :comment, 'start symbol' ), token_stream.shift )
@@ -210,8 +212,7 @@ ABNF_TEXT
        op="+"
 INDENT
   
-    tokenizer = Abnf::Tokenizer.new
-    token_stream = tokenizer.tokenize( indented )
+    token_stream = @tokenizer.tokenize( indented )
 
     assert_equal( Token.new( :symbol, 'expr' ), token_stream.shift )
     assert_equal( Token.new( :space ), token_stream.shift ) 
@@ -237,7 +238,16 @@ INDENT
   end
 
   def test_prose_value
-    # todo  <symbol>
+    prose = "<prose>= <another>"
+
+    token_stream = @tokenizer.tokenize( prose )
+
+    assert_equal( Token.new( :symbol, 'prose' ), token_stream.shift )
+    assert_equal( Token.new( :equals ), token_stream.shift )
+    assert_equal( Token.new( :space ), token_stream.shift )
+    assert_equal( Token.new( :symbol, 'another' ), token_stream.shift )   
+    assert_equal( Token.new( :eof ), token_stream.shift )
+    assert( token_stream.empty? )   
   end
 
 end
