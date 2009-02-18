@@ -66,8 +66,8 @@ module Abnf
       alt
     end
 
-    def retype=( arg)
-      @stack.last.end = arg unless @stack.last.end == :incremental 
+    def retype=( arg )
+      @stack.last.end = arg if @stack.last.end == :symbol  
     end
 
     def group=( token )
@@ -99,12 +99,14 @@ module Abnf
       case slot.end
       when :incremental
         orig_rule = @gram.fetch( slot.name, nil )
-        raise "incremental alternative: #{slot.name} must be defined first" if orig_rule.nil?
+        raise "Parser: incremental alternative: '#{slot.name}' must be defined first" if orig_rule.nil?
         orig_rule.concat slot.rule
       when token.type
+        orig_rule = @gram.fetch( slot.name, nil ) 
+        raise "Parser: symbol '#{slot.name}' already defined" unless orig_rule.nil?
         @gram[ slot.name ] = slot.rule
       else
-        raise "missing #{slot.end} token"
+        raise "Parser: missing '#{slot.end}' token"
       end
     end
   end

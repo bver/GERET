@@ -248,7 +248,31 @@ class TC_AbnfParser < Test::Unit::TestCase
   end
 
   def test_mismatching_brackets
-    # ( [) ] and so on
+    stream = [
+      #op=["+")
+      Token.new( :symbol, 'op' ),
+      Token.new( :equals ),
+      Token.new( :opt_begin ),
+      Token.new( :literal, '+' ),
+      Token.new( :seq_end ),
+      Token.new( :eof ),
+    ]
+
+    exception = assert_raise( RuntimeError ) { @parser.parse( stream ) }
+    assert_equal( "Parser: missing 'opt_end' token", exception.message )
+
+    stream = [
+      #op=["+"
+      Token.new( :symbol, 'op' ),
+      Token.new( :equals ),
+      Token.new( :opt_begin ),
+      Token.new( :literal, '+' ),
+      Token.new( :eof ),
+    ]
+
+    exception = assert_raise( RuntimeError ) { @parser.parse( stream ) }
+    assert_equal( "Parser: missing 'opt_end' token", exception.message )
+   
   end
 
   def test_optionals
@@ -292,7 +316,38 @@ class TC_AbnfParser < Test::Unit::TestCase
   end
 
   def test_already_defined_symbol
-    # todo
+  
+    stream = [
+      #op="+" 
+      Token.new( :symbol, 'op' ),
+      Token.new( :equals ),
+      Token.new( :literal, '+' ),
+      Token.new( :newline ),
+
+      #op="x" 
+      Token.new( :symbol, 'op' ),
+      Token.new( :equals ),
+      Token.new( :literal, 'x' ),
+      Token.new( :eof ),
+    ]
+
+    exception = assert_raise( RuntimeError ) { @parser.parse( stream ) }
+    assert_equal( "Parser: symbol 'op' already defined", exception.message )
+ 
   end
+
+  def test_not_defined_incremental
+    stream = [
+      #op=/"+" 
+      Token.new( :symbol, 'op' ),
+      Token.new( :eq_slash ),
+      Token.new( :literal, '+' ),
+      Token.new( :eof ),
+    ]
+
+    exception = assert_raise( RuntimeError ) { @parser.parse( stream ) }
+    assert_equal( "Parser: incremental alternative: 'op' must be defined first", exception.message ) 
+  end
+
 end
 
