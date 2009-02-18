@@ -2,8 +2,6 @@
 
 require 'test/unit'
 require 'lib/abnf_parser'
-require 'lib/abnf_tokenizer' #todo: remove
-require 'lib/abnf_renderer' #todo: remove
 
 include Mapper
 include Abnf
@@ -11,7 +9,6 @@ include Abnf
 class TC_AbnfParser < Test::Unit::TestCase
 
   def setup
-    @tokeniser = Tokenizer.new #todo: remove 
     @parser = Parser.new
 
     @grammar1 = Grammar.new( { 
@@ -35,56 +32,219 @@ class TC_AbnfParser < Test::Unit::TestCase
 
   end
 
-  def test_basic #todo: remove dependencies
-    example = <<ABNF_TEXT
-       expr = "x" / "y" / "(" expr op expr ")"
+  def test_basic 
 
-       op = "+" / "*"
-ABNF_TEXT
+     stream = [
 
-    assert_equal( @grammar1, @parser.parse( @tokeniser.tokenize( example ) ) )
+      #expr = "x" / "y" / "(" expr op expr ")"
+      Token.new( :symbol, 'expr' ),
+      Token.new( :space ),          
+      Token.new( :equals ),
+      Token.new( :space ),     
+      Token.new( :literal, 'x' ),
+      Token.new( :space ),
+      Token.new( :slash ),          
+      Token.new( :space ),          
+      Token.new( :literal, 'y' ),
+      Token.new( :space ),          
+      Token.new( :slash ),          
+      Token.new( :space ),          
+      Token.new( :literal, '(' ),
+      Token.new( :space ),      
+      Token.new( :symbol, 'expr' ),
+      Token.new( :space ),      
+      Token.new( :symbol, 'op' ),
+      Token.new( :space ),      
+      Token.new( :symbol, 'expr' ),
+      Token.new( :space ),      
+      Token.new( :space ),          
+      Token.new( :literal, ')' ),
+      Token.new( :newline ),          
+
+      Token.new( :newline ),          
+ 
+      #op = "+" / "*"
+      Token.new( :symbol, 'op' ),
+      Token.new( :space ),          
+      Token.new( :equals ),
+      Token.new( :space ),     
+      Token.new( :literal, '+' ),
+      Token.new( :space ),
+      Token.new( :slash ),          
+      Token.new( :space ),          
+      Token.new( :literal, '*' ),
+      Token.new( :space ),          
+    
+      Token.new( :eof )      
+    ]
+
+    assert_equal( @grammar1, @parser.parse( stream ) )
 
   end
 
-  def test_alternatives #todo: remove dependencies 
-     example = %q#symb = "begin" ( "alt1" / "alt2" / "alt3a" "alt3b" ) "end"# + "\n"
+  def test_alternatives 
+     
+    #symb="begin"("alt1"/"alt2"/"alt3a" "alt3b")"end"
+    stream = [
+      Token.new( :symbol, 'symb' ),
+      Token.new( :equals ),
+      Token.new( :literal, 'begin' ),
+      Token.new( :seq_begin ),
+      Token.new( :literal, 'alt1' ),
+      Token.new( :slash ),
+      Token.new( :literal, 'alt2' ),
+      Token.new( :slash ),
+      Token.new( :literal, 'alt3a' ),
+      Token.new( :space ),          
+      Token.new( :literal, 'alt3b' ),
+      Token.new( :seq_end ),
+      Token.new( :literal, 'end' ),
+      Token.new( :eof )
+    ]
+   
+    #canonical:
+    #symb = "begin" symb_grp1 "end"
+    #symb_grp1 = "alt1"
+    #symb_grp1 =/ "alt2"
+    #symb_grp1 =/ "alt3a" "alt3b"
 
-     canonical = <<ABNF_TEXT
-symb = "begin" symb_grp1 "end"
-
-symb_grp1 = "alt1"
-symb_grp1 =/ "alt2"
-symb_grp1 =/ "alt3a" "alt3b"
-
-ABNF_TEXT
-
-     grammar = @parser.parse( @tokeniser.tokenize( example ) )
-     assert_equal( canonical, Renderer.canonical( grammar ) ) 
+    grammar = Grammar.new( { 
+      'symb' => Rule.new( [ 
+                  RuleAlt.new( [ 
+                    Token.new( :literal, 'begin' ), 
+                    Token.new( :symbol, 'symb_grp1' ),
+                    Token.new( :literal, 'end' ) 
+                 ] )
+               ] ),
+      'symb_grp1' => Rule.new( [ 
+                       RuleAlt.new( [ 
+                         Token.new( :literal, 'alt1' ) 
+                       ] ),                            
+                       RuleAlt.new( [ 
+                         Token.new( :literal, 'alt2' ) 
+                       ] ),                            
+                       RuleAlt.new( [ 
+                         Token.new( :literal, 'alt3a' ),
+                         Token.new( :literal, 'alt3b' ) 
+                       ] )
+                     ] )
+    }, 'symb' )
+                 
+    assert_equal( grammar, @parser.parse( stream ) )
      
   end
 
-  def test_rules_on_more_rows #todo: remove dependencies 
-    example = <<ABNF_TEXT
-       expr = "x" / 
-              "y" / 
-              "(" expr op expr ")"
-       op = "+" / 
-            "*"
-ABNF_TEXT
+  def test_rules_on_more_rows 
 
-    assert_equal( @grammar1, @parser.parse( @tokeniser.tokenize( example ) ) )
+    stream = [
+      #expr = "x" /
+      Token.new( :symbol, 'expr' ),
+      Token.new( :space ),          
+      Token.new( :equals ),
+      Token.new( :space ),     
+      Token.new( :literal, 'x' ),
+      Token.new( :space ),
+      Token.new( :slash ),          
+      Token.new( :space ),          
+      Token.new( :newline ),          
+
+      #  "y" /   
+      Token.new( :space ),          
+      Token.new( :literal, 'y' ),
+      Token.new( :space ),          
+      Token.new( :slash ),          
+      Token.new( :newline ),          
+
+      #  "(" expr op expr ")"
+      Token.new( :space ),          
+      Token.new( :literal, '(' ),
+      Token.new( :space ),      
+      Token.new( :symbol, 'expr' ),
+      Token.new( :space ),      
+      Token.new( :symbol, 'op' ),
+      Token.new( :space ),      
+      Token.new( :symbol, 'expr' ),
+      Token.new( :space ),      
+      Token.new( :space ),          
+      Token.new( :literal, ')' ),
+      Token.new( :newline ),          
+      
+      #op = "+" /
+      Token.new( :symbol, 'op' ),
+      Token.new( :space ),          
+      Token.new( :equals ),
+      Token.new( :space ),     
+      Token.new( :literal, '+' ),
+      Token.new( :space ),
+      Token.new( :slash ),          
+      Token.new( :newline ), 
+
+      #  "*" 
+      Token.new( :space ),          
+      Token.new( :literal, '*' ),
+      Token.new( :space ),          
+      Token.new( :newline ),          
+    
+      Token.new( :eof )      
+    ]
+
+    assert_equal( @grammar1, @parser.parse( stream ) )
   end
     
-  def test_incremental #todo: remove dependencies 
-    example = <<ABNF_TEXT
-       expr ="x" 
-       op= "+"
-       expr=/ "y" 
-       op =/"*"
-       expr =/"(" expr op expr ")"
-ABNF_TEXT
+  def test_incremental
 
-    assert_equal( @grammar1, @parser.parse( @tokeniser.tokenize( example ) ) )
+     stream = [
+      #expr ="x"
+      Token.new( :symbol, 'expr' ),
+      Token.new( :space ),          
+      Token.new( :equals ),
+      Token.new( :literal, 'x' ),
+      Token.new( :newline ),          
+
+      #op= "+" 
+      Token.new( :symbol, 'op' ),
+      Token.new( :equals ),
+      Token.new( :space ),     
+      Token.new( :literal, '+' ),
+      Token.new( :space ),
+      Token.new( :newline ), 
+
+      #expr=/ "y"
+      Token.new( :symbol, 'expr' ),
+      Token.new( :eq_slash ),
+      Token.new( :space ),          
+      Token.new( :literal, 'y' ),
+      Token.new( :newline ),          
+
+      Token.new( :newline ),          
+
+      #op =/"*"
+      Token.new( :symbol, 'op' ),
+      Token.new( :space ),   
+      Token.new( :eq_slash ),
+      Token.new( :literal, '*' ),
+      Token.new( :newline ),          
+
+      #expr=/"(" expr op expr ")"
+      Token.new( :symbol, 'expr' ),
+      Token.new( :eq_slash ),
+      Token.new( :literal, '(' ),
+      Token.new( :space ),      
+      Token.new( :symbol, 'expr' ),
+      Token.new( :space ),      
+      Token.new( :symbol, 'op' ),
+      Token.new( :space ),      
+      Token.new( :symbol, 'expr' ),
+      Token.new( :space ),      
+      Token.new( :space ),          
+      Token.new( :literal, ')' ),
+      Token.new( :space ),          
+      Token.new( :newline ),          
+   
+      Token.new( :eof )      
+    ]
+
+    assert_equal( @grammar1, @parser.parse( stream ) )
   end
 
   def test_mismatching_brackets
