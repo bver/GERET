@@ -426,6 +426,10 @@ class TC_AbnfParser < Test::Unit::TestCase
 
     assert_equal( grammar, @parser.parse( stream2 ) )
 
+  end
+
+  def test_repetitions_maximal
+   
     stream3 = [
        #expr="begin" *3"repeat" "end"
        Token.new( :symbol, 'expr' ),
@@ -469,6 +473,10 @@ class TC_AbnfParser < Test::Unit::TestCase
 
     assert_equal( grammar3, @parser.parse( stream3 ) )
 
+  end
+
+  def test_repetitions_range
+   
     stream4 = [
        #expr="begin" 2* 4"repeat" "end"
        Token.new( :symbol, 'expr' ),
@@ -514,6 +522,10 @@ class TC_AbnfParser < Test::Unit::TestCase
 
     assert_equal( grammar4, @parser.parse( stream4 ) )
 
+  end
+
+  def test_repetitions_limit
+   
     stream5 = [
        #expr="begin" 2*4000"repeat" "end"
        Token.new( :symbol, 'expr' ),
@@ -531,6 +543,9 @@ class TC_AbnfParser < Test::Unit::TestCase
 
     exception = assert_raise( RuntimeError ) { @parser.parse( stream5 ) }
     assert_equal( "Parser: max. allowed number of repetitions exceeded", exception.message )
+  end
+
+  def test_repetitions_infinity
 
     stream6 = [
        #expr="begin" 2*"repeat" "end"
@@ -549,6 +564,10 @@ class TC_AbnfParser < Test::Unit::TestCase
     exception = assert_raise( RuntimeError ) { @parser.parse( stream6 ) }
     assert_equal( "Parser: unexpected token 'literal' when in rpt_2", exception.message )
 
+  end
+
+  def test_repetitions_sequence
+   
     stream7 = [
        #expr="begin" 2 *4("seq1" "seq2") "end"
        Token.new( :symbol, 'expr' ),
@@ -604,7 +623,10 @@ class TC_AbnfParser < Test::Unit::TestCase
     }, 'expr' )
 
     assert_equal( grammar7, @parser.parse( stream7 ) )
-   
+  end
+
+  def test_repetitions_morenumbers
+  
     stream8 = [
        #expr="begin" 2*3*"repeat" "end"
        Token.new( :symbol, 'expr' ),
@@ -623,7 +645,9 @@ class TC_AbnfParser < Test::Unit::TestCase
 
     exception = assert_raise( RuntimeError ) { @parser.parse( stream8 ) }
     assert_equal( "Parser: unexpected token 'literal' when in rpt_2", exception.message )
-   
+  end
+
+  def test_repetitions_minmax
     stream9 = [
        #expr="begin" 6*4"repeat" "end"
        Token.new( :symbol, 'expr' ),
