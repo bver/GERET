@@ -21,7 +21,7 @@ module Abnf
                        :space => proc { :equals } 
                      },
         :elements => {
-                       :symbol => proc {|g,t| g.tok=t;:elements },
+                       :symbol => proc {|g,t| g.tok=t; :elements },
                        :literal => proc {|g,t| g.tok=t; :elements },
                        :slash =>  proc {|g,t| g.alt; :elements },
                        :newline => proc {|g,t| :next_rule },
@@ -30,8 +30,22 @@ module Abnf
                        :opt_begin => proc {|g,t| g.opt=t; :elements },
                        :opt_end => proc {|g,t| g.store=t; :elements },                    
                        :comment => proc { :elements },  
-                       :space => proc { :elements }, 
+                       :space => proc { :elements },
+                       :number => proc {|g,t| g.repeat=t.data; :rpt_1 },
+                       :asterisk => proc { |g,t| g.repeat=0; :rpt_2 },
                        :eof => proc { |g,t| g.retype=:eof; g.store=t; :stop }                    
+                     },
+        :rpt_1 =>    {
+                        :number => proc {|g,t| g.repeat=t.data; :rpt_1 },
+                        :asterisk => proc { :rpt_2 },
+                        :symbol => proc {|g,t| g.tok=t; :elements },
+                        :literal => proc {|g,t| g.tok=t; :elements },
+                        :seq_begin => proc {|g,t| g.group=t; :elements },
+                        :space => proc { :rpt_1 },
+                     },
+        :rpt_2 =>    {
+                        :number => proc {|g,t| g.repeat=t.data; :elements },
+                        :space => proc { :rpt_2 },
                      },
         :next_rule => {
                        :symbol => proc {|g,t|  g.store=t; g.rule=t; :equals },
@@ -47,13 +61,14 @@ module Abnf
     def parse stream
       @stack = []
       @iv = 0
+      @repeat_range = [] 
       @gram = Grammar.new 
       state = :start
  
       stream.each do |token|
         trans = @transitions.fetch state
         action = trans.fetch( token.type, nil )
-        raise "unexpected token #{token.type} when in #{state}" if action.nil?
+        raise "Parser: unexpected token '#{token.type}' when in #{state}" if action.nil?
         state = action.call( self, token )
       end
       @gram
@@ -97,7 +112,8 @@ module Abnf
       self.tok = Token.new( :symbol, name ) 
       @stack.push Slot.new( name, Rule.new, :opt_end )
       alt
-      self.tok = Token.new( :literal, '' )
+      #self.tok = Token.new( :literal, '' )
+      @stack.last.rule.last.push Token.new( :literal, '' ) 
       alt
     end
     
@@ -105,8 +121,30 @@ module Abnf
       @stack.last.rule.push RuleAlt.new
     end
 
+    def repeat=( data )
+      @repeat_range.push data.to_i 
+    end
+
     def tok=( token )
-      @stack.last.rule.last.push token 
+
+      unless @repeat_range.empty?
+        raise "Parser: max. allowed number of repetitions exceeded" if @repeat_range.last > 64
+        raise "Parser: min>max in repetition" if @repeat_range.first > @repeat_range.last
+        name = @stack.last.name + "_rpt#{@iv+=1}"
+        rule = Rule.new
+        for i in @repeat_range.first .. @repeat_range.last
+          alt = RuleAlt.new
+          i.times { alt.push token }
+          alt.push Token.new( :literal, '' ) if i==0
+          rule.push alt
+        end
+        @gram[ name ] = rule
+        token = Token.new( :symbol, name )
+        @repeat_range = []
+      end
+      
+      @stack.last.rule.last.push token
+
     end
 
     def store=( token )

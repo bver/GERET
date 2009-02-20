@@ -376,5 +376,273 @@ class TC_AbnfParser < Test::Unit::TestCase
     assert_equal( "Parser: incremental alternative: 'op' must be defined first", exception.message ) 
   end
 
+  def test_repetitions
+     stream = [
+       #expr="begin" 3"repeat" "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '3' ),
+       Token.new( :literal, 'repeat' ),    
+       Token.new( :space ),
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    grammar = Grammar.new( { 
+      'expr' => Rule.new( [ 
+                  RuleAlt.new( [ 
+                    Token.new( :literal, 'begin' ),
+                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :literal, 'end' )
+                  ] )
+                ] ),
+      'expr_rpt1' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                        Token.new( :literal, 'repeat' ),                                 
+                        Token.new( :literal, 'repeat' ),                                 
+                        Token.new( :literal, 'repeat' ),                                 
+                       ] )
+                    ] )
+    }, 'expr' )
+
+    assert_equal( grammar, @parser.parse( stream ) )
+
+    stream2 = [
+       #expr="begin" 3*3"repeat" "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '3' ),
+       Token.new( :asterisk ),
+       Token.new( :number, '3' ),
+       Token.new( :literal, 'repeat' ),    
+       Token.new( :space ),
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    assert_equal( grammar, @parser.parse( stream2 ) )
+
+    stream3 = [
+       #expr="begin" *3"repeat" "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :asterisk ),
+       Token.new( :number, '3' ),
+       Token.new( :literal, 'repeat' ),    
+       Token.new( :space ),
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    grammar3 = Grammar.new( { 
+      'expr' => Rule.new( [ 
+                  RuleAlt.new( [ 
+                    Token.new( :literal, 'begin' ),
+                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :literal, 'end' )
+                  ] )
+                ] ),
+      'expr_rpt1' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                        Token.new( :literal, '' ),                                 
+                       ] ),
+                      RuleAlt.new( [ 
+                        Token.new( :literal, 'repeat' ),                                 
+                       ] ),
+                      RuleAlt.new( [ 
+                        Token.new( :literal, 'repeat' ),                                 
+                        Token.new( :literal, 'repeat' ),                                 
+                      ] ),
+                      RuleAlt.new( [ 
+                        Token.new( :literal, 'repeat' ),                                 
+                        Token.new( :literal, 'repeat' ),                                 
+                        Token.new( :literal, 'repeat' ),                                 
+                      ] )
+                    ] )
+    }, 'expr' )
+
+    assert_equal( grammar3, @parser.parse( stream3 ) )
+
+    stream4 = [
+       #expr="begin" 2* 4"repeat" "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '2' ),
+       Token.new( :asterisk ),
+       Token.new( :space ),
+       Token.new( :number, '4' ),
+       Token.new( :literal, 'repeat' ),    
+       Token.new( :space ),
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    grammar4 = Grammar.new( { 
+      'expr' => Rule.new( [ 
+                  RuleAlt.new( [ 
+                    Token.new( :literal, 'begin' ),
+                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :literal, 'end' )
+                  ] )
+                ] ),
+      'expr_rpt1' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                        Token.new( :literal, 'repeat' ),                                 
+                        Token.new( :literal, 'repeat' ),                                 
+                      ] ),
+                      RuleAlt.new( [ 
+                        Token.new( :literal, 'repeat' ),                                 
+                        Token.new( :literal, 'repeat' ),                                 
+                        Token.new( :literal, 'repeat' ),                                 
+                       ] ),
+                      RuleAlt.new( [ 
+                        Token.new( :literal, 'repeat' ),                                 
+                        Token.new( :literal, 'repeat' ),                                 
+                        Token.new( :literal, 'repeat' ),                                 
+                        Token.new( :literal, 'repeat' ),                                 
+                       ] )
+                    ] )
+    }, 'expr' )
+
+    assert_equal( grammar4, @parser.parse( stream4 ) )
+
+    stream5 = [
+       #expr="begin" 2*4000"repeat" "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '2' ),
+       Token.new( :asterisk ),
+       Token.new( :number, '4000' ),
+       Token.new( :literal, 'repeat' ),    
+       Token.new( :space ),
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    exception = assert_raise( RuntimeError ) { @parser.parse( stream5 ) }
+    assert_equal( "Parser: max. allowed number of repetitions exceeded", exception.message )
+
+    stream6 = [
+       #expr="begin" 2*"repeat" "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '2' ),
+       Token.new( :asterisk ),
+       Token.new( :literal, 'repeat' ),    
+       Token.new( :space ),
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    exception = assert_raise( RuntimeError ) { @parser.parse( stream6 ) }
+    assert_equal( "Parser: unexpected token 'literal' when in rpt_2", exception.message )
+
+    stream7 = [
+       #expr="begin" 2 *4("seq1" "seq2") "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '2' ),
+       Token.new( :space ),
+       Token.new( :asterisk ),
+       Token.new( :number, '4' ),
+       Token.new( :seq_begin ),    
+       Token.new( :literal, 'seq1' ),      
+       Token.new( :space ),
+       Token.new( :literal, 'seq2' ),      
+       Token.new( :seq_end ),    
+       Token.new( :space ),
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    grammar7 = Grammar.new( { 
+      'expr' => Rule.new( [ 
+                  RuleAlt.new( [ 
+                    Token.new( :literal, 'begin' ),
+                    Token.new( :symbol, 'expr_rpt2' ),
+                    Token.new( :literal, 'end' )
+                  ] )
+                ] ),
+      'expr_rpt2' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                        Token.new( :symbol, 'expr_grp1' ),                                 
+                        Token.new( :symbol, 'expr_grp1' ),                                 
+                      ] ),
+                      RuleAlt.new( [ 
+                        Token.new( :symbol, 'expr_grp1' ),                                 
+                        Token.new( :symbol, 'expr_grp1' ),                                 
+                        Token.new( :symbol, 'expr_grp1' ),                                 
+                       ] ),
+                      RuleAlt.new( [ 
+                        Token.new( :symbol, 'expr_grp1' ),                                 
+                        Token.new( :symbol, 'expr_grp1' ),                                 
+                        Token.new( :symbol, 'expr_grp1' ),                                 
+                        Token.new( :symbol, 'expr_grp1' ),                                 
+                       ] )
+                    ] ),
+       'expr_grp1' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                         Token.new( :literal, 'seq1' ),
+                         Token.new( :literal, 'seq2' ) 
+                       ] )
+                     ] )
+                    
+    }, 'expr' )
+
+    assert_equal( grammar7, @parser.parse( stream7 ) )
+   
+    stream8 = [
+       #expr="begin" 2*3*"repeat" "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '2' ),
+       Token.new( :asterisk ),
+       Token.new( :number, '3' ),
+       Token.new( :asterisk ),
+       Token.new( :literal, 'repeat' ),    
+       Token.new( :space ),
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    exception = assert_raise( RuntimeError ) { @parser.parse( stream8 ) }
+    assert_equal( "Parser: unexpected token 'literal' when in rpt_2", exception.message )
+   
+    stream9 = [
+       #expr="begin" 6*4"repeat" "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '6' ),
+       Token.new( :asterisk ),
+       Token.new( :number, '4' ),
+       Token.new( :literal, 'repeat' ),    
+       Token.new( :space ),
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    exception = assert_raise( RuntimeError ) { @parser.parse( stream9 ) }
+    assert_equal( "Parser: min>max in repetition", exception.message )
+   
+  end
+
 end
 
