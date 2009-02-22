@@ -4,10 +4,24 @@ include Mapper
 
 module Abnf
   
+  # Abnf::Parser understands the ABNF syntax specified by RFC 5234
+  # http://www.ietf.org/rfc/rfc5234.txt
+  # with important exceptions:
+  #
+  # 1. Variable repetitions (Chapter 3.6.) have limited maximal number of occurences (ie the <b>
+  # decimal value in the original specification).
+  # Thus, parsing expressions *30000 HTAB, 3*CHAR or *SP terminates with an exception. 
+  # This limit is controlled by the Parser#max_repetitions attribute. 
+  #
+  # 2. Core rule LWSP (Appendix B.1) is not implemented, for the same reasons as in 1.
+  #
   class Parser
     Slot = Struct.new( :name, :rule, :end )
    
+    attr_accessor :max_repetitions
+
     def initialize
+      @max_repetitions = 100
       @transitions = {
         :start =>    {
                        :symbol => proc {|g,t| g.rule=t; :equals },
@@ -88,6 +102,8 @@ module Abnf
 
     end
 
+    # creates Mapper::Grammar structure from the token stream preprocessed by the Abnf::Tokenizer
+    #
     def parse stream
       @stack = []
       @iv = 0
@@ -105,6 +121,11 @@ module Abnf
       @gram
     end
 
+    # checks the right hand sides of all rules for the presence of undefined symbols.
+    # (The symbol is defined if there is exactly one rule where the symbol is used 
+    # on the left hand side).
+    # Returns the array of all undefined symbols.
+    #
     def Parser.check_symbols grammar
       undefs = []
       defs = grammar.keys
@@ -183,7 +204,7 @@ module Abnf
     def tok=( token )
 
       unless @repeat_range.empty?
-        raise "Parser: max. allowed number of repetitions exceeded" if @repeat_range.last > 64
+        raise "Parser: max. allowed number of repetitions (#{@max_repetitions}) exceeded" if @repeat_range.last > @max_repetitions 
         raise "Parser: min>max in repetition" if @repeat_range.first > @repeat_range.last
         name = "_#{@stack.last.name}_rpt#{@iv+=1}"
         rule = Rule.new

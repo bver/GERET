@@ -527,22 +527,29 @@ class TC_AbnfParser < Test::Unit::TestCase
   def test_repetitions_limit
    
     stream5 = [
-       #expr="begin" 2*4000"repeat" "end"
+       #expr="begin" 2*200"repeat" "end"
        Token.new( :symbol, 'expr' ),
        Token.new( :equals ),
        Token.new( :literal, 'begin' ),
        Token.new( :space ),
        Token.new( :number, '2' ),
        Token.new( :asterisk ),
-       Token.new( :number, '4000' ),
+       Token.new( :number, '200' ),
        Token.new( :literal, 'repeat' ),    
        Token.new( :space ),
        Token.new( :literal, 'end' ),
        Token.new( :eof )
     ]
 
+    assert_equal( 100, @parser.max_repetitions )
+
     exception = assert_raise( RuntimeError ) { @parser.parse( stream5 ) }
-    assert_equal( "Parser: max. allowed number of repetitions exceeded", exception.message )
+    assert_equal( "Parser: max. allowed number of repetitions (100) exceeded", exception.message )
+
+    @parser.max_repetitions = 200
+    assert_equal( 200, @parser.max_repetitions )   
+    @parser.parse( stream5 ) # no error
+
   end
 
   def test_repetitions_infinity
@@ -1216,10 +1223,30 @@ class TC_AbnfParser < Test::Unit::TestCase
 
     assert_equal( grammar, @parser.parse( stream ) )
   end
- 
-  def test_set_repetition_limit
+
+  def test_repetition_binary_range
     #todo
   end
- 
+
+  def test_binary_concat
+    #todo   
+  end
+
+  def test_repetition_decimal_range
+    #todo
+  end
+
+  def test_decimal_concat
+    #todo   
+  end
+
+  def test_repetition_hexadecimal_range
+    #todo
+  end
+
+  def test_hexadecimal_concat
+    #todo   
+  end
+  
 end
 
