@@ -892,6 +892,45 @@ class TC_AbnfParser < Test::Unit::TestCase
 
     assert_equal( grammar, @parser.parse( stream ) )
   end
- 
+
+  def test_repetitions_lf
+   
+    stream = [
+       #expr = LF "begin" 4LF "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :space ),
+       Token.new( :_lf ),        
+       Token.new( :space ),      
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '4' ),
+       Token.new( :_lf ),    
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    grammar = Grammar.new( { 
+      'expr' => Rule.new( [ 
+                  RuleAlt.new( [ 
+                    Token.new( :literal, "\n" ),                              
+                    Token.new( :literal, 'begin' ),
+                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :literal, 'end' )
+                  ] )
+                ] ),
+      'expr_rpt1' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                        Token.new( :literal, "\n" ),                                 
+                        Token.new( :literal, "\n" ),                                 
+                        Token.new( :literal, "\n" ),                                 
+                        Token.new( :literal, "\n" ),                                 
+                       ] )
+                    ] )                    
+    }, 'expr' )
+
+    assert_equal( grammar, @parser.parse( stream ) )
+  end
+  
 end
 
