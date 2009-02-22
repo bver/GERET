@@ -668,5 +668,59 @@ class TC_AbnfParser < Test::Unit::TestCase
    
   end
 
+  def test_repetitions_digit
+   
+    stream = [
+       #expr = DIGIT "begin" 4DIGIT "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :space ),
+       Token.new( :_digit ),        
+       Token.new( :space ),      
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '4' ),
+       Token.new( :_digit ),    
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    grammar = Grammar.new( { 
+      'expr' => Rule.new( [ 
+                  RuleAlt.new( [ 
+                    Token.new( :symbol, '_digit' ),                              
+                    Token.new( :literal, 'begin' ),
+                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :literal, 'end' )
+                  ] )
+                ] ),
+      'expr_rpt1' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                        Token.new( :symbol, '_digit' ),                                 
+                        Token.new( :symbol, '_digit' ),                                 
+                        Token.new( :symbol, '_digit' ),                                 
+                        Token.new( :symbol, '_digit' ),                                 
+                       ] )
+                    ] ),
+      '_digit' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                         Token.new( :literal, '0' ),
+                         Token.new( :literal, '1' ), 
+                         Token.new( :literal, '2' ), 
+                         Token.new( :literal, '3' ), 
+                         Token.new( :literal, '4' ), 
+                         Token.new( :literal, '5' ), 
+                         Token.new( :literal, '6' ), 
+                         Token.new( :literal, '7' ), 
+                         Token.new( :literal, '8' ), 
+                         Token.new( :literal, '9' ) 
+                       ] )
+                     ] )
+                    
+    }, 'expr' )
+
+    assert_equal( grammar, @parser.parse( stream ) )
+  end
+
 end
 

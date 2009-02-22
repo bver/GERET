@@ -23,6 +23,7 @@ module Abnf
         :elements => {
                        :symbol => proc {|g,t| g.tok=t; :elements },
                        :literal => proc {|g,t| g.tok=t; :elements },
+                       :_digit => proc {|g,t| g.ranges(t,['0'..'9']); :elements },
                        :slash =>  proc {|g,t| g.alt; :elements },
                        :newline => proc {|g,t| :next_rule },
                        :seq_begin => proc {|g,t| g.group=t; :elements },
@@ -40,6 +41,7 @@ module Abnf
                         :asterisk => proc { :rpt_2 },
                         :symbol => proc {|g,t| g.tok=t; :elements },
                         :literal => proc {|g,t| g.tok=t; :elements },
+                        :_digit => proc {|g,t| g.ranges(t,['0'..'9']); :elements },
                         :seq_begin => proc {|g,t| g.group=t; :elements },
                         :space => proc { :rpt_1 },
                      },
@@ -62,6 +64,7 @@ module Abnf
       @stack = []
       @iv = 0
       @repeat_range = [] 
+      @range_rules = []    
       @gram = Grammar.new 
       state = :start
  
@@ -112,8 +115,7 @@ module Abnf
       self.tok = Token.new( :symbol, name ) 
       @stack.push Slot.new( name, Rule.new, :opt_end )
       alt
-      #self.tok = Token.new( :literal, '' )
-      @stack.last.rule.last.push Token.new( :literal, '' ) 
+      @stack.last.rule.last.push Token.new( :literal, '' ) # not self.tok 
       alt
     end
     
@@ -123,6 +125,23 @@ module Abnf
 
     def repeat=( data )
       @repeat_range.push data.to_i 
+    end
+
+    def ranges( token, ranges )
+      name = token.type.to_s
+
+      unless @range_rules.include? name 
+        rule = Rule.new 
+        alt = RuleAlt.new
+        ranges.each do |rng|
+          rng.each {|i| alt.push Token.new( :literal, i ) }
+        end
+        rule.push alt
+        @gram[ name ] = rule
+        @range_rules.push name
+      end
+      
+      self.tok = Token.new( :symbol, name )      
     end
 
     def tok=( token )
