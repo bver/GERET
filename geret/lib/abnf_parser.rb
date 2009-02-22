@@ -24,6 +24,10 @@ module Abnf
                        :symbol => proc {|g,t| g.tok=t; :elements },
                        :literal => proc {|g,t| g.tok=t; :elements },
                        :_digit => proc {|g,t| g.ranges(t,['0'..'9']); :elements },
+                       :_hexdig => proc {|g,t| g.ranges(t,['0'..'9','A'..'F']); :elements },
+                       :_bit => proc {|g,t| g.ranges(t,['0'..'1']); :elements },
+                       :_alpha => proc {|g,t| g.ranges(t,['A'..'Z','a'..'z']); :elements },
+                       :_cr => proc {|g,t| g.entity="\r"; :elements },                      
                        :slash =>  proc {|g,t| g.alt; :elements },
                        :newline => proc {|g,t| :next_rule },
                        :seq_begin => proc {|g,t| g.group=t; :elements },
@@ -42,6 +46,10 @@ module Abnf
                         :symbol => proc {|g,t| g.tok=t; :elements },
                         :literal => proc {|g,t| g.tok=t; :elements },
                         :_digit => proc {|g,t| g.ranges(t,['0'..'9']); :elements },
+                        :_hexdig => proc {|g,t| g.ranges(t,['0'..'9','A'..'F']); :elements },
+                        :_bit => proc {|g,t| g.ranges(t,['0'..'1']); :elements },
+                        :_alpha => proc {|g,t| g.ranges(t,['A'..'Z','a'..'z']); :elements },
+                        :_cr => proc {|g,t| g.entity="\r"; :elements },
                         :seq_begin => proc {|g,t| g.group=t; :elements },
                         :space => proc { :rpt_1 },
                      },
@@ -142,6 +150,10 @@ module Abnf
       end
       
       self.tok = Token.new( :symbol, name )      
+    end
+
+    def entity=( str )
+      self.tok = Token.new( :literal, str )
     end
 
     def tok=( token )

@@ -668,6 +668,138 @@ class TC_AbnfParser < Test::Unit::TestCase
    
   end
 
+  def test_repetitions_hexdig
+   
+    stream = [
+       #expr = HEXDIG "begin" 4HEXDIG "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :space ),
+       Token.new( :_hexdig ),        
+       Token.new( :space ),      
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '4' ),
+       Token.new( :_hexdig ),    
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    grammar = Grammar.new( { 
+      'expr' => Rule.new( [ 
+                  RuleAlt.new( [ 
+                    Token.new( :symbol, '_hexdig' ),                              
+                    Token.new( :literal, 'begin' ),
+                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :literal, 'end' )
+                  ] )
+                ] ),
+      'expr_rpt1' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                        Token.new( :symbol, '_hexdig' ),                                 
+                        Token.new( :symbol, '_hexdig' ),                                 
+                        Token.new( :symbol, '_hexdig' ),                                 
+                        Token.new( :symbol, '_hexdig' ),                                 
+                       ] )
+                    ] ),
+      '_hexdig' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                         Token.new( :literal, '0' ),
+                         Token.new( :literal, '1' ), 
+                         Token.new( :literal, '2' ), 
+                         Token.new( :literal, '3' ), 
+                         Token.new( :literal, '4' ), 
+                         Token.new( :literal, '5' ), 
+                         Token.new( :literal, '6' ), 
+                         Token.new( :literal, '7' ), 
+                         Token.new( :literal, '8' ),
+                         Token.new( :literal, '9' ),                        
+                         Token.new( :literal, 'A' ), 
+                         Token.new( :literal, 'B' ), 
+                         Token.new( :literal, 'C' ),
+                         Token.new( :literal, 'D' ), 
+                         Token.new( :literal, 'E' ), 
+                         Token.new( :literal, 'F' ) 
+                       ] )
+                     ] )
+                    
+    }, 'expr' )
+
+    assert_equal( grammar, @parser.parse( stream ) )
+  end
+
+  def test_repetitions_alpha
+   
+    stream = [
+       #expr = ALPHA "begin" 4ALPHA "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :space ),
+       Token.new( :_alpha ),        
+       Token.new( :space ),      
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '4' ),
+       Token.new( :_alpha ),    
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    alt = RuleAlt.new
+    ('A'..'Z').each {|i| alt.push Token.new(:literal, i) }
+    ('a'..'z').each {|i| alt.push Token.new(:literal, i) }   
+    grammar = @parser.parse( stream ) 
+    assert_equal( 1,  grammar['_alpha'].size )
+    assert_equal( alt, grammar['_alpha'].first )
+
+  end
+
+  def test_repetitions_bit
+   
+    stream = [
+       #expr = BIT "begin" 4BIT "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :space ),
+       Token.new( :_bit ),        
+       Token.new( :space ),      
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '4' ),
+       Token.new( :_bit ),    
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    grammar = Grammar.new( { 
+      'expr' => Rule.new( [ 
+                  RuleAlt.new( [ 
+                    Token.new( :symbol, '_bit' ),                              
+                    Token.new( :literal, 'begin' ),
+                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :literal, 'end' )
+                  ] )
+                ] ),
+      'expr_rpt1' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                        Token.new( :symbol, '_bit' ),                                 
+                        Token.new( :symbol, '_bit' ),                                 
+                        Token.new( :symbol, '_bit' ),                                 
+                        Token.new( :symbol, '_bit' ),                                 
+                       ] )
+                    ] ),
+      '_bit' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                         Token.new( :literal, '0' ),
+                         Token.new( :literal, '1' ) 
+                      ] )
+                     ] )
+                    
+    }, 'expr' )
+
+    assert_equal( grammar, @parser.parse( stream ) )
+  end
+ 
   def test_repetitions_digit
    
     stream = [
@@ -722,5 +854,44 @@ class TC_AbnfParser < Test::Unit::TestCase
     assert_equal( grammar, @parser.parse( stream ) )
   end
 
+  def test_repetitions_cr
+   
+    stream = [
+       #expr = CR "begin" 4CR "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :space ),
+       Token.new( :_cr ),        
+       Token.new( :space ),      
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '4' ),
+       Token.new( :_cr ),    
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    grammar = Grammar.new( { 
+      'expr' => Rule.new( [ 
+                  RuleAlt.new( [ 
+                    Token.new( :literal, "\r" ),                              
+                    Token.new( :literal, 'begin' ),
+                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :literal, 'end' )
+                  ] )
+                ] ),
+      'expr_rpt1' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                        Token.new( :literal, "\r" ),                                 
+                        Token.new( :literal, "\r" ),                                 
+                        Token.new( :literal, "\r" ),                                 
+                        Token.new( :literal, "\r" ),                                 
+                       ] )
+                    ] )                    
+    }, 'expr' )
+
+    assert_equal( grammar, @parser.parse( stream ) )
+  end
+ 
 end
 
