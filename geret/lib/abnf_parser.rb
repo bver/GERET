@@ -13,7 +13,11 @@ module Abnf
   # Thus, parsing expressions *30000 HTAB, 3*CHAR or *SP terminates with an exception. 
   # This limit is controlled by the Parser#max_repetitions attribute. 
   #
-  # 2. Core rule LWSP (Appendix B.1) is not implemented, for the same reasons as in 1.
+  # 2. The core rule LWSP (Appendix B.1) is not implemented, for the same reason (there is 
+  # an infinite repetition in the declaration of this rule).
+  #
+  # 3. Rule names (nonterminal external symbols) cannot begin with the underscore character ('_').
+  # All the internal nodes created by the parser begin with the underscore.
   #
   class Parser
     Slot = Struct.new( :name, :rule, :end )
@@ -144,7 +148,9 @@ module Abnf
     protected
     
     def rule=( token )
-      @stack.push Slot.new( token.data, Rule.new, :symbol )
+      name = token.data
+      raise "Parser: external symbols cannot start with the underscore" if name[0,1] == '_'
+      @stack.push Slot.new( name, Rule.new, :symbol )
       alt
     end
 

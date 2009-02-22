@@ -1224,6 +1224,19 @@ class TC_AbnfParser < Test::Unit::TestCase
     assert_equal( grammar, @parser.parse( stream ) )
   end
 
+ def test_underscore_symbol
+    stream = [
+       #_expr="end"
+       Token.new( :symbol, '_expr' ),
+       Token.new( :equals ),
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    exception = assert_raise( RuntimeError ) { @parser.parse( stream ) }
+    assert_equal( "Parser: external symbols cannot start with the underscore", exception.message )
+  end
+
   def test_repetition_binary_range
     #todo
   end
