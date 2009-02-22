@@ -29,6 +29,9 @@ module Abnf
                        :_alpha => proc {|g,t| g.ranges(t,['A'..'Z','a'..'z']); :elements },
                        :_cr => proc {|g,t| g.entity="\r"; :elements },
                        :_lf => proc {|g,t| g.entity="\n"; :elements },
+                       :_crlf => proc {|g,t| g.entity="\r\n"; :elements },
+                       :_sp => proc {|g,t| g.entity=" "; :elements },
+                       :_dquote => proc {|g,t| g.entity=%Q("); :elements },
                        :slash =>  proc {|g,t| g.alt; :elements },
                        :newline => proc {|g,t| :next_rule },
                        :seq_begin => proc {|g,t| g.group=t; :elements },
@@ -52,6 +55,9 @@ module Abnf
                         :_alpha => proc {|g,t| g.ranges(t,['A'..'Z','a'..'z']); :elements },
                         :_cr => proc {|g,t| g.entity="\r"; :elements },
                         :_lf => proc {|g,t| g.entity="\n"; :elements },
+                        :_crlf => proc {|g,t| g.entity="\r\n"; :elements },
+                        :_sp => proc {|g,t| g.entity=" "; :elements },
+                        :_dquote => proc {|g,t| g.entity=%Q("); :elements },                       
                         :seq_begin => proc {|g,t| g.group=t; :elements },
                         :space => proc { :rpt_1 },
                      },
@@ -142,11 +148,13 @@ module Abnf
 
       unless @range_rules.include? name 
         rule = Rule.new 
-        alt = RuleAlt.new
         ranges.each do |rng|
-          rng.each {|i| alt.push Token.new( :literal, i ) }
+          rng.each do |i| 
+            alt = RuleAlt.new            
+            alt.push Token.new( :literal, i ) 
+            rule.push alt
+          end
         end
-        rule.push alt
         @gram[ name ] = rule
         @range_rules.push name
       end
