@@ -103,20 +103,20 @@ class TC_AbnfParser < Test::Unit::TestCase
     ]
    
     #canonical:
-    #symb = "begin" symb_grp1 "end"
-    #symb_grp1 = "alt1"
-    #symb_grp1 =/ "alt2"
-    #symb_grp1 =/ "alt3a" "alt3b"
+    #symb = "begin" _symb_grp1 "end"
+    #_symb_grp1 = "alt1"
+    #_symb_grp1 =/ "alt2"
+    #_symb_grp1 =/ "alt3a" "alt3b"
 
     grammar = Grammar.new( { 
       'symb' => Rule.new( [ 
                   RuleAlt.new( [ 
                     Token.new( :literal, 'begin' ), 
-                    Token.new( :symbol, 'symb_grp1' ),
+                    Token.new( :symbol, '_symb_grp1' ),
                     Token.new( :literal, 'end' ) 
                  ] )
                ] ),
-      'symb_grp1' => Rule.new( [ 
+      '_symb_grp1' => Rule.new( [ 
                        RuleAlt.new( [ 
                          Token.new( :literal, 'alt1' ) 
                        ] ),                            
@@ -291,12 +291,12 @@ class TC_AbnfParser < Test::Unit::TestCase
     grammar = Grammar.new( { 
       'foo' => Rule.new( [ 
                  RuleAlt.new( [ 
-                    Token.new( :symbol, 'foo_opt1' ),
+                    Token.new( :symbol, '_foo_opt1' ),
                     Token.new( :literal, 'end' ) 
                  ] )
                ] ),
 
-      'foo_opt1' => Rule.new( [ 
+      '_foo_opt1' => Rule.new( [ 
                       RuleAlt.new( [ 
                         Token.new( :literal, '' ) 
                       ] ),                            
@@ -318,12 +318,12 @@ class TC_AbnfParser < Test::Unit::TestCase
     grammar = Grammar.new( { 
       'foo' => Rule.new( [ 
                  RuleAlt.new( [ 
-                    Token.new( :symbol, 'foo_opt1' ),
+                    Token.new( :symbol, '_foo_opt1' ),
                     Token.new( :symbol, 'unknown1' ) 
                  ] )
                ] ),
 
-      'foo_opt1' => Rule.new( [ 
+      '_foo_opt1' => Rule.new( [ 
                       RuleAlt.new( [ 
                         Token.new( :literal, 'bar' ) 
                       ] ),                            
@@ -394,11 +394,11 @@ class TC_AbnfParser < Test::Unit::TestCase
       'expr' => Rule.new( [ 
                   RuleAlt.new( [ 
                     Token.new( :literal, 'begin' ),
-                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :symbol, '_expr_rpt1' ),
                     Token.new( :literal, 'end' )
                   ] )
                 ] ),
-      'expr_rpt1' => Rule.new( [ 
+      '_expr_rpt1' => Rule.new( [ 
                       RuleAlt.new( [ 
                         Token.new( :literal, 'repeat' ),                                 
                         Token.new( :literal, 'repeat' ),                                 
@@ -448,11 +448,11 @@ class TC_AbnfParser < Test::Unit::TestCase
       'expr' => Rule.new( [ 
                   RuleAlt.new( [ 
                     Token.new( :literal, 'begin' ),
-                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :symbol, '_expr_rpt1' ),
                     Token.new( :literal, 'end' )
                   ] )
                 ] ),
-      'expr_rpt1' => Rule.new( [ 
+      '_expr_rpt1' => Rule.new( [ 
                       RuleAlt.new( [ 
                         Token.new( :literal, '' ),                                 
                        ] ),
@@ -497,11 +497,11 @@ class TC_AbnfParser < Test::Unit::TestCase
       'expr' => Rule.new( [ 
                   RuleAlt.new( [ 
                     Token.new( :literal, 'begin' ),
-                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :symbol, '_expr_rpt1' ),
                     Token.new( :literal, 'end' )
                   ] )
                 ] ),
-      'expr_rpt1' => Rule.new( [ 
+      '_expr_rpt1' => Rule.new( [ 
                       RuleAlt.new( [ 
                         Token.new( :literal, 'repeat' ),                                 
                         Token.new( :literal, 'repeat' ),                                 
@@ -592,28 +592,28 @@ class TC_AbnfParser < Test::Unit::TestCase
       'expr' => Rule.new( [ 
                   RuleAlt.new( [ 
                     Token.new( :literal, 'begin' ),
-                    Token.new( :symbol, 'expr_rpt2' ),
+                    Token.new( :symbol, '_expr_rpt2' ),
                     Token.new( :literal, 'end' )
                   ] )
                 ] ),
-      'expr_rpt2' => Rule.new( [ 
+      '_expr_rpt2' => Rule.new( [ 
                       RuleAlt.new( [ 
-                        Token.new( :symbol, 'expr_grp1' ),                                 
-                        Token.new( :symbol, 'expr_grp1' ),                                 
+                        Token.new( :symbol, '_expr_grp1' ),                                 
+                        Token.new( :symbol, '_expr_grp1' ),                                 
                       ] ),
                       RuleAlt.new( [ 
-                        Token.new( :symbol, 'expr_grp1' ),                                 
-                        Token.new( :symbol, 'expr_grp1' ),                                 
-                        Token.new( :symbol, 'expr_grp1' ),                                 
+                        Token.new( :symbol, '_expr_grp1' ),                                 
+                        Token.new( :symbol, '_expr_grp1' ),                                 
+                        Token.new( :symbol, '_expr_grp1' ),                                 
                        ] ),
                       RuleAlt.new( [ 
-                        Token.new( :symbol, 'expr_grp1' ),                                 
-                        Token.new( :symbol, 'expr_grp1' ),                                 
-                        Token.new( :symbol, 'expr_grp1' ),                                 
-                        Token.new( :symbol, 'expr_grp1' ),                                 
+                        Token.new( :symbol, '_expr_grp1' ),                                 
+                        Token.new( :symbol, '_expr_grp1' ),                                 
+                        Token.new( :symbol, '_expr_grp1' ),                                 
+                        Token.new( :symbol, '_expr_grp1' ),                                 
                        ] )
                     ] ),
-       'expr_grp1' => Rule.new( [ 
+       '_expr_grp1' => Rule.new( [ 
                       RuleAlt.new( [ 
                          Token.new( :literal, 'seq1' ),
                          Token.new( :literal, 'seq2' ) 
@@ -690,11 +690,11 @@ class TC_AbnfParser < Test::Unit::TestCase
                   RuleAlt.new( [ 
                     Token.new( :symbol, '_hexdig' ),                              
                     Token.new( :literal, 'begin' ),
-                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :symbol, '_expr_rpt1' ),
                     Token.new( :literal, 'end' )
                   ] )
                 ] ),
-      'expr_rpt1' => Rule.new( [ 
+      '_expr_rpt1' => Rule.new( [ 
                       RuleAlt.new( [ 
                         Token.new( :symbol, '_hexdig' ),                                 
                         Token.new( :symbol, '_hexdig' ),                                 
@@ -773,11 +773,11 @@ class TC_AbnfParser < Test::Unit::TestCase
                   RuleAlt.new( [ 
                     Token.new( :symbol, '_bit' ),                              
                     Token.new( :literal, 'begin' ),
-                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :symbol, '_expr_rpt1' ),
                     Token.new( :literal, 'end' )
                   ] )
                 ] ),
-      'expr_rpt1' => Rule.new( [ 
+      '_expr_rpt1' => Rule.new( [ 
                       RuleAlt.new( [ 
                         Token.new( :symbol, '_bit' ),                                 
                         Token.new( :symbol, '_bit' ),                                 
@@ -817,11 +817,11 @@ class TC_AbnfParser < Test::Unit::TestCase
                   RuleAlt.new( [ 
                     Token.new( :symbol, '_digit' ),                              
                     Token.new( :literal, 'begin' ),
-                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :symbol, '_expr_rpt1' ),
                     Token.new( :literal, 'end' )
                   ] )
                 ] ),
-      'expr_rpt1' => Rule.new( [ 
+      '_expr_rpt1' => Rule.new( [ 
                       RuleAlt.new( [ 
                         Token.new( :symbol, '_digit' ),                                 
                         Token.new( :symbol, '_digit' ),                                 
@@ -869,11 +869,11 @@ class TC_AbnfParser < Test::Unit::TestCase
                   RuleAlt.new( [ 
                     Token.new( :literal, "\r" ),                              
                     Token.new( :literal, 'begin' ),
-                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :symbol, '_expr_rpt1' ),
                     Token.new( :literal, 'end' )
                   ] )
                 ] ),
-      'expr_rpt1' => Rule.new( [ 
+      '_expr_rpt1' => Rule.new( [ 
                       RuleAlt.new( [ 
                         Token.new( :literal, "\r" ),                                 
                         Token.new( :literal, "\r" ),                                 
@@ -908,11 +908,11 @@ class TC_AbnfParser < Test::Unit::TestCase
                   RuleAlt.new( [ 
                     Token.new( :literal, "\n" ),                              
                     Token.new( :literal, 'begin' ),
-                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :symbol, '_expr_rpt1' ),
                     Token.new( :literal, 'end' )
                   ] )
                 ] ),
-      'expr_rpt1' => Rule.new( [ 
+      '_expr_rpt1' => Rule.new( [ 
                       RuleAlt.new( [ 
                         Token.new( :literal, "\n" ),                                 
                         Token.new( :literal, "\n" ),                                 
@@ -947,11 +947,11 @@ class TC_AbnfParser < Test::Unit::TestCase
                   RuleAlt.new( [ 
                     Token.new( :literal, "\r\n" ),                              
                     Token.new( :literal, 'begin' ),
-                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :symbol, '_expr_rpt1' ),
                     Token.new( :literal, 'end' )
                   ] )
                 ] ),
-      'expr_rpt1' => Rule.new( [ 
+      '_expr_rpt1' => Rule.new( [ 
                       RuleAlt.new( [ 
                         Token.new( :literal, "\r\n" ),                                 
                         Token.new( :literal, "\r\n" ),                                 
@@ -986,11 +986,11 @@ class TC_AbnfParser < Test::Unit::TestCase
                   RuleAlt.new( [ 
                     Token.new( :literal, " " ),                              
                     Token.new( :literal, 'begin' ),
-                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :symbol, '_expr_rpt1' ),
                     Token.new( :literal, 'end' )
                   ] )
                 ] ),
-      'expr_rpt1' => Rule.new( [ 
+      '_expr_rpt1' => Rule.new( [ 
                       RuleAlt.new( [ 
                         Token.new( :literal, " " ),                                 
                         Token.new( :literal, " " ),                                 
@@ -1023,11 +1023,11 @@ class TC_AbnfParser < Test::Unit::TestCase
                   RuleAlt.new( [ 
                     Token.new( :literal, "\"" ),                              
                     Token.new( :literal, 'begin' ),
-                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :symbol, '_expr_rpt1' ),
                     Token.new( :literal, 'end' )
                   ] )
                 ] ),
-      'expr_rpt1' => Rule.new( [ 
+      '_expr_rpt1' => Rule.new( [ 
                       RuleAlt.new( [ 
                         Token.new( :literal, "\"" ),                                 
                         Token.new( :literal, "\"" ),                                 
@@ -1060,11 +1060,11 @@ class TC_AbnfParser < Test::Unit::TestCase
                   RuleAlt.new( [ 
                     Token.new( :literal, "\t" ),                              
                     Token.new( :literal, 'begin' ),
-                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :symbol, '_expr_rpt1' ),
                     Token.new( :literal, 'end' )
                   ] )
                 ] ),
-      'expr_rpt1' => Rule.new( [ 
+      '_expr_rpt1' => Rule.new( [ 
                       RuleAlt.new( [ 
                         Token.new( :literal, "\t" ),                                 
                         Token.new( :literal, "\t" ),                                 
@@ -1196,11 +1196,11 @@ class TC_AbnfParser < Test::Unit::TestCase
                   RuleAlt.new( [ 
                     Token.new( :symbol, '_wsp' ),                              
                     Token.new( :literal, 'begin' ),
-                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :symbol, '_expr_rpt1' ),
                     Token.new( :literal, 'end' )
                   ] )
                 ] ),
-      'expr_rpt1' => Rule.new( [ 
+      '_expr_rpt1' => Rule.new( [ 
                       RuleAlt.new( [ 
                         Token.new( :symbol, '_wsp' ),                                 
                         Token.new( :symbol, '_wsp' ),                                 

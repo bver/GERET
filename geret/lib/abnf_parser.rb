@@ -132,14 +132,14 @@ module Abnf
     end
 
     def group=( token )
-      name = @stack.last.name + "_grp#{@iv+=1}"
+      name = "_#{@stack.last.name}_grp#{@iv+=1}"
       self.tok = Token.new( :symbol, name ) 
       @stack.push Slot.new( name, Rule.new, :seq_end )
       alt
     end
 
     def opt=( token )
-      name = @stack.last.name + "_opt#{@iv+=1}"
+      name = "_#{@stack.last.name}_opt#{@iv+=1}"
       self.tok = Token.new( :symbol, name ) 
       @stack.push Slot.new( name, Rule.new, :opt_end )
       alt
@@ -185,7 +185,7 @@ module Abnf
       unless @repeat_range.empty?
         raise "Parser: max. allowed number of repetitions exceeded" if @repeat_range.last > 64
         raise "Parser: min>max in repetition" if @repeat_range.first > @repeat_range.last
-        name = @stack.last.name + "_rpt#{@iv+=1}"
+        name = "_#{@stack.last.name}_rpt#{@iv+=1}"
         rule = Rule.new
         for i in @repeat_range.first .. @repeat_range.last
           alt = RuleAlt.new
