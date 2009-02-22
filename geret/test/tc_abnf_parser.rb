@@ -1038,5 +1038,188 @@ class TC_AbnfParser < Test::Unit::TestCase
     assert_equal( grammar, @parser.parse( stream ) )
   end
   
+  def test_repetitions_htab
+   
+    stream = [
+       #expr = SP "begin" 2SP "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :space ),
+       Token.new( :_htab ),        
+       Token.new( :space ),      
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '2' ),
+       Token.new( :_htab ),    
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    grammar = Grammar.new( { 
+      'expr' => Rule.new( [ 
+                  RuleAlt.new( [ 
+                    Token.new( :literal, "\t" ),                              
+                    Token.new( :literal, 'begin' ),
+                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :literal, 'end' )
+                  ] )
+                ] ),
+      'expr_rpt1' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                        Token.new( :literal, "\t" ),                                 
+                        Token.new( :literal, "\t" ),                                 
+                       ] )
+                    ] )                    
+    }, 'expr' )
+
+    assert_equal( grammar, @parser.parse( stream ) )
+  end
+ 
+  def test_repetitions_char
+   
+    stream = [
+       #expr =CHAR 2CHAR
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :_char ),              
+       Token.new( :space ),
+       Token.new( :number, '2' ),
+       Token.new( :_char ),        
+       Token.new( :eof )
+    ]
+
+    rule = Rule.new
+    ( 0x01..0x7F ).each do |i| 
+      data = ''
+      data << i
+      rule.push RuleAlt.new([Token.new(:literal, data)]) 
+    end
+    grammar = @parser.parse( stream ) 
+    assert_equal( rule, grammar['_char'] )
+
+  end
+
+  def test_repetitions_ctl
+   
+    stream = [
+       #expr =CTL 2CTL
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :_ctl ),              
+       Token.new( :space ),
+       Token.new( :number, '2' ),
+       Token.new( :_ctl ),        
+       Token.new( :eof )
+    ]
+
+    rule = Rule.new
+    (0x00..0x1F).each do |i| 
+      data = ''
+      data << i
+      rule.push RuleAlt.new([Token.new(:literal, data )]) 
+    end
+    data = ''
+    data << 0x7F
+    rule.push RuleAlt.new([Token.new(:literal, data)])
+    grammar = @parser.parse( stream ) 
+    assert_equal( rule, grammar['_ctl'] )
+
+  end
+
+  def test_repetitions_vchar
+   
+    stream = [
+       #expr =VCHAR 2VCHAR
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :_vchar ),              
+       Token.new( :space ),
+       Token.new( :number, '2' ),
+       Token.new( :_vchar ),        
+       Token.new( :eof )
+    ]
+
+    rule = Rule.new
+    ( 0x21..0x7E ).each do |i| 
+      data = ''
+      data << i
+      rule.push RuleAlt.new([Token.new(:literal, data)]) 
+    end
+    grammar = @parser.parse( stream ) 
+    assert_equal( rule, grammar['_vchar'] )
+
+  end
+
+  def test_repetitions_octet
+   
+    stream = [
+       #expr =OCTET 2OCTET 
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :_octet ),              
+       Token.new( :space ),
+       Token.new( :number, '2' ),
+       Token.new( :_octet ),        
+       Token.new( :eof )
+    ]
+
+    rule = Rule.new
+    ( 0x00..0xFF ).each do |i| 
+      data = ''
+      data << i
+      rule.push RuleAlt.new([Token.new(:literal, data)]) 
+    end
+    grammar = @parser.parse( stream ) 
+    assert_equal( rule, grammar['_octet'] )
+
+  end
+ 
+  def test_repetitions_wsp
+   
+    stream = [
+       #expr = WSP "begin" 3WSP "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :space ),
+       Token.new( :_wsp ),        
+       Token.new( :space ),      
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '3' ),
+       Token.new( :_wsp ),    
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    grammar = Grammar.new( { 
+      'expr' => Rule.new( [ 
+                  RuleAlt.new( [ 
+                    Token.new( :symbol, '_wsp' ),                              
+                    Token.new( :literal, 'begin' ),
+                    Token.new( :symbol, 'expr_rpt1' ),
+                    Token.new( :literal, 'end' )
+                  ] )
+                ] ),
+      'expr_rpt1' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                        Token.new( :symbol, '_wsp' ),                                 
+                        Token.new( :symbol, '_wsp' ),                                 
+                        Token.new( :symbol, '_wsp' ),                                 
+                       ] )
+                    ] ),
+      '_wsp' => Rule.new( [ 
+                      RuleAlt.new( [ Token.new( :literal, " " ) ] ),
+                      RuleAlt.new( [ Token.new( :literal, "\t" ) ] ), 
+                ] )
+                    
+    }, 'expr' )
+
+    assert_equal( grammar, @parser.parse( stream ) )
+  end
+ 
+  def test_set_repetition_limit
+    #todo
+  end
+ 
 end
 

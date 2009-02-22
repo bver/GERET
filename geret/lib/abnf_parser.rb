@@ -27,11 +27,17 @@ module Abnf
                        :_hexdig => proc {|g,t| g.ranges(t,['0'..'9','A'..'F']); :elements },
                        :_bit => proc {|g,t| g.ranges(t,['0'..'1']); :elements },
                        :_alpha => proc {|g,t| g.ranges(t,['A'..'Z','a'..'z']); :elements },
+                       :_char => proc {|g,t| g.ranges(t,[0x01..0x7F]); :elements },
+                       :_vchar => proc {|g,t| g.ranges(t,[0x21..0x7E]); :elements },                      
+                       :_octet => proc {|g,t| g.ranges(t,[0x00..0xFF]); :elements },
+                       :_ctl => proc {|g,t| g.ranges(t,[0x00..0x1F,0x7F..0x7F]); :elements },
+                       :_wsp => proc {|g,t| g.ranges(t,[' '..' ',"\t".."\t"]); :elements },                      
                        :_cr => proc {|g,t| g.entity="\r"; :elements },
                        :_lf => proc {|g,t| g.entity="\n"; :elements },
                        :_crlf => proc {|g,t| g.entity="\r\n"; :elements },
                        :_sp => proc {|g,t| g.entity=" "; :elements },
                        :_dquote => proc {|g,t| g.entity=%Q("); :elements },
+                       :_htab => proc {|g,t| g.entity="\t"; :elements },
                        :slash =>  proc {|g,t| g.alt; :elements },
                        :newline => proc {|g,t| :next_rule },
                        :seq_begin => proc {|g,t| g.group=t; :elements },
@@ -53,10 +59,16 @@ module Abnf
                         :_hexdig => proc {|g,t| g.ranges(t,['0'..'9','A'..'F']); :elements },
                         :_bit => proc {|g,t| g.ranges(t,['0'..'1']); :elements },
                         :_alpha => proc {|g,t| g.ranges(t,['A'..'Z','a'..'z']); :elements },
+                        :_char => proc {|g,t| g.ranges(t,[0x01..0x7F]); :elements },
+                        :_vchar => proc {|g,t| g.ranges(t,[0x21..0x7E]); :elements },
+                        :_octet => proc {|g,t| g.ranges(t,[0x00..0xFF]); :elements },
+                        :_ctl => proc {|g,t| g.ranges(t,[0x00..0x1F,0x7F..0x7F]); :elements },
+                        :_wsp => proc {|g,t| g.ranges(t,[' '..' ','\t'..'\t']); :elements },
                         :_cr => proc {|g,t| g.entity="\r"; :elements },
                         :_lf => proc {|g,t| g.entity="\n"; :elements },
                         :_crlf => proc {|g,t| g.entity="\r\n"; :elements },
                         :_sp => proc {|g,t| g.entity=" "; :elements },
+                        :_htab => proc {|g,t| g.entity="\t"; :elements },
                         :_dquote => proc {|g,t| g.entity=%Q("); :elements },                       
                         :seq_begin => proc {|g,t| g.group=t; :elements },
                         :space => proc { :rpt_1 },
@@ -150,8 +162,10 @@ module Abnf
         rule = Rule.new 
         ranges.each do |rng|
           rng.each do |i| 
-            alt = RuleAlt.new            
-            alt.push Token.new( :literal, i ) 
+            alt = RuleAlt.new      
+            data = ""
+            data << i
+            alt.push Token.new( :literal, data ) 
             rule.push alt
           end
         end
