@@ -14,8 +14,10 @@ begin
   stream = Abnf::Tokenizer.new.tokenize( input )
   grammar = Abnf::Parser.new.parse( stream )
   
-  undefined = Abnf::Parser.check_symbols grammar
-  raise "#$0: undefined symbols: " + undefined.join(',') unless undefined.empty?
+  undefined = Abnf::Parser.check_undefined grammar
+  puts ";undefined symbols: " + undefined.map{|s| "<#{s}>"}.join(', ') unless undefined.empty?
+  unused = Abnf::Parser.check_unused grammar
+  puts ";unused symbols: " + unused.map{|s| "<#{s}>"}.join(', ') unless unused.empty?
   
   output = Abnf::Renderer.canonical( grammar )
   puts output

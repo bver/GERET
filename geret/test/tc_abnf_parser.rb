@@ -315,7 +315,7 @@ class TC_AbnfParser < Test::Unit::TestCase
 
   def test_undefined_symbol
  
-    assert_equal( [], Parser.check_symbols( @grammar1 ) )
+    assert_equal( [], Parser.check_undefined( @grammar1 ) )
 
     grammar = Grammar.new( { 
       'foo' => Rule.new( [ 
@@ -336,13 +336,46 @@ class TC_AbnfParser < Test::Unit::TestCase
                     ] )
     }, 'foo' )
    
-    undefineds = Parser.check_symbols( grammar )
+    undefineds = Parser.check_undefined( grammar )
  
     assert_equal( 2, undefineds.size )
     assert( undefineds.include?( 'unknown1' ) )
     assert( undefineds.include?( 'unk2'  ) )
 
   end
+
+  def test_unused_symbol
+ 
+    assert_equal( [], Parser.check_unused( @grammar1 ) )
+
+    grammar = Grammar.new( { 
+      'foo' => Rule.new( [ 
+                 RuleAlt.new( [ 
+                    Token.new( :literal, 'one' ),
+                    Token.new( :symbol, 'foo1' ) 
+                 ] )
+               ] ),
+
+      'foo1' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                        Token.new( :literal, 'bar' ) 
+                      ] ),                            
+                    ] ),
+      'bar1' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                        Token.new( :literal, 'bar' ) 
+                      ] ),                            
+                    ] ),
+    }, 'foo' )
+   
+    unused = Parser.check_unused( grammar )
+ 
+    assert_equal( 2, unused.size )
+    assert( unused.include?( 'foo' ) )
+    assert( unused.include?( 'bar1'  ) )
+
+  end
+
 
   def test_already_defined_symbol
   
