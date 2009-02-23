@@ -28,7 +28,7 @@ module Abnf
       @max_repetitions = 100
       @transitions = {
         :start =>    {
-                       :symbol => proc {|g,t| g.rule=t; :equals },
+                       :symbol => proc {|g,t| g.rule=t; g.start_symbol=t.data; :equals },
                        :newline => proc { :start },
                        :comment => proc { :start }
                      },
@@ -80,7 +80,8 @@ module Abnf
                        :entity_hex  => proc {|g,t| g.entity=t.data.hex.chr; :dot },             
                        :entity_bin => proc {|g,t| g.entity=bin2chr(t.data); :dot },
                        :space => proc { :elements },
-                       :eof => proc { |g,t| g.retype=:eof; g.store=t; :stop }
+                       :eof => proc { |g,t| g.retype=:eof; g.store=t; :stop },
+                       :comment => proc { :elements },                     
                  },
         :rpt_1 =>    {
                         :number => proc {|g,t| g.repeat=t.data; :rpt_1 },
@@ -167,6 +168,10 @@ module Abnf
     
     protected
     
+    def start_symbol=(symbol)
+      @gram.start_symbol = symbol
+    end
+
     def rule=( token )
       name = token.data
       raise "Parser: external symbols cannot start with the underscore" if name[0,1] == '_'

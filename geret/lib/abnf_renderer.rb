@@ -6,8 +6,13 @@ module Abnf
   class Renderer
 
     def Renderer.canonical grammar
-      res = ''
-      grammar.each_pair do |name, rule|
+      start = grammar.start_symbol
+      res = ";start symbol is <#{start}>\n"
+      symbols = grammar.keys
+      symbols.delete start
+      symbols.unshift start
+      symbols.each do |name|
+        rule = grammar.fetch name
         rule.each do |alt|
           res += ( name + ' =' )
           res += '/' if alt != rule.first

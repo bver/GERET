@@ -78,7 +78,9 @@ class TC_AbnfParser < Test::Unit::TestCase
       Token.new( :eof )      
     ]
 
-    assert_equal( @grammar1, @parser.parse( stream ) )
+    grammar = @parser.parse( stream )
+    assert_equal( @grammar1, grammar )
+    assert_equal( 'expr', grammar.start_symbol )
 
   end
 
@@ -1317,6 +1319,19 @@ class TC_AbnfParser < Test::Unit::TestCase
 
     assert_equal( grammar, @parser.parse( stream3 ) )
    
+  end
+
+  def test_allow_comments
+    stream1 = [
+      #expr=%d50;ok
+      Token.new( :symbol, 'expr' ),
+      Token.new( :equals ),
+      Token.new( :entity_dec, '50' ), #2
+      Token.new( :comment, 'ok' ), 
+      Token.new( :eof )
+    ]
+
+    @parser.parse( stream1 ) # do not raise
   end
 
   def test_values_concat

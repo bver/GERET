@@ -28,12 +28,13 @@ class TC_AbnfRenderer < Test::Unit::TestCase
     }, 'expr' )
 
     example = <<ABNF_TEXT
-op = "+"
-op =/ "*"
-
+;start symbol is <expr>
 expr = "x"
 expr =/ "y"
 expr =/ "(" expr op expr ")"
+
+op = "+"
+op =/ "*"
 
 ABNF_TEXT
 
