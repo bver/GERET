@@ -1300,6 +1300,23 @@ class TC_AbnfParser < Test::Unit::TestCase
 
     assert_equal( grammar, @parser.parse( stream2 ) )
 
+    stream3 = [
+       #expr = %b110000-110010 "begin" 3%b1100011-1100100 "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :space ),
+       Token.new( :range_bin, '110000-110010' ),        
+       Token.new( :space ),      
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '3' ),
+       Token.new( :range_bin, '1100011-1100100' ),    
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    assert_equal( grammar, @parser.parse( stream3 ) )
+   
   end
 
   def test_values_concat

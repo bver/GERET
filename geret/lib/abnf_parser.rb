@@ -59,8 +59,9 @@ module Abnf
                        :entity_dec  => proc {|g,t| g.entity=t.data.to_i.chr; :dot },
                        :entity_hex  => proc {|g,t| g.entity=t.data.hex.chr; :dot },
                        :entity_bin => proc {|g,t| g.entity=bin2chr(t.data); :dot },
-                       :range_hex => proc {|g,t| g.rng(t) {|v| v.hex}; :elements },
-                       :range_dec => proc {|g,t| g.rng(t) {|v| v.to_i}; :elements },
+                       :range_hex => proc {|g,t| g.rng(t) {|v| v.hex.chr}; :elements },
+                       :range_dec => proc {|g,t| g.rng(t) {|v| v.to_i.chr}; :elements },
+                       :range_bin => proc {|g,t| g.rng(t) {|v| bin2chr v}; :elements },
                        :slash =>  proc {|g,t| g.alt; :elements },
                        :newline => proc {|g,t| :next_rule },
                        :seq_begin => proc {|g,t| g.group=t; :elements },
@@ -106,8 +107,9 @@ module Abnf
                         :entity_dec => proc {|g,t| g.entity=t.data.to_i.chr; :dot },
                         :entity_hex => proc {|g,t| g.entity=t.data.hex.chr; :dot },
                         :entity_bin => proc {|g,t| g.entity=bin2chr(t.data); :dot },
-                        :range_hex => proc {|g,t| g.rng(t) {|v| v.hex}; :elements; },
-                        :range_dec => proc {|g,t| g.rng(t) {|v| v.to_i}; :elements },
+                        :range_hex => proc {|g,t| g.rng(t) {|v| v.hex.chr}; :elements; },
+                        :range_dec => proc {|g,t| g.rng(t) {|v| v.to_i.chr}; :elements },
+                        :range_bin => proc {|g,t| g.rng(t) {|v| bin2chr v}; :elements }
                      },
         :rpt_2 =>    {
                         :number => proc {|g,t| g.repeat=t.data; :elements },
@@ -206,7 +208,7 @@ module Abnf
       rule = Rule.new            
       for i in yield(from) .. yield(to)
         alt = RuleAlt.new
-        alt.push Token.new( :literal, i.chr )
+        alt.push Token.new( :literal, i )
         rule.push alt
       end
       @gram[ name ] = rule     
