@@ -40,24 +40,24 @@ module Abnf
         [ /\A"([^"]*?)"/m, :literal ],
 
         [ /\A%b([01][01\-\.]*)/m, [
+                                   [ /\A([01]+-[01]+)/m, :range_bin ],
                                    [ /\A([01]+)/m, :entity_bin ],
-                                   [ /\A\-/m, :dash ],
                                    [ /\A\./m, :dot ]                            
-                                 ]
+                                  ]
         ],
 
         [ /\A%d([\d][\d\-\.]*)/m, [
+                                   [ /\A(\d+-\d+)/m, :range_dec ], 
                                    [ /\A(\d+)/m, :entity_dec ],
-                                   [ /\A\-/m, :dash ],
                                    [ /\A\./m, :dot ]                            
-                                 ]
+                                  ]
         ],
 
         [ /\A%x([a-fA-F\d][a-fA-F\d\-\.]*)/m, [
+                                               [ /\A([a-fA-F\d]+-[a-fA-F\d]+)/m, :range_hex ],
                                                [ /\A([a-fA-F\d]+)/m, :entity_hex ],
-                                               [ /\A-/m, :dash ],
                                                [ /\A\./m, :dot ]                           
-                                             ]
+                                              ]
         ],
      
         [ /\A(\d+)/m, :number ],

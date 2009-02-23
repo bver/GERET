@@ -838,15 +838,15 @@ class TC_AbnfParser < Test::Unit::TestCase
                     ] ),
       '_digit' => Rule.new( [ 
                       RuleAlt.new( [ Token.new( :literal, '0' ) ] ),
-                      RuleAlt.new( [    Token.new( :literal, '1' ) ] ), 
-                      RuleAlt.new( [    Token.new( :literal, '2' ) ] ), 
-                      RuleAlt.new( [    Token.new( :literal, '3' ) ] ), 
-                      RuleAlt.new( [    Token.new( :literal, '4' ) ] ), 
-                      RuleAlt.new( [    Token.new( :literal, '5' ) ] ), 
-                      RuleAlt.new( [    Token.new( :literal, '6' ) ] ), 
-                      RuleAlt.new( [    Token.new( :literal, '7' ) ] ), 
-                      RuleAlt.new( [    Token.new( :literal, '8' ) ] ), 
-                      RuleAlt.new( [    Token.new( :literal, '9' ) ] )
+                      RuleAlt.new( [ Token.new( :literal, '1' ) ] ), 
+                      RuleAlt.new( [ Token.new( :literal, '2' ) ] ), 
+                      RuleAlt.new( [ Token.new( :literal, '3' ) ] ), 
+                      RuleAlt.new( [ Token.new( :literal, '4' ) ] ), 
+                      RuleAlt.new( [ Token.new( :literal, '5' ) ] ), 
+                      RuleAlt.new( [ Token.new( :literal, '6' ) ] ), 
+                      RuleAlt.new( [ Token.new( :literal, '7' ) ] ), 
+                      RuleAlt.new( [ Token.new( :literal, '8' ) ] ), 
+                      RuleAlt.new( [ Token.new( :literal, '9' ) ] )
                   ] )
                     
     }, 'expr' )
@@ -959,13 +959,13 @@ class TC_AbnfParser < Test::Unit::TestCase
                   ] )
                 ] ),
       '_expr_rpt1' => Rule.new( [ 
-                      RuleAlt.new( [ 
-                        Token.new( :literal, "\r\n" ),                                 
-                        Token.new( :literal, "\r\n" ),                                 
-                        Token.new( :literal, "\r\n" ),                                 
-                        Token.new( :literal, "\r\n" ),                                 
-                       ] )
-                    ] )                    
+                        RuleAlt.new( [ 
+                          Token.new( :literal, "\r\n" ),                                 
+                          Token.new( :literal, "\r\n" ),                                 
+                          Token.new( :literal, "\r\n" ),                                 
+                          Token.new( :literal, "\r\n" ),                                 
+                        ] )
+                      ] )                    
     }, 'expr' )
 
     assert_equal( grammar, @parser.parse( stream ) )
@@ -998,11 +998,11 @@ class TC_AbnfParser < Test::Unit::TestCase
                   ] )
                 ] ),
       '_expr_rpt1' => Rule.new( [ 
-                      RuleAlt.new( [ 
-                        Token.new( :literal, " " ),                                 
-                        Token.new( :literal, " " ),                                 
-                       ] )
-                    ] )                    
+                        RuleAlt.new( [ 
+                          Token.new( :literal, " " ),                                 
+                          Token.new( :literal, " " ),                                 
+                        ] )
+                      ] )                    
     }, 'expr' )
 
     assert_equal( grammar, @parser.parse( stream ) )
@@ -1035,11 +1035,11 @@ class TC_AbnfParser < Test::Unit::TestCase
                   ] )
                 ] ),
       '_expr_rpt1' => Rule.new( [ 
-                      RuleAlt.new( [ 
-                        Token.new( :literal, "\"" ),                                 
-                        Token.new( :literal, "\"" ),                                 
-                       ] )
-                    ] )                    
+                        RuleAlt.new( [ 
+                          Token.new( :literal, "\"" ),                                 
+                          Token.new( :literal, "\"" ),                                 
+                        ] )
+                      ] )                    
     }, 'expr' )
 
     assert_equal( grammar, @parser.parse( stream ) )
@@ -1072,11 +1072,11 @@ class TC_AbnfParser < Test::Unit::TestCase
                   ] )
                 ] ),
       '_expr_rpt1' => Rule.new( [ 
-                      RuleAlt.new( [ 
-                        Token.new( :literal, "\t" ),                                 
-                        Token.new( :literal, "\t" ),                                 
-                       ] )
-                    ] )                    
+                        RuleAlt.new( [ 
+                          Token.new( :literal, "\t" ),                                 
+                          Token.new( :literal, "\t" ),                                 
+                        ] )
+                      ] )                    
     }, 'expr' )
 
     assert_equal( grammar, @parser.parse( stream ) )
@@ -1208,12 +1208,12 @@ class TC_AbnfParser < Test::Unit::TestCase
                   ] )
                 ] ),
       '_expr_rpt1' => Rule.new( [ 
-                      RuleAlt.new( [ 
-                        Token.new( :symbol, '_wsp' ),                                 
-                        Token.new( :symbol, '_wsp' ),                                 
-                        Token.new( :symbol, '_wsp' ),                                 
-                       ] )
-                    ] ),
+                        RuleAlt.new( [ 
+                          Token.new( :symbol, '_wsp' ),                                 
+                          Token.new( :symbol, '_wsp' ),                                 
+                          Token.new( :symbol, '_wsp' ),                                 
+                        ] )
+                      ] ),
       '_wsp' => Rule.new( [ 
                       RuleAlt.new( [ Token.new( :literal, " " ) ] ),
                       RuleAlt.new( [ Token.new( :literal, "\t" ) ] ), 
@@ -1237,16 +1237,51 @@ class TC_AbnfParser < Test::Unit::TestCase
     assert_equal( "Parser: external symbols cannot start with the underscore", exception.message )
   end
 
-  def test_repetition_binary_range
-    #todo
-  end
+  def test_repetition_hexadecimal_binary_decimal_range
+   
+    stream = [
+       #expr = %x30-32 "begin" 3%63-64 "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :space ),
+       Token.new( :range_hex, '30-32' ),        
+       Token.new( :space ),      
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '3' ),
+       Token.new( :range_hex, '63-64' ),    
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
 
-  def test_repetition_decimal_range
-    #todo
-  end
+    grammar = Grammar.new( { 
+      'expr' => Rule.new( [ 
+                  RuleAlt.new( [ 
+                    Token.new( :symbol, '_expr_rng1' ),                              
+                    Token.new( :literal, 'begin' ),
+                    Token.new( :symbol, '_expr_rpt3' ),
+                    Token.new( :literal, 'end' )
+                  ] )
+                ] ),
+      '_expr_rng1' => Rule.new( [ 
+                        RuleAlt.new( [ Token.new( :literal, '0' ) ] ),
+                        RuleAlt.new( [ Token.new( :literal, '1' ) ] ),                              
+                        RuleAlt.new( [ Token.new( :literal, '2' ) ] ), 
+                      ] ),
+      '_expr_rng2' => Rule.new( [ 
+                        RuleAlt.new( [ Token.new( :literal, 'c' ) ] ),
+                        RuleAlt.new( [ Token.new( :literal, 'd' ) ] ),                              
+                      ] ),
+      '_expr_rpt3' => Rule.new( [ 
+                        RuleAlt.new( [ 
+                          Token.new( :symbol, '_expr_rng2' ),
+                          Token.new( :symbol, '_expr_rng2' ),
+                          Token.new( :symbol, '_expr_rng2' )
+                        ] ),
+                      ] )
+    }, 'expr' )
 
-  def test_repetition_hexadecimal_range
-    #todo
+    assert_equal( grammar, @parser.parse( stream ) )
   end
 
   def test_values_concat

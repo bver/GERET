@@ -59,6 +59,7 @@ module Abnf
                        :entity_dec  => proc {|g,t| g.entity=t.data.to_i.chr; :dot },
                        :entity_hex  => proc {|g,t| g.entity=t.data.hex.chr; :dot },
                        :entity_bin => proc {|g,t| g.entity=bin2chr(t.data); :dot },
+                       :range_hex => proc {|g,t| g.rng=t; :elements },
                        :slash =>  proc {|g,t| g.alt; :elements },
                        :newline => proc {|g,t| :next_rule },
                        :seq_begin => proc {|g,t| g.group=t; :elements },
@@ -103,7 +104,8 @@ module Abnf
                         :space => proc { :rpt_1 },
                         :entity_dec => proc {|g,t| g.entity=t.data.to_i.chr; :dot },
                         :entity_hex => proc {|g,t| g.entity=t.data.hex.chr; :dot },
-                        :entity_bin => proc {|g,t| g.entity=bin2chr(t.data); :dot }
+                        :entity_bin => proc {|g,t| g.entity=bin2chr(t.data); :dot },
+                        :range_hex => proc {|g,t| g.rng=t; :elements },
                      },
         :rpt_2 =>    {
                         :number => proc {|g,t| g.repeat=t.data; :elements },
@@ -196,6 +198,19 @@ module Abnf
       @repeat_range.push data.to_i 
     end
 
+    def rng=( token )
+      name = "_#{@stack.last.name}_rng#{@iv+=1}"   
+      from,to = token.data.split '-'
+      rule = Rule.new            
+      for i in from.hex .. to.hex
+        alt = RuleAlt.new
+        alt.push Token.new( :literal, i.chr )
+        rule.push alt
+      end
+      @gram[ name ] = rule     
+      self.tok = Token.new( :symbol, name )      
+    end
+
     def ranges( token, ranges )
       name = token.type.to_s
 
@@ -204,9 +219,7 @@ module Abnf
         ranges.each do |rng|
           rng.each do |i| 
             alt = RuleAlt.new      
-            data = ""
-            data << i
-            alt.push Token.new( :literal, data ) 
+            alt.push Token.new( :literal, ""<<i ) 
             rule.push alt
           end
         end
