@@ -10,7 +10,7 @@ module Abnf
   #
   # 1. Variable repetitions (Chapter 3.6.) have limited maximal number of occurences (ie the <b>
   # decimal value in the original specification).
-  # Thus, parsing expressions *30000 HTAB, 3*CHAR or *SP terminates with an exception. 
+  # Thus, parsing expressions 30000 HTAB, 3*CHAR or *SP terminates with an exception. 
   # This limit is controlled by the Parser#max_repetitions attribute. 
   #
   # 2. The core rule LWSP (Appendix B.1) is not implemented, for the same reason (there is 
@@ -56,6 +56,7 @@ module Abnf
                        :_sp => proc {|g,t| g.entity=" "; :elements },
                        :_dquote => proc {|g,t| g.entity=%Q("); :elements },
                        :_htab => proc {|g,t| g.entity="\t"; :elements },
+                       :entity_dec  => proc {|g,t| g.entity=""<<t.data.to_i; :dot },
                        :slash =>  proc {|g,t| g.alt; :elements },
                        :newline => proc {|g,t| :next_rule },
                        :seq_begin => proc {|g,t| g.group=t; :elements },
@@ -68,6 +69,12 @@ module Abnf
                        :asterisk => proc { |g,t| g.repeat=0; :rpt_2 },
                        :eof => proc { |g,t| g.retype=:eof; g.store=t; :stop }                    
                      },
+        :dot =>  {
+                       :dot => proc { :elements },
+                       :entity_dec => proc {|g,t| g.entity=""<<t.data.to_i; :dot },
+                       :space => proc { :elements },
+                       :eof => proc { |g,t| g.retype=:eof; g.store=t; :stop }
+                 },
         :rpt_1 =>    {
                         :number => proc {|g,t| g.repeat=t.data; :rpt_1 },
                         :asterisk => proc { :rpt_2 },
@@ -90,6 +97,7 @@ module Abnf
                         :_dquote => proc {|g,t| g.entity=%Q("); :elements },                       
                         :seq_begin => proc {|g,t| g.group=t; :elements },
                         :space => proc { :rpt_1 },
+                        :entity_dec  => proc {|g,t| g.entity=""<<t.data.to_i; :dot },
                      },
         :rpt_2 =>    {
                         :number => proc {|g,t| g.repeat=t.data; :elements },

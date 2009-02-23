@@ -1250,7 +1250,39 @@ class TC_AbnfParser < Test::Unit::TestCase
   end
 
   def test_decimal_concat
-    #todo   
+    stream = [
+      #expr=%d50.49.48 2%d115
+      Token.new( :symbol, 'expr' ),
+      Token.new( :equals ),
+      Token.new( :entity_dec, '50' ), #2
+      Token.new( :dot ), 
+      Token.new( :entity_dec, '49' ), #1
+      Token.new( :dot ),
+      Token.new( :entity_dec, '48' ), #0   
+      Token.new( :space ),
+      Token.new( :number, '2' ),
+      Token.new( :entity_dec, '115' ), #c 
+      Token.new( :eof )
+    ]
+
+    grammar = Grammar.new( { 
+      'expr' => Rule.new( [ 
+                  RuleAlt.new( [ 
+                    Token.new( :literal, '2' ),
+                    Token.new( :literal, '1' ),
+                    Token.new( :literal, '0' ),
+                    Token.new( :symbol, '_expr_rpt1' ),
+                  ] )
+                ] ),
+     '_expr_rpt1' => Rule.new( [ 
+                      RuleAlt.new( [                    
+                    Token.new( :literal, 's' ),                   
+                    Token.new( :literal, 's' )                   
+                  ] )
+                ] )
+    }, 'expr' )
+
+    assert_equal( grammar, @parser.parse( stream ) )
   end
 
   def test_repetition_hexadecimal_range
