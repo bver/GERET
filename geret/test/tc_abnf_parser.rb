@@ -1240,7 +1240,7 @@ class TC_AbnfParser < Test::Unit::TestCase
   def test_repetition_hexadecimal_binary_decimal_range
    
     stream = [
-       #expr = %x30-32 "begin" 3%63-64 "end"
+       #expr = %x30-32 "begin" 3%x63-64 "end"
        Token.new( :symbol, 'expr' ),
        Token.new( :equals ),
        Token.new( :space ),
@@ -1282,6 +1282,24 @@ class TC_AbnfParser < Test::Unit::TestCase
     }, 'expr' )
 
     assert_equal( grammar, @parser.parse( stream ) )
+
+    stream2 = [
+       #expr = %d48-50 "begin" 3%d99-100 "end"
+       Token.new( :symbol, 'expr' ),
+       Token.new( :equals ),
+       Token.new( :space ),
+       Token.new( :range_dec, '48-50' ),        
+       Token.new( :space ),      
+       Token.new( :literal, 'begin' ),
+       Token.new( :space ),
+       Token.new( :number, '3' ),
+       Token.new( :range_dec, '99-100' ),    
+       Token.new( :literal, 'end' ),
+       Token.new( :eof )
+    ]
+
+    assert_equal( grammar, @parser.parse( stream2 ) )
+
   end
 
   def test_values_concat

@@ -59,7 +59,8 @@ module Abnf
                        :entity_dec  => proc {|g,t| g.entity=t.data.to_i.chr; :dot },
                        :entity_hex  => proc {|g,t| g.entity=t.data.hex.chr; :dot },
                        :entity_bin => proc {|g,t| g.entity=bin2chr(t.data); :dot },
-                       :range_hex => proc {|g,t| g.rng=t; :elements },
+                       :range_hex => proc {|g,t| g.rng(t) {|v| v.hex}; :elements },
+                       :range_dec => proc {|g,t| g.rng(t) {|v| v.to_i}; :elements },
                        :slash =>  proc {|g,t| g.alt; :elements },
                        :newline => proc {|g,t| :next_rule },
                        :seq_begin => proc {|g,t| g.group=t; :elements },
@@ -105,7 +106,8 @@ module Abnf
                         :entity_dec => proc {|g,t| g.entity=t.data.to_i.chr; :dot },
                         :entity_hex => proc {|g,t| g.entity=t.data.hex.chr; :dot },
                         :entity_bin => proc {|g,t| g.entity=bin2chr(t.data); :dot },
-                        :range_hex => proc {|g,t| g.rng=t; :elements },
+                        :range_hex => proc {|g,t| g.rng(t) {|v| v.hex}; :elements; },
+                        :range_dec => proc {|g,t| g.rng(t) {|v| v.to_i}; :elements },
                      },
         :rpt_2 =>    {
                         :number => proc {|g,t| g.repeat=t.data; :elements },
@@ -198,11 +200,11 @@ module Abnf
       @repeat_range.push data.to_i 
     end
 
-    def rng=( token )
+    def rng( token )
       name = "_#{@stack.last.name}_rng#{@iv+=1}"   
       from,to = token.data.split '-'
       rule = Rule.new            
-      for i in from.hex .. to.hex
+      for i in yield(from) .. yield(to)
         alt = RuleAlt.new
         alt.push Token.new( :literal, i.chr )
         rule.push alt
