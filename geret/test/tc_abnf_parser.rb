@@ -1241,16 +1241,16 @@ class TC_AbnfParser < Test::Unit::TestCase
     #todo
   end
 
-  def test_binary_concat
-    #todo   
-  end
-
   def test_repetition_decimal_range
     #todo
   end
 
-  def test_decimal_concat
-    stream = [
+  def test_repetition_hexadecimal_range
+    #todo
+  end
+
+  def test_values_concat
+    stream1 = [
       #expr=%d50.49.48 2%d115
       Token.new( :symbol, 'expr' ),
       Token.new( :equals ),
@@ -1282,16 +1282,43 @@ class TC_AbnfParser < Test::Unit::TestCase
                 ] )
     }, 'expr' )
 
-    assert_equal( grammar, @parser.parse( stream ) )
+    assert_equal( grammar, @parser.parse( stream1 ) )
+
+    stream2 = [
+      #expr=%h32.31.30 2%h73
+      Token.new( :symbol, 'expr' ),
+      Token.new( :equals ),
+      Token.new( :entity_hex, '32' ), #2
+      Token.new( :dot ), 
+      Token.new( :entity_hex, '31' ), #1
+      Token.new( :dot ),
+      Token.new( :entity_hex, '30' ), #0   
+      Token.new( :space ),
+      Token.new( :number, '2' ),
+      Token.new( :entity_hex, '73' ), #c 
+      Token.new( :eof )
+    ]
+
+    assert_equal( grammar, @parser.parse( stream2 ) )
+
+    stream3 = [
+      #expr=%b110010.110001.110000 2%b1110011
+      Token.new( :symbol, 'expr' ),
+      Token.new( :equals ),
+      Token.new( :entity_bin, '110010' ), #2
+      Token.new( :dot ), 
+      Token.new( :entity_bin, '110001' ), #1
+      Token.new( :dot ),
+      Token.new( :entity_bin, '110000' ), #0   
+      Token.new( :space ),
+      Token.new( :number, '2' ),
+      Token.new( :entity_bin, '1110011' ), #c 
+      Token.new( :eof )
+    ]
+
+    assert_equal( grammar, @parser.parse( stream3 ) )
+   
   end
 
-  def test_repetition_hexadecimal_range
-    #todo
-  end
-
-  def test_hexadecimal_concat
-    #todo   
-  end
-  
 end
 
