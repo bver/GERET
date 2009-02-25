@@ -8,11 +8,12 @@ module Mapper
       @grammar = Grammar.new grammar
     end
   
-    attr_reader :grammar
+    attr_reader :grammar, :used_length
 
     def phenotype genome
       tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
-      
+      @used_length = 0
+
       until ( selected_indices = find_nonterminals( tokens ) ).empty?
         selected_index, genome = pick_locus( selected_indices, genome )
         return nil if genome.nil?       
@@ -27,10 +28,12 @@ module Mapper
     end
   
   protected
+
     def pick_rule( symbol, genome )
       return nil, nil if genome.empty?
       rule = @grammar.fetch(symbol)
-      poly = polymorphism( symbol, genome.shift )
+      poly = polymorphism( symbol, genome.at(@used_length) )
+      @used_length+=1
       alt_index = poly.divmod( rule.size ).last 
       rule_alt = rule[ alt_index ]
       return rule_alt.deep_copy, genome
@@ -79,7 +82,8 @@ module Mapper
   protected   
     def pick_locus( selected_indices, genome )
       return nil, nil if genome.empty?     
-      index = genome.shift.divmod( selected_indices.size ).last    
+      index = genome.at(@used_length).divmod( selected_indices.size ).last    
+      @used_length+=1
       return selected_indices[index], genome     
     end
   end
