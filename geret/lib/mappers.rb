@@ -63,7 +63,7 @@ module Mapper
     end
 
     def polymorphism( symbol, value )
-      init_bucket if @bucket.nil?
+      init_bucket unless defined? @bucket
       value.divmod( @bucket[symbol] ).first
     end
   end
@@ -126,4 +126,17 @@ module Mapper
     include PolyIntrinsic 
   end
 
+  class DepthBucket < Base
+    include LocusFirst
+    include ExtendDepth
+    include PolyBucket 
+  end
+
+  class BreadthBucket < Base
+    include LocusFirst
+    include ExtendBreadth
+    include PolyBucket 
+  end
+
+ 
 end # Mapper
