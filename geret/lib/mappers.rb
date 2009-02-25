@@ -15,11 +15,9 @@ module Mapper
       @used_length = 0
 
       until ( selected_indices = find_nonterminals( tokens ) ).empty?
-        selected_index, genome = pick_locus( selected_indices, genome )
-        return nil if genome.nil?       
+        selected_index = pick_locus( selected_indices, genome )
         selected = tokens[selected_index]
-        expansion, genome = pick_rule( selected.data, genome )
-        return nil if genome.nil?
+        expansion = pick_rule( selected.data, genome )
         expansion.each { |t| t.depth = selected.depth+1 }
         tokens[selected_index,1] = expansion
       end
@@ -29,14 +27,18 @@ module Mapper
   
   protected
 
+    def read_genome genome
+      index = @used_length
+      @used_length+=1     
+      genome.at( index )
+    end
+
     def pick_rule( symbol, genome )
-      return nil, nil if genome.empty?
       rule = @grammar.fetch(symbol)
-      poly = polymorphism( symbol, genome.at(@used_length) )
-      @used_length+=1
+      poly = polymorphism( symbol, read_genome(genome) )
       alt_index = poly.divmod( rule.size ).last 
       rule_alt = rule[ alt_index ]
-      return rule_alt.deep_copy, genome
+      rule_alt.deep_copy
     end
 
     def find_nonterminals_by_depth( tokens, depth )
@@ -74,17 +76,15 @@ module Mapper
   module LocusFirst
   protected   
     def pick_locus( selected_indices, genome )
-      return selected_indices.first, genome 
+      selected_indices.first 
     end
   end
 
   module LocusGenetic
   protected   
     def pick_locus( selected_indices, genome )
-      return nil, nil if genome.empty?     
-      index = genome.at(@used_length).divmod( selected_indices.size ).last    
-      @used_length+=1
-      return selected_indices[index], genome     
+      index = read_genome(genome).divmod( selected_indices.size ).last    
+      selected_indices[index]     
     end
   end
 

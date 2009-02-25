@@ -109,7 +109,7 @@ class TC_Mappers < Test::Unit::TestCase
    
   end
 
-  def test_Breath_bucket
+  def test_breath_bucket
     m = Mapper::BreadthBucket.new @grammar
 
     assert_equal( @grammar, m.grammar )
