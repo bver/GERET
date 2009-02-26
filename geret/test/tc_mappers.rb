@@ -125,5 +125,30 @@ class TC_Mappers < Test::Unit::TestCase
    
   end
 
+  def test_failing
+    m = Mapper::BreadthFirst.new @grammar
+    genotype1 = [2, 2, 0, 0]
+    genotype2 = [2, 1, 0, 2, 0]
+
+    assert_equal( 1, m.wraps_to_fail ) #default value
+
+    assert_equal( nil, m.phenotype( genotype1 ) ) 
+    assert_equal( genotype1.size * m.wraps_to_fail, m.used_length )
+    assert_equal( nil, m.phenotype( genotype2 ) ) 
+    assert_equal( genotype2.size * m.wraps_to_fail, m.used_length )
+
+    m.wraps_to_fail = 2
+    assert_equal( 2, m.wraps_to_fail )
+    assert_equal( nil, m.phenotype( genotype1 ) ) 
+    assert_equal( genotype1.size * m.wraps_to_fail, m.used_length )
+    assert_equal( '(y +(x +y))', m.phenotype( genotype2 ) ) 
+    assert_equal( 7, m.used_length ) # as if [2, 1, 0, 2, 0,   2, 1]
+
+    m2 = Mapper::BreadthFirst.new( @grammar, 20 )
+    assert_equal( 20, m2.wraps_to_fail )
+ 
+    m2 = Mapper::BreadthFirst.new( @grammar, wraps_to_fail=30 )
+    assert_equal( 30, m2.wraps_to_fail )
+  end
 end
 

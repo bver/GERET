@@ -4,20 +4,26 @@ require 'lib/mapper_types'
 module Mapper
 
   class Base
-    def initialize grammar
+    def initialize( grammar, wraps_to_fail=1 )
       @grammar = Grammar.new grammar
+      @wraps_to_fail = wraps_to_fail
     end
   
     attr_reader :grammar, :used_length
+    attr_accessor :wraps_to_fail
 
     def phenotype genome
       tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
       @used_length = 0
 
       until ( selected_indices = find_nonterminals( tokens ) ).empty?
+
         selected_index = pick_locus( selected_indices, genome )
         selected = tokens[selected_index]
+
+        return nil if enough_wrapping genome
         expansion = pick_rule( selected.data, genome )
+
         expansion.each { |t| t.depth = selected.depth+1 }
         tokens[selected_index,1] = expansion
       end
@@ -27,9 +33,17 @@ module Mapper
   
   protected
 
+    def enough_wrapping genome
+      if @used_length > @wraps_to_fail*genome.size
+        @used_length -= 1
+        return true
+      end
+      false
+    end
+    
     def read_genome genome
-      index = @used_length
-      @used_length+=1     
+      index = @used_length.divmod( genome.size ).last
+      @used_length += 1     
       genome.at( index )
     end
 
