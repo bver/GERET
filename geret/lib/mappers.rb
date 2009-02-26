@@ -19,12 +19,12 @@ module Mapper
       until ( selected_indices = find_nonterminals( tokens ) ).empty?
 
         selected_index = pick_locus( selected_indices, genome )
-        selected = tokens[selected_index]
+        selected_token = tokens[selected_index]
 
         return nil if enough_wrapping genome
-        expansion = pick_rule( selected.data, genome )
+        expansion = pick_rule( selected_token.data, genome )
 
-        expansion.each { |t| t.depth = selected.depth+1 }
+        expansion.each { |t| t.depth = selected_token.depth+1 }
         tokens[selected_index,1] = expansion
       end
 
@@ -49,8 +49,8 @@ module Mapper
 
     def pick_rule( symbol, genome )
       rule = @grammar.fetch(symbol)
-      poly = polymorphism( symbol, read_genome(genome) )
-      alt_index = poly.divmod( rule.size ).last 
+      alt_index = polymorphism( symbol, read_genome(genome) )
+      alt_index = alt_index.divmod( rule.size ).last 
       rule_alt = rule[ alt_index ]
       rule_alt.deep_copy
     end

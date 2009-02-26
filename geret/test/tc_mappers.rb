@@ -142,7 +142,7 @@ class TC_Mappers < Test::Unit::TestCase
     assert_equal( nil, m.phenotype( genotype1 ) ) 
     assert_equal( genotype1.size * m.wraps_to_fail, m.used_length )
     assert_equal( '(y +(x +y))', m.phenotype( genotype2 ) ) 
-    assert_equal( 7, m.used_length ) # as if [2, 1, 0, 2, 0,   2, 1]
+    assert_equal( 7, m.used_length )
 
     m2 = Mapper::BreadthFirst.new( @grammar, 20 )
     assert_equal( 20, m2.wraps_to_fail )
