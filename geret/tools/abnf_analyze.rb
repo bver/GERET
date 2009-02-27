@@ -2,7 +2,6 @@
 
 require 'lib/abnf_parser'
 require 'lib/abnf_tokenizer'
-require 'lib/abnf_renderer'
 
 ###
 
@@ -13,8 +12,12 @@ begin
   input = IO.read( ARGV[0] )
   stream = Abnf::Tokenizer.new.tokenize( input )
   grammar = Abnf::Parser.new.parse( stream )
-  output = Abnf::Renderer.canonical( grammar )
-  puts output
+  
+  puts "start symbol: <#{grammar.start_symbol}>"
+  undefined = Mapper::Grammar.check_undefined grammar
+  puts "undefined symbols: " + undefined.map{|s| "<#{s}>"}.join(', ')
+  unused = Mapper::Grammar.check_unused grammar
+  puts "not referenced symbols: " + unused.map{|s| "<#{s}>"}.join(', ')
 
 rescue => msg
   abort msg

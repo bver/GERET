@@ -1,0 +1,11 @@
+;start symbol
+start-symbol = <foo> [bar] (foo2 bar)
+
+foo          = 2*4DIGIT / 2VCHAR / 5CHAR ["-" *3HEXDIG] *4HTAB
+foo          =/ 1*5(DIGIT/ALPHA) CR LF ; some comment
+
+   ;comment
+<bar> =  %d13.10.33 %x0D / %x3f-aB %b100101;wp =100
+bar =/ DQUOTE WSP OCTET CTL CRLF BIT;
+
+foo2 = "text" foo "text1" "" SP "text3" 
