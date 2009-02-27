@@ -12,10 +12,10 @@ class TC_Mappers < Test::Unit::TestCase
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'y' ) ] ),
                   Mapper::RuleAlt.new( [ 
                     Mapper::Token.new( :literal, '(' ), 
-                    Mapper::Token.new( :symbol, 'expr' ),
+                    Mapper::Token.new( :symbol, 'expr', 42 ),
                     Mapper::Token.new( :literal, ' ' ),                   
-                    Mapper::Token.new( :symbol, 'op' ),                  
-                    Mapper::Token.new( :symbol, 'expr' ),                   
+                    Mapper::Token.new( :symbol, 'op', 4 ),                  
+                    Mapper::Token.new( :symbol, 'expr', 12 ),                   
                     Mapper::Token.new( :literal, ')' ) 
                   ] )
                 ] ),

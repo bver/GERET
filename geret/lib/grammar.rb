@@ -5,6 +5,7 @@ module Mapper
   
   class Grammar < Hash
     def initialize( src=nil, start=nil )
+      super()
       update src unless src.nil?
 
       if start.nil? 
@@ -12,6 +13,13 @@ module Mapper
       else
         @start_symbol = start
       end
+    end
+
+    def deep_copy
+      copy = Grammar.new
+      copy.start_symbol = String.new @start_symbol
+      each_pair {|symb, alt| copy[symb] = alt.deep_copy }
+      copy 
     end
 
     attr_accessor :start_symbol
@@ -57,12 +65,15 @@ module Mapper
     end   
   end
 
-  class Rule < Array
-  end
-
   class RuleAlt < Array
     def deep_copy
-      map {|t| Token.new(t.type,t.data) } 
+      map {|t| Token.new( t.type, t.data, t.depth ) } 
+    end
+  end
+ 
+  class Rule < Array
+    def deep_copy
+      map {|r| r.deep_copy } 
     end
   end
 

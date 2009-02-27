@@ -23,7 +23,6 @@ module Mapper
 
         return nil if enough_wrapping genome
         expansion = pick_rule( selected_token.data, genome )
-
         expansion.each { |t| t.depth = selected_token.depth+1 }
         tokens[selected_index,1] = expansion
       end
