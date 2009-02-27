@@ -16,8 +16,7 @@ module Mapper
     end
 
     def deep_copy
-      copy = Grammar.new
-      copy.start_symbol = String.new @start_symbol
+      copy = Grammar.new( nil, @start_symbol )
       each_pair {|symb, alt| copy[symb] = alt.deep_copy }
       copy 
     end
