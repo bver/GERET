@@ -2,6 +2,7 @@
 
 require 'test/tc_random'
 require 'test/tc_setting'
+require 'test/tc_grammar'
 require 'test/tc_abnf_tokenizer'
 require 'test/tc_abnf_parser'
 require 'test/tc_abnf_renderer'

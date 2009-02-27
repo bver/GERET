@@ -28,12 +28,6 @@ class TC_Mappers < Test::Unit::TestCase
 
   end
 
-  def test_trivia
-    assert_equal( 'expr', @grammar.start_symbol )
-    @grammar.start_symbol = 'op'
-    assert_equal( 'op', @grammar.start_symbol )
-  end
-
   def test_depth_first
     m = Mapper::DepthFirst.new @grammar
 
