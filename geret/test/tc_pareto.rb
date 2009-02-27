@@ -27,6 +27,11 @@ class BasicPair < Struct.new( :up, :down )
   Pareto.objective :BasicPair, :up, :maximize 
 end
 
+class SingleProcMin < Struct.new( :data )
+  include Pareto
+  Pareto.objective :SingleProcMin, :data, proc { |one,two| two.size <=> one.size }
+end
+
 class TC_Pareto < Test::Unit::TestCase
 
   def test_basic_max
@@ -88,6 +93,19 @@ class TC_Pareto < Test::Unit::TestCase
     assert_equal( 0, i5 <=> i4 )
     assert_equal( 0, i4 <=> i5 )
  
+  end
+
+  def test_proc_min
+    
+    i1 = SingleProcMin.new [1,3,0,5]
+    i2 = SingleProcMin.new [nil, '', 'ok', nil]
+    i3 = SingleProcMin.new [1000,"2000"]  
+
+    assert_equal( 0, i1 <=> i2 )
+    assert_equal( 0, i2 <=> i1 )
+    assert_equal( -1, i2 <=> i3 )
+    assert_equal( 1, i3 <=> i2 )
+  
   end
  
 end
