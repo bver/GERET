@@ -1,5 +1,6 @@
 
-require 'lib/mapper_types'
+require 'lib/grammar'
+
 include Mapper
 
 module Abnf
