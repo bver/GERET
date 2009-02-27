@@ -2,6 +2,7 @@
 
 require 'lib/abnf_parser'
 require 'lib/abnf_tokenizer'
+require 'lib/validator'
 
 ###
 
@@ -14,9 +15,9 @@ begin
   grammar = Abnf::Parser.new.parse( stream )
   
   puts "start symbol: <#{grammar.start_symbol}>"
-  undefined = Mapper::Grammar.check_undefined grammar
+  undefined = Mapper::Validator.check_undefined grammar
   puts "undefined symbols: " + undefined.map{|s| "<#{s}>"}.join(', ')
-  unused = Mapper::Grammar.check_unused grammar
+  unused = Mapper::Validator.check_unused grammar
   puts "not referenced symbols: " + unused.map{|s| "<#{s}>"}.join(', ')
 
 rescue => msg
