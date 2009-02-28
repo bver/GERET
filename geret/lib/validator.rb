@@ -1,4 +1,6 @@
 
+require 'lib/grammar'
+
 module Mapper
 
   class Validator
@@ -43,6 +45,17 @@ module Mapper
       end
       undefs
     end   
+
+    def Validator.analyze_recursivity grammar
+      gram = grammar.deep_copy
+
+      gram.each_value do |rule|
+        rule.recursivity = :infinite
+        rule.each { |alt| alt.recursivity = :infinite }
+      end
+
+      gram
+    end
 
   end
 

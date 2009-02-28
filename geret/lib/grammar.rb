@@ -26,15 +26,31 @@ module Mapper
   end
 
   class RuleAlt < Array
+    def initialize( ary=nil, recursive=nil )
+      super ary unless ary.nil? 
+      @recursivity = recursive
+    end 
+
     def deep_copy
-      map {|t| Token.new( t.type, t.data, t.depth ) } 
+      alt = map {|t| Token.new( t.type, t.data, t.depth ) } 
+      RuleAlt.new( alt, @recursivity )
     end
+
+    attr_accessor :recursivity
   end
  
   class Rule < Array
+    def initialize( ary=nil, recursive=nil )
+      super ary unless ary.nil?
+      @recursivity = recursive
+    end 
+
     def deep_copy
-      map {|r| r.deep_copy } 
+      rule = map {|r| r.deep_copy } 
+      Rule.new( rule, @recursivity )
     end
+
+    attr_accessor :recursivity   
   end
 
 end

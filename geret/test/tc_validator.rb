@@ -83,6 +83,16 @@ class TC_Validator < Test::Unit::TestCase
 
   end
 
+  def test_trivial_infinite
+    gram = Validator.analyze_recursivity @grammar1
+
+    assert( gram.object_id != @grammar1.object_id ) #different instances, deep copy
+
+    assert_equal( :infinite, gram['expr'].recursivity )
+    assert_equal( :infinite, gram['op'].recursivity )
+    assert_equal( :infinite, gram['expr'].first.recursivity )
+    assert_equal( :infinite, gram['op'].first.recursivity )
+  end
  
 end
 
