@@ -21,6 +21,10 @@ module Mapper
       copy 
     end
 
+    def symbols
+      keys
+    end
+
     attr_accessor :start_symbol
 
   end

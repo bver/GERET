@@ -8,7 +8,7 @@ module Abnf
     def Renderer.canonical grammar
       start = grammar.start_symbol
       res = ";start symbol is <#{start}>\n"
-      symbols = grammar.keys
+      symbols = grammar.symbols
       symbols.delete start
       symbols.unshift start
       symbols.each do |name|

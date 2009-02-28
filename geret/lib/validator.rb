@@ -12,7 +12,7 @@ module Mapper
     # Note it is often expected that grammar.start_symbol is returned.
     #   
     def Validator.check_unused grammar
-      defs = grammar.keys
+      defs = grammar.symbols
       #defs.delete grammar.start_symbol
       grammar.each_value do |rule|
         rule.each do |alt|
@@ -33,7 +33,7 @@ module Mapper
     #
     def Validator.check_undefined grammar
       undefs = []
-      defs = grammar.keys
+      defs = grammar.symbols
       grammar.each_value do |rule|
         rule.each do |alt|
           alt.each do |token| 
