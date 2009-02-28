@@ -8,9 +8,8 @@ include Mapper
 
 class TC_Validator < Test::Unit::TestCase
 
-  def test_undefined_symbol
-
-    grammar1 = Grammar.new( { 
+  def setup
+    @grammar1 = Grammar.new( { 
       'expr' => Rule.new( [ 
                   RuleAlt.new( [ Token.new( :symbol, 'op' ) ] )
                 ] ),
@@ -19,9 +18,11 @@ class TC_Validator < Test::Unit::TestCase
                   RuleAlt.new( [ Token.new( :symbol, 'expr' ) ] )
                 ] )
     }, 'expr' )
+  end
 
-  
-    assert_equal( [], Validator.check_undefined( grammar1 ) )
+  def test_undefined_symbol
+
+    assert_equal( [], Validator.check_undefined( @grammar1 ) )
 
     grammar2 = Grammar.new( { 
       'foo' => Rule.new( [ 
@@ -51,19 +52,8 @@ class TC_Validator < Test::Unit::TestCase
   end
 
   def test_unused_symbol
-
-    grammar1 = Grammar.new( { 
-      'expr' => Rule.new( [ 
-                  RuleAlt.new( [ Token.new( :symbol, 'op' ) ] )
-                ] ),
-
-       'op'  => Rule.new( [ 
-                  RuleAlt.new( [ Token.new( :symbol, 'expr' ) ] )
-                ] )
-    }, 'expr' )
-
    
-    assert_equal( [], Validator.check_unused( grammar1 ) )
+    assert_equal( [], Validator.check_unused( @grammar1 ) )
 
     grammar2 = Grammar.new( { 
       'foo' => Rule.new( [ 
