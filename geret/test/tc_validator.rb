@@ -93,6 +93,122 @@ class TC_Validator < Test::Unit::TestCase
     assert_equal( :infinite, gram['expr'].first.recursivity )
     assert_equal( :infinite, gram['op'].first.recursivity )
   end
- 
+
+  def test_nontrivial_recursivity
+    grammar = Grammar.new( { 
+      'start' => Rule.new( [ 
+                   RuleAlt.new( [ 
+                     Token.new( :literal, 'one' ),
+                     Token.new( :symbol, 'potential' ), 
+                     Token.new( :literal, 'two' ),                   
+                   ] ),
+                   RuleAlt.new( [ 
+                     Token.new( :symbol, 'loop1' ), 
+                     Token.new( :literal, 'three' ),                   
+                   ] ),
+                 ] ),
+      'potential' => Rule.new( [ 
+                   RuleAlt.new( [ 
+                     Token.new( :literal, 'one' ),
+                     Token.new( :symbol, 'term1' ), 
+                   ] ),
+                   RuleAlt.new( [ 
+                     Token.new( :symbol, 'term2' ), 
+                     Token.new( :symbol, 'term1' ),                   
+                   ] ),
+                 ] ),                
+      'term1' => Rule.new( [ 
+                   RuleAlt.new( [ 
+                     Token.new( :literal, 'TERM1' ),
+                   ] ),
+                 ] ),                
+      'term2' => Rule.new( [ 
+                   RuleAlt.new( [ 
+                     Token.new( :literal, 'TERM2' ),
+                   ] ),
+                   RuleAlt.new( [ 
+                     Token.new( :literal, 'TERM3' ),
+                   ] ),
+                 ] ),                
+      'loop1' => Rule.new( [ 
+                   RuleAlt.new( [ 
+                     Token.new( :symbol, 'loop2' ), 
+                     Token.new( :symbol, 'loop2' ),                   
+                   ] ),
+                 ] ),                
+      'loop2' => Rule.new( [ 
+                   RuleAlt.new( [ 
+                     Token.new( :symbol, 'loop3' ), 
+                   ] ),
+                   RuleAlt.new( [ 
+                     Token.new( :symbol, 'loop1' ),                   
+                   ] ),
+                 ] ),                
+      'loop3' => Rule.new( [ 
+                   RuleAlt.new( [ 
+                     Token.new( :symbol, 'loop1' ), 
+                   ] ),
+                 ] ),                
+     }, 'start' )
+  
+     gram = Validator.analyze_recursivity grammar 
+
+     assert_equal( :cyclic, gram['start'].recursivity )
+     assert_equal( :terminating, gram['start'][0].recursivity )
+     assert_equal( :infinite, gram['start'][1].recursivity )   
+
+     assert_equal( :terminating, gram['potential'].recursivity )
+     assert_equal( :terminating, gram['potential'][0].recursivity )
+     assert_equal( :terminating, gram['potential'][1].recursivity )   
+
+     assert_equal( :terminating, gram['term1'].recursivity )
+     assert_equal( :terminating, gram['term1'][0].recursivity )
+  
+     assert_equal( :terminating, gram['term2'].recursivity )
+     assert_equal( :terminating, gram['term2'][0].recursivity )
+     assert_equal( :terminating, gram['term2'][1].recursivity )   
+
+     assert_equal( :infinite, gram['loop1'].recursivity )
+     assert_equal( :infinite, gram['loop1'][0].recursivity )
+
+     assert_equal( :infinite, gram['loop2'].recursivity )
+     assert_equal( :infinite, gram['loop2'][0].recursivity )
+     assert_equal( :infinite, gram['loop2'][1].recursivity )   
+
+     assert_equal( :infinite, gram['loop3'].recursivity )
+     assert_equal( :infinite, gram['loop3'][0].recursivity )
+
+     ###
+     
+     grammar['loop3'].push RuleAlt.new( [ Token.new( :symbol, 'potential' ) ] )
+
+     gram = Validator.analyze_recursivity grammar
+
+     assert_equal( :cyclic, gram['start'].recursivity )
+     assert_equal( :terminating, gram['start'][0].recursivity )
+     assert_equal( :cyclic, gram['start'][1].recursivity )   
+
+     assert_equal( :terminating, gram['potential'].recursivity )
+     assert_equal( :terminating, gram['potential'][0].recursivity )
+     assert_equal( :terminating, gram['potential'][1].recursivity )   
+
+     assert_equal( :terminating, gram['term1'].recursivity )
+     assert_equal( :terminating, gram['term1'][0].recursivity )
+  
+     assert_equal( :terminating, gram['term2'].recursivity )
+     assert_equal( :terminating, gram['term2'][0].recursivity )
+     assert_equal( :terminating, gram['term2'][1].recursivity )   
+
+     assert_equal( :cyclic, gram['loop1'].recursivity )
+     assert_equal( :cyclic, gram['loop1'][0].recursivity )
+
+     assert_equal( :cyclic, gram['loop2'].recursivity )
+     assert_equal( :cyclic, gram['loop2'][0].recursivity )
+     assert_equal( :cyclic, gram['loop2'][1].recursivity )   
+
+     assert_equal( :cyclic, gram['loop3'].recursivity )
+     assert_equal( :cyclic, gram['loop3'][0].recursivity )
+     assert_equal( :terminating, gram['loop3'][1].recursivity ) 
+  end
 end
 

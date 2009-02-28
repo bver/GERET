@@ -54,9 +54,48 @@ module Mapper
         rule.each { |alt| alt.recursivity = :infinite }
       end
 
+      changed = true
+      while changed
+        changed = false
+        gram.each_value do |rule|
+
+          rule.each do |alt| 
+
+            references = alt.find_all { |token| token.type == :symbol } 
+            res = recursivity_over( references.map {|token| gram[token.data] } )
+            now = if res.include? :infinite
+                    :infinite
+                  elsif res.include? :cyclic
+                    :cyclic
+                  else
+                    :terminating
+                  end
+
+            changed = true if alt.recursivity != now  
+            alt.recursivity = now
+
+          end
+
+          res = recursivity_over rule
+          now = (res.size == 1) ? res.first : :cyclic 
+
+          changed = true if rule.recursivity != now  
+          rule.recursivity = now
+
+        end
+      end
+
       gram
     end
 
+  end
+
+  protected 
+
+  def recursivity_over container
+    result = {}
+    container.each { |item| result[ item.recursivity ] = nil }
+    result.keys
   end
 
 end
