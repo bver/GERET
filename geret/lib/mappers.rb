@@ -29,13 +29,14 @@ module Mapper
         expansion = pick_rule( selected_token.data, genome )
         expansion.each { |t| t.depth = selected_token.depth+1 }
         tokens[selected_index,1] = expansion
+
       end
 
-      return (tokens.collect {|t| t.data} ).join
+      return ( tokens.collect {|t| t.data} ).join
     end
   
   protected
-
+ 
     def enough_wrapping genome
       if @used_length > @wraps_to_fail*genome.size
         @used_length -= 1
@@ -66,7 +67,7 @@ module Mapper
       rule = @grammar.fetch( symbol )
       alt_index = polymorphism( symbol, read_genome_rule( genome, rule ) )
       alt_index = alt_index.divmod( rule.size ).last 
-      rule_alt = rule[ alt_index ]
+      rule_alt = rule.at alt_index
       rule_alt.deep_copy
     end
 
@@ -84,6 +85,16 @@ module Mapper
     def polymorphism( symbol, value )
       value
     end
+    def unmod( index, base )
+      unless defined? @max_codon_base
+        @max_codon_base = (@grammar.max { |rule1,rule2| rule1.size<=>rule2.size } ).size+1
+      end
+#puts "unmod( #{index}, #{base} ) x=#{@max_codon_base/base}  "      
+      base * @random.rand( @max_codon_base/base ) + index
+    end
+
+  public
+    attr_accessor :max_codon_base 
   end
 
   module PolyBucket
@@ -106,6 +117,9 @@ module Mapper
   protected   
     def pick_locus( selected_indices, genome )
       selected_indices.first 
+    end
+    def generate_locus( recursivity, selected_indices, genome )
+      selected_indices.first
     end
   end
 

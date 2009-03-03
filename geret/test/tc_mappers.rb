@@ -270,7 +270,6 @@ class TC_Mappers < Test::Unit::TestCase
     m2 = Mapper::BreadthFirst.new( @grammar, 10, 20, false )
     assert_equal( false, m2.consume_trivial_codons ) 
   end
-
  
 end
 
