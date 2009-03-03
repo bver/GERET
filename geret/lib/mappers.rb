@@ -4,13 +4,14 @@ require 'lib/grammar'
 module Mapper
 
   class Base
-    def initialize( grammar, wraps_to_fail=1 )
+    def initialize( grammar, wraps_to_fail=1, wraps_to_fading=nil )
       @grammar = Grammar.new grammar
       @wraps_to_fail = wraps_to_fail
+      @wraps_to_fading = wraps_to_fading
     end
   
     attr_reader :grammar, :used_length
-    attr_accessor :wraps_to_fail
+    attr_accessor :wraps_to_fail, :wraps_to_fading
 
     def phenotype genome
       tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
@@ -18,6 +19,7 @@ module Mapper
 
       until ( selected_indices = find_nonterminals( tokens ) ).empty?
 
+        return nil if enough_wrapping genome       
         selected_index = pick_locus( selected_indices, genome )
         selected_token = tokens[selected_index]
 
@@ -41,6 +43,10 @@ module Mapper
     end
     
     def read_genome genome
+      if not @wraps_to_fading.nil? and @used_length > @wraps_to_fading*genome.size     
+        @used_length += 1       
+        return 0
+      end  
       index = @used_length.divmod( genome.size ).last
       @used_length += 1     
       genome.at( index )

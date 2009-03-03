@@ -140,9 +140,48 @@ class TC_Mappers < Test::Unit::TestCase
 
     m2 = Mapper::BreadthFirst.new( @grammar, 20 )
     assert_equal( 20, m2.wraps_to_fail )
- 
-    m2 = Mapper::BreadthFirst.new( @grammar, wraps_to_fail=30 )
-    assert_equal( 30, m2.wraps_to_fail )
   end
+
+  def test_failing_locus
+    m = Mapper::BreadthLocus.new @grammar
+    genotype1 = [0,2,  0,2,   0,0,   0,0]
+    genotype2 = [0,2,  0,1,   0,0,   0,2,   0,0]
+
+    assert_equal( 1, m.wraps_to_fail ) #default value
+
+    assert_equal( nil, m.phenotype( genotype1 ) ) 
+    assert_equal( genotype1.size * m.wraps_to_fail, m.used_length )
+    assert_equal( nil, m.phenotype( genotype2 ) ) 
+    assert_equal( genotype2.size * m.wraps_to_fail, m.used_length )
+
+    m.wraps_to_fail = 2
+    assert_equal( 2, m.wraps_to_fail )
+    assert_equal( nil, m.phenotype( genotype1 ) ) 
+    assert_equal( genotype1.size * m.wraps_to_fail, m.used_length )
+    assert_equal( '(y +(x +y))', m.phenotype( genotype2 ) ) 
+    assert_equal( 7*2, m.used_length )
+  end
+
+  def test_fading
+    m = Mapper::BreadthFirst.new @grammar
+    genotype1 = [2, 2, 0, 0]
+
+    assert_equal( 1, m.wraps_to_fail ) #default value
+    assert_equal( nil, m.wraps_to_fading ) #default value
+
+    assert_equal( nil, m.phenotype( genotype1 ) ) 
+    assert_equal( genotype1.size * m.wraps_to_fail, m.used_length )
+
+    m.wraps_to_fail = 3
+    m.wraps_to_fading = 2
+    assert_equal( 2, m.wraps_to_fading )
+    assert_equal( '(((x +x) +x) +x)', m.phenotype( genotype1 ) ) 
+    assert_equal( 10, m.used_length )
+
+    m2 = Mapper::BreadthFirst.new( @grammar, 10, 20 )
+    assert_equal( 20, m2.wraps_to_fading )
+  end
+
+ 
 end
 
