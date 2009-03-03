@@ -182,7 +182,7 @@ class TC_Mappers < Test::Unit::TestCase
     assert_equal( 20, m2.wraps_to_fading )
   end
 
-  def test_fading_trivial
+  def test_fading_non_trivial
     grammar = Mapper::Grammar.new( { 
       'expr' => Mapper::Rule.new( [ 
                   Mapper::RuleAlt.new( [ 
@@ -231,6 +231,46 @@ class TC_Mappers < Test::Unit::TestCase
     assert_equal( 10, m.used_length )
   end
  
+  def test_locus_eating
+    grammar = Mapper::Grammar.new( { 
+      'expr' => Mapper::Rule.new( [ 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'x' ) ] ),
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'y' ) ] ),
+                  Mapper::RuleAlt.new( [ 
+                    Mapper::Token.new( :literal, '(' ), 
+                    Mapper::Token.new( :symbol, 'expr', 42 ),
+                    Mapper::Token.new( :literal, ' ' ),                   
+                    Mapper::Token.new( :symbol, 'op', 4 ),                  
+                    Mapper::Token.new( :symbol, 'expr', 12 ),                   
+                    Mapper::Token.new( :literal, ')' ) 
+                  ] )
+                ] ),
+
+       'op'  => Mapper::Rule.new( [ 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '+' ) ] ), #trivial rule
+                ] )
+    }, 'expr' )
+ 
+    m = Mapper::DepthLocus.new grammar
+    m.consume_trivial_codons = false
+    assert_equal( false, m.consume_trivial_codons )
+
+    assert_equal( '((x +y) +(y +x))', 
+                             #[0,2,  2,2,  1,0,  0,1,  0,0,  0,2,  1,0,  0,0,  0,1,  0,1]        
+                 m.phenotype( [  2,  2,2,  1,    0,1,    0,  0,2,  1,    0,0,    1,     ] ) )      
+    assert_equal( 13, m.used_length )   
+
+    assert_equal( '((x +y) +(y +x))', 
+                             #[9,2,  5,5,  4,4,  2,7,  8,3,  0,8,  7,2,  6,0,  1,4,  3,1,  4,2,  1,3]       
+                 m.phenotype( [  2,  5,5,  4,    2,7,    3,  0,8,  7,    6,0,    4,        4,2,  1,3] ) )
+    assert_equal( 13, m.used_length )
+
+    m2 = Mapper::BreadthFirst.new( @grammar, 10, 20 )
+    assert_equal( true, m2.consume_trivial_codons ) #default
+    m2 = Mapper::BreadthFirst.new( @grammar, 10, 20, false )
+    assert_equal( false, m2.consume_trivial_codons ) 
+  end
+
  
 end
 

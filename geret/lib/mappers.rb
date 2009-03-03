@@ -5,14 +5,15 @@ require 'lib/validator'
 module Mapper
 
   class Base
-    def initialize( grammar, wraps_to_fail=1, wraps_to_fading=nil )
+    def initialize( grammar, wraps_to_fail=1, wraps_to_fading=nil, consume_trivial_codons=true )
       @grammar = Validator.analyze_recursivity grammar 
       @wraps_to_fail = wraps_to_fail
       @wraps_to_fading = wraps_to_fading
+      @consume_trivial_codons = consume_trivial_codons 
     end
   
     attr_reader :grammar, :used_length
-    attr_accessor :wraps_to_fail, :wraps_to_fading
+    attr_accessor :wraps_to_fail, :wraps_to_fading, :consume_trivial_codons 
 
     def phenotype genome
       tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
@@ -43,17 +44,19 @@ module Mapper
       false
     end
     
-    def read_genome_rule genome, rule
+    def read_genome_rule( genome, rule )
       if not @wraps_to_fading.nil? and @used_length > @wraps_to_fading*genome.size     
         @used_length += 1
         terminal = rule.find {|alt| alt.recursivity == :terminating }
         return 0 if terminal.nil? # desperate case (only :cyclic or :infinite alts found)
         return rule.index( terminal )
       end  
-      read_genome genome   
+      read_genome( genome, rule.size )   
     end
 
-    def read_genome genome
+    def read_genome( genome, choices )
+      return 0 if choices == 1 and @consume_trivial_codons == false     
+   
       index = @used_length.divmod( genome.size ).last
       @used_length += 1     
       genome.at( index )
@@ -109,7 +112,7 @@ module Mapper
   module LocusGenetic
   protected   
     def pick_locus( selected_indices, genome )
-      index = read_genome(genome).divmod( selected_indices.size ).last    
+      index = read_genome( genome, selected_indices.size ).divmod( selected_indices.size ).last    
       selected_indices[index]     
     end
   end
