@@ -1,11 +1,12 @@
 
 require 'lib/grammar'
+require 'lib/validator'
 
 module Mapper
 
   class Base
     def initialize( grammar, wraps_to_fail=1, wraps_to_fading=nil )
-      @grammar = Grammar.new grammar
+      @grammar = Validator.analyze_recursivity grammar 
       @wraps_to_fail = wraps_to_fail
       @wraps_to_fading = wraps_to_fading
     end
@@ -42,19 +43,25 @@ module Mapper
       false
     end
     
-    def read_genome genome
+    def read_genome_rule genome, rule
       if not @wraps_to_fading.nil? and @used_length > @wraps_to_fading*genome.size     
-        @used_length += 1       
-        return 0
+        @used_length += 1
+        terminal = rule.find {|alt| alt.recursivity == :terminating }
+        return 0 if terminal.nil? # desperate case (only :cyclic or :infinite alts found)
+        return rule.index( terminal )
       end  
+      read_genome genome   
+    end
+
+    def read_genome genome
       index = @used_length.divmod( genome.size ).last
       @used_length += 1     
       genome.at( index )
     end
-
+   
     def pick_rule( symbol, genome )
-      rule = @grammar.fetch(symbol)
-      alt_index = polymorphism( symbol, read_genome(genome) )
+      rule = @grammar.fetch( symbol )
+      alt_index = polymorphism( symbol, read_genome_rule( genome, rule ) )
       alt_index = alt_index.divmod( rule.size ).last 
       rule_alt = rule[ alt_index ]
       rule_alt.deep_copy

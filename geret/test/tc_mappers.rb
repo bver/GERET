@@ -162,7 +162,7 @@ class TC_Mappers < Test::Unit::TestCase
     assert_equal( 7*2, m.used_length )
   end
 
-  def test_fading
+  def test_fading_trivial
     m = Mapper::BreadthFirst.new @grammar
     genotype1 = [2, 2, 0, 0]
 
@@ -182,6 +182,55 @@ class TC_Mappers < Test::Unit::TestCase
     assert_equal( 20, m2.wraps_to_fading )
   end
 
+  def test_fading_trivial
+    grammar = Mapper::Grammar.new( { 
+      'expr' => Mapper::Rule.new( [ 
+                  Mapper::RuleAlt.new( [ 
+                    Mapper::Token.new( :literal, '(' ), 
+                    Mapper::Token.new( :symbol, 'expr', 42 ),
+                    Mapper::Token.new( :literal, ' ' ),                   
+                    Mapper::Token.new( :symbol, 'op', 4 ),                  
+                    Mapper::Token.new( :symbol, 'expr', 12 ),                   
+                    Mapper::Token.new( :literal, ')' ) 
+                  ] ), # :cyclic rule has the index 0 (nontrivial)
+
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'x' ) ] ),
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'y' ) ] ),
+                   
+                ] ),
+
+       'op'  => Mapper::Rule.new( [ 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '+' ) ] ),
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '*' ) ] )
+                ] )
+    }, 'expr' )
+
+
+    m = Mapper::BreadthFirst.new grammar
+
+    assert_equal( :cyclic, m.grammar['expr'].recursivity )
+    assert_equal( :cyclic, m.grammar['expr'][0].recursivity )   
+    assert_equal( :terminating, m.grammar['expr'][1].recursivity )      
+    assert_equal( :terminating, m.grammar['expr'][2].recursivity )         
+    assert_equal( :terminating, m.grammar['op'].recursivity )
+    assert_equal( :terminating, m.grammar['op'][0].recursivity )   
+    assert_equal( :terminating, m.grammar['op'][1].recursivity )      
+ 
+    genotype1 = [0, 0, 1, 1]
+
+    assert_equal( 1, m.wraps_to_fail ) #default value
+    assert_equal( nil, m.wraps_to_fading ) #default value
+
+    assert_equal( nil, m.phenotype( genotype1 ) ) 
+    assert_equal( genotype1.size * m.wraps_to_fail, m.used_length )
+
+    m.wraps_to_fail = 3
+    m.wraps_to_fading = 2
+    assert_equal( 2, m.wraps_to_fading )
+    assert_equal( '(((x +x) +x) *x)', m.phenotype( genotype1 ) ) 
+    assert_equal( 10, m.used_length )
+  end
+ 
  
 end
 
