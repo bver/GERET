@@ -9,7 +9,7 @@ module Mapper
       @random = Kernel::rand
     end
  
-    attr_accessor :random, :max_codon_value 
+    attr_accessor :random 
  
     def generate_full required_depth 
       generate_genome( [:cyclic], required_depth )
@@ -64,6 +64,27 @@ module Mapper
     end
 
   end # Generator
+  
+  module PolyIntrinsic
+    protected
+    def unmod( index, base )
+      unless defined? @max_codon_base
+        @max_codon_base = (@grammar.max { |rule1,rule2| rule1.size<=>rule2.size } ).size+1
+      end
+#puts "unmod( #{index}, #{base} ) x=#{@max_codon_base/base}  "      
+      base * @random.rand( @max_codon_base/base ) + index
+    end
+
+    public
+    attr_accessor :max_codon_base 
+  end
+
+  module LocusFirst
+    protected   
+    def generate_locus( recursivity, selected_indices, genome )
+      selected_indices.first
+    end
+  end
 
   class GeneratorDepthFirst < Generator
     include LocusFirst
@@ -89,13 +110,13 @@ module Mapper
     include PolyIntrinsic 
   end
 
-  class DepthBucket < Base
+  class GeneratorDepthBucket < Generator
     include LocusFirst
     include ExtendDepth
     include PolyBucket 
   end
 
-  class BreadthBucket < Base
+  class GeneratorBreadthBucket < Generator
     include LocusFirst
     include ExtendBreadth
     include PolyBucket 

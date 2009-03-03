@@ -67,8 +67,8 @@ module Mapper
       rule = @grammar.fetch( symbol )
       alt_index = polymorphism( symbol, read_genome_rule( genome, rule ) )
       alt_index = alt_index.divmod( rule.size ).last 
-      rule_alt = rule.at alt_index
-      rule_alt.deep_copy
+      alt = rule.at alt_index
+      return alt.deep_copy
     end
 
     def find_nonterminals_by_depth( tokens, depth )
@@ -82,22 +82,14 @@ module Mapper
   end # Base
 
   module PolyIntrinsic
+    protected
     def polymorphism( symbol, value )
       value
     end
-    def unmod( index, base )
-      unless defined? @max_codon_base
-        @max_codon_base = (@grammar.max { |rule1,rule2| rule1.size<=>rule2.size } ).size+1
-      end
-#puts "unmod( #{index}, #{base} ) x=#{@max_codon_base/base}  "      
-      base * @random.rand( @max_codon_base/base ) + index
-    end
-
-  public
-    attr_accessor :max_codon_base 
   end
 
   module PolyBucket
+    protected 
     def init_bucket
       @bucket = {}
       @maxAllele = 1
@@ -114,17 +106,14 @@ module Mapper
   end
  
   module LocusFirst
-  protected   
+    protected   
     def pick_locus( selected_indices, genome )
       selected_indices.first 
-    end
-    def generate_locus( recursivity, selected_indices, genome )
-      selected_indices.first
     end
   end
 
   module LocusGenetic
-  protected   
+    protected   
     def pick_locus( selected_indices, genome )
       index = read_genome( genome, selected_indices.size ).divmod( selected_indices.size ).last    
       selected_indices[index]     
@@ -132,7 +121,7 @@ module Mapper
   end
 
   module ExtendDepth
-  protected   
+    protected   
     def find_nonterminals tokens
       max = nil
       tokens.each { |t| max = t.depth if t.type==:symbol and ( max.nil? or t.depth>max ) }
@@ -141,7 +130,7 @@ module Mapper
   end
 
   module ExtendBreadth
-  protected   
+    protected   
     def find_nonterminals tokens 
       min = nil
       tokens.each { |t| min = t.depth if t.type==:symbol and ( min.nil? or t.depth<min ) }
