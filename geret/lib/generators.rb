@@ -27,6 +27,7 @@ module Mapper
       # deepenning phase
       while depth < required_depth 
         selected_indices = find_nonterminals( tokens )
+        return genome if selected_indices.empty?
         depth = generate_dry( selected_indices, recursivity, genome, tokens ) 
 #puts "XXXX   " +  ( tokens.collect {|t| t.data} ).join( ' ' ) + "depth="+ depth.to_s
       end

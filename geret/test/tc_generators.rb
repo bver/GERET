@@ -59,6 +59,34 @@ class TC_Generators < Test::Unit::TestCase
     assert_equal( '(((x+y)+y)*(x+y))', m.phenotype(gen) )
     assert_equal( 3, m.max_codon_base ) 
   end
+
+  def test_require_depth_too_big
+    grammar = Mapper::Grammar.new( { 
+      'expr' => Mapper::Rule.new( [ 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'x' ) ] ),
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'y' ) ] ),
+                  Mapper::RuleAlt.new( [ 
+                    Mapper::Token.new( :literal, '(' ), 
+                    Mapper::Token.new( :symbol, 'op', 4 ),                  
+                    Mapper::Token.new( :literal, ')' ) 
+                  ] )
+                ] ),
+
+       'op'  => Mapper::Rule.new( [ 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '+' ) ] ),
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '*' ) ] )
+                ] )
+    }, 'expr' )
+
+    m = Mapper::GeneratorBreadthFirst.new grammar
+    assert_equal( :terminating, m.grammar[m.grammar.start_symbol].recursivity )
+
+    r = Random.new :deterministic
+    r.set_predef [2,0,  0,0,]
+    m.random = r
+ 
+    assert_equal( [2, 0], m.generate_full( 300 ) )
+  end
  
 end
 
