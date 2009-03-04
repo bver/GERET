@@ -115,7 +115,20 @@ class TC_Generators < Test::Unit::TestCase
  
     assert_equal( [2, 0], m.generate_full( 300 ) )
   end
-  
+
+  def test_depth_locus_generate
+    m = Mapper::GeneratorDepthLocus.new @grammar
+    r = Random.new :deterministic
+
+    r.set_predef [0,0,0,  1,0,0,  0,0,0,
+                  0,1,0,  1,0,0,  0,0,0,  0,1,0,  0,0,0,  0,1,0,  0,1,0]
+      m.random = r
+    gen = [0,2,  2,2,  0,2,  
+           1,1,  1,0,  0,0,  0,1,  0,0,  1,1,  0,1] 
+    assert_equal( gen, m.generate_full( 3 ) )
+    assert_equal( '(y*((x*x)*x))', m.phenotype(gen) )
+    assert_equal( 3, m.max_codon_base ) 
+  end 
  
 end
 

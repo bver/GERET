@@ -44,7 +44,7 @@ module Mapper
   protected
 
     def generate_dry( selected_indices, recursivity, genome, tokens )
-      selected_index = generate_locus( recursivity, selected_indices, genome )
+      selected_index = generate_locus( recursivity, selected_indices, tokens, genome )
       selected_token = tokens[selected_index]
 
       expansion = generate_rule( recursivity, selected_token.data, genome )
@@ -63,7 +63,7 @@ module Mapper
       alts = rule if alts.empty? # desperate case, cannot obey recurs
       alt = alts.at @random.rand( alts.size )  
       genome.push unmod( rule.index(alt), rule.size )
-      return alt.deep_copy
+      alt.deep_copy
     end
 
   end # Generator
@@ -74,7 +74,6 @@ module Mapper
       unless defined? @max_codon_base
         @max_codon_base = (@grammar.max { |rule1,rule2| rule1.size<=>rule2.size } ).size+1
       end
-#puts "unmod( #{index}, #{base} ) x=#{@max_codon_base/base}  "      
       base * @random.rand( @max_codon_base/base ) + index
     end
 
@@ -84,10 +83,24 @@ module Mapper
 
   module LocusFirst
     protected   
-    def generate_locus( recursivity, selected_indices, genome )
+    def generate_locus( recursivity, selected_indices, tokens, genome )
       selected_indices.first
     end
   end
+
+  module LocusGenetic
+    protected   
+    def generate_locus( recurs, selected_indices, tokens, genome )
+      pairs = selected_indices.map { |i| [tokens[i], i] }
+      toks = pairs.find_all {|pair| recurs.include? @grammar[ pair.first.data ].recursivity }
+      toks = pairs if toks.empty? #desperate case, cannot obey recurs
+      tok = toks.at @random.rand( toks.size )
+      # todo: @consume_trivial_codons     
+      genome.push selected_indices.index(tok.last) 
+      tok.last
+    end
+  end
+ 
 
   class GeneratorDepthFirst < Generator
     include LocusFirst
