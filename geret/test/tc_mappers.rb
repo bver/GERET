@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
 require 'test/unit'
-require 'lib/mappers'
+require 'lib/mapper'
 
 class TC_Mappers < Test::Unit::TestCase
 
