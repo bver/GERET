@@ -5,37 +5,37 @@ require 'lib/mapper_generator'
 
 module Mapper
 
-  class DepthFirst < Base
+  class DepthFirst < Generator
     include LocusFirst
     include ExtendDepth
     include PolyIntrinsic 
   end
 
-  class BreadthFirst < Base
+  class BreadthFirst < Generator
     include LocusFirst
     include ExtendBreadth
     include PolyIntrinsic 
   end
 
-  class DepthLocus < Base
+  class DepthLocus < Generator
     include LocusGenetic
     include ExtendDepth
     include PolyIntrinsic 
   end
 
-  class BreadthLocus < Base
+  class BreadthLocus < Generator
     include LocusGenetic
     include ExtendBreadth
     include PolyIntrinsic 
   end
 
-  class DepthBucket < Base
+  class DepthBucket < Generator
     include LocusFirst
     include ExtendDepth
     include PolyBucket 
   end
 
-  class BreadthBucket < Base
+  class BreadthBucket < Generator
     include LocusFirst
     include ExtendBreadth
     include PolyBucket 
