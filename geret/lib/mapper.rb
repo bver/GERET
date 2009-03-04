@@ -1,6 +1,5 @@
 
 require 'lib/grammar'
-require 'lib/validator'
 require 'lib/mapper_generator'
 
 module Mapper

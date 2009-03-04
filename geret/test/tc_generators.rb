@@ -122,13 +122,13 @@ class TC_Generators < Test::Unit::TestCase
 
     r.set_predef [0,0,0,  1,0,0,  0,0,0,
                   0,1,0,  1,0,0,  0,0,0,  0,1,0,  0,0,0,  0,1,0,  0,1,0]
-      m.random = r
+    m.random = r
     gen = [0,2,  2,2,  0,2,  
            1,1,  1,0,  0,0,  0,1,  0,0,  1,1,  0,1] 
     assert_equal( gen, m.generate_full( 3 ) )
     assert_equal( '(y*((x*x)*x))', m.phenotype(gen) )
     assert_equal( 3, m.max_codon_base ) 
   end 
- 
+
 end
 
