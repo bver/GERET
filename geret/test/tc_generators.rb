@@ -82,11 +82,40 @@ class TC_Generators < Test::Unit::TestCase
     assert_equal( :terminating, m.grammar[m.grammar.start_symbol].recursivity )
 
     r = Random.new :deterministic
-    r.set_predef [2,0,  0,0,]
+    r.set_predef [2,0,  0,0]
     m.random = r
  
     assert_equal( [2, 0], m.generate_full( 300 ) )
   end
+
+  def test_infinite_grammar
+    grammar = Mapper::Grammar.new( { 
+      'expr' => Mapper::Rule.new( [ 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'x' ) ] ),
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'y' ) ] ),
+                  Mapper::RuleAlt.new( [ 
+                    Mapper::Token.new( :literal, '(' ), 
+                    Mapper::Token.new( :symbol, 'op', 4 ),                  
+                    Mapper::Token.new( :literal, ')' ) 
+                  ] )
+                ] ),
+
+       'op'  => Mapper::Rule.new( [ 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :symbol, 'op' ) ] ),
+                ] )
+    }, 'expr' )
+
+    m = Mapper::GeneratorBreadthFirst.new grammar
+    assert_equal( :infinite, m.grammar['op'].recursivity )
+    assert_equal( :cyclic, m.grammar['expr'].recursivity )
+
+    r = Random.new :deterministic
+    r.set_predef [2,0,  0,0,  0,0,  0,0,  0,0]
+    m.random = r
+ 
+    assert_equal( [2, 0], m.generate_full( 300 ) )
+  end
+  
  
 end
 

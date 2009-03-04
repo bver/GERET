@@ -51,6 +51,8 @@ module Mapper
       expansion.each { |t| t.depth = selected_token.depth+1 }
 
       tokens[selected_index,1] = expansion
+      tokens.clear if @grammar[selected_token.data].recursivity == :infinite # emergency fallback      
+
       expansion.first.depth        
     end
 
