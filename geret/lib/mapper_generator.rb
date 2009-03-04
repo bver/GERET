@@ -101,42 +101,4 @@ module Mapper
     end
   end
  
-
-  class GeneratorDepthFirst < Generator
-    include LocusFirst
-    include ExtendDepth
-    include PolyIntrinsic 
-  end
-
-  class GeneratorBreadthFirst < Generator
-    include LocusFirst
-    include ExtendBreadth
-    include PolyIntrinsic 
-  end
-
-  class GeneratorDepthLocus < Generator
-    include LocusGenetic
-    include ExtendDepth
-    include PolyIntrinsic 
-  end
-
-  class GeneratorBreadthLocus < Generator
-    include LocusGenetic
-    include ExtendBreadth
-    include PolyIntrinsic 
-  end
-
-  class GeneratorDepthBucket < Generator
-    include LocusFirst
-    include ExtendDepth
-    include PolyBucket 
-  end
-
-  class GeneratorBreadthBucket < Generator
-    include LocusFirst
-    include ExtendBreadth
-    include PolyBucket 
-  end
-
- 
 end # Mapper

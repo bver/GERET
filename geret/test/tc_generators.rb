@@ -29,7 +29,7 @@ class TC_Generators < Test::Unit::TestCase
   end
 
   def test_depth_first_generate
-    m = Mapper::GeneratorDepthFirst.new @grammar
+    m = Mapper::DepthFirst.new @grammar
     r = Random.new :deterministic
 
     r.set_predef [0,0,  0,0,  0,0,  0,0,  1,0,  1,0,  0,0,  0,0,  1,0,  0,0]
@@ -48,7 +48,7 @@ class TC_Generators < Test::Unit::TestCase
   end
 
   def test_breadth_first_generate
-    m = Mapper::GeneratorBreadthFirst.new @grammar
+    m = Mapper::BreadthFirst.new @grammar
     r = Random.new :deterministic
 
     r.set_predef [0,0,  0,0,  1,0,  0,0,  0,0, 
@@ -78,7 +78,7 @@ class TC_Generators < Test::Unit::TestCase
                 ] )
     }, 'expr' )
 
-    m = Mapper::GeneratorBreadthFirst.new grammar
+    m = Mapper::BreadthFirst.new grammar
     assert_equal( :terminating, m.grammar[m.grammar.start_symbol].recursivity )
 
     r = Random.new :deterministic
@@ -105,7 +105,7 @@ class TC_Generators < Test::Unit::TestCase
                 ] )
     }, 'expr' )
 
-    m = Mapper::GeneratorBreadthFirst.new grammar
+    m = Mapper::BreadthFirst.new grammar
     assert_equal( :infinite, m.grammar['op'].recursivity )
     assert_equal( :cyclic, m.grammar['expr'].recursivity )
 
@@ -117,7 +117,7 @@ class TC_Generators < Test::Unit::TestCase
   end
 
   def test_depth_locus_generate
-    m = Mapper::GeneratorDepthLocus.new @grammar
+    m = Mapper::DepthLocus.new @grammar
     r = Random.new :deterministic
 
     r.set_predef [0,0,0,  1,0,0,  0,0,0,
