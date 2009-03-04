@@ -6,7 +6,7 @@ module Mapper
   class Generator < Base
     def initialize *args
       super
-      @random = Kernel::rand
+      @random = Kernel
     end
  
     attr_accessor :random 
