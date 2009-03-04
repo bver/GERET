@@ -1,5 +1,5 @@
 
-require 'lib/mappers'
+require 'lib/mappers_base'
 
 module Mapper
 
