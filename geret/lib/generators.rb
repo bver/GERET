@@ -15,9 +15,9 @@ module Mapper
       generate_genome( [:cyclic], required_depth )
     end
 
-    def generate_grow required_depth 
-      generate_genome( [:cyclic, :terminating], required_depth )
-    end
+#    def generate_grow required_depth 
+#      generate_genome( [:cyclic, :terminating], required_depth )
+#    end
 
     def generate_genome( recursivity, required_depth )
       genome = []

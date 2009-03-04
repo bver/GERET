@@ -42,14 +42,23 @@ class TC_Generators < Test::Unit::TestCase
     m.max_codon_base = 10
     assert_equal( 10, m.max_codon_base ) 
     r.set_predef [0,0,    0,2,  0,0,   0,1,  1,0,    1,1,  0,0,  0,0,    1,2,    0,2]
-    m.random = r
     assert_equal([  2,  2+2*3,    2, 0+1*3,    1,  1+1*3,    0,    0,  1+2*2,  0+2*3], 
                  m.generate_full( 3 ) )
     assert_equal( '(((x*y)+x)*x)', m.phenotype(gen) )
-
-    #r.set_predef [] 
-    #assert_equal( [], m.generate_grow( 3 ) )
   end
 
+  def test_breadth_first_generate
+    m = Mapper::GeneratorBreadthFirst.new @grammar
+    r = Random.new :deterministic
+
+    r.set_predef [0,0,  0,0,  1,0,  0,0,  0,0, 
+                  0,0,  1,0,  0,0,  0,0,  1,0,  0,0,  0,0,  1,0]
+    m.random = r
+    gen = [2,2,1,2,2,   0,1,0,0,1,0,0,1] 
+    assert_equal( gen, m.generate_full( 3 ) )
+    assert_equal( '(((x+y)+y)*(x+y))', m.phenotype(gen) )
+    assert_equal( 3, m.max_codon_base ) 
+  end
+ 
 end
 
