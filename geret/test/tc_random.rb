@@ -29,7 +29,7 @@ class TC_Random < Test::Unit::TestCase
     r1 = Random.new :repeatable
     assert_equal( :repeatable, r1.mode )   
     results = []
-    1000.times { results.push r1.rand(1000) }
+    100.times { results.push r1.rand(1000) }
 
     r2 = Random.new :repeatable
     results.each do |x| 
@@ -41,7 +41,7 @@ class TC_Random < Test::Unit::TestCase
   def test_stochastic
     r = Random.new :stochastic
     assert_equal( :stochastic, r.mode ) 
-    1000.times do
+    100.times do
       assert( r.rand(1000)<1000 )
       assert( r.rand < 1.0 )
     end
