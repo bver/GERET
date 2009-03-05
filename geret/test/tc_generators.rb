@@ -1,8 +1,8 @@
 #!/usr/bin/ruby
 
 require 'test/unit'
+require 'test/mock_rand'
 require 'lib/mapper'
-require 'lib/random'
 
 class TC_Generators < Test::Unit::TestCase
 

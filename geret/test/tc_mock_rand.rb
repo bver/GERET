@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
 require 'test/unit'
-require 'lib/random'
+require 'test/mock_rand'
 
 class TC_Random < Test::Unit::TestCase
 

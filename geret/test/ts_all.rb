@@ -1,6 +1,6 @@
 #!/usr/bin/ruby -w
 
-require 'test/tc_random'
+require 'test/tc_mock_rand'
 require 'test/tc_setting'
 require 'test/tc_grammar'
 require 'test/tc_abnf_tokenizer'
