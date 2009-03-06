@@ -33,7 +33,6 @@ module Mapper
         rec = (selected_token.depth < required_depth) ? recursivity : [:terminating]
         expansion = generate_rule( rec, selected_symbol, genome )
         expansion.each { |t| t.depth = selected_token.depth+1 }
-#puts  selected_token.inspect +   selected_index.to_s + genome.inspect   
 
         tokens[selected_index,1] = expansion
       end
@@ -43,13 +42,16 @@ module Mapper
    
   protected
 
-     def generate_rule( recurs, symbol, genome )
+    def generate_rule( recurs, symbol, genome )
       rule = @grammar.fetch( symbol )
       alts = rule.find_all { |alt| recurs.include? alt.recursivity }
-      # todo: @consume_trivial_codons
       alts = rule if alts.empty? # desperate case, cannot obey recurs
-      alt = alts.at @random.rand( alts.size )  
-      genome.push unmod( rule.index(alt), rule.size, symbol )
+      if @consume_trivial_codons or rule.size > 1
+        alt = alts.at @random.rand( alts.size )
+        genome.push unmod( rule.index(alt), rule.size, symbol )
+      else
+        alt = rule.first 
+      end
       alt.deep_copy
     end
 
@@ -87,8 +89,12 @@ module Mapper
   module LocusGenetic
     protected   
     def generate_locus( selected_indices, genome )
-      index = @random.rand( selected_indices.size )
-      genome.push index
+      if @consume_trivial_codons or selected_indices.size > 1
+        index = @random.rand( selected_indices.size )
+        genome.push index 
+      else
+        index = 0 
+      end
       selected_indices.at index
     end
   end

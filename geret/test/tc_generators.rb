@@ -182,5 +182,55 @@ class TC_Generators < Test::Unit::TestCase
     assert_equal( 3, m.max_codon_base ) 
   end
  
+  def test_locus_generator_eating
+    grammar = Mapper::Grammar.new( { 
+      'expr' => Mapper::Rule.new( [ 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'x' ) ] ),
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'y' ) ] ),
+                  Mapper::RuleAlt.new( [ 
+                    Mapper::Token.new( :literal, '(' ), 
+                    Mapper::Token.new( :symbol, 'expr', 42 ),
+                    Mapper::Token.new( :symbol, 'op', 4 ),                  
+                    Mapper::Token.new( :symbol, 'expr', 12 ),                   
+                    Mapper::Token.new( :literal, ')' ) 
+                  ] )
+                ] ),
+
+       'op'  => Mapper::Rule.new( [ 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '+' ) ] ), #trivial rule
+                ] )
+    }, 'expr' )
+ 
+    m = Mapper::BreadthFirst.new grammar
+    assert_equal( true, m.consume_trivial_codons )   
+    m.consume_trivial_codons = false
+    assert_equal( false, m.consume_trivial_codons )                             
+
+    r = MockRand.new [{1=>0},0, {1=>0},0,           {1=>0},0, {2=>0},0, 
+                                {2=>1},0, {2=>1},0,           {2=>0},0]
+    m.random = r
+         #[2, 2, 0, 2, 0, 0, 1, 1, 0, 0]   
+#
+    gen = [2, 2,    2, 0,    1, 1,    0] 
+    assert_equal( '((x+y)+(y+x))', m.phenotype(gen) )
+    assert_equal( gen, m.generate_full( 2 ) )   
+    assert_equal( 7, m.used_length )   
+
+    m = Mapper::DepthLocus.new grammar
+    assert_equal( true, m.consume_trivial_codons )   
+    m.consume_trivial_codons = false
+    assert_equal( false, m.consume_trivial_codons )                             
+
+    r = MockRand.new [       {1=>0},0,  {3=>2},{1=>0},0,  {3=>1},           {2=>0},{2=>1},0,      {2=>0},0, 
+                      {2=>0},{1=>0},0,  {3=>1},           {2=>0},{2=>0},0,         {2=>1},0,              ]     
+         #[0,2,  2,2,  1,0,  0,1,  0,0,  0,2,  1,0,  0,0,  0,1,  0,1]        
+    m.random = r
+
+    gen = [  2,  2,2,  1,    0,1,    0,  0,2,  1,    0,0,    1      ] 
+    assert_equal( gen,  m.generate_full( 2 ) )
+    assert_equal( '((x+y)+(y+x))',  m.phenotype( gen ) )      
+    assert_equal( 13, m.used_length )   
+  end
+  
 end
 
