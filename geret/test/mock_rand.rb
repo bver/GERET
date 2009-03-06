@@ -5,7 +5,7 @@ class MockRand
      @predef = array
    end
 
-   def rand max=nil
+   def rand max=0
      raise 'MockRand: set_predef() in :deterministic mode not called' if @predef.nil?
      raise 'MockRand: shortage of values' if @predef.empty?
 
@@ -16,7 +16,7 @@ class MockRand
        raise "MockRand: unexpected argument (#{max}), expected (#{now.keys.join(', ')})" if ret.nil?  
        return ret
      else
-       max = 1.0 if max == nil
+       max = 1.0 if max == 0
        raise 'MockRand: value exceeded' if now > max 
        return now 
      end

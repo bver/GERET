@@ -51,7 +51,7 @@ class TC_Random < Test::Unit::TestCase
   end
 
   def test_alternatives
-    vals = [{3=>2, 2=>0, nil=>0.33}]
+    vals = [{3=>2, 2=>0, 0=>0.33}]
     r = MockRand.new vals.clone
     assert_equal( 0, r.rand(2) ) 
     r.predef = vals.clone
