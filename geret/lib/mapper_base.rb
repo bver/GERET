@@ -137,5 +137,14 @@ module Mapper
       find_nonterminals_by_depth( tokens, min )
     end
   end
-  
+
+  module ExtendAll
+    protected   
+    def find_nonterminals tokens 
+      indices = []
+      tokens.each_with_index { |tok,i| indices.push i if tok.type == :symbol }
+      indices
+    end
+  end
+
 end # Mapper

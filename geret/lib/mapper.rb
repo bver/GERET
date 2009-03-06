@@ -6,7 +6,7 @@ module Mapper
 
   class DepthFirst < Generator
     include LocusFirst
-    include ExtendDepth
+    include ExtendAll #behavior same as ExtendDepth, but simpler
     include PolyIntrinsic 
   end
 
@@ -15,6 +15,8 @@ module Mapper
     include ExtendBreadth
     include PolyIntrinsic 
   end
+
+###
 
   class DepthLocus < Generator
     include LocusGenetic
@@ -28,9 +30,17 @@ module Mapper
     include PolyIntrinsic 
   end
 
+  class AllLocus < Generator
+    include LocusGenetic
+    include ExtendAll
+    include PolyIntrinsic 
+  end
+ 
+###
+
   class DepthBucket < Generator
     include LocusFirst
-    include ExtendDepth
+    include ExtendAll #behavior same as ExtendDepth, but simpler
     include PolyBucket 
   end
 

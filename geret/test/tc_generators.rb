@@ -171,6 +171,16 @@ class TC_Generators < Test::Unit::TestCase
     assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
   end
 
+  def test_all_locus_grow
+    m = Mapper::AllLocus.new @grammar
+    r = MockRand.new [{1=>0},{1=>0},0, {3=>2},{1=>0},0, {5=>3},{2=>0},0, {4=>1},{2=>1},0, {3=>1},{2=>0},0, 
+                      {2=>0},{1=>0},0, {4=>0},{2=>1},0, {3=>0},{2=>0},0, {2=>1},{2=>1},0, {1=>0},{2=>0},0, ]
+    m.random = r
+    gen = [0,2,  2,2,  3,0,  1,1,  1,0,  0,2,  0,1,  0,0,  1,1,  0,0] 
+    assert_equal( gen, m.generate_full( 2 ) )
+    assert_equal( '((y+x)*(x+y))', m.phenotype(gen) )
+    assert_equal( 3, m.max_codon_base ) 
+  end
  
 end
 
