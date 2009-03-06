@@ -24,7 +24,7 @@ module Mapper
       tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
 
       until ( selected_indices = find_nonterminals( tokens ) ).empty?
-        selected_index = generate_locus( recursivity, selected_indices, tokens, genome )
+        selected_index = generate_locus( selected_indices, genome )
         selected_token = tokens[selected_index]
 #puts  selected_token.inspect       
         selected_symbol = selected_token.data
@@ -70,21 +70,17 @@ module Mapper
 
   module LocusFirst
     protected   
-    def generate_locus( recursivity, selected_indices, tokens, genome )
+    def generate_locus( selected_indices, genome )
       selected_indices.first
     end
   end
 
   module LocusGenetic
     protected   
-    def generate_locus( recurs, selected_indices, tokens, genome )
-      pairs = selected_indices.map { |i| [tokens[i], i] }
-      toks = pairs.find_all {|pair| recurs.include? @grammar[ pair.first.data ].recursivity }
-      toks = pairs if toks.empty? #desperate case, cannot obey recurs
-      tok = toks.at @random.rand( toks.size )
-      # todo: @consume_trivial_codons     
-      genome.push selected_indices.index(tok.last) 
-      tok.last
+    def generate_locus( selected_indices, genome )
+      index = @random.rand( selected_indices.size )
+      genome.push index
+      selected_indices.at index
     end
   end
  

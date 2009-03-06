@@ -28,36 +28,6 @@ class TC_Generators < Test::Unit::TestCase
 
   end
 
-  def test_depth_first_generate
-    m = Mapper::DepthFirst.new @grammar
-    r = MockRand.new [{1=>0},0,  {1=>0},0,  {2=>0},0,  {2=>0},0,  {2=>1},0,  {2=>1},0,  {1=>0},0,  {2=>1},0, {2=>0},0, {2=>0},0 ]
-    m.random = r
-    gen = [2, 2, 0, 0, 1, 1, 2, 1, 0, 0] 
-    assert_equal( gen, m.generate_full( 2 ) )
-    assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
-    assert_equal( 3, m.max_codon_base ) 
-  end
-
-  def test_depth_first_unmod
-    m = Mapper::DepthFirst.new @grammar   
-    r = MockRand.new [{1=>0},{3=>2},  {1=>0},{3=>0},  {2=>0},{3=>1},  {2=>0},{2=>0},  {2=>1},{3=>0},  {2=>1},{2=>1},  {1=>0},{3=>0},  {2=>1},{3=>0}, {2=>0},{2=>1}, {2=>0},{3=>2} ]
-    m.random = r
-    gen = [2+2*3, 2+0*3, 0+1*3, 0+0*2, 1+0*3, 1+1*2, 2+0*3, 1+1*3, 0+0*2, 0+2*3] 
-    m.max_codon_base = 10
-    assert_equal( 10, m.max_codon_base ) 
-    assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
-  end
-
-  def test_breadth_first_generate
-    m = Mapper::BreadthFirst.new @grammar
-    r = MockRand.new [{1=>0},0, {1=>0},0, {2=>1},0, {1=>0},0, {2=>0},0, {2=>0},0, {2=>1},0, {2=>1},0, {2=>0},0, {2=>0},0]
-    m.random = r
-    gen = [2, 2, 1, 2, 0, 0, 1, 1, 0, 0] 
-    assert_equal( gen, m.generate_full( 2 ) )
-    assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
-    assert_equal( 3, m.max_codon_base ) 
-  end
-
   def test_require_depth_too_big
     grammar = Mapper::Grammar.new( { 
       'expr' => Mapper::Rule.new( [ 
@@ -112,17 +82,44 @@ class TC_Generators < Test::Unit::TestCase
     assert_equal( [2], m.generate_full( 300 ) )
   end
 
-  def XXXXXXXtest_depth_locus_generate
-    m = Mapper::DepthLocus.new @grammar
-    r = Random.new :deterministic
-
-    r.set_predef [0,0,0,  1,0,0,  0,0,0,
-                  0,1,0,  1,0,0,  0,0,0,  0,1,0,  0,0,0,  0,1,0,  0,1,0]
+  def test_depth_first_generate
+    m = Mapper::DepthFirst.new @grammar
+    r = MockRand.new [{1=>0},0,  {1=>0},0,  {2=>0},0,  {2=>0},0,  {2=>1},0,  {2=>1},0,  {1=>0},0,  {2=>1},0, {2=>0},0, {2=>0},0 ]
     m.random = r
-    gen = [0,2,  2,2,  0,2,  
-           1,1,  1,0,  0,0,  0,1,  0,0,  1,1,  0,1] 
+    gen = [2, 2, 0, 0, 1, 1, 2, 1, 0, 0] 
     assert_equal( gen, m.generate_full( 2 ) )
-    assert_equal( '(y*((x*x)*x))', m.phenotype(gen) )
+    assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
+    assert_equal( 3, m.max_codon_base ) 
+  end
+
+  def test_depth_first_unmod
+    m = Mapper::DepthFirst.new @grammar   
+    r = MockRand.new [{1=>0},{3=>2},  {1=>0},{3=>0},  {2=>0},{3=>1},  {2=>0},{2=>0},  {2=>1},{3=>0},  {2=>1},{2=>1},  {1=>0},{3=>0},  {2=>1},{3=>0}, {2=>0},{2=>1}, {2=>0},{3=>2} ]
+    m.random = r
+    gen = [2+2*3, 2+0*3, 0+1*3, 0+0*2, 1+0*3, 1+1*2, 2+0*3, 1+1*3, 0+0*2, 0+2*3] 
+    m.max_codon_base = 10
+    assert_equal( 10, m.max_codon_base ) 
+    assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
+  end
+
+  def test_breadth_first_generate
+    m = Mapper::BreadthFirst.new @grammar
+    r = MockRand.new [{1=>0},0, {1=>0},0, {2=>1},0, {1=>0},0, {2=>0},0, {2=>0},0, {2=>1},0, {2=>1},0, {2=>0},0, {2=>0},0]
+    m.random = r
+    gen = [2, 2, 1, 2, 0, 0, 1, 1, 0, 0] 
+    assert_equal( gen, m.generate_full( 2 ) )
+    assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
+    assert_equal( 3, m.max_codon_base ) 
+  end
+ 
+  def test_depth_locus_generate
+    m = Mapper::DepthLocus.new @grammar
+    r = MockRand.new [{1=>0},{1=>0},0, {3=>1},{2=>1},0, {2=>1},{1=>0},0, {3=>0},{2=>1},0, {2=>1},{2=>1},0, 
+                      {1=>0},{2=>0},0, {1=>0},{1=>0},0, {3=>2},{2=>0},0, {2=>1},{2=>0},0, {1=>0},{2=>0},0]     
+    m.random = r
+    gen = [0,2,  1,1,  1,2,  0,1,  1,1,  0,0,  0,2,  2,0,  1,0,  0,0] 
+    assert_equal( gen, m.generate_full( 2 ) )
+    assert_equal( '((x+x)*(y+y))', m.phenotype(gen) )
     assert_equal( 3, m.max_codon_base ) 
   end 
 
