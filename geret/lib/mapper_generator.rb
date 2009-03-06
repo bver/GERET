@@ -74,6 +74,7 @@ module Mapper
       unless defined? @max_codon_base
         @max_codon_base = (@grammar.max { |rule1,rule2| rule1.size<=>rule2.size } ).size+1
       end
+      return index if @max_codon_base/base == 0
       base * @random.rand( @max_codon_base/base ) + index
     end
 

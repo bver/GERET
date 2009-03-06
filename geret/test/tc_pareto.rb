@@ -5,12 +5,11 @@ require 'lib/pareto'
 
 class SingleMax < Struct.new( :value )
   include Pareto
-  Pareto.objective :SingleMax, :value, :maximize   
+  Pareto.objective SingleMax, :value, :maximize   
 end
 
 class SingleMin
   include Pareto
-  Pareto.objective :SingleMin, :value, :minimize
 
   def initialize initvalue
     @val = initvalue
@@ -20,11 +19,12 @@ class SingleMin
     @val
   end
 end
+Pareto.objective SingleMin, :value, :minimize
 
 class BasicPair < Struct.new( :up, :down )
   include Pareto
-  Pareto.objective :BasicPair, :down, :minimize
-  Pareto.objective :BasicPair, :up, :maximize 
+  Pareto.objective BasicPair, :down, :minimize
+  Pareto.objective BasicPair, :up, :maximize 
 end
 
 class SingleProcMin < Struct.new( :data )
