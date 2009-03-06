@@ -123,5 +123,34 @@ class TC_Generators < Test::Unit::TestCase
     assert_equal( 3, m.max_codon_base ) 
   end 
 
+  def test_depth_first_grow
+    m = Mapper::DepthFirst.new @grammar   
+    r = MockRand.new [{3=>2},0, {3=>1},0, {2=>0},0, {3=>2},0, {3=>2},0, {2=>0},0, {2=>0},0, {2=>0},0, {2=>1},0, {3=>1},0]
+    m.random = r   
+    gen = [2,1,0,2,2,0,0,0,1,1]
+    assert_equal( gen, m.generate_grow( 3 ) )
+    assert_equal( '(y+((x+x)*y))', m.phenotype(gen) )
+    assert_equal( 3, m.max_codon_base ) 
+  end
+
+  def test_depth_locus_grow
+    m = Mapper::DepthLocus.new @grammar   
+    r = MockRand.new [{1=>0},{3=>2},0, {3=>2},{3=>1},0, {2=>1},{2=>1},0, {1=>0},{3=>0},0]
+    m.random = r   
+    gen = [0,2,  2,1,  1,1,  0,0]
+    assert_equal( gen, m.generate_grow( 5 ) )
+    assert_equal( '(x*y)', m.phenotype(gen) )
+    assert_equal( 3, m.max_codon_base ) 
+  end
+
+  def test_generate_trivial
+    m = Mapper::DepthFirst.new @grammar   
+    r = MockRand.new [{2=>0},0]
+    m.random = r   
+    gen = [0]
+    assert_equal( gen, m.generate( [:terminating], 3 ) )
+    assert_equal( 'x', m.phenotype(gen) )
+ end
+
 end
 

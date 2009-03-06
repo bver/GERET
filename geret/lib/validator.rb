@@ -88,15 +88,15 @@ module Mapper
       gram
     end
 
-  end
-
   protected 
 
-  def recursivity_over container
-    result = {}
-    container.each { |item| result[ item.recursivity ] = nil }
-    result.keys
-  end
+    def Validator.recursivity_over container
+      result = {}
+      container.each { |item| result[ item.recursivity ] = nil }
+      result.keys
+    end
+    
+  end #Validator
 
-end
+end #Mapper
 

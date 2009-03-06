@@ -12,27 +12,28 @@ module Mapper
     attr_accessor :random 
  
     def generate_full required_depth 
-      generate_genome( [:cyclic], required_depth )
+      generate( [:cyclic], required_depth )
     end
 
-#    def generate_grow required_depth 
-#      generate_genome( [:cyclic, :terminating], required_depth )
-#    end
+    def generate_grow required_depth 
+      generate( [:cyclic, :terminating], required_depth )
+    end
 
-    def generate_genome( recursivity, required_depth )
+    def generate( recursivity, required_depth )
       genome = []
       tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
 
       until ( selected_indices = find_nonterminals( tokens ) ).empty?
         selected_index = generate_locus( selected_indices, genome )
         selected_token = tokens[selected_index]
-#puts  selected_token.inspect       
+
         selected_symbol = selected_token.data
         return genome if @grammar[selected_symbol].recursivity == :infinite # emergency fallback     
 
         rec = (selected_token.depth < required_depth) ? recursivity : [:terminating]
         expansion = generate_rule( rec, selected_symbol, genome )
         expansion.each { |t| t.depth = selected_token.depth+1 }
+# puts  selected_token.inspect +   selected_index.to_s + genome.inspect   
 
         tokens[selected_index,1] = expansion
       end
