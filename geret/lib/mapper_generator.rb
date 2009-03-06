@@ -21,21 +21,20 @@ module Mapper
 
     def generate_genome( recursivity, required_depth )
       genome = []
-      depth = 0     
-      tokens = [ Token.new( :symbol, @grammar.start_symbol, depth ) ]
+      tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
 
-      # deepenning phase
-      while depth < required_depth 
-        selected_indices = find_nonterminals( tokens )
-        return genome if selected_indices.empty?
-        depth = generate_dry( selected_indices, recursivity, genome, tokens ) 
-#puts "XXXX   " +  ( tokens.collect {|t| t.data} ).join( ' ' ) + "depth="+ depth.to_s
-      end
-
-      # terminating phase
       until ( selected_indices = find_nonterminals( tokens ) ).empty?
-        generate_dry( selected_indices, [:terminating], genome, tokens )      
-#puts "YYYY   " +  ( tokens.collect {|t| t.data} ).join( ' ' ) 
+        selected_index = generate_locus( recursivity, selected_indices, tokens, genome )
+        selected_token = tokens[selected_index]
+#puts  selected_token.inspect       
+        selected_symbol = selected_token.data
+        return genome if @grammar[selected_symbol].recursivity == :infinite # emergency fallback     
+
+        rec = (selected_token.depth < required_depth) ? recursivity : [:terminating]
+        expansion = generate_rule( rec, selected_symbol, genome )
+        expansion.each { |t| t.depth = selected_token.depth+1 }
+
+        tokens[selected_index,1] = expansion
       end
      
       genome
@@ -44,16 +43,7 @@ module Mapper
   protected
 
     def generate_dry( selected_indices, recursivity, genome, tokens )
-      selected_index = generate_locus( recursivity, selected_indices, tokens, genome )
-      selected_token = tokens[selected_index]
-
-      expansion = generate_rule( recursivity, selected_token.data, genome )
-      expansion.each { |t| t.depth = selected_token.depth+1 }
-
-      tokens[selected_index,1] = expansion
-      tokens.clear if @grammar[selected_token.data].recursivity == :infinite # emergency fallback      
-
-      expansion.first.depth        
+  
     end
 
     def generate_rule( recurs, symbol, genome )

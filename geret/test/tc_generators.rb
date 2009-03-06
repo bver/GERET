@@ -30,16 +30,16 @@ class TC_Generators < Test::Unit::TestCase
 
   def test_depth_first_generate
     m = Mapper::DepthFirst.new @grammar
-    r = MockRand.new [{1=>0},0,  {1=>0},0,  {2=>0},0,  {2=>0},0,  {2=>1},0,  {2=>1},0,  {1=>0},0,  {1=>0},0, {2=>0},0, {2=>0},0 ]
+    r = MockRand.new [{1=>0},0,  {1=>0},0,  {2=>0},0,  {2=>0},0,  {2=>1},0,  {2=>1},0,  {1=>0},0,  {2=>1},0, {2=>0},0, {2=>0},0 ]
     m.random = r
     gen = [2, 2, 0, 0, 1, 1, 2, 1, 0, 0] 
-    assert_equal( gen, m.generate_full( 3 ) )
+    assert_equal( gen, m.generate_full( 2 ) )
     assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
     assert_equal( 3, m.max_codon_base ) 
 
     m.max_codon_base = 10
     assert_equal( 10, m.max_codon_base ) 
-    #assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
+    assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
   end
 
   def XXXXXXXXXtest_breadth_first_generate
@@ -50,7 +50,7 @@ class TC_Generators < Test::Unit::TestCase
                   0,0,  1,0,  0,0,  0,0,  1,0,  0,0,  0,0,  1,0]
     m.random = r
     gen = [2,2,1,2,2,   0,1,0,0,1,0,0,1] 
-    assert_equal( gen, m.generate_full( 3 ) )
+    assert_equal( gen, m.generate_full( 2 ) )
     assert_equal( '(((x+y)+y)*(x+y))', m.phenotype(gen) )
     assert_equal( 3, m.max_codon_base ) 
   end
@@ -106,7 +106,7 @@ class TC_Generators < Test::Unit::TestCase
     r = MockRand.new [2,0,  0,0,  0,0,  0,0,  0,0]
     m.random = r
  
-    assert_equal( [2, 0], m.generate_full( 300 ) )
+    assert_equal( [2], m.generate_full( 300 ) )
   end
 
   def XXXXXXXtest_depth_locus_generate
@@ -118,7 +118,7 @@ class TC_Generators < Test::Unit::TestCase
     m.random = r
     gen = [0,2,  2,2,  0,2,  
            1,1,  1,0,  0,0,  0,1,  0,0,  1,1,  0,1] 
-    assert_equal( gen, m.generate_full( 3 ) )
+    assert_equal( gen, m.generate_full( 2 ) )
     assert_equal( '(y*((x*x)*x))', m.phenotype(gen) )
     assert_equal( 3, m.max_codon_base ) 
   end 
