@@ -82,7 +82,7 @@ class TC_Generators < Test::Unit::TestCase
     assert_equal( [2], m.generate_full( 300 ) )
   end
 
-  def test_depth_first_generate
+  def test_depth_first_full
     m = Mapper::DepthFirst.new @grammar
     r = MockRand.new [{1=>0},0,  {1=>0},0,  {2=>0},0,  {2=>0},0,  {2=>1},0,  {2=>1},0,  {1=>0},0,  {2=>1},0, {2=>0},0, {2=>0},0 ]
     m.random = r
@@ -102,7 +102,7 @@ class TC_Generators < Test::Unit::TestCase
     assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
   end
 
-  def test_breadth_first_generate
+  def test_breadth_first_full
     m = Mapper::BreadthFirst.new @grammar
     r = MockRand.new [{1=>0},0, {1=>0},0, {2=>1},0, {1=>0},0, {2=>0},0, {2=>0},0, {2=>1},0, {2=>1},0, {2=>0},0, {2=>0},0]
     m.random = r
@@ -112,7 +112,7 @@ class TC_Generators < Test::Unit::TestCase
     assert_equal( 3, m.max_codon_base ) 
   end
  
-  def test_depth_locus_generate
+  def test_depth_locus_full
     m = Mapper::DepthLocus.new @grammar
     r = MockRand.new [{1=>0},{1=>0},0, {3=>1},{2=>1},0, {2=>1},{1=>0},0, {3=>0},{2=>1},0, {2=>1},{2=>1},0, 
                       {1=>0},{2=>0},0, {1=>0},{1=>0},0, {3=>2},{2=>0},0, {2=>1},{2=>0},0, {1=>0},{2=>0},0]     
@@ -150,7 +150,27 @@ class TC_Generators < Test::Unit::TestCase
     gen = [0]
     assert_equal( gen, m.generate( [:terminating], 3 ) )
     assert_equal( 'x', m.phenotype(gen) )
- end
+  end
 
+  def test_breath_bucket_full
+    m = Mapper::BreadthBucket.new @grammar   
+    r = MockRand.new [{1=>0}, {1=>0}, {2=>1}, {1=>0}, {2=>0}, {2=>0}, {2=>1}, {2=>1}, {2=>0}, {2=>0}]
+    m.random = r
+    gen = [2*2, 2*2, 1*1, 2*2, 0*2, 0*1, 1*2, 1*2, 0*1, 0*2] 
+    assert_equal( gen, m.generate_full( 2 ) )
+    assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
+  end
+
+  def test_depth_bucket_full
+    m = Mapper::DepthBucket.new @grammar   
+    r = MockRand.new [{1=>0},  {1=>0},  {2=>0},  {2=>0},  {2=>1},  {2=>1},  {1=>0},  {2=>1}, {2=>0}, {2=>0}]
+
+    m.random = r  
+    gen = [2*2, 2*2, 0*2, 0*1, 1*2, 1*1, 2*2, 1*2, 0*1, 0*2]    
+    assert_equal( gen, m.generate_full( 2 ) )
+    assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
+  end
+
+ 
 end
 
