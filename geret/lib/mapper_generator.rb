@@ -42,11 +42,7 @@ module Mapper
    
   protected
 
-    def generate_dry( selected_indices, recursivity, genome, tokens )
-  
-    end
-
-    def generate_rule( recurs, symbol, genome )
+     def generate_rule( recurs, symbol, genome )
       rule = @grammar.fetch( symbol )
       alts = rule.find_all { |alt| recurs.include? alt.recursivity }
       # todo: @consume_trivial_codons

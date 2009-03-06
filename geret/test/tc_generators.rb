@@ -36,7 +36,13 @@ class TC_Generators < Test::Unit::TestCase
     assert_equal( gen, m.generate_full( 2 ) )
     assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
     assert_equal( 3, m.max_codon_base ) 
+  end
 
+  def test_depth_first_unmod
+    m = Mapper::DepthFirst.new @grammar   
+    r = MockRand.new [{1=>0},{3=>2},  {1=>0},{3=>0},  {2=>0},{3=>1},  {2=>0},{2=>0},  {2=>1},{3=>0},  {2=>1},{2=>1},  {1=>0},{3=>0},  {2=>1},{3=>0}, {2=>0},{2=>1}, {2=>0},{3=>2} ]
+    m.random = r
+    gen = [2+2*3, 2+0*3, 0+1*3, 0+0*2, 1+0*3, 1+1*2, 2+0*3, 1+1*3, 0+0*2, 0+2*3] 
     m.max_codon_base = 10
     assert_equal( 10, m.max_codon_base ) 
     assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
