@@ -47,8 +47,7 @@ class TC_Crossover < Test::Unit::TestCase
     parent2 = [6, 7, 8, 9,    10, 11, 12]
 
     c = Crossover.new
-    r = MockRand.new [{2,1}, {4,2}]      
-    c.random = r
+    c.random = MockRand.new [{2,1}, {4,2}]
 
     assert_equal( 0, c.margin )
     c.margin = 2
@@ -59,8 +58,7 @@ class TC_Crossover < Test::Unit::TestCase
     assert_equal( [1, 2, 3, 10, 11, 12], offspring1 )
     assert_equal( [6, 7, 8, 9, 4, 5], offspring2 )   
 
-    r = MockRand.new []      
-    c.random = r
+    c.random =MockRand.new []
 
     c.margin = 3
     assert_equal( 3, c.margin )
@@ -70,8 +68,7 @@ class TC_Crossover < Test::Unit::TestCase
     assert_equal( parent2, offspring2 )
 
     parent1 = [1, 2, 3,   4, 5, 6]
-    r = MockRand.new [{1,0}, {2,0}]      
-    c.random = r
+    c.random = MockRand.new [{1,0}, {2,0}]      
    
     offspring1, offspring2 = c.crossover( parent1, parent2 )
     assert_equal( [1, 2, 3,  9, 10, 11, 12], offspring1 )
