@@ -110,5 +110,49 @@ class TC_Crossover < Test::Unit::TestCase
     assert_equal( [7, 8, 9, 2, 3, 4, 5, 6], offspring2 )   
   end
  
+  def test_fixed
+    parent1 = [1, 2,   3, 4, 5]
+    parent2 = [6, 7, 8, 9, 10, 11,   12]
+
+    c = Crossover.new
+    assert_equal( false, c.fixed )
+    c.fixed = true
+    assert_equal( true, c.fixed )
+
+    r = MockRand.new [{6,2}]      
+    c.random = r
+    offspring1, offspring2 = c.crossover( parent1, parent2 ) 
+
+    assert_equal( [1, 2, 8, 9, 10, 11, 12], offspring1 )
+    assert_equal( [6, 7, 3, 4, 5], offspring2 )   
+
+    parent1 = [6, 7, 8, 9, 10, 11,   12] 
+    parent2 = [1, 2,   3, 4, 5]
+
+    r = MockRand.new [{6,2}]      
+    c.random = r
+    offspring1, offspring2 = c.crossover( parent1, parent2 ) 
+
+    assert_equal( [6, 7, 3, 4, 5], offspring1 )
+    assert_equal( [1, 2, 8, 9, 10, 11, 12], offspring2 )   
+  end
+
+  def test_step_margin_fixed
+    parent1 = [1, 2, 3,   4, 5, 6]
+    parent2 = [7, 8, 9,   10, 11]
+
+    c = Crossover.new
+    r = MockRand.new [{2,1}]      
+    c.random = r
+    c.step = 2
+    c.margin = 1
+    c.fixed = true
+
+    offspring1, offspring2 = c.crossover( parent1, parent2 ) 
+
+    assert_equal( [1, 2, 3, 10, 11], offspring1 )
+    assert_equal( [7, 8, 9, 4, 5, 6], offspring2 )   
+  end
+ 
 end
 

@@ -4,9 +4,10 @@ class Crossover
     @random = Kernel
     @margin = 0
     @step = 1
+    @fixed = false
   end
 
-  attr_accessor :random, :margin, :step
+  attr_accessor :random, :margin, :step, :fixed
 
   def crossover( parent1, parent2 )
     pts1 = []
@@ -15,8 +16,16 @@ class Crossover
     @margin.step( parent2.size - @margin, @step ) { |i| pts2.push i }
     return parent1.clone, parent2.clone if pts1.empty? or pts2.empty?
   
-    pt1 = pts1.at @random.rand(pts1.size)
-    pt2 = pts2.at @random.rand(pts2.size)
+    if @fixed 
+      if parent1.size < parent2.size
+        pt1 = pt2 = pts1.at( @random.rand(pts1.size) )
+      else
+        pt1 = pt2 = pts2.at( @random.rand(pts2.size) )
+      end
+    else
+      pt1 = pts1.at @random.rand(pts1.size)
+      pt2 = pts2.at @random.rand(pts2.size)
+    end
 
     offs1 = parent1[0...pt1].clone
     offs1 = offs1.concat parent2[pt2...parent2.size]
