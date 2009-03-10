@@ -73,7 +73,6 @@ class TC_Crossover < Test::Unit::TestCase
     offspring1, offspring2 = c.crossover( parent1, parent2 )
     assert_equal( [1, 2, 3,  9, 10, 11, 12], offspring1 )
     assert_equal( [6, 7, 8,  4, 5, 6], offspring2 )   
-
   end
  
  
