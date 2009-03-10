@@ -5,16 +5,21 @@ class Crossover
     @margin = 0
     @step = 1
     @fixed = false
+    @tolerance = true
   end
 
-  attr_accessor :random, :margin, :step, :fixed
+  attr_accessor :random, :margin, :step, :fixed, :tolerance
 
   def crossover( parent1, parent2 )
     pts1 = []
     @margin.step( parent1.size - @margin, @step ) { |i| pts1.push i }
     pts2 = []
     @margin.step( parent2.size - @margin, @step ) { |i| pts2.push i }
-    return parent1.clone, parent2.clone if pts1.empty? or pts2.empty?
+
+    if pts1.empty? or pts2.empty? 
+      return parent1.clone, parent2.clone if @tolerance #fallback 
+      raise "Crossover: operand(s) too short"
+    end
   
     if @fixed 
       if parent1.size < parent2.size

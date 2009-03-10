@@ -11,8 +11,7 @@ class TC_Crossover < Test::Unit::TestCase
     parent2 = [6, 7, 8, 9, 10,   11, 12]
 
     c = Crossover.new
-    r = MockRand.new [{6,2}, {8,5}]      
-    c.random = r
+    c.random = MockRand.new [{6,2}, {8,5}]
     offspring1, offspring2 = c.crossover( parent1, parent2 ) 
 
     assert_equal( [1, 2, 11, 12], offspring1 )
@@ -27,15 +26,13 @@ class TC_Crossover < Test::Unit::TestCase
     parent2 = [2, 3, 4, 5,    6, 7, 8, 9]
 
     c = Crossover.new
-    r = MockRand.new [{2,1}, {9,4}]      
-    c.random = r
+    c.random = MockRand.new [{2,1}, {9,4}]
     offspring1, offspring2 = c.crossover( parent1, parent2 ) 
 
     assert_equal( [1, 6, 7, 8, 9], offspring1 )
     assert_equal( [2, 3, 4, 5], offspring2 )   
 
-    r = MockRand.new [{2,0}, {9,8}]      
-    c.random = r
+    c.random = MockRand.new [{2,0}, {9,8}]
     offspring1, offspring2 = c.crossover( parent1, parent2 ) 
 
     assert_equal( [], offspring1 )
@@ -153,6 +150,30 @@ class TC_Crossover < Test::Unit::TestCase
     assert_equal( [1, 2, 3, 10, 11], offspring1 )
     assert_equal( [7, 8, 9, 4, 5, 6], offspring2 )   
   end
- 
+
+  def test_tolerance
+    parent1 = [1]
+    parent2 = [7, 8, 9, 10, 11]
+
+    c = Crossover.new
+    r = MockRand.new [{2,1}]      
+    c.random = r
+    c.step = 2
+    c.margin = 4
+    c.fixed = true
+
+    offspring1, offspring2 = c.crossover( parent1, parent2 ) 
+
+    assert_equal( [1], offspring1 )
+    assert_equal( [7, 8, 9, 10, 11], offspring2 )   
+
+    assert_equal( true, c.tolerance )
+    c.tolerance = false
+    assert_equal( false, c.tolerance )
+
+    exception = assert_raise( RuntimeError ) { c.crossover( parent1, parent2 ) }
+    assert_equal( "Crossover: operand(s) too short", exception.message )
+  end
+  
 end
 
