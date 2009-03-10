@@ -94,7 +94,21 @@ class TC_Crossover < Test::Unit::TestCase
     assert_equal( [7, 8, 9, 10, 11, 12, 3, 4, 5, 6], offspring2 )   
   end
   
- 
+  def test_step_margin
+    parent1 = [1,    2, 3, 4, 5, 6]
+    parent2 = [7, 8, 9,   10, 11, 12]
+
+    c = Crossover.new
+    r = MockRand.new [{3,0}, {3,1}]      
+    c.random = r
+
+    c.step = 2
+    c.margin = 1
+    offspring1, offspring2 = c.crossover( parent1, parent2 ) 
+
+    assert_equal( [1, 10, 11, 12], offspring1 )
+    assert_equal( [7, 8, 9, 2, 3, 4, 5, 6], offspring2 )   
+  end
  
 end
 
