@@ -2,14 +2,20 @@
 class RandomInit
   def initialize magnitude
     @random = Kernel
-    @magnitude = magnitude
+    if magnitude.kind_of? Array
+      @magnitude = magnitude
+    else
+      @magnitude = [magnitude]
+    end
   end
 
   attr_accessor :random, :magnitude
 
   def init length
     gen = []
-    length.times { gen.push @random.rand(@magnitude) }
+    length.divmod(@magnitude.size).first.times do
+      @magnitude.each {|m| gen.push @random.rand(m) }
+    end
     gen
   end
 end
