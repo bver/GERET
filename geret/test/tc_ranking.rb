@@ -52,8 +52,27 @@ class TC_Rank < Test::Unit::TestCase
   end
 
   def test_block
-    #r = Ranking.new :scalar
-    #r.rank( population ) {|individual,rank,prop| individual.scalarRank=rank; individual.scalarProportion=prop }
+    population = []
+    population << ComplexIndividual.new( 1000 )   # rank 1
+    population << ComplexIndividual.new( 30 )     # rank 4
+    population << ComplexIndividual.new( 3000 )   # rank 0
+    population << ComplexIndividual.new( 400 )    # rank 3
+    population << ComplexIndividual.new( 500 )    # rank 2
+   
+    r = Ranking.new :scalar
+    r.rank( population ) {|individual,rank,prop| individual.scalarRank=rank; individual.scalarProportion=prop }
+
+    assert_equal( 1, population[0].scalarRank )
+    assert_equal( 4, population[1].scalarRank )
+    assert_equal( 0, population[2].scalarRank )
+    assert_equal( 3, population[3].scalarRank )
+    assert_equal( 2, population[4].scalarRank )
+
+    assert_equal( 1.05, population[0].scalarProportion )
+    assert_equal( 0.9, (100*population[1].scalarProportion).round/100.0 ) #rounding kind of 0.900001 
+    assert_equal( 1.1, population[2].scalarProportion )
+    assert_equal( 0.95, population[3].scalarProportion )
+    assert_equal( 1, population[4].scalarProportion )
   end
 
   def test_equal_fitness_values
@@ -69,7 +88,5 @@ class TC_Rank < Test::Unit::TestCase
     # r = Ranking.new {|one,two| two.vector.size<=>one.vector.size} )
   end
 
-  def test_already_defined_attributes
-  end
 end
 

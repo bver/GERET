@@ -19,7 +19,12 @@ class Ranking
       individual.rank = index   
     end
 
-    ranked.sort {|a,b| a.index <=> b.index }
+    if block_given?
+      ranked.each {|r| yield( population[r.index], r.rank, r.proportion ) }
+      population
+    else
+      ranked.sort {|a,b| a.index <=> b.index }
+    end
   end
 end
 
