@@ -6,7 +6,10 @@ require 'lib/ranking'
 class TrivialIndividual < Struct.new( :fitness )
 end
 
-class LikeTrivialIndividual < Struct.new( :val )
+class LikeTrivialIndividual 
+  def initialize val
+    @val = val
+  end
   def fitness
     @val * 2
   end
@@ -79,13 +82,24 @@ class TC_Rank < Test::Unit::TestCase
   end
 
   def test_heterogenous_population
+    @population[0] = LikeTrivialIndividual.new( 1000/2 )   # rank 1   
+    @population[4] = LikeTrivialIndividual.new( 500/2 )    # rank 2   
+
+    r = Ranking.new :fitness
+    rankedPopulation = r.rank @population 
+
+    assert_equal( 1, rankedPopulation[0].rank )
+    assert_equal( 4, rankedPopulation[1].rank )
+    assert_equal( 0, rankedPopulation[2].rank )
+    assert_equal( 3, rankedPopulation[3].rank )
+    assert_equal( 2, rankedPopulation[4].rank )
   end
 
   def test_min_max_params
   end
 
   def test_proc
-    # r = Ranking.new {|one,two| two.vector.size<=>one.vector.size} )
+    # r = Ranking.new {|one,two| two.vector.size<=>one.vector.size}
   end
 
 end
