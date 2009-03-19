@@ -17,7 +17,6 @@ end
 
 class ComplexIndividual < Struct.new( :scalar, :vector )
   attr_accessor :scalarRank, :scalarProportion
-  attr_accessor :vectorRank, :vectorProportion  
 end
 
 class TC_Rank < Test::Unit::TestCase
@@ -114,7 +113,28 @@ class TC_Rank < Test::Unit::TestCase
   end
 
   def test_proc
-    # r = Ranking.new {|one,two| two.vector.size<=>one.vector.size}
+    population = []
+    population << ComplexIndividual.new( 0, Array.new(100,7) )   # rank 1
+    population << ComplexIndividual.new( 0, [5,nil,'hello'] )     # rank 4
+    population << ComplexIndividual.new( 0, Array.new(300) )   # rank 0
+    population << ComplexIndividual.new( 0, [7,7,7,7] )    # rank 3
+    population << ComplexIndividual.new( 0, [1,1,1,1,1] )    # rank 2
+  
+    r = Ranking.new( proc {|one,two| two.vector.size<=>one.vector.size} )
+    rankedPopulation = r.rank population 
+
+    assert_equal( 1, rankedPopulation[0].rank )
+    assert_equal( 4, rankedPopulation[1].rank )
+    assert_equal( 0, rankedPopulation[2].rank )
+    assert_equal( 3, rankedPopulation[3].rank )
+    assert_equal( 2, rankedPopulation[4].rank )
+
+    assert_equal( 1.05, rankedPopulation[0].proportion )
+    assert_equal( 0.9, (100*rankedPopulation[1].proportion).round/100.0 ) #rounding kind of 0.900001 
+    assert_equal( 1.1, rankedPopulation[2].proportion )
+    assert_equal( 0.95, rankedPopulation[3].proportion )
+    assert_equal( 1, rankedPopulation[4].proportion )
+
   end
 
 end
