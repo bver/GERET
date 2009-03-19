@@ -9,6 +9,8 @@ class Ranking
     @min = 2.0 - @max
   end
 
+  attr_accessor :max, :min
+
   def rank population
     ranked = population.map { |orig| RankedIndividual.new orig }
     ranked.each_with_index {|individual, i| individual.index = i }

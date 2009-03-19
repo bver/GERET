@@ -96,6 +96,21 @@ class TC_Rank < Test::Unit::TestCase
   end
 
   def test_min_max_params
+    r = Ranking.new :fitness
+    assert_equal( 1.1, r.max )
+    assert_equal( 2-r.max, r.min )
+    r.min = 9 
+    r.max = 11
+    assert_equal( 11, r.max )
+    assert_equal( 9, r.min )
+ 
+    rankedPopulation = r.rank @population 
+
+    assert_equal( 10.5, rankedPopulation[0].proportion )
+    assert_equal( 9, (100*rankedPopulation[1].proportion).round/100.0 ) #rounding    
+    assert_equal( 11, rankedPopulation[2].proportion )
+    assert_equal( 9.5, rankedPopulation[3].proportion )
+    assert_equal( 10, rankedPopulation[4].proportion )
   end
 
   def test_proc
