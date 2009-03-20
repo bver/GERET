@@ -131,9 +131,20 @@ class TC_Dominance < Test::Unit::TestCase
     assert_equal( 0, rankedPopulation[0].count ) 
   end
  
-  def xtest_depth_basic
+  def test_depth_basic
     d = Dominance.new
     rankedPopulation = d.depth @population
+
+    @population.each_index { |i| assert_equal( @population[i].object_id, rankedPopulation[i].original.object_id ) }
+
+    assert_equal( 0, rankedPopulation[0].depth )
+    assert_equal( 1, rankedPopulation[1].depth )
+    assert_equal( 0, rankedPopulation[2].depth )
+    assert_equal( 2, rankedPopulation[3].depth )
+    assert_equal( 1, rankedPopulation[4].depth )
+    assert_equal( 0, rankedPopulation[5].depth )
+    assert_equal( 2, rankedPopulation[6].depth )   
+    assert_equal( 3, rankedPopulation[7].depth )  
   end
 
   def xtest_depth_block
