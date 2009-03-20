@@ -31,6 +31,8 @@ class TC_Dominance < Test::Unit::TestCase
     @population << Point2D.new( 7, 3 ) #f
     @population << Point2D.new( 4, 2 ) #g
     @population << Point2D.new( 3, 1 ) #h
+
+    @population2 = @population.map { |pt| SmartPoint.new( pt.x, pt.y ) }
   end
 
   def test_rank_count_basic
@@ -60,39 +62,29 @@ class TC_Dominance < Test::Unit::TestCase
 
   def test_rank_count_block
  
-    population = []
-    population << SmartPoint.new( 2, 6 ) #a
-    population << SmartPoint.new( 3, 5 ) #b
-    population << SmartPoint.new( 5, 5 ) #c
-    population << SmartPoint.new( 1, 4 ) #d
-    population << SmartPoint.new( 4, 4 ) #e
-    population << SmartPoint.new( 7, 3 ) #f
-    population << SmartPoint.new( 4, 2 ) #g
-    population << SmartPoint.new( 3, 1 ) #h
-
     d = Dominance.new
-    d.rank_count( population ) do |individual,rank,count| 
+    d.rank_count( @population2 ) do |individual,rank,count| 
        individual.smartRank = rank 
        individual.smartCount = count
     end
 
-    assert_equal( 0, population[0].smartRank )
-    assert_equal( 1, population[1].smartRank )
-    assert_equal( 0, population[2].smartRank )
-    assert_equal( 4, population[3].smartRank )
-    assert_equal( 1, population[4].smartRank )
-    assert_equal( 0, population[5].smartRank )
-    assert_equal( 3, population[6].smartRank )   
-    assert_equal( 5, population[7].smartRank )  
+    assert_equal( 0, @population2[0].smartRank )
+    assert_equal( 1, @population2[1].smartRank )
+    assert_equal( 0, @population2[2].smartRank )
+    assert_equal( 4, @population2[3].smartRank )
+    assert_equal( 1, @population2[4].smartRank )
+    assert_equal( 0, @population2[5].smartRank )
+    assert_equal( 3, @population2[6].smartRank )   
+    assert_equal( 5, @population2[7].smartRank )  
 
-    assert_equal( 1, population[0].smartCount )
-    assert_equal( 2, population[1].smartCount )
-    assert_equal( 5, population[2].smartCount )
-    assert_equal( 0, population[3].smartCount )
-    assert_equal( 3, population[4].smartCount )
-    assert_equal( 2, population[5].smartCount )
-    assert_equal( 1, population[6].smartCount )   
-    assert_equal( 0, population[7].smartCount )  
+    assert_equal( 1, @population2[0].smartCount )
+    assert_equal( 2, @population2[1].smartCount )
+    assert_equal( 5, @population2[2].smartCount )
+    assert_equal( 0, @population2[3].smartCount )
+    assert_equal( 3, @population2[4].smartCount )
+    assert_equal( 2, @population2[5].smartCount )
+    assert_equal( 1, @population2[6].smartCount )   
+    assert_equal( 0, @population2[7].smartCount )  
   end
  
   def test_rank_count_proc
@@ -147,9 +139,18 @@ class TC_Dominance < Test::Unit::TestCase
     assert_equal( 3, rankedPopulation[7].depth )  
   end
 
-  def xtest_depth_block
+  def test_depth_block
     d = Dominance.new
-    d.depth( @population ) { |individual,depth| individual.smartDepth = depth }
+    d.depth( @population2 ) { |individual,depth| individual.smartDepth = depth }
+
+    assert_equal( 0, @population2[0].smartDepth )
+    assert_equal( 1, @population2[1].smartDepth )
+    assert_equal( 0, @population2[2].smartDepth )
+    assert_equal( 2, @population2[3].smartDepth )
+    assert_equal( 1, @population2[4].smartDepth )
+    assert_equal( 0, @population2[5].smartDepth )
+    assert_equal( 2, @population2[6].smartDepth )   
+    assert_equal( 3, @population2[7].smartDepth )  
   end
  
   def xtest_depth_proc

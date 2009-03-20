@@ -35,7 +35,8 @@ class Dominance
       depth += 1
     end
 
-    result
+    return result unless block_given?
+    result.each { |fields| yield( fields.original, fields.depth ) }
   end
 
   protected
