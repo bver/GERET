@@ -95,9 +95,27 @@ class TC_Dominance < Test::Unit::TestCase
     assert_equal( 0, population[7].smartCount )  
   end
  
-  def xtest_rank_count_proc
+  def test_rank_count_proc
     d = Dominance.new( proc {|a,b| a.nondominance b } )
     rankedPopulation = d.rank_count @population
+
+    assert_equal( 0, rankedPopulation[0].count )
+    assert_equal( 1, rankedPopulation[1].count )
+    assert_equal( 0, rankedPopulation[2].count )
+    assert_equal( 4, rankedPopulation[3].count )
+    assert_equal( 1, rankedPopulation[4].count )
+    assert_equal( 0, rankedPopulation[5].count )
+    assert_equal( 3, rankedPopulation[6].count )   
+    assert_equal( 5, rankedPopulation[7].count )  
+
+    assert_equal( 1, rankedPopulation[0].rank )
+    assert_equal( 2, rankedPopulation[1].rank )
+    assert_equal( 5, rankedPopulation[2].rank )
+    assert_equal( 0, rankedPopulation[3].rank )
+    assert_equal( 3, rankedPopulation[4].rank )
+    assert_equal( 2, rankedPopulation[5].rank )
+    assert_equal( 1, rankedPopulation[6].rank )   
+    assert_equal( 0, rankedPopulation[7].rank )  
   end
 
   def xtest_rank_count_empty_population
