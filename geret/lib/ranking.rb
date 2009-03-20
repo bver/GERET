@@ -3,11 +3,18 @@ class Ranking
 
   RankedIndividual = Struct.new( 'RankedIndividual', :original, :rank, :proportion, :index )
 
-  def initialize orderBy
+  def initialize orderBy, direction=:maximize
     @orderBy = if orderBy.kind_of? Proc 
                  orderBy
                else
-                 proc {|a,b| b.send(orderBy) <=> a.send(orderBy) }                
+                 case direction
+                 when :maximize
+                   proc {|a,b| b.send(orderBy) <=> a.send(orderBy) }                
+                 when :minimize
+                   proc {|a,b| a.send(orderBy) <=> b.send(orderBy) }
+                 else
+                   raise "Ranking: unsupported direction argument"
+                 end
                end
     @max = 1.1
     @min = 2.0 - @max

@@ -168,10 +168,33 @@ class TC_Rank < Test::Unit::TestCase
     assert_equal( 1, rankedPopulation[4].proportion )
   end
 
-  def test_minimize_argument
-   # r = Ranking.new :fitness, :minimize   
+  def test_maximize_argument
+    r = Ranking.new :fitness, :maximize 
+    rankedPopulation = r.rank @population 
+  
+    assert_equal( 1, rankedPopulation[0].rank )
+    assert_equal( 4, rankedPopulation[1].rank )
+    assert_equal( 0, rankedPopulation[2].rank )
+    assert_equal( 3, rankedPopulation[3].rank )
+    assert_equal( 2, rankedPopulation[4].rank )
   end
 
+  def test_minimize_argument
+    r = Ranking.new :fitness, :minimize 
+    rankedPopulation = r.rank @population 
+  
+    assert_equal( 4-1, rankedPopulation[0].rank ) #3
+    assert_equal( 4-4, rankedPopulation[1].rank ) #0
+    assert_equal( 4-0, rankedPopulation[2].rank ) #4
+    assert_equal( 4-3, rankedPopulation[3].rank ) #1
+    assert_equal( 4-2, rankedPopulation[4].rank ) #2
+  end
+
+  def test_wrong_argument
+    exception = assert_raise( RuntimeError ) { Ranking.new :fitness, :what }
+    assert_equal( "Ranking: unsupported direction argument", exception.message )
+  end
+ 
   def test_singleton_population
   end
 
