@@ -3,8 +3,7 @@
 require 'test/unit'
 require 'lib/ranking'
 
-class TrivialIndividual < Struct.new( :fitness )
-end
+TrivialIndividual = Struct.new( 'TrivialIndividual', :fitness )
 
 class LikeTrivialIndividual 
   def initialize val
