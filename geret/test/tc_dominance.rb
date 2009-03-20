@@ -153,15 +153,30 @@ class TC_Dominance < Test::Unit::TestCase
     assert_equal( 3, @population2[7].smartDepth )  
   end
  
-  def xtest_depth_proc
+  def test_depth_proc
     d = Dominance.new( proc {|a,b| a.nondominance b } )
     rankedPopulation = d.depth @population
+
+    assert_equal( 1, rankedPopulation[0].depth )
+    assert_equal( 1, rankedPopulation[1].depth )
+    assert_equal( 3, rankedPopulation[2].depth )
+    assert_equal( 0, rankedPopulation[3].depth )
+    assert_equal( 2, rankedPopulation[4].depth )
+    assert_equal( 2, rankedPopulation[5].depth )
+    assert_equal( 1, rankedPopulation[6].depth )   
+    assert_equal( 0, rankedPopulation[7].depth )  
   end
 
-  def xtest_depth_empty_population
+  def test_depth_empty_population
+    d = Dominance.new
+    rankedPopulation = d.depth []
+    assert( rankedPopulation.empty? )
   end
 
-  def xtest_depth_small_population
+  def test_depth_small_population
+    d = Dominance.new
+    rankedPopulation = d.depth [ Point2D.new( 3, 1 ) ]
+    assert_equal( 0, rankedPopulation[0].depth )
   end
   
 end
