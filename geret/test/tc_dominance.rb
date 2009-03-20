@@ -118,10 +118,17 @@ class TC_Dominance < Test::Unit::TestCase
     assert_equal( 0, rankedPopulation[7].rank )  
   end
 
-  def xtest_rank_count_empty_population
+  def test_rank_count_empty_population
+    d = Dominance.new
+    rankedPopulation = d.rank_count []
+    assert( rankedPopulation.empty? )
   end
 
-  def xtest_rank_count_small_population
+  def test_rank_count_small_population
+    d = Dominance.new
+    rankedPopulation = d.rank_count [ Point2D.new( 3, 1 ) ]
+    assert_equal( 0, rankedPopulation[0].rank )
+    assert_equal( 0, rankedPopulation[0].count ) 
   end
  
   def xtest_depth_basic
