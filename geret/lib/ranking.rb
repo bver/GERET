@@ -24,6 +24,7 @@ class Ranking
 
   def rank population
     ranked = population.map { |orig| RankedIndividual.new orig }
+    raise "Ranking: empty population" if ranked.empty?
     ranked.each_with_index {|individual, i| individual.index = i }
     ranked.sort! {|a,b| @orderBy.call( a.original, b.original ) }
 
@@ -36,15 +37,9 @@ class Ranking
 
     min = @min.to_f
     amplitude = @max.to_f-min
-    rank = rank.to_f
+    rank = rank==0 ? 1.0 : rank.to_f
     ranked.each { |individual| individual.proportion = min+amplitude*(rank-individual.rank)/rank }
-   
-#    ranked.each_with_index do |individual, index|
-#      individual.proportion = @min+(@max-@min)*(rank-individual.rank)/rank
-      #individual.proportion = @min+(@max-@min)*(ranked.size-index-1)/(ranked.size-1.0)
-      #individual.rank = index   
-#    end
-
+ 
     if block_given?
       ranked.each {|r| yield( population[r.index], r.rank, r.proportion ) }
       population

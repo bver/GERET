@@ -195,10 +195,30 @@ class TC_Rank < Test::Unit::TestCase
     assert_equal( "Ranking: unsupported direction argument", exception.message )
   end
  
-  def test_singleton_population
+  def test_small_populations
+    r = Ranking.new :fitness
+    rankedPopulation = r.rank [ TrivialIndividual.new( 400 ) ] 
+    assert_equal( 0, rankedPopulation[0].rank )
+    assert_equal( r.max, rankedPopulation[0].proportion )
+
+    rankedPopulation = r.rank [ TrivialIndividual.new( 4 ), TrivialIndividual.new( 42 ) ] 
+    assert_equal( 1, rankedPopulation[0].rank )
+    assert_equal( 0, rankedPopulation[1].rank )   
+    assert_equal( r.min, rankedPopulation[0].proportion )
+    assert_equal( r.max, rankedPopulation[1].proportion )
+
+    rankedPopulation = r.rank [ TrivialIndividual.new( 42 ), TrivialIndividual.new( 42 ) ] 
+    assert_equal( 0, rankedPopulation[0].rank )
+    assert_equal( 0, rankedPopulation[1].rank )   
+    assert_equal( r.max, rankedPopulation[0].proportion )
+    assert_equal( r.max, rankedPopulation[1].proportion )
   end
 
   def test_empty_population
+    r = Ranking.new :fitness
+    exception = assert_raise( RuntimeError ) { r.rank [] }
+    assert_equal( "Ranking: empty population", exception.message )
   end
+
 end
 
