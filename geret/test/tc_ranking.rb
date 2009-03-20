@@ -32,13 +32,9 @@ class TC_Rank < Test::Unit::TestCase
   def test_basic
     r = Ranking.new :fitness
     rankedPopulation = r.rank @population 
-
-    assert_equal( @population[0], rankedPopulation[0].original )
-    assert_equal( @population[1], rankedPopulation[1].original )
-    assert_equal( @population[2], rankedPopulation[2].original )
-    assert_equal( @population[3], rankedPopulation[3].original )
-    assert_equal( @population[4], rankedPopulation[4].original )
-   
+ 
+    @population.each_index { |i| assert_equal( @population[i].object_id, rankedPopulation[i].original.object_id ) }
+  
     assert_equal( 1, rankedPopulation[0].rank )
     assert_equal( 4, rankedPopulation[1].rank )
     assert_equal( 0, rankedPopulation[2].rank )
@@ -98,8 +94,7 @@ class TC_Rank < Test::Unit::TestCase
     plateu1 = (1.075 + 1.05) / 2 # rank 1
     plateu2 = (1.0 + 0.975 + 0.95) / 3 # rank 3
     # 1.1, p1:1.075, p1:1.05, 1.025, p2:1.0, p2:0.975, p2:0.95, 0.924, 0.899
-    
- 
+     
     assert_equal( 0.9.to_s, rankedPopulation[0].proportion.to_s )
     assert_equal( 0.98, rankedPopulation[1].proportion )
     assert_equal( 0.98, rankedPopulation[2].proportion )

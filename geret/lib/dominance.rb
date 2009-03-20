@@ -20,7 +20,12 @@ class Dominance
       end
     end
 
-    dom.map { |fields| DominanceFields.new( fields.original, fields.dominated_by.size, fields.dominates.size )  }
+    if block_given?
+      dom.each { |fields| yield( fields.original, fields.dominated_by.size, fields.dominates.size ) }
+      return population
+    else
+      return dom.map { |fields| DominanceFields.new( fields.original, fields.dominated_by.size, fields.dominates.size )  }
+    end
   end
 
 end

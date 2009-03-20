@@ -42,11 +42,12 @@ class Ranking
  
     if block_given?
       ranked.each { |r| yield( population[r.index], r.rank, r.proportion ) }
-      population
+      return population
     else
-      ranked.sort { |a,b| a.index <=> b.index }
+      return ranked.sort { |a,b| a.index <=> b.index }
     end
   end
+
 end
 
 
