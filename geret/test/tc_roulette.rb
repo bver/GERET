@@ -49,5 +49,19 @@ class TC_Roulette < Test::Unit::TestCase
     assert_equal( "Roulette: cannot use negative slot width", exception.message )
   end
 
+  def test_proc
+    r = Roulette.new proc { |item| item }
+    r.random =  MockRand.new [{0,0.3}, {0,0.7}]
+
+    population = [10, 100, 50, 10]
+    winner = r.select population
+    assert_equal( 100, winner )
+
+    winner = r.select population
+    assert_equal( 50, winner )
+  end
+
+
+
 end
 

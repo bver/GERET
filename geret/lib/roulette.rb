@@ -3,7 +3,11 @@ class Roulette
   Slot = Struct.new( 'WheelSlot', :original, :width )
 
   def initialize proportionalBy
-    @prop = proportionalBy
+    @prop = if proportionalBy.kind_of? Proc
+              proportionalBy
+            else
+              proc { |individual| individual.send(proportionalBy) }
+            end
     @random = Kernel
   end
 
@@ -15,7 +19,7 @@ class Roulette
      wheel = []
      sum = 0.0
      population.each do |individual| 
-       width = individual.send(@prop).to_f
+       width = @prop.call(individual).to_f
        raise  "Roulette: cannot use negative slot width" if width < 0.0
        wheel.push Slot.new( individual, width ) 
        sum += width
