@@ -10,11 +10,15 @@ class Roulette
   attr_accessor :random
 
   def select population
+     raise "Roulette: cannot select from empty population" if population.empty?
+
      wheel = []
      sum = 0.0
      population.each do |individual| 
-       wheel.push Slot.new( individual, individual.send(@prop) ) 
-       sum += wheel.last.width
+       width = individual.send(@prop).to_f
+       raise  "Roulette: cannot use negative slot width" if width < 0.0
+       wheel.push Slot.new( individual, width ) 
+       sum += width
      end
 
      ballot = sum * @random.rand   
