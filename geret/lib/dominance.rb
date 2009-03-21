@@ -1,8 +1,8 @@
 
 class Dominance
-  DominanceHelper = Struct.new( 'DominanceFields', :original, :dominated_by, :dominates )
+  DominanceHelper = Struct.new( 'DominanceHelper', :original, :dominated_by, :dominates )
   DominanceFields = Struct.new( 'DominanceFields', :original, :rank, :count )
-  DominanceDepth = Struct.new( 'DominanceFields', :original, :depth )
+  DominanceDepth = Struct.new( 'DominanceDepth', :original, :depth )
 
   def initialize comparison = proc { |a,b| a<=>b }
     @comparison = comparison
