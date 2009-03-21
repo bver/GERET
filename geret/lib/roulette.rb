@@ -1,6 +1,6 @@
 
 class Roulette
-  Slot = Struct.new( 'WheelSlot', :original, :width )
+  Slot = Struct.new( 'Slot', :original, :width )
 
   def initialize proportionalBy
     @prop = if proportionalBy.kind_of? Proc
@@ -14,25 +14,28 @@ class Roulette
   attr_accessor :random
 
   def select population
-     raise "Roulette: cannot select from empty population" if population.empty?
+    raise "Roulette: cannot select from empty population" if population.empty?
 
-     wheel = []
-     sum = 0.0
-     population.each do |individual| 
-       width = @prop.call(individual).to_f
-       raise  "Roulette: cannot use negative slot width" if width < 0.0
-       wheel.push Slot.new( individual, width ) 
-       sum += width
-     end
+    wheel = []
+    sum = 0.0
+    population.each do |individual| 
+      width = @prop.call(individual).to_f
+      raise  "Roulette: cannot use negative slot width" if width < 0.0
+      wheel.push Slot.new( individual, width ) 
+      sum += width
+    end
 
-     ballot = sum * @random.rand   
-     sum = 0.0
-     wheel.each do |slot|
-       sum += slot.width
-       return slot.original if sum > ballot
-     end
+    wheel.sort! { |a,b| b.width <=> a.width }
+    
+    ballot = sum * @random.rand   
+
+    sum = 0.0
+    wheel.each do |slot|
+      sum += slot.width
+      return slot.original if sum > ballot
+    end
      
-     return wheel.last.original
+    return wheel.last.original
   end
 
 end
