@@ -41,14 +41,14 @@ class TC_Roulette < Test::Unit::TestCase
   def test_empty_population
     r = Roulette.new :fitness
     exception = assert_raise( RuntimeError ) { r.select [] }
-    assert_equal( "Roulette: cannot select from empty population", exception.message )
+    assert_equal( "Roulette: cannot select from an empty population", exception.message )
   end
 
   def test_negative_fitness
     r = Roulette.new :fitness
     @population << SomeIndividual.new(-1)
     exception = assert_raise( RuntimeError ) { r.select @population }
-    assert_equal( "Roulette: cannot use negative slot width", exception.message )
+    assert_equal( "Roulette: cannot use a negative slot width", exception.message )
   end
 
   def test_proc
