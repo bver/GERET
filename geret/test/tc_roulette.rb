@@ -9,6 +9,7 @@ include Selection
 SomeIndividual = Struct.new( 'SomeIndividual', :fitness )
 
 class TC_Roulette < Test::Unit::TestCase
+
   def setup
     @population = []
     @population << SomeIndividual.new(10)

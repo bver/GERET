@@ -1,0 +1,49 @@
+#!/usr/bin/ruby
+
+require 'test/unit'
+require 'test/mock_rand'
+require 'lib/sampling'
+
+include Selection
+
+SUIndividual = Struct.new( 'SUIndividual', :fitness )
+
+class TC_Sampling < Test::Unit::TestCase
+  
+  def setup
+    @population = []
+    @population << SUIndividual.new(10)
+    @population << SUIndividual.new(100)
+    @population << SUIndividual.new(50)
+    @population << SUIndividual.new(10)
+    # sum is 170
+  end
+ 
+  def test_basic
+    r = Sampling.new :fitness
+    r.random =  MockRand.new [{0,0.3}]
+
+    winners = r.select( @population, 2 )
+    assert_equal( 2, winners.size )
+    assert_equal( @population[1].object_id, winners[0].object_id )
+    assert_equal( @population[2].object_id, winners[1].object_id )
+  end
+
+  def test_proc
+  end
+
+  def test_winner_repetition
+    #tolerance
+  end
+
+  def test_small_population
+    # r.select( @population, 10 )
+  end
+
+  def test_zero_howmuch
+    # r.select( @population, 0 )
+  end  
+
+ 
+end
+

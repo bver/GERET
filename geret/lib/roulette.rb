@@ -1,13 +1,15 @@
 
 module Selection
+
   class Roulette
+  
     Slot = Struct.new( 'Slot', :original, :width )
 
-    def initialize proportionalBy
-      @prop = if proportionalBy.kind_of? Proc
-                proportionalBy
+    def initialize proportional_by
+      @prop = if proportional_by.kind_of? Proc
+                proportional_by
               else
-                proc { |individual| individual.send(proportionalBy) }
+                proc { |individual| individual.send(proportional_by) }
               end
       @random = Kernel
     end
@@ -15,7 +17,7 @@ module Selection
     attr_accessor :random
 
     def select population
-      sum,wheel = wheelCore population
+      sum,wheel = wheel_core population
 
       ballot = sum * @random.rand   
 
@@ -30,7 +32,7 @@ module Selection
 
     protected
 
-    def wheelCore population
+    def wheel_core population
       raise "Roulette: cannot select from an empty population" if population.empty?
 
       wheel = []
