@@ -4,6 +4,8 @@ require 'test/unit'
 require 'test/mock_rand'
 require 'lib/roulette'
 
+include Selection
+
 SomeIndividual = Struct.new( 'SomeIndividual', :fitness )
 
 class TC_Roulette < Test::Unit::TestCase
