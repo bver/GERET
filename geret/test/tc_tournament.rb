@@ -88,7 +88,7 @@ class TC_Tournament < Test::Unit::TestCase
 
   def test_invalid_ranker
     exception = assert_raise( RuntimeError ) { Tournament.new 42 }
-    assert_equal( "Tournament: invalid Raniking object", exception.message )
+    assert_equal( "Tournament: invalid Ranking object", exception.message )
   end
   
 end

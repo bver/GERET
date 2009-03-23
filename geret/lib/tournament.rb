@@ -4,7 +4,7 @@ require 'lib/ranking'
 class Tournament
 
   def initialize ranker, pressure_modifier=1.0
-    raise "Tournament: invalid Raniking object" unless ranker.kind_of? Ranking 
+    raise "Tournament: invalid Ranking object" unless ranker.kind_of? Ranking 
     @ranker = ranker
     @random = Kernel
     @pressure_modifier = pressure_modifier
