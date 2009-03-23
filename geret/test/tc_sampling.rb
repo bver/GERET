@@ -30,6 +30,13 @@ class TC_Sampling < Test::Unit::TestCase
   end
 
   def test_proc
+    r = Sampling.new proc { |item| item }
+    r.random =  MockRand.new [{0,0.3}]
+
+    population = [10, 100, 50, 10]
+    winners = r.select( population, 2 )
+    assert_equal( 100, winners[0] )
+    assert_equal( 50, winners[1] )
   end
 
   def test_winner_repetition
