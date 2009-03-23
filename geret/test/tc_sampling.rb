@@ -40,11 +40,16 @@ class TC_Sampling < Test::Unit::TestCase
   end
 
   def test_winner_repetition
-    #tolerance
+    r = Sampling.new :fitness
+    exception = assert_raise( RuntimeError ) { r.select( @population, 5 ) }
+    assert_equal( "Sampling: cannot select more than population.size", exception.message )
   end
 
   def test_small_population
     # r.select( @population, 10 )
+  end
+
+  def test_empty_population
   end
 
   def test_zero_howmuch

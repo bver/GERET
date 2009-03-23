@@ -10,22 +10,19 @@ module Selection
     end
 
     def select( population, how_much )
+      raise "Sampling: cannot select more than population.size" if how_much > population.size
       sum,wheel = wheel_core population
 
       step = sum.to_f/how_much
       ballot = step * @random.rand 
 
-      sum = 0.0
+      width = 0.0
       winners = []
-      index = 0
-      while winners.size < how_much
-        slot = wheel[index]
-        sum += slot.width
-        if sum > ballot
-          winners.push slot.original         
-          ballot += step
-        end
-        index += 1
+      wheel.each_with_index do |slot,index|
+        width += slot.width
+        next if ballot > width
+        winners.push slot.original   
+        ballot += step
       end
 
       winners
