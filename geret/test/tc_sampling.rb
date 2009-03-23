@@ -39,23 +39,23 @@ class TC_Sampling < Test::Unit::TestCase
     assert_equal( 50, winners[1] )
   end
 
-  def test_winner_repetition
+  def test_small_population
     r = Sampling.new :fitness
     exception = assert_raise( RuntimeError ) { r.select( @population, 5 ) }
     assert_equal( "Sampling: cannot select more than population.size", exception.message )
   end
 
-  def test_small_population
-    # r.select( @population, 10 )
-  end
-
   def test_empty_population
+    r = Sampling.new :fitness
+    exception = assert_raise( RuntimeError ) { r.select( [], 2 ) }
+    assert_equal( "Sampling: cannot select from an empty population", exception.message )
   end
 
   def test_zero_howmuch
-    # r.select( @population, 0 )
+    r = Sampling.new :fitness
+    winners = r.select( @population, 0 )
+    assert_equal( 0, winners.size )
   end  
-
  
 end
 

@@ -10,7 +10,10 @@ module Selection
     end
 
     def select( population, how_much )
+      raise "Sampling: cannot select from an empty population" if population.empty?
       raise "Sampling: cannot select more than population.size" if how_much > population.size
+      return [] if how_much == 0
+
       sum,wheel = wheel_core population
 
       step = sum.to_f/how_much
