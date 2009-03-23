@@ -9,7 +9,7 @@ module Utils
 
     arr.each do |i|
       next if i.nil?
-      value = (block_given?) ? (yield i) : (i)
+      value = block_given? ? yield(i) : i
       max = (max.nil? || value>max) ? value : max
       min = (min.nil? || value<min) ? value : min
       sum += value

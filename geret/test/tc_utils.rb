@@ -11,6 +11,9 @@ class TC_Utils < Test::Unit::TestCase
 
     n = [nil, nil]
     assert_equal( [nil, nil, nil, 0], Utils.statistics(n) )
+
+    a = ['3', '4', '2']
+    assert_equal( [2, 4, 3.0, 3], Utils.statistics(a) { |item| item.to_i } )   
   end
   
   def test_diversity
@@ -18,7 +21,7 @@ class TC_Utils < Test::Unit::TestCase
     assert_equal( [3, 2, 1, 1, 1], Utils.diversity(a) )
 
     a = [3, -3, 4, 5, -4, 2, -4]
-    assert_equal( [3, 2, 1, 1], Utils.diversity(a) {|a| a.abs} )
+    assert_equal( [3, 2, 1, 1], Utils.diversity(a) { |item| item.abs } )
   end
 
   def test_percent
