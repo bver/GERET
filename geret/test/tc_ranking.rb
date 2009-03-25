@@ -32,20 +32,28 @@ class TC_Rank < Test::Unit::TestCase
   def test_basic
     r = Ranking.new :fitness
     rankedPopulation = r.rank @population 
- 
-    @population.each_index { |i| assert_equal( @population[i].object_id, rankedPopulation[i].original.object_id ) }
   
-    assert_equal( 1, rankedPopulation[0].rank )
-    assert_equal( 4, rankedPopulation[1].rank )
-    assert_equal( 0, rankedPopulation[2].rank )
-    assert_equal( 3, rankedPopulation[3].rank )
-    assert_equal( 2, rankedPopulation[4].rank )
+    assert_equal( 2, rankedPopulation[0].index )
+    assert_equal( 0, rankedPopulation[1].index )
+    assert_equal( 4, rankedPopulation[2].index )
+    assert_equal( 3, rankedPopulation[3].index ) 
+    assert_equal( 1, rankedPopulation[4].index )
 
-    assert_equal( 1.05, rankedPopulation[0].proportion )
-    assert_equal( 0.9.to_s, rankedPopulation[1].proportion.to_s ) #rounding kind of 0.900001 
-    assert_equal( 1.1, rankedPopulation[2].proportion )
-    assert_equal( 0.95, rankedPopulation[3].proportion )
-    assert_equal( 1, rankedPopulation[4].proportion )
+    rankedPopulation.each do |individual|  
+      assert_equal( @population[ individual.index ].object_id, individual.original.object_id ) 
+    end
+
+    assert_equal( 0, rankedPopulation[0].rank )
+    assert_equal( 1, rankedPopulation[1].rank )
+    assert_equal( 2, rankedPopulation[2].rank )
+    assert_equal( 3, rankedPopulation[3].rank ) 
+    assert_equal( 4, rankedPopulation[4].rank )
+
+    assert_equal( 1.1, rankedPopulation[0].proportion ) 
+    assert_equal( 1.05, rankedPopulation[1].proportion )
+    assert_equal( 1, rankedPopulation[2].proportion ) 
+    assert_equal( 0.95, rankedPopulation[3].proportion )  
+    assert_equal( 0.9.to_s, rankedPopulation[4].proportion.to_s ) #rounding kind of 0.900001 
   end
 
   def test_block
@@ -81,29 +89,33 @@ class TC_Rank < Test::Unit::TestCase
     r = Ranking.new :fitness
     rankedPopulation = r.rank population 
 
-    assert_equal( 5, rankedPopulation[0].rank )
-    assert_equal( 3, rankedPopulation[1].rank )
-    assert_equal( 3, rankedPopulation[2].rank )
-    assert_equal( 1, rankedPopulation[3].rank )
+    assert_equal( 0, rankedPopulation[0].rank ) 
+    assert_equal( 1, rankedPopulation[1].rank )
+    assert_equal( 1, rankedPopulation[2].rank )   
+    assert_equal( 2, rankedPopulation[3].rank ) 
     assert_equal( 3, rankedPopulation[4].rank )
-    assert_equal( 2, rankedPopulation[5].rank )
-    assert_equal( 0, rankedPopulation[6].rank )   
-    assert_equal( 1, rankedPopulation[7].rank )  
-    assert_equal( 4, rankedPopulation[8].rank )
+    assert_equal( 3, rankedPopulation[5].rank )
+    assert_equal( 3, rankedPopulation[6].rank )
+    assert_equal( 4, rankedPopulation[7].rank )
+    assert_equal( 5, rankedPopulation[8].rank )
+
+    rankedPopulation.each do |individual|  
+      assert_equal( population[ individual.index ].object_id, individual.original.object_id )
+    end
 
     plateu1 = (1.075 + 1.05) / 2 # rank 1
     plateu2 = (1.0 + 0.975 + 0.95) / 3 # rank 3
     # 1.1, p1:1.075, p1:1.05, 1.025, p2:1.0, p2:0.975, p2:0.95, 0.924, 0.899
-     
-    assert_equal( 0.9.to_s, rankedPopulation[0].proportion.to_s )
-    assert_equal( 0.98, rankedPopulation[1].proportion )
-    assert_equal( 0.98, rankedPopulation[2].proportion )
-    assert_equal( 1.06, rankedPopulation[3].proportion )
+
+    assert_equal( 1.1, rankedPopulation[0].proportion )      
+    assert_equal( 1.06, rankedPopulation[1].proportion ) 
+    assert_equal( 1.06, rankedPopulation[2].proportion ) 
+    assert_equal( 1.02, rankedPopulation[3].proportion )
     assert_equal( 0.98, rankedPopulation[4].proportion )
-    assert_equal( 1.02, rankedPopulation[5].proportion )
-    assert_equal( 1.1, rankedPopulation[6].proportion )   
-    assert_equal( 1.06, rankedPopulation[7].proportion )  
-    assert_equal( 0.94, rankedPopulation[8].proportion )
+    assert_equal( 0.98, rankedPopulation[5].proportion )
+    assert_equal( 0.98, rankedPopulation[6].proportion )
+    assert_equal( 0.94, rankedPopulation[7].proportion )
+    assert_equal( 0.9.to_s, rankedPopulation[8].proportion.to_s ) 
   end
 
   def test_heterogenous_population
@@ -113,11 +125,11 @@ class TC_Rank < Test::Unit::TestCase
     r = Ranking.new :fitness
     rankedPopulation = r.rank @population 
 
-    assert_equal( 1, rankedPopulation[0].rank )
-    assert_equal( 4, rankedPopulation[1].rank )
-    assert_equal( 0, rankedPopulation[2].rank )
-    assert_equal( 3, rankedPopulation[3].rank )
-    assert_equal( 2, rankedPopulation[4].rank )
+    assert_equal( 0, rankedPopulation[0].rank )
+    assert_equal( 1, rankedPopulation[1].rank )
+    assert_equal( 2, rankedPopulation[2].rank )
+    assert_equal( 3, rankedPopulation[3].rank ) 
+    assert_equal( 4, rankedPopulation[4].rank )
   end
 
   def test_min_max_params
@@ -131,11 +143,11 @@ class TC_Rank < Test::Unit::TestCase
  
     rankedPopulation = r.rank @population 
 
-    assert_equal( 10.5, rankedPopulation[0].proportion )
-    assert_equal( 9, (100*rankedPopulation[1].proportion).round/100.0 ) #rounding    
-    assert_equal( 11, rankedPopulation[2].proportion )
+    assert_equal( 11, rankedPopulation[0].proportion )   
+    assert_equal( 10.5, rankedPopulation[1].proportion )
+    assert_equal( 10, rankedPopulation[2].proportion ) 
     assert_equal( 9.5, rankedPopulation[3].proportion )
-    assert_equal( 10, rankedPopulation[4].proportion )
+    assert_equal( 9, (100*rankedPopulation[4].proportion).round/100.0 ) #rounding     
   end
 
   def test_proc
@@ -149,39 +161,61 @@ class TC_Rank < Test::Unit::TestCase
     r = Ranking.new {|one,two| two.vector.size<=>one.vector.size} 
     rankedPopulation = r.rank population 
 
-    assert_equal( 1, rankedPopulation[0].rank )
-    assert_equal( 4, rankedPopulation[1].rank )
-    assert_equal( 0, rankedPopulation[2].rank )
-    assert_equal( 3, rankedPopulation[3].rank )
-    assert_equal( 2, rankedPopulation[4].rank )
+    assert_equal( 2, rankedPopulation[0].index )
+    assert_equal( 0, rankedPopulation[1].index )
+    assert_equal( 4, rankedPopulation[2].index )
+    assert_equal( 3, rankedPopulation[3].index ) 
+    assert_equal( 1, rankedPopulation[4].index )
 
-    assert_equal( 1.05, rankedPopulation[0].proportion )
-    assert_equal( 0.9, (100*rankedPopulation[1].proportion).round/100.0 ) #rounding kind of 0.900001 
-    assert_equal( 1.1, rankedPopulation[2].proportion )
-    assert_equal( 0.95, rankedPopulation[3].proportion )
-    assert_equal( 1, rankedPopulation[4].proportion )
+    rankedPopulation.each do |individual|  
+      assert_equal( population[ individual.index ].object_id, individual.original.object_id ) 
+    end
+
+    assert_equal( 0, rankedPopulation[0].rank )
+    assert_equal( 1, rankedPopulation[1].rank )
+    assert_equal( 2, rankedPopulation[2].rank )
+    assert_equal( 3, rankedPopulation[3].rank ) 
+    assert_equal( 4, rankedPopulation[4].rank )
+
+    assert_equal( 1.1, rankedPopulation[0].proportion )
+    assert_equal( 1.05, rankedPopulation[1].proportion ) 
+    assert_equal( 1, rankedPopulation[2].proportion ) 
+    assert_equal( 0.95, rankedPopulation[3].proportion ) 
+    assert_equal( 0.9.to_s, rankedPopulation[4].proportion.to_s ) #rounding kind of 0.900001 
   end
 
   def test_maximize_argument
     r = Ranking.new :fitness, :maximize 
     rankedPopulation = r.rank @population 
   
-    assert_equal( 1, rankedPopulation[0].rank )
-    assert_equal( 4, rankedPopulation[1].rank )
-    assert_equal( 0, rankedPopulation[2].rank )
-    assert_equal( 3, rankedPopulation[3].rank )
-    assert_equal( 2, rankedPopulation[4].rank )
+    assert_equal( 0, rankedPopulation[0].rank )
+    assert_equal( 1, rankedPopulation[1].rank )
+    assert_equal( 2, rankedPopulation[2].rank )
+    assert_equal( 3, rankedPopulation[3].rank ) 
+    assert_equal( 4, rankedPopulation[4].rank )
+   
+    assert_equal( 2, rankedPopulation[0].index )
+    assert_equal( 0, rankedPopulation[1].index )
+    assert_equal( 4, rankedPopulation[2].index )
+    assert_equal( 3, rankedPopulation[3].index ) 
+    assert_equal( 1, rankedPopulation[4].index )
   end
 
   def test_minimize_argument
     r = Ranking.new :fitness, :minimize 
     rankedPopulation = r.rank @population 
   
-    assert_equal( 4-1, rankedPopulation[0].rank ) #3
-    assert_equal( 4-4, rankedPopulation[1].rank ) #0
-    assert_equal( 4-0, rankedPopulation[2].rank ) #4
-    assert_equal( 4-3, rankedPopulation[3].rank ) #1
-    assert_equal( 4-2, rankedPopulation[4].rank ) #2
+    assert_equal( 0, rankedPopulation[0].rank )
+    assert_equal( 1, rankedPopulation[1].rank )
+    assert_equal( 2, rankedPopulation[2].rank )
+    assert_equal( 3, rankedPopulation[3].rank ) 
+    assert_equal( 4, rankedPopulation[4].rank )
+   
+    assert_equal( 1, rankedPopulation[0].index )
+    assert_equal( 3, rankedPopulation[1].index )
+    assert_equal( 4, rankedPopulation[2].index )
+    assert_equal( 0, rankedPopulation[3].index ) 
+    assert_equal( 2, rankedPopulation[4].index )
   end
 
   def test_wrong_argument
@@ -196,10 +230,10 @@ class TC_Rank < Test::Unit::TestCase
     assert_equal( r.max, rankedPopulation[0].proportion )
 
     rankedPopulation = r.rank [ TrivialIndividual.new( 4 ), TrivialIndividual.new( 42 ) ] 
-    assert_equal( 1, rankedPopulation[0].rank )
-    assert_equal( 0, rankedPopulation[1].rank )   
-    assert_equal( r.min, rankedPopulation[0].proportion )
-    assert_equal( r.max, rankedPopulation[1].proportion )
+    assert_equal( 0, rankedPopulation[0].rank )
+    assert_equal( 1, rankedPopulation[1].rank )   
+    assert_equal( r.max, rankedPopulation[0].proportion )
+    assert_equal( r.min, rankedPopulation[1].proportion )
 
     rankedPopulation = r.rank [ TrivialIndividual.new( 42 ), TrivialIndividual.new( 42 ) ] 
     assert_equal( 0, rankedPopulation[0].rank )

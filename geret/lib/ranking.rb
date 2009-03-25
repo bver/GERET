@@ -44,7 +44,7 @@ class Ranking
       ranked.each { |r| yield( population[r.index], r.rank, r.proportion ) }
       return population
     else
-      return ranked.sort { |a,b| a.index <=> b.index }
+      return ranked
     end
   end
 
