@@ -26,6 +26,7 @@ class Dominance
     depth = 0
     until dom.empty?
       nondominated = dom.find_all { |f| f.dominated_by.empty? }
+      raise "Dominance: possibly cyclic dominance found" if nondominated.empty?
       nondominated.each do |nd|
         dom.delete nd
         dom.each { |f| f.dominated_by.delete nd.object_id }

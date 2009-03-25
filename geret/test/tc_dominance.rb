@@ -19,6 +19,15 @@ class SmartPoint < Point2D
   attr_accessor :smartRank, :smartCount, :smartDepth
 end
 
+
+class Cyclic <  Struct.new( :me, :dominates )
+  def <=> other
+    return 1 if other.me == self.dominates
+    return -1 if self.me == other.dominates
+    return 0
+  end
+end
+
 class TC_Dominance < Test::Unit::TestCase
 
   def setup
@@ -179,5 +188,36 @@ class TC_Dominance < Test::Unit::TestCase
     assert_equal( 0, rankedPopulation[0].depth )
   end
   
+  def test_cyclic_dominance
+    population = []   
+    population << Cyclic.new( :rock, :scissors )
+    population << Cyclic.new( :scissors, :paper ) 
+    population << Cyclic.new( :paper, :rock )  
+
+    assert_equal( 1, population[0] <=> population[1] )
+    assert_equal( 1, population[1] <=> population[2] ) 
+    assert_equal( 1, population[2] <=> population[0] ) 
+    assert_equal( -1, population[1] <=> population[0] ) 
+    assert_equal( -1, population[2] <=> population[1] )  
+    assert_equal( -1, population[0] <=> population[2] )  
+    assert_equal( 0, population[0] <=> population[0] ) 
+    assert_equal( 0, population[1] <=> population[1] )  
+    assert_equal( 0, population[2] <=> population[2] )  
+
+    d = Dominance.new
+    rankedPopulation = d.rank_count population   
+
+    assert_equal( 1, rankedPopulation[0].rank )
+    assert_equal( 1, rankedPopulation[1].rank )
+    assert_equal( 1, rankedPopulation[2].rank )
+
+    assert_equal( 1, rankedPopulation[0].count )
+    assert_equal( 1, rankedPopulation[1].count )
+    assert_equal( 1, rankedPopulation[2].count )
+  
+    exception = assert_raise( RuntimeError ) { d.depth population }
+    assert_equal( "Dominance: possibly cyclic dominance found", exception.message )
+  end
+
 end
 
