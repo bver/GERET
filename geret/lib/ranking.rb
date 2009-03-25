@@ -5,13 +5,17 @@ class Ranking
 
   def initialize orderBy=nil, direction=:maximize, &block 
     @orderBy = if block.nil? 
-                 case direction
-                 when :maximize
-                   proc {|a,b| b.send(orderBy) <=> a.send(orderBy) }                
-                 when :minimize
-                   proc {|a,b| a.send(orderBy) <=> b.send(orderBy) }
+                 if orderBy.nil?
+                   proc {|a,b| b <=> a }
                  else
-                   raise "Ranking: unsupported direction argument"
+                   case direction
+                   when :maximize
+                     proc {|a,b| b.send(orderBy) <=> a.send(orderBy) }                
+                   when :minimize
+                     proc {|a,b| a.send(orderBy) <=> b.send(orderBy) }
+                   else
+                     raise "Ranking: unsupported direction argument"
+                   end
                  end
                else
                  block

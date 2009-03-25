@@ -18,6 +18,20 @@ class ComplexIndividual < Struct.new( :scalar, :vector )
   attr_accessor :scalarRank, :scalarProportion
 end
 
+class ComparableIndividual
+  def initialize val
+    @val = val
+  end
+
+  attr_reader :val
+
+  def <=>(other)
+    return 1 if @val > other.val
+    return -1 if @val < other.val
+    return 0
+  end
+end
+
 class TC_Rank < Test::Unit::TestCase
 
   def setup
@@ -246,6 +260,23 @@ class TC_Rank < Test::Unit::TestCase
     r = Ranking.new :fitness
     exception = assert_raise( RuntimeError ) { r.rank [] }
     assert_equal( "Ranking: empty population", exception.message )
+  end
+
+  def test_comparable
+    population = @population.map { |i| ComparableIndividual.new i.fitness }
+
+    r = Ranking.new
+    rankedPopulation = r.rank population 
+  
+    assert_equal( 2, rankedPopulation[0].index )
+    assert_equal( 0, rankedPopulation[1].index )
+    assert_equal( 4, rankedPopulation[2].index )
+    assert_equal( 3, rankedPopulation[3].index ) 
+    assert_equal( 1, rankedPopulation[4].index )
+
+    rankedPopulation.each do |individual|  
+      assert_equal( population[ individual.index ].object_id, individual.original.object_id ) 
+    end
   end
 
 end
