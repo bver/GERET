@@ -22,7 +22,7 @@ module Mapper
     end
 
     def symbols
-      keys
+      keys.sort
     end
 
     attr_accessor :start_symbol

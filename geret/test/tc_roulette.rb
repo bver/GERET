@@ -21,7 +21,7 @@ class TC_Roulette < Test::Unit::TestCase
 
   def test_basic
     r = Roulette.new :fitness
-    r.random =  MockRand.new [{0,0.3}, {0,0.7}]
+    r.random =  MockRand.new [{0=>0.3}, {0=>0.7}]
 
     winner = r.select @population
     assert_equal( @population[1].object_id, winner.object_id )
@@ -32,7 +32,7 @@ class TC_Roulette < Test::Unit::TestCase
 
   def test_ballot_overrun
     r = Roulette.new :fitness
-    r.random =  MockRand.new [{0,0.5}]
+    r.random =  MockRand.new [{0=>0.5}]
 
     zero = SomeIndividual.new 0
     winner = r.select [ zero ]
@@ -53,8 +53,8 @@ class TC_Roulette < Test::Unit::TestCase
   end
 
   def test_proc
-    r = Roulette.new proc { |item| item }
-    r.random =  MockRand.new [{0,0.3}, {0,0.7}]
+    r = Roulette.new { |item| item }
+    r.random =  MockRand.new [{0=>0.3}, {0=>0.7}]
 
     population = [10, 100, 50, 10]
     winner = r.select population

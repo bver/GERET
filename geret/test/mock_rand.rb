@@ -13,7 +13,7 @@ class MockRand
 
      if now.kind_of? Hash
        ret = now.fetch(max,nil)
-       raise "MockRand: unexpected argument (#{max}), expected (#{now.keys.join(', ')})" if ret.nil?  
+       raise "MockRand: unexpected argument (#{max}), expected (#{now.keys.sort.join(', ')})" if ret.nil?  
        return ret
      else
        max = 1.0 if max == 0

@@ -3,10 +3,8 @@ class Ranking
 
   RankedFields = Struct.new( 'RankedFields', :original, :rank, :proportion, :index )
 
-  def initialize orderBy, direction=:maximize
-    @orderBy = if orderBy.kind_of? Proc 
-                 orderBy
-               else
+  def initialize orderBy=nil, direction=:maximize, &block 
+    @orderBy = if block.nil? 
                  case direction
                  when :maximize
                    proc {|a,b| b.send(orderBy) <=> a.send(orderBy) }                
@@ -15,6 +13,8 @@ class Ranking
                  else
                    raise "Ranking: unsupported direction argument"
                  end
+               else
+                 block
                end
     @max = 1.1
     @min = 2.0 - @max

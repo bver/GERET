@@ -1195,7 +1195,7 @@ class TC_AbnfParser < Test::Unit::TestCase
     assert_equal( grammar, @parser.parse( stream ) )
   end
 
- def test_underscore_symbol
+  def test_underscore_symbol
     stream = [
        #_expr="end"
        Token.new( :symbol, '_expr' ),

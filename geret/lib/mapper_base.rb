@@ -20,7 +20,6 @@ module Mapper
       @used_length = 0
 
       until ( selected_indices = find_nonterminals( tokens ) ).empty?
-
         return nil if enough_wrapping genome       
         selected_index = pick_locus( selected_indices, genome )
         selected_token = tokens[selected_index]
@@ -93,9 +92,11 @@ module Mapper
     def init_bucket
       @bucket = {}
       @maxAllele = 1
-      @grammar.each_pair do |sym,alts|
+      @grammar.symbols.each do |sym|
+        alts = @grammar[sym] 
         @bucket[sym] = @maxAllele
         @maxAllele *= alts.size
+
       end
     end
 

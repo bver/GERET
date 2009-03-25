@@ -4,7 +4,8 @@ class Dominance
   DominanceFields = Struct.new( 'DominanceFields', :original, :rank, :count )
   DominanceDepth = Struct.new( 'DominanceDepth', :original, :depth )
 
-  def initialize comparison = proc { |a,b| a<=>b }
+  def initialize &comparison
+    comparison = proc { |a,b| a<=>b } if comparison.nil?
     @comparison = comparison
   end
 
@@ -21,14 +22,13 @@ class Dominance
 
   def depth population
     dom = coreMatrix population
-
     result = dom.map { |f| DominanceDepth.new( f.original ) }
     depth = 0
     until dom.empty?
       nondominated = dom.find_all { |f| f.dominated_by.empty? }
       nondominated.each do |nd|
         dom.delete nd
-        dom.each { |f| f.dominated_by.delete nd }
+        dom.each { |f| f.dominated_by.delete nd.object_id }
         ndres = result.find { |f| nd.original == f.original }
         ndres.depth = depth
       end
@@ -49,11 +49,11 @@ class Dominance
         individual2 = dom[index2] 
         case @comparison.call( individual1.original, individual2.original )
         when 1
-          individual1.dominates[individual2]=nil
-          individual2.dominated_by[individual1]=nil         
+          individual1.dominates[individual2.object_id]=nil
+          individual2.dominated_by[individual1.object_id]=nil         
         when -1
-          individual2.dominates[individual1]=nil
-          individual1.dominated_by[individual2]=nil         
+          individual2.dominates[individual1.object_id]=nil
+          individual1.dominated_by[individual2.object_id]=nil         
         end
       end
     end

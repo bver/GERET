@@ -14,13 +14,13 @@ class TC_Mappers < Test::Unit::TestCase
                     Mapper::Token.new( :literal, '(' ), 
                     Mapper::Token.new( :symbol, 'expr', 42 ),
                     Mapper::Token.new( :literal, ' ' ),                   
-                    Mapper::Token.new( :symbol, 'op', 4 ),                  
+                    Mapper::Token.new( :symbol, 'aop', 4 ),                  
                     Mapper::Token.new( :symbol, 'expr', 12 ),                   
                     Mapper::Token.new( :literal, ')' ) 
                   ] )
                 ] ),
 
-       'op'  => Mapper::Rule.new( [ 
+       'aop'  => Mapper::Rule.new( [ 
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '+' ) ] ),
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '*' ) ] )
                 ] )

@@ -5,7 +5,7 @@ module Selection
 
   class Sampling < Roulette
   
-    def initialize proportional_by
+    def initialize proportional_by=nil, &block
       super
     end
 

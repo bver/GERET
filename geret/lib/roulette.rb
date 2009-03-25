@@ -5,9 +5,9 @@ module Selection
   
     Slot = Struct.new( 'Slot', :original, :width )
 
-    def initialize proportional_by
-      @prop = if proportional_by.kind_of? Proc
-                proportional_by
+    def initialize proportional_by=nil, &block
+      @prop = if proportional_by.nil?
+                block
               else
                 proc { |individual| individual.send(proportional_by) }
               end

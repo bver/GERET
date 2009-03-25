@@ -21,7 +21,7 @@ class TC_Sampling < Test::Unit::TestCase
  
   def test_basic
     r = Sampling.new :fitness
-    r.random =  MockRand.new [{0,0.3}]
+    r.random =  MockRand.new [{0=>0.3}]
 
     winners = r.select( @population, 2 )
     assert_equal( 2, winners.size )
@@ -30,8 +30,8 @@ class TC_Sampling < Test::Unit::TestCase
   end
 
   def test_proc
-    r = Sampling.new proc { |item| item }
-    r.random =  MockRand.new [{0,0.3}]
+    r = Sampling.new { |item| item }
+    r.random =  MockRand.new [{0=>0.3}]
 
     population = [10, 100, 50, 10]
     winners = r.select( population, 2 )

@@ -146,7 +146,7 @@ class TC_Rank < Test::Unit::TestCase
     population << ComplexIndividual.new( 0, [7,7,7,7] )    # rank 3
     population << ComplexIndividual.new( 0, [1,1,1,1,1] )    # rank 2
   
-    r = Ranking.new( proc {|one,two| two.vector.size<=>one.vector.size} )
+    r = Ranking.new {|one,two| two.vector.size<=>one.vector.size} 
     rankedPopulation = r.rank population 
 
     assert_equal( 1, rankedPopulation[0].rank )

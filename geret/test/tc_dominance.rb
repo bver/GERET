@@ -88,7 +88,7 @@ class TC_Dominance < Test::Unit::TestCase
   end
  
   def test_rank_count_proc
-    d = Dominance.new( proc {|a,b| a.nondominance b } )
+    d = Dominance.new {|a,b| a.nondominance b } 
     rankedPopulation = d.rank_count @population
 
     assert_equal( 0, rankedPopulation[0].count )
@@ -154,7 +154,7 @@ class TC_Dominance < Test::Unit::TestCase
   end
  
   def test_depth_proc
-    d = Dominance.new( proc {|a,b| a.nondominance b } )
+    d = Dominance.new {|a,b| a.nondominance b } 
     rankedPopulation = d.depth @population
 
     assert_equal( 1, rankedPopulation[0].depth )
