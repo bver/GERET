@@ -61,9 +61,6 @@ class TC_Config < Test::Unit::TestCase
     assert_equal( 'undef', instance2.attr3 )   
   end
 
-  def test_require
-  end
-
   def test_missing_key
     cfg = ConfigYaml.new
 
@@ -90,5 +87,29 @@ class TC_Config < Test::Unit::TestCase
     assert_equal( "ConfigYaml: missing class when calling factory('artifact')", exception.message )
   end
 
+  def test_require
+    cfg = ConfigYaml.new
+    cfg['artifact'] = {'class'=>'ExternalClass', 'initialize'=>"'one'",
+                       'require'=>'test/data/external_class.rb', 'attribute'=>'attr' }
+    
+    instance1 = cfg.factory('artifact')
+    assert_equal( ExternalClass, instance1.class )
+    assert_equal( 'one', instance1.argument )
+    assert_equal( 'attr', instance1.attribute )
+  end
+
+#  def test_class_not_defined
+#    cfg = ConfigYaml.new
+#    cfg['artifact'] = {'class'=>'NotDefined', 'attr1'=>'one', 'attr2'=>2 }
+#
+#    exception = assert_raise( RuntimeError ) { cfg.factory('artifact') }
+#    assert_equal( "ConfigYaml: class 'NotDefined' not defined (missing require?)", exception.message )
+#  end
+
+  def test_yaml_not_a_hash
+    exception = assert_raise( RuntimeError ) { ConfigYaml.new 'test/data/not_hash.yaml' }
+    assert_equal( "ConfigYaml: top level yaml object is not a hash", exception.message )
+  end
+  
 end
 
