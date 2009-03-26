@@ -1,0 +1,9 @@
+--- 
+mapper: 
+  class: MyMapper
+  initialize: file.abnf
+selector: 
+  class: MySelector
+  require: 'MySelector.rb'
+  attribute1: 3
+  attr2: toto
