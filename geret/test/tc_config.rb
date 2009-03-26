@@ -4,7 +4,7 @@ require 'test/unit'
 require 'lib/config'
 
 class FactoryArtifact
-  def initialize arg1, arg2, arg3
+  def initialize arg1='def1', arg2='def2', arg3='def3'
     @arg1 = arg1
     @arg2 = arg2
     @arg3 = arg3   
@@ -65,12 +65,29 @@ class TC_Config < Test::Unit::TestCase
   end
 
   def test_missing_key
+    cfg = ConfigYaml.new
+
+    exception = assert_raise( RuntimeError ) { cfg.factory('artifact') }
+    assert_equal( "ConfigYaml: missing key when calling factory('artifact')", exception.message )
   end
 
   def test_missing_initialize
+    cfg = ConfigYaml.new
+    cfg['artifact'] = {'class'=>'FactoryArtifact', 'arg3'=>'patch' }
+    
+    instance1 = cfg.factory('artifact')
+    assert_equal( FactoryArtifact, instance1.class )
+    assert_equal( 'def1', instance1.arg1 )
+    assert_equal( 'def2', instance1.arg2 )
+    assert_equal( 'patch', instance1.arg3 )
   end
  
   def test_missing_class
+    cfg = ConfigYaml.new
+    cfg['artifact'] = {'arg3'=>'patch', 'attr1'=>'one', 'attr2'=>2 }
+
+    exception = assert_raise( RuntimeError ) { cfg.factory('artifact') }
+    assert_equal( "ConfigYaml: missing class when calling factory('artifact')", exception.message )
   end
 
 end
