@@ -98,12 +98,20 @@ class TC_Config < Test::Unit::TestCase
     assert_equal( 'attr', instance1.attribute )
   end
 
-#  def test_class_not_defined
+  def test_class_not_defined
+    cfg = ConfigYaml.new
+    cfg['artifact'] = {'class'=>'NotDefined', 'attr1'=>'one', 'attr2'=>2 }
+
+    exception = assert_raise( RuntimeError ) { cfg.factory('artifact') }
+    assert_equal( "ConfigYaml: cannot eval 'NotDefined.new(  )' (missing require?)", exception.message )
+  end
+
+#  def test_method_initialize
 #    cfg = ConfigYaml.new
-#    cfg['artifact'] = {'class'=>'NotDefined', 'attr1'=>'one', 'attr2'=>2 }
+#    cfg['artifact'] = {'class'=>'FactoryArtifact', 'argUnknown'=>'patch' }
 #
 #    exception = assert_raise( RuntimeError ) { cfg.factory('artifact') }
-#    assert_equal( "ConfigYaml: class 'NotDefined' not defined (missing require?)", exception.message )
+#    assert_equal( "ConfigYaml: cannot eval 'instance.argUnknown = \"patch\"' (wrong attribute name?)", exception.message )
 #  end
 
   def test_yaml_not_a_hash

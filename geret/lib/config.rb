@@ -25,8 +25,12 @@ class ConfigYaml < Hash
                    else
                      ( args.map {|a| a.inspect} ).join ', '
                    end
-
-    instance = eval "#{klass}.new( #{initial_args} )"
+    begin
+      text = "#{klass}.new( #{initial_args} )" 
+      instance = eval text
+    rescue
+      raise "ConfigYaml: cannot eval '#{text}' (missing require?)"
+    end
 
     details.each_pair do |key,value|
       next if ['class','initialize', 'require'].include? key
