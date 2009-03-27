@@ -14,7 +14,7 @@ class RandomInit
   def init length
     gen = []
     length.divmod(@magnitude.size).first.times do
-      @magnitude.each {|m| gen.push @random.rand(m) }
+      gen.concat @magnitude.map {|m| @random.rand(m) }
     end
     gen
   end
