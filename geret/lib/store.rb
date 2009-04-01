@@ -11,9 +11,7 @@ class Store
   end
 
   def load 
-    population = []
-    File.open( @filename ) { |f| population = Marshal.load f }
-    population
+    File.open( @filename ) { |f| return Marshal.load f }
   end
 end
 
