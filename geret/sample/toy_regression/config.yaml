@@ -1,0 +1,25 @@
+---
+algorithm:
+  class: SingleGenerational
+  require: algorithm/single_generational
+
+  termination:
+    max_steps: 100
+    min_error: 0.0
+
+grammar:
+  class: AbnfFile
+  initialize: sample/toy_regression/grammar.abnf
+
+mapper:
+  class: DepthFirst
+  wraps_to_fail: 10
+
+store:
+  class: Store
+  filename: ./toy_regression.store
+
+individual:
+  class: ToyRegressionIndividual
+  require: sample/toy_regression/individual.rb
+

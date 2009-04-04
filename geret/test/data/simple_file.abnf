@@ -1,0 +1,4 @@
+; test for AbnfFile class
+expr = "x" / "y" / "(" expr op expr ")"
+op = "+" / "*"
+
