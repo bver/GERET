@@ -11,7 +11,7 @@ class Store
   end
 
   def load 
-    File.open( @filename ) { |f| return Marshal.load f }
+    File.open( @filename ) { |f| return Marshal.load(f)  }
   end
 end
 
