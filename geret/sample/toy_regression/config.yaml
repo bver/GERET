@@ -1,11 +1,15 @@
 ---
 algorithm:
   class: SingleGenerational
-  require: algorithm/single_generational
+
+  population_size: 500
+  elite_size: 10
+  crossover_probability: 0.9
+  mutation_probability: 0.01
 
   termination:
     max_steps: 100
-    min_error: 0.0
+    min_error: 0.1
 
 grammar:
   class: AbnfFile
@@ -15,11 +19,27 @@ mapper:
   class: DepthFirst
   wraps_to_fail: 10
 
+selection:
+  class: RepeatTournament
+  tournament_size: 2
+        
+crossover:
+  class: Crossover
+  margin: 1
+
+mutation:
+  class: Mutation
+  magnitude: 20 # same as individual.init_magnitude
+
 store:
   class: Store
   filename: ./toy_regression.store
 
+report:
+  class: ReportText
+
 individual:
-  class: ToyRegressionIndividual
-  require: sample/toy_regression/individual.rb
+  class: ToyIndividual
+  require: sample/toy_regression/toy_individual.rb
+  init_magnitude: 20 #same as mutation.magnitude
 
