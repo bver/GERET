@@ -2,6 +2,7 @@
 require 'yaml'
 
 class ConfigYaml < Hash
+
   def initialize file=nil
     super()
     return if file.nil?
