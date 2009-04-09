@@ -1,11 +1,13 @@
 
 require 'lib/ranking'
+require 'lib/select_more'
 
 module Selection
 
   class Tournament
+    include SelectMore
 
-    def initialize ranker, tournament_size, pressure_modifier=1.0
+    def initialize ranker, tournament_size=2, pressure_modifier=1.0
       raise "Tournament: invalid Ranking object" unless ranker.kind_of? Ranking 
       @ranker = ranker
       @tournament_size = tournament_size 
@@ -15,7 +17,7 @@ module Selection
 
     attr_accessor :tournament_size, :ranker, :random, :pressure_modifier
 
-    def select population
+    def select_one population
       ranked = @ranker.rank population
       raise "Tournament: tournament_size bigger than population.size" if @tournament_size > population.size 
 
