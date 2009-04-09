@@ -44,5 +44,26 @@ class TC_Report < Test::Unit::TestCase
     assert_equal( "Report: cannot record twice in a single step", exception.message )
   end
 
+  def test_output
+    r = ReportText.new
+
+    r[:maxfitness] << 42
+    r[:diversity] << 12
+    r[:coolness] << 'ok'
+    r.next
+
+    r[:maxfitness] << 34
+    r[:coolness] << 'nope'
+    r.next
+
+    out = <<OUTPUT
+coolness: nope
+maxfitness: 34
+OUTPUT
+
+    assert_equal( out, r.output )
+  end
+
+
 end
 

@@ -11,6 +11,7 @@ class Store
   end
 
   def load 
+    return nil unless FileTest.readable? @filename
     File.open( @filename ) { |f| return Marshal.load(f)  }
   end
 end

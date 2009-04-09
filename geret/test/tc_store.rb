@@ -36,5 +36,10 @@ class TC_Config < Test::Unit::TestCase
     assert_equal( 'hello', loader.load )
   end
 
+  def test_nonexistent_file
+    loader = Store.new 'test/data/nonexistent.bin' 
+    assert_equal( nil, loader.load )
+  end
+
 end
 

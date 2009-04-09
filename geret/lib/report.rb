@@ -29,3 +29,17 @@ class Report < Hash
 
 end
 
+class ReportText < Report
+
+  def output
+    out = ''
+    labels.each do |label|
+      value = self[label].last
+      next if value.nil?
+      out += "#{label}: #{value}\n"
+    end
+    out
+  end
+
+end
+
