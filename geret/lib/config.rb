@@ -32,9 +32,9 @@ class ConfigYaml < Hash
       raise "ConfigYaml: cannot eval '#{text}' (missing require?)"
     end
 
-    details.each_pair do |key,value|
-      next if ['class','initialize', 'require'].include? key
-      eval "instance.#{key} = #{value.inspect}"
+    details.each_pair do |k,value|
+      next if ['class','initialize', 'require'].include? k
+      eval "instance.#{k} = #{value.inspect}"
     end
 
     instance
