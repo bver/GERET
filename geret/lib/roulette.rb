@@ -1,8 +1,11 @@
 
+require 'lib/select_more'
+
 module Selection
 
   class Roulette
-  
+    include SelectMore
+
     Slot = Struct.new( 'Slot', :original, :width )
 
     def initialize proportional_by=nil, &block
@@ -16,7 +19,7 @@ module Selection
 
     attr_accessor :random
 
-    def select population
+    def select_one population
       sum,wheel = wheel_core population
 
       ballot = sum * @random.rand   

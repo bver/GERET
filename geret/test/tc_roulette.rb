@@ -23,10 +23,10 @@ class TC_Roulette < Test::Unit::TestCase
     r = Roulette.new :fitness
     r.random =  MockRand.new [{0=>0.3}, {0=>0.7}]
 
-    winner = r.select @population
+    winner = r.select_one @population
     assert_equal( @population[1].object_id, winner.object_id )
 
-    winner = r.select @population
+    winner = r.select_one @population
     assert_equal( @population[2].object_id, winner.object_id )
   end
 
@@ -35,20 +35,20 @@ class TC_Roulette < Test::Unit::TestCase
     r.random =  MockRand.new [{0=>0.5}]
 
     zero = SomeIndividual.new 0
-    winner = r.select [ zero ]
+    winner = r.select_one [ zero ]
     assert_equal( zero.object_id, winner.object_id )
   end
 
   def test_empty_population
     r = Roulette.new :fitness
-    exception = assert_raise( RuntimeError ) { r.select [] }
+    exception = assert_raise( RuntimeError ) { r.select_one [] }
     assert_equal( "Roulette: cannot select from an empty population", exception.message )
   end
 
   def test_negative_fitness
     r = Roulette.new :fitness
     @population << SomeIndividual.new(-1)
-    exception = assert_raise( RuntimeError ) { r.select @population }
+    exception = assert_raise( RuntimeError ) { r.select_one @population }
     assert_equal( "Roulette: cannot use a negative slot width", exception.message )
   end
 
@@ -57,14 +57,42 @@ class TC_Roulette < Test::Unit::TestCase
     r.random =  MockRand.new [{0=>0.3}, {0=>0.7}]
 
     population = [10, 100, 50, 10]
-    winner = r.select population
+    winner = r.select_one population
     assert_equal( 100, winner )
 
-    winner = r.select population
+    winner = r.select_one population
     assert_equal( 50, winner )
   end
 
+  def test_more
+    r = Roulette.new :fitness
+    r.random =  MockRand.new [{0=>0.3}, {0=>0.7}]
 
+    winners = r.select( @population, 2 )
+    assert_equal( 2, winners.size )
+    assert_equal( @population[1].object_id, winners[0].object_id )
+    assert_equal( @population[2].object_id, winners[1].object_id )
+  end
+
+  def test_unique
+    r = Roulette.new :fitness
+    assert_equal( false, r.unique_winners )
+
+    r.random =  MockRand.new [{0=>0.3}, {0=>0.3}]
+    winners = r.select( @population, 2 )
+    assert_equal( 2, winners.size )
+    assert_equal( @population[1].object_id, winners[0].object_id )
+    assert_equal( @population[1].object_id, winners[1].object_id )
+
+    r.unique_winners = true
+    assert_equal( true, r.unique_winners )
+
+    r.random =  MockRand.new [{0=>0.3}, {0=>0.3}, {0=>0.7}]
+    winners = r.select( @population, 2 )
+    assert_equal( 2, winners.size )
+    assert_equal( @population[1].object_id, winners[0].object_id )
+    assert_equal( @population[2].object_id, winners[1].object_id )
+  end
 
 end
 
