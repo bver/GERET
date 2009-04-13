@@ -279,5 +279,35 @@ class TC_Rank < Test::Unit::TestCase
     end
   end
 
+  def test_attributes
+    r = Ranking.new :fitness, :minimize   
+    assert_equal( :fitness, r.order_by )
+    assert_equal( :minimize, r.direction )
+    r.order_by = :some
+    assert_equal( :some, r.order_by )
+    assert_equal( :minimize, r.direction )
+    r.direction = :maximize
+    assert_equal( :some, r.order_by )
+    assert_equal( :maximize, r.direction )
+ 
+    r = Ranking.new {|a,b| a.vector.size<=>b.vector.size} 
+    assert_equal( nil, r.order_by )
+    assert_equal( nil, r.direction )
+    r.order_by = :some
+    assert_equal( :some, r.order_by )
+    assert_equal( :maximize, r.direction )
+
+    r = Ranking.new 
+    assert_equal( nil, r.order_by )
+    assert_equal( nil, r.direction )
+    r.direction = :minimize
+    assert_equal( nil, r.order_by )
+    assert_equal( :minimize, r.direction )   
+
+    r = Ranking.new :foo
+    assert_equal( :foo, r.order_by )
+    assert_equal( :maximize, r.direction )
+  end
+
 end
 
