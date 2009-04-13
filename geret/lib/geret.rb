@@ -18,3 +18,5 @@ require 'lib/store'
 require 'lib/tournament'
 require 'lib/utils'
 require 'lib/validator'
+
+require 'algorithm/generational'

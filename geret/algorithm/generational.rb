@@ -1,5 +1,5 @@
 
-class SingleGenerational
+class Generational
 
   attr_accessor :termination, :population_size, :elite_size, :crossover_probability, :mutation_probability
   def initialize
