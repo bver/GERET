@@ -17,34 +17,38 @@ class TC_Tournament < Test::Unit::TestCase
 
   def setup
     @population = []
+    @population << TrmntIndividual.new(10) 
     @population << TrmntIndividual.new(10)
     @population << TrmntIndividual.new(100)
+    @population << TrmntIndividual.new(1000) 
     @population << TrmntIndividual.new(50)
     @population << TrmntIndividual.new(10)
+    @population << TrmntIndividual.new(30) 
+    @population << TrmntIndividual.new(100) 
   end
 
   def test_basic
     r = Ranking.new :fitness 
     t = Tournament.new( r, 2 )
-    t.random = MockRand.new [{0=>0.8}, {1=>0}]
+    t.random = MockRand.new [{8,4}, {8,2}, {0=>0.8}, {1=>0}]
 
     assert_equal( r.object_id, t.ranker.object_id )
 
     winner = t.select_one @population 
-    assert_equal( @population[1].object_id, winner.object_id )
+    assert_equal( @population[2].object_id, winner.object_id )
   end
 
   def test_two_candidates
     r = Ranking.new :fitness, :minimize 
     t = Tournament.new( r, 3 )
 
-    t.random = MockRand.new [{0=>0.8}, {2=>1}]
+    t.random = MockRand.new [{8,4}, {8,1}, {8,5}, {0=>0.8}, {2=>1}]
     winner = t.select_one @population
-    assert_equal( @population[3].object_id, winner.object_id )
+    assert_equal( @population[1].object_id, winner.object_id )
 
-    t.random = MockRand.new [{0=>0.8}, {2=>0}]
+    t.random = MockRand.new [{8,4}, {8,1}, {8,5}, {0=>0.8}, {2=>0}]
     winner = t.select_one @population
-    assert_equal( @population[0].object_id, winner.object_id )
+    assert_equal( @population[5].object_id, winner.object_id )
   end
 
   def test_pressure_modifier
@@ -56,10 +60,10 @@ class TC_Tournament < Test::Unit::TestCase
 
     t = Tournament.new( r, 3, 0.7 )
     assert_equal( 0.7, t.pressure_modifier )
-    t.random = MockRand.new [{0=>0.8}, {0=>0.5}, {1=>0} ] 
+    t.random = MockRand.new [{8,1}, {8,4}, {8,3}, {0=>0.8}, {0=>0.5}, {1=>0} ] 
 
     winner = t.select_one @population
-    assert_equal( @population[2].object_id, winner.object_id )
+    assert_equal( @population[4].object_id, winner.object_id )
   end
 
   def test_tour_size
@@ -69,9 +73,9 @@ class TC_Tournament < Test::Unit::TestCase
     t.tournament_size = 2 
     assert_equal( 2, t.tournament_size )  
 
-    t.random = MockRand.new [{0=>0.8}, {1=>0}]
+    t.random = MockRand.new [{8,2}, {8,0}, {0=>0.8}, {1=>0}]
     winner = t.select_one( @population )
-    assert_equal( @population[1].object_id, winner.object_id )
+    assert_equal( @population[2].object_id, winner.object_id )
   end
 
   def test_default_toursize
@@ -83,15 +87,15 @@ class TC_Tournament < Test::Unit::TestCase
     r = Ranking.new :fitness 
     t = Tournament.new( r, 2, 0.7 )
     assert_equal( 0.7, t.pressure_modifier )
-    t.random = MockRand.new [{0=>0.8}, {0=>0.9}, {1=>0} ] 
+    t.random = MockRand.new [{8,2}, {8,0}, {0=>0.8}, {0=>0.9}, {1=>0} ] 
 
     winner = t.select_one @population
-    assert_equal( @population[2].object_id, winner.object_id )
+    assert_equal( @population[0].object_id, winner.object_id )
   end
 
   def test_too_big_tournament_size
     r = Ranking.new :fitness 
-    t = Tournament.new( r, 5 )
+    t = Tournament.new( r, 15 )
     exception = assert_raise( RuntimeError ) { t.select_one( @population ) }
     assert_equal( "Tournament: tournament_size bigger than population.size", exception.message )
   end
@@ -100,7 +104,7 @@ class TC_Tournament < Test::Unit::TestCase
     r = Ranking.new :fitness 
     t = Tournament.new( r, 5 )
     exception = assert_raise( RuntimeError ) { t.select_one( [] ) }
-    assert_equal( "Ranking: empty population", exception.message )
+    assert_equal( "Tournament: empty population", exception.message )
   end
 
   def test_invalid_ranker
@@ -110,34 +114,34 @@ class TC_Tournament < Test::Unit::TestCase
   
   def test_more
     r = Ranking.new :fitness, :minimize 
-    t = Tournament.new( r, 3 )
+    t = Tournament.new( r, 2 )
 
-    t.random = MockRand.new [{0=>0.8}, {2=>1}, {0=>0.7}, {2=>0}]
+    t.random = MockRand.new [{8,2}, {8,0}, {0=>0.8}, {1=>0}, {8,3}, {8,2}, {0=>0.7}, {1=>0}]
     winners = t.select( @population, 2 )
     assert_equal( 2, winners.size )
-    assert_equal( @population[3].object_id, winners[0].object_id )
-    assert_equal( @population[0].object_id, winners[1].object_id )
+    assert_equal( @population[0].object_id, winners[0].object_id )
+    assert_equal( @population[2].object_id, winners[1].object_id )
   end
 
   def test_unique
-    r = Ranking.new :fitness, :minimize 
-    t = Tournament.new( r, 3 )
+    r = Ranking.new :fitness
+    t = Tournament.new( r, 2 )
     assert_equal( false, t.unique_winners )
  
-    t.random = MockRand.new [{0=>0.8}, {2=>1}, {0=>0.7}, {2=>1}]
+    t.random = MockRand.new [{8,2}, {8,0}, {0=>0.8}, {1=>0}, {8,1}, {8,2}, {0=>0.7}, {1=>0}]
     winners = t.select( @population, 2 )
     assert_equal( 2, winners.size )
-    assert_equal( @population[3].object_id, winners[0].object_id )
-    assert_equal( @population[3].object_id, winners[1].object_id )
+    assert_equal( @population[2].object_id, winners[0].object_id )
+    assert_equal( @population[2].object_id, winners[1].object_id )
 
     t.unique_winners = true
     assert_equal( true, t.unique_winners )
 
-    t.random = MockRand.new [{0=>0.8}, {2=>1}, {0=>0.7}, {2=>1}, {0=>0.5}, {2=>0}]
+    t.random = MockRand.new [{8,2}, {8,0}, {0=>0.8}, {1=>0}, {8,1}, {8,2}, {0=>0.7}, {1=>0}, {8,5}, {8,6}, {0=>0.7}, {1=>0}, ]
     winners = t.select( @population, 2 )
     assert_equal( 2, winners.size )
-    assert_equal( @population[3].object_id, winners[0].object_id )
-    assert_equal( @population[0].object_id, winners[1].object_id )
+    assert_equal( @population[2].object_id, winners[0].object_id )
+    assert_equal( @population[6].object_id, winners[1].object_id )
   end
 
 end

@@ -18,9 +18,15 @@ module Selection
     attr_accessor :tournament_size, :ranker, :random, :pressure_modifier
 
     def select_one population
-      ranked = @ranker.rank population
+      raise "Tournament: empty population" if population.empty?
       raise "Tournament: tournament_size bigger than population.size" if @tournament_size > population.size 
+     
+      selected = []
+      while selected.size < @tournament_size
+        selected.push population[ @random.rand(population.size) ]
+      end
 
+      ranked = @ranker.rank selected
       for rank in ( 0 ... @tournament_size )
         next if @random.rand > @pressure_modifier and rank < @tournament_size-1
         selection = ranked.find_all { |individual| individual.rank == rank }
