@@ -13,7 +13,8 @@ class Generational
     @mapper = @cfg.factory('mapper', @grammar)
     @selection = @cfg['rank'].nil? ? 
                  @cfg.factory('selection') : 
-                 @cfg.factory('selection', @cfg.factory('rank') ) 
+                 @cfg.factory('selection', @cfg.factory('selection_rank') ) 
+    @rank = @cfg.factory('rank')             
     @crossover = @cfg.factory('crossover')
     @mutation = @cfg.factory('mutation')   
     @report = @cfg.factory('report')
@@ -21,6 +22,8 @@ class Generational
     @population = @store.load
     @population = [] if @population.nil?
     (@population_size-@population.size).times { @population.push @cfg.factory( 'individual', @mapper ) }
+
+    @next_stop = false
   end
 
   def teardown
@@ -29,21 +32,25 @@ class Generational
   end
 
   def step
-    
-    @selection.population = @population
-    new_population = []
+    ranked_population = @elite_rank.rank( @population ).map { |individual| individual.original }
+    @report.report ranked_population
 
+    new_population = ranked_population[0...@elite_size]  
+
+    @selection.population = @population   
     while new_population.size < @population_size
       if rand < @crossover_probability 
         parents = @selection.select 2
-        breed, dummy = @crossover.crossover( parents.first, parents.last ) 
+        chromozome, dummy = @crossover.crossover( parents.first, parents.last ) 
       else
-        breed = @selection.select_one 
+        chromozome = @selection.select_one 
       end
       
-      breed = @mutation.mutate breed if rand < @mutation_probability  
-    
-      new_population << @cfg.factory( 'individual', @mapper, breed ) 
+      chromozome = @mutation.mutate chromozome if rand < @mutation_probability  
+      
+      individual = @cfg.factory( 'individual', @mapper, chromozome ) 
+      @next_stop = @next_stop || individual.send( @termination['on_individual'] ) unless @termination['on_individual'].nil? 
+      new_population << individual
     end
 
     @population = new_population
@@ -52,6 +59,8 @@ class Generational
   end
 
   def finished?
+    return true if @steps >= @termination['max_steps']
+    return @next_stop 
   end
 
 end

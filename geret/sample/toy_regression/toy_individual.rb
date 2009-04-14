@@ -52,5 +52,9 @@ class ToyIndividual
     self.error <=> other.error
   end
 
+  def stopping_condition
+    return self.error < 0.01
+  end
+
 end
 

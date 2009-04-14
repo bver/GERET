@@ -9,7 +9,7 @@ algorithm:
 
   termination:
     max_steps: 100
-    min_error: 0.1
+    on_individual: :stopping_condition
 
 grammar:
   class: AbnfFile
@@ -19,13 +19,15 @@ mapper:
   class: DepthFirst
   wraps_to_fail: 10
 
-rank: #optional
+elite_rank:
   class: Ranking
-  order_by: :error      #optional 
-  direction: :minimize  #optional 
+  order_by: :fitness  #optional
+  direction: :minimize #optional 
 
 selection:
   class: RankRoulette
+selection_rank:
+  class: Ranking
         
 crossover:
   class: Crossover
@@ -40,7 +42,8 @@ store:
   filename: ./toy_regression.store
 
 report:
-  class: ReportText
+  class: ToyReport
+  require: sample/toy_regression/toy_report.rb
 
 individual:
   class: ToyIndividual
