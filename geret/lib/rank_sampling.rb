@@ -12,8 +12,8 @@ module Selection
       super :proportion
     end
 
-    def select( population, how_much )
-      super( @ranker.rank( population ), how_much ).map { |individual| individual.original }
+    def select( how_much, population=self.population )
+      super( how_much, @ranker.rank( population ) ).map { |individual| individual.original }
     end
 
   end

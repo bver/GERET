@@ -9,7 +9,7 @@ module Selection
       super
     end
 
-    def select( population, how_much )
+    def select( how_much, population=self.population )
       raise "Sampling: cannot select from an empty population" if population.empty?
       raise "Sampling: cannot select more than population.size" if how_much > population.size
       return [] if how_much == 0
@@ -31,8 +31,8 @@ module Selection
       winners
     end
 
-    def select_one population
-      select( population, 1 ).first
+    def select_one population=self.population
+      select( 1, population ).first
     end
   
   end

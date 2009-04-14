@@ -23,7 +23,7 @@ class TC_Sampling < Test::Unit::TestCase
     r = Sampling.new :fitness
     r.random =  MockRand.new [{0=>0.3}]
 
-    winners = r.select( @population, 2 )
+    winners = r.select( 2, @population )
     assert_equal( 2, winners.size )
     assert_equal( @population[1].object_id, winners[0].object_id )
     assert_equal( @population[2].object_id, winners[1].object_id )
@@ -34,26 +34,26 @@ class TC_Sampling < Test::Unit::TestCase
     r.random =  MockRand.new [{0=>0.3}]
 
     population = [10, 100, 50, 10]
-    winners = r.select( population, 2 )
+    winners = r.select( 2, population )
     assert_equal( 100, winners[0] )
     assert_equal( 50, winners[1] )
   end
 
   def test_small_population
     r = Sampling.new :fitness
-    exception = assert_raise( RuntimeError ) { r.select( @population, 5 ) }
+    exception = assert_raise( RuntimeError ) { r.select( 5, @population ) }
     assert_equal( "Sampling: cannot select more than population.size", exception.message )
   end
 
   def test_empty_population
     r = Sampling.new :fitness
-    exception = assert_raise( RuntimeError ) { r.select( [], 2 ) }
+    exception = assert_raise( RuntimeError ) { r.select( 2, [] ) }
     assert_equal( "Sampling: cannot select from an empty population", exception.message )
   end
 
   def test_zero_howmuch
     r = Sampling.new :fitness
-    winners = r.select( @population, 0 )
+    winners = r.select( 0, @population )
     assert_equal( 0, winners.size )
   end  
 
@@ -76,10 +76,28 @@ class TC_Sampling < Test::Unit::TestCase
     r.proportional_by = :fitness
     assert_equal( :fitness, r.proportional_by )
     r.random =  MockRand.new [{0=>0.3}]
-    winners = r.select( @population, 1 )
+    winners = r.select( 1, @population )
     assert_equal( 1, winners.size )
     assert_equal( @population[1].object_id, winners[0].object_id )
   end
 
+  def test_population_attr
+    r = Sampling.new :fitness
+    r.random =  MockRand.new [{0=>0.3}, {0=>0.3}]
+
+    assert_equal( nil, r.population )
+    r.population = @population
+    assert_equal( @population.object_id, r.population.object_id )
+   
+    winners = r.select( 2 )
+    assert_equal( 2, winners.size )
+    assert_equal( @population[1].object_id, winners[0].object_id )
+    assert_equal( @population[2].object_id, winners[1].object_id )
+  
+    winner = r.select_one
+    assert_equal( @population[1].object_id, winner.object_id )
+  end
+
+ 
 end
 
