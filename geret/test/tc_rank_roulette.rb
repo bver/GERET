@@ -27,7 +27,7 @@ class TC_RankRoulette < Test::Unit::TestCase
     winner = r.select_one @population
     assert_equal( @population[0].object_id, winner.object_id )
 
-    winners = r.select( @population, 2 )
+    winners = r.select( 2, @population )
     assert_equal( 2, winners.size )
     assert_equal( @population[3].object_id, winners[0].object_id )
     assert_equal( @population[0].object_id, winners[1].object_id )

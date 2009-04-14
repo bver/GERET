@@ -8,7 +8,7 @@ module SelectMore
     @unique_winners
   end
 
-  def select( population, how_much )
+  def select( how_much, population=self.population )
     winners = []
     ids = []
     while winners.size < how_much

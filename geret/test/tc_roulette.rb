@@ -68,7 +68,7 @@ class TC_Roulette < Test::Unit::TestCase
     r = Roulette.new :fitness
     r.random =  MockRand.new [{0=>0.3}, {0=>0.7}]
 
-    winners = r.select( @population, 2 )
+    winners = r.select( 2, @population )
     assert_equal( 2, winners.size )
     assert_equal( @population[1].object_id, winners[0].object_id )
     assert_equal( @population[2].object_id, winners[1].object_id )
@@ -79,7 +79,7 @@ class TC_Roulette < Test::Unit::TestCase
     assert_equal( false, r.unique_winners )
 
     r.random =  MockRand.new [{0=>0.3}, {0=>0.3}]
-    winners = r.select( @population, 2 )
+    winners = r.select( 2, @population )
     assert_equal( 2, winners.size )
     assert_equal( @population[1].object_id, winners[0].object_id )
     assert_equal( @population[1].object_id, winners[1].object_id )
@@ -88,7 +88,7 @@ class TC_Roulette < Test::Unit::TestCase
     assert_equal( true, r.unique_winners )
 
     r.random =  MockRand.new [{0=>0.3}, {0=>0.3}, {0=>0.7}]
-    winners = r.select( @population, 2 )
+    winners = r.select( 2, @population )
     assert_equal( 2, winners.size )
     assert_equal( @population[1].object_id, winners[0].object_id )
     assert_equal( @population[2].object_id, winners[1].object_id )
@@ -109,5 +109,22 @@ class TC_Roulette < Test::Unit::TestCase
     assert_equal( @population[1].object_id, winner.object_id )
   end
 
+  def test_population_attr
+    r = Roulette.new :fitness
+
+    assert_equal( nil, r.population )
+    r.population = @population
+    assert_equal( @population.object_id, r.population.object_id )
+
+    r.random =  MockRand.new [{0=>0.3}, {0=>0.3}, {0=>0.7}]   
+    winner = r.select_one
+    assert_equal( @population[1].object_id, winner.object_id )
+
+    winners = r.select 2
+    assert_equal( 2, winners.size )
+    assert_equal( @population[1].object_id, winners[0].object_id )
+    assert_equal( @population[2].object_id, winners[1].object_id )
+  end
+ 
 end
 

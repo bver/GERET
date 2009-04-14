@@ -16,12 +16,13 @@ module Selection
               end
       @proportional_by = proportional_by     
       @random = Kernel
+      @population = population 
     end
 
-    attr_accessor :random
+    attr_accessor :random, :population
     attr_reader :proportional_by
 
-    def select_one population
+    def select_one population=self.population 
       sum,wheel = wheel_core population
 
       ballot = sum * @random.rand   
