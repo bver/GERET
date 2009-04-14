@@ -38,5 +38,23 @@ class TC_RankSampling < Test::Unit::TestCase
     assert_equal( "RankSampling: invalid Ranking object", exception.message )
   end
   
+  def test_population_attr
+    rank = Ranking.new :fitness
+    r = RankSampling.new rank
+    r.random =  MockRand.new [{0=>0.3}, {0=>0.7}, {0=>0.3}, {0=>0.7}]
+
+    assert_equal( nil, r.population )
+    r.population = @population
+    assert_equal( @population.object_id, r.population.object_id )
+    
+    winner = r.select_one
+    assert_equal( @population[0].object_id, winner.object_id )
+
+    winners = r.select( 2 )
+    assert_equal( 2, winners.size )
+    assert_equal( @population[0].object_id, winners[0].object_id )
+    assert_equal( @population[1].object_id, winners[1].object_id )
+  end
+  
 end
 
