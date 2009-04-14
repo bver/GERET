@@ -12,7 +12,7 @@ module Selection
       super :proportion
     end
 
-    def select_one population
+    def select_one population=self.population
       super( @ranker.rank( population ) ).original
     end
 
