@@ -103,7 +103,7 @@ class TC_Config < Test::Unit::TestCase
     cfg['artifact'] = {'class'=>'NotDefined', 'attr1'=>'one', 'attr2'=>2 }
 
     exception = assert_raise( RuntimeError ) { cfg.factory('artifact') }
-    assert_equal( "ConfigYaml: cannot eval 'NotDefined.new(  )' (missing require?)", exception.message )
+    assert_equal( "ConfigYaml: cannot eval 'NotDefined.new(  )' (missing require?)", exception.message.split(/\n/).first )
   end
 
 #  def test_method_initialize

@@ -1,6 +1,5 @@
-require 'lib/abnf_parser'
 require 'lib/abnf_renderer'
-require 'lib/abnf_tokenizer'
+require 'lib/abnf_file'
 require 'lib/config'
 require 'lib/crossover'
 require 'lib/dominance'

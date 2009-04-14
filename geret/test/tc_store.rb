@@ -25,6 +25,9 @@ class TC_Config < Test::Unit::TestCase
     saver = Store.new 'dummy'
     assert_equal( 'dummy', saver.filename )
 
+    saver = Store.new
+    assert_equal( nil, saver.filename )
+  
     saver.filename = 'test/data/store2.bin'
     assert_equal( 'test/data/store2.bin', saver.filename )
 

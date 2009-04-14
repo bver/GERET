@@ -63,8 +63,9 @@ class ToyIndividual < SingleObjectiveIndividual
     @@engine.code = self.phenotype
 
     @error = 0.0
-    @@required_values.each_with_index do |required,index| 
-      value = @@engine.run( :x => index ).first
+    @@required_values.each_with_index do |required,index|
+      point = index*2*PI/Samples
+      value = @@engine.run( 'x' => point ).first
       @error += abs( value - required )
     end
   end

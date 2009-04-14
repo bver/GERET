@@ -1,6 +1,6 @@
 
 class Store
-  def initialize filename
+  def initialize filename=nil
     @filename = filename 
   end
 

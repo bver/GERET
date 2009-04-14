@@ -29,8 +29,8 @@ class ConfigYaml < Hash
     begin
       text = "#{klass}.new( #{initial_args} )" 
       instance = eval text
-    rescue
-      raise "ConfigYaml: cannot eval '#{text}' (missing require?)"
+    rescue => details
+      raise "ConfigYaml: cannot eval '#{text}' (missing require?)\n" + details.inspect
     end
 
     details.each_pair do |k,value|
