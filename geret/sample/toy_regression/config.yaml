@@ -19,9 +19,13 @@ mapper:
   class: DepthFirst
   wraps_to_fail: 10
 
+rank: #optional
+  class: Ranking
+  order_by: :error      #optional 
+  direction: :minimize  #optional 
+
 selection:
-  class: RepeatTournament
-  tournament_size: 2
+  class: RankRoulette
         
 crossover:
   class: Crossover
