@@ -17,23 +17,25 @@ module Selection
       @proportional_by = proportional_by     
       @random = Kernel
       @population = nil 
+      @wheel = nil
     end
 
     attr_accessor :random, :population
     attr_reader :proportional_by
 
     def select_one population=self.population 
-      sum,wheel = wheel_core population
+      @sum,@wheel = wheel_core population if @wheel.nil? or population.object_id != @population.object_id
+      @population = population
 
-      ballot = sum * @random.rand   
+      ballot = @sum * @random.rand   
 
       sum = 0.0
-      wheel.each do |slot|
+      @wheel.each do |slot|
         sum += slot.width
         return slot.original if sum > ballot
       end
      
-      return wheel.last.original
+      return @wheel.last.original
     end
 
     def proportional_by= proportional_by
