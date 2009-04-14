@@ -32,7 +32,7 @@ module Selection
     end
 
     def select_one population
-      select( population, 1 )
+      select( population, 1 ).first
     end
   
   end

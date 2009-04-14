@@ -1,5 +1,6 @@
 
 require 'lib/roulette'
+require 'lib/ranking'
 
 module Selection
 

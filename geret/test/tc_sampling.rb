@@ -61,9 +61,8 @@ class TC_Sampling < Test::Unit::TestCase
     r = Sampling.new :fitness
     r.random =  MockRand.new [{0=>0.3}]
 
-    winners = r.select_one( @population )
-    assert_equal( 1, winners.size )
-    assert_equal( @population[1].object_id, winners[0].object_id )
+    winner = r.select_one( @population )
+    assert_equal( @population[1].object_id, winner.object_id )
   end
 
   def test_attributes
