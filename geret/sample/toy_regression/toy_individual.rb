@@ -1,15 +1,7 @@
+
 include Math
 
-class ToyIndividual
-
-  Samples = 20
-  Inf = (1.0/0.0) 
-  def ToyIndividual.f index
-    point = index*2*PI/Samples
-    sin(point) + point + point*point   
-  end
-
-  @@required_values = (0...Samples).map { |i| f(i) }
+class SingleObjectiveIndividual
 
   @@engine = Evaluator.new
 
@@ -17,6 +9,7 @@ class ToyIndividual
     @mapper = mapper
     @genotype = genotype
     @phenotype = nil
+    @used_length = nil  
     @error = nil
     @init_magnitude = 10
   end
@@ -32,7 +25,35 @@ class ToyIndividual
     return @phenotype unless @phenotype.nil?
 
     @error = nil   
-    return @phenotype = @mapper.phenotype( self.genotype )
+    @phenotype = @mapper.phenotype( self.genotype )   
+    @used_length = @mapper.used_length 
+    return @phenotype
+  end
+
+  def used_length
+    self.phenotype if @phenotype.nil?
+    @used_length
+  end
+
+  def <=> other
+    self.error <=> other.error
+  end
+
+end
+
+class ToyIndividual < SingleObjectiveIndividual
+
+  Samples = 20
+  Inf = (1.0/0.0) 
+  def ToyIndividual.f index
+    point = index*2*PI/Samples
+    sin(point) + point + point*point   
+  end
+
+  @@required_values = (0...Samples).map { |i| f(i) }
+
+  def initialize( mapper, genotype=nil )
+    super
   end
 
   def error
@@ -46,10 +67,6 @@ class ToyIndividual
       value = @@engine.run( :x => index ).first
       @error += abs( value - required )
     end
-  end
-
-  def <=> other
-    self.error <=> other.error
   end
 
   def stopping_condition
