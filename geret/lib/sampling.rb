@@ -14,14 +14,15 @@ module Selection
       raise "Sampling: cannot select more than population.size" if how_much > population.size
       return [] if how_much == 0
 
-      sum,wheel = wheel_core population
+      @sum,@wheel = wheel_core population if @wheel.nil? or population.object_id != @population.object_id
+      @population = population
 
-      step = sum.to_f/how_much
+      step = @sum.to_f/how_much
       ballot = step * @random.rand 
 
       width = 0.0
       winners = []
-      wheel.each_with_index do |slot,index|
+      @wheel.each_with_index do |slot,index|
         width += slot.width
         next if ballot > width
         winners.push slot.original   

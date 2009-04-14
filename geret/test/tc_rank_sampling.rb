@@ -22,7 +22,7 @@ class TC_RankSampling < Test::Unit::TestCase
   def test_basic
     rank = Ranking.new :fitness
     r = RankSampling.new rank
-    r.random =  MockRand.new [{0=>0.3}, {0=>0.7}, {0=>0.3}, {0=>0.7}]
+    r.random =  MockRand.new [{0=>0.3}, {0=>0.7}]
    
     winner = r.select_one @population
     assert_equal( @population[0].object_id, winner.object_id )
@@ -41,7 +41,7 @@ class TC_RankSampling < Test::Unit::TestCase
   def test_population_attr
     rank = Ranking.new :fitness
     r = RankSampling.new rank
-    r.random =  MockRand.new [{0=>0.3}, {0=>0.7}, {0=>0.3}, {0=>0.7}]
+    r.random =  MockRand.new [{0=>0.3}, {0=>0.7}]
 
     assert_equal( nil, r.population )
     r.population = @population
