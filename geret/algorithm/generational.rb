@@ -24,6 +24,9 @@ class Generational
     (@population_size-@population.size).times { @population.push @cfg.factory( 'individual', @mapper ) }
 
     @next_stop = false
+    @steps = 0
+
+    return @report    
   end
 
   def teardown
@@ -50,6 +53,7 @@ class Generational
       
       individual = @cfg.factory( 'individual', @mapper, chromozome ) 
       @next_stop = @next_stop || individual.send( @termination['on_individual'] ) unless @termination['on_individual'].nil? 
+
       new_population << individual
     end
 
@@ -59,7 +63,7 @@ class Generational
   end
 
   def finished?
-    return true if @steps >= @termination['max_steps']
+    return true if !@termination['max_steps'].nil? and @steps >= @termination['max_steps']
     return @next_stop 
   end
 
