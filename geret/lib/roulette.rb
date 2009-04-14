@@ -16,7 +16,7 @@ module Selection
               end
       @proportional_by = proportional_by     
       @random = Kernel
-      @population = population 
+      @population = nil 
     end
 
     attr_accessor :random, :population
