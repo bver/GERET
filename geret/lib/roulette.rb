@@ -14,10 +14,12 @@ module Selection
               else
                 proc { |individual| individual.send(proportional_by) }
               end
+      @proportional_by = proportional_by     
       @random = Kernel
     end
 
     attr_accessor :random
+    attr_reader :proportional_by
 
     def select_one population
       sum,wheel = wheel_core population
@@ -31,6 +33,11 @@ module Selection
       end
      
       return wheel.last.original
+    end
+
+    def proportional_by= proportional_by
+      @prop = proc { |individual| individual.send(proportional_by) }
+      @proportional_by = proportional_by     
     end
 
     protected

@@ -94,5 +94,20 @@ class TC_Roulette < Test::Unit::TestCase
     assert_equal( @population[2].object_id, winners[1].object_id )
   end
 
+  def test_attributes
+    r = Roulette.new :fitness   
+    assert_equal( :fitness, r.proportional_by )
+    r.proportional_by = :some_arg
+    assert_equal( :some_arg, r.proportional_by )
+
+    r = Roulette.new { |item| item }   
+    assert_equal( nil, r.proportional_by )
+    r.proportional_by = :fitness
+    assert_equal( :fitness, r.proportional_by )
+    r.random =  MockRand.new [{0=>0.3}, {0=>0.7}]
+    winner = r.select_one @population
+    assert_equal( @population[1].object_id, winner.object_id )
+  end
+
 end
 

@@ -65,6 +65,22 @@ class TC_Sampling < Test::Unit::TestCase
     assert_equal( 1, winners.size )
     assert_equal( @population[1].object_id, winners[0].object_id )
   end
- 
+
+  def test_attributes
+    r = Sampling.new :fitness   
+    assert_equal( :fitness, r.proportional_by )
+    r.proportional_by = :some_arg
+    assert_equal( :some_arg, r.proportional_by )
+
+    r = Sampling.new { |item| item }   
+    assert_equal( nil, r.proportional_by )
+    r.proportional_by = :fitness
+    assert_equal( :fitness, r.proportional_by )
+    r.random =  MockRand.new [{0=>0.3}]
+    winners = r.select( @population, 1 )
+    assert_equal( 1, winners.size )
+    assert_equal( @population[1].object_id, winners[0].object_id )
+  end
+
 end
 
