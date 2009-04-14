@@ -15,9 +15,9 @@ module Selection
       @pressure_modifier = pressure_modifier
     end
 
-    attr_accessor :tournament_size, :ranker, :random, :pressure_modifier
+    attr_accessor :tournament_size, :ranker, :random, :pressure_modifier, :population
 
-    def select_one population
+    def select_one population=self.population
       raise "Tournament: empty population" if population.empty?
       raise "Tournament: tournament_size bigger than population.size" if @tournament_size > population.size 
      

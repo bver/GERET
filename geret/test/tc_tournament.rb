@@ -144,5 +144,25 @@ class TC_Tournament < Test::Unit::TestCase
     assert_equal( @population[6].object_id, winners[1].object_id )
   end
 
+  def test_population_attr
+    r = Ranking.new :fitness 
+    t = Tournament.new( r, 2 )
+    t.random = MockRand.new [{8,4}, {8,2}, {0=>0.8}, {1=>0}]
+
+    assert_equal( nil, t.population )
+    t.population = @population
+    assert_equal( @population.object_id, t.population.object_id )
+    
+    winner = t.select_one 
+    assert_equal( @population[2].object_id, winner.object_id )
+
+    t.random = MockRand.new [{8,2}, {8,0}, {0=>0.8}, {1=>0}, {8,3}, {8,2}, {0=>0.7}, {1=>0}]
+    r.direction = :minimize
+    winners = t.select( 2 )
+    assert_equal( 2, winners.size )
+    assert_equal( @population[0].object_id, winners[0].object_id )
+    assert_equal( @population[2].object_id, winners[1].object_id )
+  end
+
 end
 
