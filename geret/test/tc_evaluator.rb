@@ -24,9 +24,9 @@ class TC_Evaluator < Test::Unit::TestCase
      result = engine.run( :y=>2, :x=>3, :z=>4 ) 
      assert_equal( [5], result )
 
-     engine.code = '[input.size]'
+     engine.code = 'input.size'
      result = engine.run( :input => [2,2,2,2] ) 
-     assert_equal( [4], result )
+     assert_equal( 4, result )
   end
 
   def test_no_code

@@ -14,10 +14,10 @@ class SingleObjectiveIndividual
     @init_magnitude = 10
   end
 
-  attr_accessor :init_magnitude
+  attr_accessor :init_magnitude, :init_length 
 
   def genotype
-    @genotype = RandomInit.new( @init_magnitude ).init if @genotype.nil?
+    @genotype = RandomInit.new( @init_magnitude ).init( @init_length ) if @genotype.nil?
     @genotype
   end
 
@@ -27,6 +27,7 @@ class SingleObjectiveIndividual
     @error = nil   
     @phenotype = @mapper.phenotype( self.genotype )   
     @used_length = @mapper.used_length 
+
     return @phenotype
   end
 
@@ -65,8 +66,8 @@ class ToyIndividual < SingleObjectiveIndividual
     @error = 0.0
     @@required_values.each_with_index do |required,index|
       point = index*2*PI/Samples
-      value = @@engine.run( 'x' => point ).first
-      @error += abs( value - required )
+      value = @@engine.run( 'x' => point )
+      @error += ( value - required ).abs
     end
   end
 

@@ -49,4 +49,4 @@ individual:
   class: ToyIndividual
   require: sample/toy_regression/toy_individual.rb
   init_magnitude: 20 #same as mutation.magnitude
-
+  init_length: 100

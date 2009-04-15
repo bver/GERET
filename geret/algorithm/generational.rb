@@ -16,14 +16,14 @@ class Generational
     @selection = @cfg['selection_rank'].nil? ? 
                  @cfg.factory('selection') : 
                  @cfg.factory('selection', @cfg.factory('selection_rank') ) 
-    @elite_rank = @cfg.factory('elite_rank')             
+    @elite_rank = @cfg.factory('elite_rank')     
     @crossover = @cfg.factory('crossover')
     @mutation = @cfg.factory('mutation')   
     @report = @cfg.factory('report')
 
     @population = @store.load
     @population = [] if @population.nil?
-    (@population_size-@population.size).times { @population.push @cfg.factory( 'individual', @mapper ) }
+    (@population_size-@population.size).times { @population << @cfg.factory( 'individual', @mapper ) }
 
     @next_stop = false
     @steps = 0
@@ -39,7 +39,6 @@ class Generational
   def step
     ranked_population = @elite_rank.rank( @population ).map { |individual| individual.original }
     @report.report ranked_population
-
     new_population = ranked_population[0...@elite_size]  
 
     @selection.population = @population   
@@ -50,7 +49,7 @@ class Generational
       else
         chromozome = @selection.select_one 
       end
-      
+   
       chromozome = @mutation.mutate chromozome if rand < @mutation_probability  
       
       individual = @cfg.factory( 'individual', @mapper, chromozome ) 
