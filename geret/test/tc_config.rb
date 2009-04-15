@@ -17,6 +17,8 @@ class FactoryArtifact
   attr_accessor :arg3, :attr1, :attr2, :attr3
 end
 
+ArgStruct = Struct.new( 'ArgStruct', :value )
+
 class TC_Config < Test::Unit::TestCase
 
   def test_values
@@ -59,6 +61,17 @@ class TC_Config < Test::Unit::TestCase
     assert_equal( 'one', instance2.attr1 )
     assert_equal( 2, instance2.attr2 )
     assert_equal( 'undef', instance2.attr3 )   
+  end
+
+  def test_factory_complex_args
+    cfg = ConfigYaml.new
+    cfg['artifact'] = {'class'=>'FactoryArtifact'}
+    
+    argument = ArgStruct.new '1st argument'
+    instance = cfg.factory('artifact', argument )
+    assert_equal( FactoryArtifact, instance.class )
+    assert_equal( ArgStruct, instance.arg1.class )
+    assert_equal( '1st argument', instance.arg1.value ) 
   end
 
   def test_missing_key

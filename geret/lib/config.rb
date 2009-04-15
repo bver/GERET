@@ -21,13 +21,15 @@ class ConfigYaml < Hash
     requirement = details.fetch( 'require', nil )
     require requirement unless requirement.nil?
     
-    initial_args = if args.empty?
-                     details.fetch( 'initialize', '' )
-                   else
-                     ( args.map {|a| a.inspect} ).join ', '
-                   end
+    if args.empty?
+      text = "#{klass}.new( #{ details.fetch( 'initialize', '' ) } )" 
+    else
+      text = "#{klass}.new( "
+      args.each_index { |index| text += "args[#{index}]," }
+      text = text[ 0...text.size-1 ] + ' )'
+    end
+
     begin
-      text = "#{klass}.new( #{initial_args} )" 
       instance = eval text
     rescue => details
       raise "ConfigYaml: cannot eval '#{text}' (missing require?)\n" + details.inspect
