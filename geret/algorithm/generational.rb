@@ -13,10 +13,10 @@ class Generational
     @store = @cfg.factory('store')
     @grammar = @cfg.factory('grammar')
     @mapper = @cfg.factory('mapper', @grammar)
-    @selection = @cfg['rank'].nil? ? 
+    @selection = @cfg['selection_rank'].nil? ? 
                  @cfg.factory('selection') : 
                  @cfg.factory('selection', @cfg.factory('selection_rank') ) 
-    @rank = @cfg.factory('rank')             
+    @elite_rank = @cfg.factory('elite_rank')             
     @crossover = @cfg.factory('crossover')
     @mutation = @cfg.factory('mutation')   
     @report = @cfg.factory('report')

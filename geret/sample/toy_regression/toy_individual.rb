@@ -14,7 +14,7 @@ class SingleObjectiveIndividual
     @init_magnitude = 10
   end
 
-  attr_accessor :random_init_magnitude
+  attr_accessor :init_magnitude
 
   def genotype
     @genotype = RandomInit.new( @init_magnitude ).init if @genotype.nil?

@@ -21,7 +21,7 @@ mapper:
 
 elite_rank:
   class: Ranking
-  order_by: :fitness  #optional
+  order_by: :error  #optional
   direction: :minimize #optional 
 
 selection:
