@@ -25,7 +25,8 @@ class SingleObjectiveIndividual
     return @phenotype unless @phenotype.nil?
 
     @error = nil   
-    @phenotype = @mapper.phenotype( self.genotype )   
+    @phenotype = @mapper.phenotype( self.genotype )
+    print "*"
     @used_length = @mapper.used_length 
 
     return @phenotype
@@ -59,19 +60,21 @@ class ToyIndividual < SingleObjectiveIndividual
 
   def error
     return @error unless @error.nil?
+    @error = Inf
 
     return Inf if self.phenotype.nil?
     @@engine.code = self.phenotype
 
-    @error = 0.0
+    error = 0.0
     @@required_values.each_with_index do |required,index|
       point = index*2*PI/Samples
       value = @@engine.run( 'x' => point )
       return Inf if value.nil?
-      @error += ( value - required ).abs
+      error += ( value - required ).abs
+      print "."
     end
 
-    @error
+    @error = error
   end
 
   def stopping_condition

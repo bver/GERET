@@ -1,3 +1,4 @@
+#!/usr/local/bin/ruby19/ruby
 #!/usr/bin/ruby -d
 
 require 'lib/geret'
@@ -19,6 +20,6 @@ begin
   puts report.output 
 
 rescue => msg
-  abort msg
+  abort msg.inspect
 end
 

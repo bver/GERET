@@ -2,8 +2,8 @@
 algorithm:
   class: Generational
 
-  population_size: 100
-  elite_size: 10
+  population_size: 20
+  elite_size: 3
   crossover_probability: 0.9
   mutation_probability: 0.01
 

@@ -38,21 +38,21 @@ class Generational
 
   def step
 puts "---------1" 
-@population.each {|i| puts i.phenotype.inspect unless i.phenotype.nil? }
+@population.each {|i| puts i.phenotype.inspect }
     ranked_population = ( @elite_rank.rank @population ).map { |ranked| ranked.original }
 puts "---------2"   
-    @report.report ranked_population
+#    @report.report ranked_population
 puts "---------3"
     new_population = ranked_population[0...@elite_size]  
 puts "---------4"
     @selection.population = @population  
-puts "-------end"    
+puts "-------end "  + @crossover_probability.class.inspect
     while new_population.size < @population_size
       if rand < @crossover_probability 
-        parents = @selection.select 2
-        chromozome, dummy = @crossover.crossover( parents.first, parents.last ) 
+        parents = @selection.select 2 
+        chromozome, dummy = @crossover.crossover( parents.first.genotype, parents.last.genotype ) 
       else
-        chromozome = @selection.select_one 
+        chromozome = @selection.select_one.genotype 
       end
    
       chromozome = @mutation.mutate chromozome if rand < @mutation_probability  
