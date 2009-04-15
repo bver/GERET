@@ -10,7 +10,12 @@ class Evaluator
     raise "Evaluator: no code supplied" if @code.nil?
     arguments = ''
     args.each_pair { |key,value| arguments += "#{key} = #{value.inspect};" }
-    eval arguments + @code
+    begin
+      eval arguments + @code
+    rescue
+      nil
+    end
   end
+
 end
 

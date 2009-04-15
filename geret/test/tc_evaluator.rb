@@ -35,6 +35,13 @@ class TC_Evaluator < Test::Unit::TestCase
      exception = assert_raise( RuntimeError ) { engine.run( :y=>2, :x=>3, :z=>4 ) }
      assert_equal( "Evaluator: no code supplied", exception.message )
   end
- 
+
+  def test_caught_exception
+    engine = Evaluator.new
+    engine.code = "x/0" 
+    result = engine.run( 'x'=>1 )
+    assert_equal( nil, result )
+  end
+
 end
 
