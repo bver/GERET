@@ -55,7 +55,7 @@ puts "-------end "  + @crossover_probability.class.inspect
         chromozome = @selection.select_one.genotype 
       end
    
-      chromozome = @mutation.mutate chromozome if rand < @mutation_probability  
+      chromozome = @mutation.mutation chromozome if rand < @mutation_probability  
       
       individual = @cfg.factory( 'individual', @mapper, chromozome ) 
       @next_stop = @next_stop || individual.send( @termination['on_individual'] ) unless @termination['on_individual'].nil? 

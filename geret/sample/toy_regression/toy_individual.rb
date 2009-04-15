@@ -26,7 +26,8 @@ class SingleObjectiveIndividual
 
     @error = nil   
     @phenotype = @mapper.phenotype( self.genotype )
-    print "*"
+    @phenotype = '' if @phenotype.nil?
+    print @phenotype.empty? ? "x" : "*"
     @used_length = @mapper.used_length 
 
     return @phenotype
@@ -62,7 +63,7 @@ class ToyIndividual < SingleObjectiveIndividual
     return @error unless @error.nil?
     @error = Inf
 
-    return Inf if self.phenotype.nil?
+    return Inf if self.phenotype.nil? or self.phenotype.empty? 
     @@engine.code = self.phenotype
 
     error = 0.0

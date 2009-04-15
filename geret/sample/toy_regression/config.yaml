@@ -17,7 +17,7 @@ grammar:
 
 mapper:
   class: DepthFirst
-  wraps_to_fail: 10
+  wraps_to_fail: 3 
 
 elite_rank:
   class: Ranking
@@ -49,4 +49,4 @@ individual:
   class: ToyIndividual
   require: sample/toy_regression/toy_individual.rb
   init_magnitude: 20 #same as mutation.magnitude
-  init_length: 100
+  init_length: 10

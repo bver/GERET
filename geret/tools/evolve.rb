@@ -1,5 +1,5 @@
-#!/usr/local/bin/ruby19/ruby
 #!/usr/bin/ruby -d
+#!/usr/local/bin/ruby19/ruby
 
 require 'lib/geret'
 
