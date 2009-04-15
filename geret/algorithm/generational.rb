@@ -37,11 +37,16 @@ class Generational
   end
 
   def step
-    ranked_population = @elite_rank.rank( @population ).map { |individual| individual.original }
+puts "---------1" 
+@population.each {|i| puts i.phenotype.inspect unless i.phenotype.nil? }
+    ranked_population = ( @elite_rank.rank @population ).map { |ranked| ranked.original }
+puts "---------2"   
     @report.report ranked_population
+puts "---------3"
     new_population = ranked_population[0...@elite_size]  
-
-    @selection.population = @population   
+puts "---------4"
+    @selection.population = @population  
+puts "-------end"    
     while new_population.size < @population_size
       if rand < @crossover_probability 
         parents = @selection.select 2
@@ -54,6 +59,8 @@ class Generational
       
       individual = @cfg.factory( 'individual', @mapper, chromozome ) 
       @next_stop = @next_stop || individual.send( @termination['on_individual'] ) unless @termination['on_individual'].nil? 
+
+      puts individual.error
 
       new_population << individual
     end

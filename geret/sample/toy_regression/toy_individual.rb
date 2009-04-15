@@ -67,8 +67,11 @@ class ToyIndividual < SingleObjectiveIndividual
     @@required_values.each_with_index do |required,index|
       point = index*2*PI/Samples
       value = @@engine.run( 'x' => point )
+      return Inf if value.nil?
       @error += ( value - required ).abs
     end
+
+    @error
   end
 
   def stopping_condition
