@@ -2,10 +2,10 @@
 algorithm:
   class: Generational
 
-  population_size: 100
+  population_size: 500
   elite_size: 5
   crossover_probability: 0.9
-  mutation_probability: 0.01
+  mutation_probability: 0.1
 
   termination:
     max_steps: 100

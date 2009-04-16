@@ -24,7 +24,10 @@ class Generational
     @cfg.factory( 'individual', @mapper ) #todo: because of require
     @population = @store.load
     @population = [] if @population.nil?
-    (@population_size-@population.size).times { @population << @cfg.factory( 'individual', @mapper ) }
+    while @population.size < @population_size
+      individual = @cfg.factory( 'individual', @mapper )
+      @population << individual if individual.valid? 
+    end
 
     @next_stop = false
     @steps = 0

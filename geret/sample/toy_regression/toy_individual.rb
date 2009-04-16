@@ -5,6 +5,8 @@ class SingleObjectiveIndividual
 
   @@engine = Evaluator.new
 
+  @@shortener = Shorten.new
+
   def initialize( mapper, genotype=nil )
     @mapper = mapper
     @genotype = genotype
@@ -18,7 +20,8 @@ class SingleObjectiveIndividual
   attr_reader :used_length 
 
   def genotype
-    @genotype = RandomInit.new( @init_magnitude ).init( @init_length ) if @genotype.nil?
+    #@genotype = RandomInit.new( @init_magnitude ).init( @init_length ) if @genotype.nil?
+    @genotype = @mapper.generate_grow 5  if @genotype.nil?
     @genotype
   end
 
@@ -29,6 +32,8 @@ class SingleObjectiveIndividual
     @phenotype = @mapper.phenotype( self.genotype )
     @phenotype = '' if @phenotype.nil?
     @used_length = @mapper.used_length 
+
+    @genotype = @@shortener.shorten( @genotype, @used_length ) 
 
     return @phenotype
   end
