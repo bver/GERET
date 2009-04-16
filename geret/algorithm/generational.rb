@@ -55,7 +55,8 @@ class Generational
         parents = @selection.select 2 
         chromozome, dummy = @crossover.crossover( parents.first.genotype, parents.last.genotype ) 
       else
-        chromozome = @selection.select_one.genotype 
+        #chromozome = @selection.select_one.genotype 
+        chromozome = @cfg.factory( 'individual', @mapper ).genotype
       end
    
       chromozome = @mutation.mutation chromozome if rand < @mutation_probability  

@@ -3,12 +3,12 @@ algorithm:
   class: Generational
 
   population_size: 500
-  elite_size: 5
+  elite_size: 50
   crossover_probability: 0.9
-  mutation_probability: 0.1
+  mutation_probability: 0.01
 
   termination:
-    max_steps: 100
+    max_steps: 2000
     on_individual: :stopping_condition
 
 grammar:

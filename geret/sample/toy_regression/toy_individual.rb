@@ -21,7 +21,7 @@ class SingleObjectiveIndividual
 
   def genotype
     #@genotype = RandomInit.new( @init_magnitude ).init( @init_length ) if @genotype.nil?
-    @genotype = @mapper.generate_grow 5  if @genotype.nil?
+    @genotype = @mapper.generate_grow 3  if @genotype.nil?
     @genotype
   end
 
