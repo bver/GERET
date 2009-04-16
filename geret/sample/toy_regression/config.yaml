@@ -2,8 +2,8 @@
 algorithm:
   class: Generational
 
-  population_size: 20
-  elite_size: 3
+  population_size: 100
+  elite_size: 5
   crossover_probability: 0.9
   mutation_probability: 0.01
 
@@ -35,7 +35,7 @@ crossover:
 
 mutation:
   class: Mutation
-  magnitude: 20 # same as individual.init_magnitude
+  magnitude: 16 # same as individual.init_magnitude
 
 store:
   class: Store
@@ -48,5 +48,5 @@ report:
 individual:
   class: ToyIndividual
   require: sample/toy_regression/toy_individual.rb
-  init_magnitude: 20 #same as mutation.magnitude
-  init_length: 10
+  init_magnitude: 16 #same as mutation.magnitude
+  init_length: 8

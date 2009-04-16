@@ -21,6 +21,7 @@ class Generational
     @mutation = @cfg.factory('mutation')   
     @report = @cfg.factory('report')
 
+    @cfg.factory( 'individual', @mapper ) #todo: because of require
     @population = @store.load
     @population = [] if @population.nil?
     (@population_size-@population.size).times { @population << @cfg.factory( 'individual', @mapper ) }
@@ -32,21 +33,20 @@ class Generational
   end
 
   def teardown
+    puts "--------- finished:"
     @store.save @population
     return @report   
   end
 
   def step
-puts "---------1" 
-@population.each {|i| puts i.phenotype.inspect }
+    puts "--------- step #{@steps += 1}" 
+
     ranked_population = ( @elite_rank.rank @population ).map { |ranked| ranked.original }
-puts "---------2"   
-#    @report.report ranked_population
-puts "---------3"
+    @report.report ranked_population
+   #    
     new_population = ranked_population[0...@elite_size]  
-puts "---------4"
+       
     @selection.population = @population  
-puts "-------end "  + @crossover_probability.class.inspect
     while new_population.size < @population_size
       if rand < @crossover_probability 
         parents = @selection.select 2 
@@ -60,9 +60,7 @@ puts "-------end "  + @crossover_probability.class.inspect
       individual = @cfg.factory( 'individual', @mapper, chromozome ) 
       @next_stop = @next_stop || individual.send( @termination['on_individual'] ) unless @termination['on_individual'].nil? 
 
-      puts individual.error
-
-      new_population << individual
+      new_population << individual if individual.valid?
     end
 
     @population = new_population

@@ -15,6 +15,7 @@ class SingleObjectiveIndividual
   end
 
   attr_accessor :init_magnitude, :init_length 
+  attr_reader :used_length 
 
   def genotype
     @genotype = RandomInit.new( @init_magnitude ).init( @init_length ) if @genotype.nil?
@@ -27,7 +28,6 @@ class SingleObjectiveIndividual
     @error = nil   
     @phenotype = @mapper.phenotype( self.genotype )
     @phenotype = '' if @phenotype.nil?
-    print @phenotype.empty? ? "x" : "*"
     @used_length = @mapper.used_length 
 
     return @phenotype
@@ -40,6 +40,11 @@ class SingleObjectiveIndividual
 
   def <=> other
     self.error <=> other.error
+  end
+
+  def valid?
+    #not self.phenotype.empty?
+    self.error.infinite?.nil?
   end
 
 end
@@ -72,9 +77,9 @@ class ToyIndividual < SingleObjectiveIndividual
       value = @@engine.run( 'x' => point )
       return Inf if value.nil?
       error += ( value - required ).abs
-      print "."
     end
-
+    
+    return Inf if error.nan?
     @error = error
   end
 
