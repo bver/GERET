@@ -29,7 +29,6 @@ class Generational
       @population << individual if individual.valid? 
     end
 
-    @next_stop = false
     @steps = 0
 
     return @report    
@@ -46,7 +45,7 @@ class Generational
 
     ranked_population = ( @elite_rank.rank @population ).map { |ranked| ranked.original }
     @report.report ranked_population
-   #    
+       
     new_population = ranked_population[0...@elite_size]  
        
     @selection.population = @population  
@@ -62,8 +61,6 @@ class Generational
       chromozome = @mutation.mutation chromozome if rand < @mutation_probability  
       
       individual = @cfg.factory( 'individual', @mapper, chromozome ) 
-      @next_stop = @next_stop || individual.send( @termination['on_individual'] ) unless @termination['on_individual'].nil? 
-
       new_population << individual if individual.valid?
     end
 
@@ -73,8 +70,15 @@ class Generational
   end
 
   def finished?
-    return true if !@termination['max_steps'].nil? and @steps >= @termination['max_steps']
-    return @next_stop 
+    if ( ! @termination['max_steps'].nil? and @steps >= @termination['max_steps'] ) or
+       ( ! @termination['on_individual'].nil? and @population.detect { |individual| individual.send @termination['on_individual'] } )
+ 
+      ranked_population = ( @elite_rank.rank @population ).map { |ranked| ranked.original }
+      @report.report ranked_population
+
+      return true
+    end
+    return false
   end
 
 end
