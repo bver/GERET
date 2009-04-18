@@ -25,7 +25,6 @@ class Generational
     @crossover = @cfg.factory('crossover')
     @mutation = @cfg.factory('mutation')   
 
-    @cfg.factory( 'individual', @mapper ) #todo: because of require
     @population = @store.load
     @population = [] if @population.nil?
     @report << "loaded #{@population.size} individuals"   

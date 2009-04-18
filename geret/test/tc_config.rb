@@ -36,7 +36,7 @@ class TC_Config < Test::Unit::TestCase
     cfg = ConfigYaml.new  'test/data/config.yaml'
 
     assert_equal( {'class'=>'MyMapper', 'initialize'=>'file.abnf'}, cfg['mapper'] )
-    assert_equal( {'class'=>'MySelector', 'require'=>'MySelector.rb', 'attribute1'=>3, 'attr2'=>'toto'}, cfg['selector'] )
+    assert_equal( {'class'=>'MySelector', 'require'=>'test/data/external_class.rb', 'attribute1'=>3, 'attr2'=>'toto'}, cfg['selector'] )
   end
 
   def test_factory

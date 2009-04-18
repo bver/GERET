@@ -4,6 +4,6 @@ mapper:
   initialize: file.abnf
 selector: 
   class: MySelector
-  require: 'MySelector.rb'
+  require: test/data/external_class.rb
   attribute1: 3
   attr2: toto

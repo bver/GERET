@@ -10,6 +10,11 @@ class ConfigYaml < Hash
     obj = YAML::load( File.open( file ) )   
     raise "ConfigYaml: top level yaml object is not a hash" unless obj.kind_of? Hash
     update obj 
+
+    each_value do |details|
+      requirement = details.fetch( 'require', nil )
+      require requirement unless requirement.nil?
+    end
   end
 
   def factory key, *args
@@ -17,10 +22,10 @@ class ConfigYaml < Hash
     raise "ConfigYaml: missing key when calling factory('#{key}')" if details.nil?
     klass = details.fetch( 'class', nil )
     raise "ConfigYaml: missing class when calling factory('#{key}')" if klass.nil?
-    
+
     requirement = details.fetch( 'require', nil )
     require requirement unless requirement.nil?
-    
+   
     if args.empty?
       text = "#{klass}.new( #{ details.fetch( 'initialize', '' ) } )" 
     else
