@@ -5,13 +5,16 @@ class Report < Hash
     super
     @steps = 0
     @line = ''
+    @clear_line = true
     self.default = []
   end
 
   attr_reader :steps
 
   def << line
-    @line = line + "\n" 
+    @line = '' if @clear_line
+    @clear_line = false
+    @line += ( line + "\n" )
   end
 
   def [] label
@@ -21,7 +24,8 @@ class Report < Hash
 
   def next
     @steps += 1
-   
+    @clear_line = true  
+
     each_value do |ary|
       raise "Report: cannot record twice in a single step" if ary.size > @steps
       ary.push nil while ary.size < @steps

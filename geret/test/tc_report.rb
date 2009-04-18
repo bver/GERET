@@ -68,15 +68,18 @@ OUTPUT
     r = ReportText.new
 
     r << "this line is omitted"
+    r << "and this line too"
     r[:coolness] << 'ok'
     r.next
 
     r[:coolness] << 'nope'
     r << "this line is displayed"
+    r << "this line is also displayed"
     r.next
 
     out = <<OUTPUT
 this line is displayed
+this line is also displayed
 coolness: nope
 OUTPUT
 

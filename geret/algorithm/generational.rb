@@ -10,6 +10,9 @@ class Generational
 
   def setup config
     @cfg = config
+    @report = @cfg.factory('report')
+    @report << "--------- initialization:"
+    
     @store = @cfg.factory('store')
     @grammar = @cfg.factory('grammar')
     @mapper = @cfg.factory('mapper', @grammar)
@@ -19,11 +22,12 @@ class Generational
     @elite_rank = @cfg.factory('elite_rank')     
     @crossover = @cfg.factory('crossover')
     @mutation = @cfg.factory('mutation')   
-    @report = @cfg.factory('report')
 
     @cfg.factory( 'individual', @mapper ) #todo: because of require
     @population = @store.load
     @population = [] if @population.nil?
+    @report << "loaded #{@population.size} individuals"   
+    @report << "creating #{@population_size - @population.size} individuals"     
     while @population.size < @population_size
       individual = @cfg.factory( 'individual', @mapper )
       @population << individual if individual.valid? 
@@ -35,13 +39,13 @@ class Generational
   end
 
   def teardown
-    puts "--------- finished:"
+    @report << "--------- finished:"
     @store.save @population
     return @report   
   end
 
   def step
-    puts "--------- step #{@steps += 1}" 
+    @report << "--------- step #{@steps += 1}" 
 
     ranked_population = ( @elite_rank.rank @population ).map { |ranked| ranked.original }
     @report.report ranked_population
@@ -49,23 +53,34 @@ class Generational
     new_population = ranked_population[0...@elite_size]  
        
     @selection.population = @population  
+
+    cross, inject, mutate = 0, 0, 0
     while new_population.size < @population_size
       if rand < @crossover_probability 
         parents = @selection.select 2 
         chromozome, dummy = @crossover.crossover( parents.first.genotype, parents.last.genotype ) 
+        cross += 1
       else
         #chromozome = @selection.select_one.genotype 
         chromozome = @cfg.factory( 'individual', @mapper ).genotype
+        inject += 1
       end
    
-      chromozome = @mutation.mutation chromozome if rand < @mutation_probability  
+      if rand < @mutation_probability
+        chromozome = @mutation.mutation chromozome   
+        mutate += 1
+      end
       
       individual = @cfg.factory( 'individual', @mapper, chromozome ) 
       new_population << individual if individual.valid?
     end
 
+    @report['numof_crossovers'] << cross   
+    @report['numof_injections'] << inject
+    @report['numof_mutations'] << mutate
     @population = new_population
 
+    @report.next   
     return @report
   end
 
