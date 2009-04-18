@@ -4,10 +4,15 @@ class Report < Hash
   def initialize
     super
     @steps = 0
+    @line = ''
     self.default = []
   end
 
   attr_reader :steps
+
+  def << line
+    @line = line + "\n" 
+  end
 
   def [] label
     store( label, [] ) unless has_key? label
@@ -32,7 +37,7 @@ end
 class ReportText < Report
 
   def output
-    out = ''
+    out = @line
     labels.each do |label|
       value = self[label].last
       next if value.nil?

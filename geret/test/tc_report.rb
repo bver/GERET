@@ -64,6 +64,24 @@ OUTPUT
     assert_equal( out, r.output )
   end
 
+  def test_line
+    r = ReportText.new
 
+    r << "this line is omitted"
+    r[:coolness] << 'ok'
+    r.next
+
+    r[:coolness] << 'nope'
+    r << "this line is displayed"
+    r.next
+
+    out = <<OUTPUT
+this line is displayed
+coolness: nope
+OUTPUT
+
+    assert_equal( out, r.output )
+  end
+ 
 end
 
