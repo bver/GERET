@@ -13,7 +13,7 @@ algorithm:
 
 grammar:
   class: AbnfFile
-  initialize: "'sample/toy_regression/grammar.abnf'"
+  filename: sample/toy_regression/grammar.abnf
 
 mapper:
   class: DepthFirst
