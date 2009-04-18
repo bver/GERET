@@ -20,6 +20,6 @@ begin
   puts report.output 
 
 rescue => msg
-  abort msg.inspect
+  abort msg.to_s
 end
 

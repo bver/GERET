@@ -9,6 +9,8 @@ class Generational
   end
 
   def setup config
+    raise "Generational: elite_size >= population_size" if @elite_size >= @population_size
+
     @cfg = config
     @report = @cfg.factory('report')
     @report << "--------- initialization:"
