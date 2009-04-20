@@ -3,7 +3,7 @@ include Selection
 
 class Generational
 
-  attr_accessor :termination, :init, :population_size, :elite_size, :crossover_probability, :mutation_probability
+  attr_accessor :termination, :init, :inject, :population_size, :elite_size, :probabilities
 
   def initialize
   end
@@ -30,7 +30,7 @@ class Generational
     @report << "loaded #{@population.size} individuals"   
     @report << "creating #{@population_size - @population.size} individuals"     
     while @population.size < @population_size
-      individual = @cfg.factory( 'individual', @mapper, init_chromozome(@init['method']) )
+      individual = @cfg.factory( 'individual', @mapper, init_chromozome(@init) )
       @population << individual if individual.valid? 
     end
 
@@ -55,19 +55,23 @@ class Generational
        
     @selection.population = @population  
 
-    cross, inject, mutate = 0, 0, 0
+    cross, inject, mutate, copies = 0, 0, 0, 0
     while new_population.size < @population_size
-      if rand < @crossover_probability 
+      if rand < @probabilities['crossover'] 
         parents = @selection.select 2 
         chromozome, dummy = @crossover.crossover( parents.first.genotype, parents.last.genotype ) 
         cross += 1
       else
-        #chromozome = @selection.select_one.genotype 
-        chromozome = init_chromozome @init['method']
-        inject += 1
+        if rand < @probabilities['injection']
+          chromozome = init_chromozome @inject
+          inject += 1
+        else
+          chromozome = @selection.select_one.genotype 
+          copies +=1
+        end
       end
    
-      if rand < @mutation_probability
+      if rand < @probabilities['mutation']
         chromozome = @mutation.mutation chromozome   
         mutate += 1
       end
@@ -78,6 +82,7 @@ class Generational
 
     @report['numof_crossovers'] << cross   
     @report['numof_injections'] << inject
+    @report['numof_copies'] << copies
     @report['numof_mutations'] << mutate
     @population = new_population
 
@@ -99,16 +104,16 @@ class Generational
 
   protected
 
-  def init_chromozome method
-    case method
+  def init_chromozome hash
+    case hash['method']
     when 'random'
-      RandomInit.new( @init['random_magnitude'] ).init( @init['random_length'] )
+      RandomInit.new( hash['random_magnitude'] ).init( hash['random_length'] )
     when 'grow'
-      @mapper.generate_grow @init['sensible_depth']
+      @mapper.generate_grow hash['sensible_depth']
     when 'full'
-      @mapper.generate_full @init['sensible_depth']
+      @mapper.generate_full hash['sensible_depth']
     else
-      raise "Generational: init method #{method} not implemented"
+      raise "Generational: init method #{hash['method']} not implemented"
     end
   end
 
