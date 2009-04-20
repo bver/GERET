@@ -7,33 +7,21 @@ class SingleObjectiveIndividual
 
   @@shortener = Shorten.new
 
-  def initialize( mapper, genotype=nil )
-    @mapper = mapper
+  def initialize( mapper, genotype )
     @genotype = genotype
-    @phenotype = nil
-    @used_length = nil  
+    map_phenotype mapper
     @error = nil
-    @init_magnitude = 10
   end
 
-  attr_reader :used_length, :genotype 
+  attr_reader :used_length, :genotype, :phenotype 
 
-  def phenotype
-    return @phenotype unless @phenotype.nil?
+  def map_phenotype mapper  
+    @used_length = nil
+    @phenotype = mapper.phenotype( @genotype )
+    return if @phenotype.nil?
 
-    @error = nil   
-    @phenotype = @mapper.phenotype( @genotype )
-    @phenotype = '' if @phenotype.nil?
-    @used_length = @mapper.used_length 
-
+    @used_length = mapper.used_length 
     @genotype = @@shortener.shorten( @genotype, @used_length ) 
-
-    return @phenotype
-  end
-
-  def used_length
-    self.phenotype if @phenotype.nil?
-    @used_length
   end
 
   def <=> other
@@ -66,8 +54,8 @@ class ToyIndividual < SingleObjectiveIndividual
     return @error unless @error.nil?
     @error = Inf
 
-    return Inf if self.phenotype.nil? or self.phenotype.empty? 
-    @@engine.code = self.phenotype
+    return Inf if @phenotype.nil? 
+    @@engine.code = @phenotype
 
     error = 0.0
     @@required_values.each_with_index do |required,index|
