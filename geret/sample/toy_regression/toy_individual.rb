@@ -9,8 +9,14 @@ class SingleObjectiveIndividual
 
   def initialize( mapper, genotype )
     @genotype = genotype
-    map_phenotype mapper
     @error = nil
+    @used_length = nil
+
+    @phenotype = mapper.phenotype( @genotype )
+    return if @phenotype.nil?
+
+    @used_length = mapper.used_length 
+    @genotype = @@shortener.shorten( @genotype, @used_length ) 
   end
 
   attr_reader :used_length, :genotype, :phenotype, :error 
@@ -24,17 +30,6 @@ class SingleObjectiveIndividual
     self.error.infinite?.nil?
   end
 
-  protected 
-
-  def map_phenotype mapper  
-    @used_length = nil
-    @phenotype = mapper.phenotype( @genotype )
-    return if @phenotype.nil?
-
-    @used_length = mapper.used_length 
-    @genotype = @@shortener.shorten( @genotype, @used_length ) 
-  end
- 
 end
 
 class ToyIndividual < SingleObjectiveIndividual
