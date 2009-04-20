@@ -25,7 +25,7 @@ class ToyReport < ReportText
     self['gensize_max'] << max
     self['gensize_avg'] << avg
 
-    self['winner'] << ranked_population.first.phenotype
+    self['best_phenotype'] << ranked_population.first.phenotype
   end
 
 end
