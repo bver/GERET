@@ -3,7 +3,7 @@ include Selection
 
 class Generational
 
-  attr_accessor :termination, :population_size, :elite_size, :crossover_probability, :mutation_probability
+  attr_accessor :termination, :init, :population_size, :elite_size, :crossover_probability, :mutation_probability
 
   def initialize
   end
@@ -30,7 +30,7 @@ class Generational
     @report << "loaded #{@population.size} individuals"   
     @report << "creating #{@population_size - @population.size} individuals"     
     while @population.size < @population_size
-      individual = @cfg.factory( 'individual', @mapper )
+      individual = @cfg.factory( 'individual', @mapper, init_chromozome(@init['method']) )
       @population << individual if individual.valid? 
     end
 
@@ -63,7 +63,7 @@ class Generational
         cross += 1
       else
         #chromozome = @selection.select_one.genotype 
-        chromozome = @cfg.factory( 'individual', @mapper ).genotype
+        chromozome = init_chromozome @init['method']
         inject += 1
       end
    
@@ -95,6 +95,21 @@ class Generational
       return true
     end
     return false
+  end
+
+  protected
+
+  def init_chromozome method
+    case method
+    when 'random'
+      RandomInit.new( @init['random_magnitude'] ).init( @init['random_length'] )
+    when 'grow'
+      @mapper.generate_grow @init['sensible_depth']
+    when 'full'
+      @mapper.generate_full @init['sensible_depth']
+    else
+      raise "Generational: init method #{method} not implemented"
+    end
   end
 
 end

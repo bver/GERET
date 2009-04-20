@@ -11,6 +11,12 @@ algorithm:
     max_steps: 2000
     on_individual: :stopping_condition
 
+  init:
+    method: full # grow or full or random
+    random_magnitude: 16 #same as mutation.magnitude
+    random_length: 8
+    sensible_depth: 3   
+
 grammar:
   class: AbnfFile
   filename: sample/toy_regression/grammar.abnf
@@ -48,5 +54,4 @@ report:
 individual:
   class: ToyIndividual
   require: sample/toy_regression/toy_individual.rb
-  init_magnitude: 16 #same as mutation.magnitude
-  init_length: 8
+

@@ -16,20 +16,13 @@ class SingleObjectiveIndividual
     @init_magnitude = 10
   end
 
-  attr_accessor :init_magnitude, :init_length 
-  attr_reader :used_length 
-
-  def genotype
-    #@genotype = RandomInit.new( @init_magnitude ).init( @init_length ) if @genotype.nil?
-    @genotype = @mapper.generate_grow 3  if @genotype.nil?
-    @genotype
-  end
+  attr_reader :used_length, :genotype 
 
   def phenotype
     return @phenotype unless @phenotype.nil?
 
     @error = nil   
-    @phenotype = @mapper.phenotype( self.genotype )
+    @phenotype = @mapper.phenotype( @genotype )
     @phenotype = '' if @phenotype.nil?
     @used_length = @mapper.used_length 
 
