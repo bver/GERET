@@ -16,10 +16,15 @@ class SingleObjectiveIndividual
     return if @phenotype.nil?
 
     @used_length = mapper.used_length 
-    @genotype = @@shortener.shorten( @genotype, @used_length ) 
   end
 
   attr_reader :used_length, :genotype, :phenotype, :error 
+
+  def shorten_chromozome=( shorten )
+    return unless shorten
+    return if @used_length.nil?
+    @genotype = @@shortener.shorten( @genotype, @used_length )
+  end
 
   def <=> other
     self.error <=> other.error
