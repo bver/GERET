@@ -41,7 +41,7 @@ selection_rank: #optional
 
 replacement:
   class: Tournament # RankRoulette 
-  tournament_size: 30
+  tournament_size: 10
 replacement_rank:
   class: Ranking
   order_by: :error
