@@ -24,7 +24,7 @@ module Selection
     attr_reader :proportional_by
 
     def select_one population=self.population 
-      @sum,@wheel = wheel_core population if @wheel.nil? or population.object_id != @population.object_id
+      @sum,@wheel = wheel_core population 
       @population = population
 
       ballot = @sum * @random.rand   

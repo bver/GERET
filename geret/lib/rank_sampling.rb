@@ -21,7 +21,7 @@ module Selection
     end
 
     def select( how_much, population=self.population )
-      @ranked = @ranker.rank( population ) if @ranked.nil? or population.object_id != @population.object_id 
+      @ranked = @ranker.rank( population ) 
       @population = population
      
       @sampling.select( how_much, @ranker.rank( population ) ).map { |individual| individual.original }

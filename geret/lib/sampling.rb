@@ -14,7 +14,7 @@ module Selection
       raise "Sampling: cannot select more than population.size" if how_much > population.size
       return [] if how_much == 0
 
-      @sum,@wheel = wheel_core population if @wheel.nil? or population.object_id != @population.object_id
+      @sum,@wheel = wheel_core population 
       @population = population
 
       step = @sum.to_f/how_much

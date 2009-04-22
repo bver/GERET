@@ -22,7 +22,7 @@ module Selection
     end
 
     def select_one population=self.population
-      @ranked = @ranker.rank( population ) if @ranked.nil? or population.object_id != @population.object_id 
+      @ranked = @ranker.rank( population ) 
       @population = population
 
       @roulette.select_one( @ranked ).original

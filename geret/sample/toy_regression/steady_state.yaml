@@ -39,15 +39,9 @@ selection:
 selection_rank: #optional
   class: Ranking
 
-#replacement:
-#  class: RankRoulette
-#replacement_rank:
-#  class: Ranking
-#  order_by: :error
-#  direction: :maximize  
-
 replacement:
-  class: Tournament
+  class: Tournament # RankRoulette 
+  tournament_size: 30
 replacement_rank:
   class: Ranking
   order_by: :error
