@@ -22,35 +22,17 @@ class Generational < SingleObjective
     new_population = ranked_population[0...@elite_size]  
     @selection.population = @population  
 
-    cross, inject, mutate, copies = 0, 0, 0, 0
+    @cross, @injections, @mutate, @copies = 0, 0, 0, 0
     while new_population.size < @population_size
-      if rand < @probabilities['crossover'] 
-        parents = @selection.select 2 
-        chromozome, dummy = @crossover.crossover( parents.first.genotype, parents.last.genotype ) 
-        cross += 1
-      else
-        if rand < @probabilities['injection']
-          chromozome = init_chromozome @inject
-          inject += 1
-        else
-          chromozome = @selection.select_one.genotype 
-          copies +=1
-        end
-      end
-   
-      if rand < @probabilities['mutation']
-        chromozome = @mutation.mutation chromozome   
-        mutate += 1
-      end
-      
-      individual = @cfg.factory( 'individual', @mapper, chromozome ) 
+      individual = breed_individual
       new_population << individual if individual.valid?
     end
 
-    @report['numof_crossovers'] << cross   
-    @report['numof_injections'] << inject
-    @report['numof_copies'] << copies
-    @report['numof_mutations'] << mutate
+    @report['numof_crossovers'] << @cross   
+    @report['numof_injections'] << @injections
+    @report['numof_copies'] << @copies
+    @report['numof_mutations'] << @mutate
+
     @population = new_population
 
     @report.next   

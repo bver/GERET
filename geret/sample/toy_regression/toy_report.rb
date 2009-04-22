@@ -1,7 +1,14 @@
 
 class ToyReport < ReportText 
 
-  def report ranked_population
+  def initialize
+    super
+    @ranker = Ranking.new( :error, :minimize  ) # or assume individual<=>individual
+  end
+
+  def report population
+    ranked_population = ( @ranker.rank population ).map { |ranked| ranked.original }
+
     diversity = Utils.diversity( ranked_population ) { |individual| individual.genotype }
     self['diversity_genotypic'] << diversity[0...10].inspect   
     

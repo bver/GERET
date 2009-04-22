@@ -6,8 +6,6 @@ class SingleObjective
   attr_accessor :termination, :init, :inject, :population_size, :probabilities
 
   def setup config
-    raise "Generational: elite_size >= population_size" if @elite_size >= @population_size
-
     @cfg = config
     @report = @cfg.factory('report')
     @report << "--------- initialization:"
@@ -41,56 +39,11 @@ class SingleObjective
     return @report   
   end
 
-  def step
-    @report << "--------- step #{@steps += 1}" 
-
-    ranked_population = ( @elite_rank.rank @population ).map { |ranked| ranked.original }
-    @report.report ranked_population
-       
-    new_population = ranked_population[0...@elite_size]  
-    @selection.population = @population  
-
-    cross, inject, mutate, copies = 0, 0, 0, 0
-    while new_population.size < @population_size
-      if rand < @probabilities['crossover'] 
-        parents = @selection.select 2 
-        chromozome, dummy = @crossover.crossover( parents.first.genotype, parents.last.genotype ) 
-        cross += 1
-      else
-        if rand < @probabilities['injection']
-          chromozome = init_chromozome @inject
-          inject += 1
-        else
-          chromozome = @selection.select_one.genotype 
-          copies +=1
-        end
-      end
-   
-      if rand < @probabilities['mutation']
-        chromozome = @mutation.mutation chromozome   
-        mutate += 1
-      end
-      
-      individual = @cfg.factory( 'individual', @mapper, chromozome ) 
-      new_population << individual if individual.valid?
-    end
-
-    @report['numof_crossovers'] << cross   
-    @report['numof_injections'] << inject
-    @report['numof_copies'] << copies
-    @report['numof_mutations'] << mutate
-    @population = new_population
-
-    @report.next   
-    return @report
-  end
-
   def finished?
     if ( ! @termination['max_steps'].nil? and @steps >= @termination['max_steps'] ) or
        ( ! @termination['on_individual'].nil? and @population.detect { |individual| individual.send @termination['on_individual'] } )
  
-      ranked_population = ( @elite_rank.rank @population ).map { |ranked| ranked.original }
-      @report.report ranked_population
+      @report.report @population
 
       return true
     end
@@ -98,6 +51,29 @@ class SingleObjective
   end
 
   protected
+
+  def breed_individual
+    if rand < @probabilities['crossover'] 
+      parents = @selection.select 2 
+      chromozome, dummy = @crossover.crossover( parents.first.genotype, parents.last.genotype ) 
+      @cross += 1
+    else
+      if rand < @probabilities['injection']
+        chromozome = init_chromozome @inject
+        @injections += 1
+      else
+        chromozome = @selection.select_one.genotype 
+        @copies +=1
+      end
+    end
+   
+    if rand < @probabilities['mutation']
+      chromozome = @mutation.mutation chromozome   
+      @mutate += 1
+    end
+      
+    return @cfg.factory( 'individual', @mapper, chromozome ) 
+  end
 
   def init_chromozome hash
     case hash['method']

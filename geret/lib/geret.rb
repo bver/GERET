@@ -20,3 +20,5 @@ require 'lib/validator'
 require 'lib/individual'
 
 require 'algorithm/generational'
+require 'algorithm/steady_state'
+
