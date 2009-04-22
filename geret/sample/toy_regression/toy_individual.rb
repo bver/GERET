@@ -1,13 +1,13 @@
 
 include Math
 
-class ToyIndividual < Individual
+module ToyRegression
 
   @@engine = Evaluator.new
 
   Samples = 20
   Inf = (1.0/0.0) 
-  def ToyIndividual.f index
+  def ToyRegression.f index
     point = index*2*PI/Samples
     sin(point) + point + point*point   
   end
@@ -15,8 +15,7 @@ class ToyIndividual < Individual
 
   attr_reader :error 
 
-  def initialize( mapper, genotype )
-    super
+  def evaluate
     @error = Inf
 
     return if @phenotype.nil? 
@@ -34,6 +33,16 @@ class ToyIndividual < Individual
     @error = error
   end
 
+end
+
+class ToyIndividualSingleObjective < Individual
+  include ToyRegression 
+
+  def initialize( mapper, genotype )
+    super
+    evaluate
+  end
+
   def <=> other
     self.error <=> other.error
   end
@@ -41,10 +50,6 @@ class ToyIndividual < Individual
   def stopping_condition
     return @error < 0.01
   end
-
-#  def valid?
-#    self.error.infinite?.nil?
-#  end
  
 end
 

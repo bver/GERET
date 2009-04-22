@@ -62,6 +62,6 @@ report:
   require: sample/toy_regression/toy_report.rb
 
 individual:
-  class: ToyIndividual
+  class: ToyIndividualSingleObjective
   require: sample/toy_regression/toy_individual.rb
   shorten_chromozome: true
