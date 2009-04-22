@@ -36,11 +36,12 @@ mapper:
 
 elite_rank:
   class: Ranking
-#  order_by: :error  #optional
-#  direction: :minimize #optional 
+  order_by: :error  #optional
+  direction: :minimize #optional 
 
 selection:
-  class: RankRoulette
+  class: Tournament # RankRoulette
+  tournament_size: 3
 selection_rank: #optional
   class: Ranking
         
