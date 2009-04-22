@@ -268,11 +268,11 @@ class TC_Rank < Test::Unit::TestCase
     r = Ranking.new
     rankedPopulation = r.rank population 
   
-    assert_equal( 2, rankedPopulation[0].index )
-    assert_equal( 0, rankedPopulation[1].index )
+    assert_equal( 1, rankedPopulation[0].index )
+    assert_equal( 3, rankedPopulation[1].index )
     assert_equal( 4, rankedPopulation[2].index )
-    assert_equal( 3, rankedPopulation[3].index ) 
-    assert_equal( 1, rankedPopulation[4].index )
+    assert_equal( 0, rankedPopulation[3].index ) 
+    assert_equal( 2, rankedPopulation[4].index )
 
     rankedPopulation.each do |individual|  
       assert_equal( population[ individual.index ].object_id, individual.original.object_id ) 

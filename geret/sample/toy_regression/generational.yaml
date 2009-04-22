@@ -36,8 +36,8 @@ mapper:
 
 elite_rank:
   class: Ranking
-  order_by: :error  #optional
-  direction: :minimize #optional 
+#  order_by: :error  #optional
+#  direction: :minimize #optional 
 
 selection:
   class: RankRoulette

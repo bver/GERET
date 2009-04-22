@@ -52,7 +52,6 @@ class Generational
     @report.report ranked_population
        
     new_population = ranked_population[0...@elite_size]  
-       
     @selection.population = @population  
 
     cross, inject, mutate, copies = 0, 0, 0, 0

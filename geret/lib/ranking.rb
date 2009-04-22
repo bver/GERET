@@ -53,7 +53,7 @@ class Ranking
       @order_by = order_by  
       @direction = direction
       if order_by.nil?
-        @order = proc {|a,b| b <=> a }
+        @order = proc {|a,b| a <=> b }
       else
         case direction
           when :maximize, nil
