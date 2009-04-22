@@ -21,9 +21,16 @@ module Selection
       raise "Tournament: empty population" if population.empty?
       raise "Tournament: tournament_size bigger than population.size" if @tournament_size > population.size 
      
+      @population = population
+      select_one_internal     
+    end
+
+    protected 
+
+    def select_one_internal 
       selected = []
       while selected.size < @tournament_size
-        selected.push population[ @random.rand(population.size) ]
+        selected.push @population[ @random.rand(@population.size) ]
       end
 
       ranked = @ranker.rank selected

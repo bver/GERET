@@ -26,7 +26,17 @@ module Selection
     def select_one population=self.population 
       @sum,@wheel = wheel_core population 
       @population = population
+      select_one_internal
+    end
 
+    def proportional_by= proportional_by
+      @prop = proc { |individual| individual.send(proportional_by) }
+      @proportional_by = proportional_by     
+    end
+
+    protected
+
+    def select_one_internal
       ballot = @sum * @random.rand   
 
       sum = 0.0
@@ -37,14 +47,7 @@ module Selection
      
       return @wheel.last.original
     end
-
-    def proportional_by= proportional_by
-      @prop = proc { |individual| individual.send(proportional_by) }
-      @proportional_by = proportional_by     
-    end
-
-    protected
-
+   
     def wheel_core population
       raise "Roulette: cannot select from an empty population" if population.empty?
 

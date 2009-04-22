@@ -25,6 +25,12 @@ module Selection
       @ranked = @ranker.rank( population ) 
       @population = population
 
+      select_one_internal
+    end
+
+    protected
+
+    def select_one_internal
       @roulette.select_one( @ranked ).original
     end
 

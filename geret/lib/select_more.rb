@@ -9,10 +9,10 @@ module SelectMore
   end
 
   def select( how_much, population=self.population )
-    winners = []
-    ids = []
+    winners = [ select_one( population ) ]
+    ids = [ winners.first.object_id ]
     while winners.size < how_much
-      w = select_one( population )
+      w = select_one_internal
       next if self.unique_winners and ids.include? w.object_id
       winners.push w
       ids.push w.object_id
