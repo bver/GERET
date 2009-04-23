@@ -11,7 +11,6 @@ module Selection
       @ranker = ranker
       @sampling = Sampling.new :proportion
       @population = nil     
-      @ranked = nil
     end
   
     attr_accessor :population
@@ -21,10 +20,10 @@ module Selection
     end
 
     def select( how_much, population=self.population )
-      @ranked = @ranker.rank( population ) 
+      ranked = @ranker.rank( population ) 
       @population = population
      
-      @sampling.select( how_much, @ranker.rank( population ) ).map { |individual| individual.original }
+      @sampling.select( how_much, ranked ).map { |individual| individual.original }
     end
 
     def select_one population=self.population
