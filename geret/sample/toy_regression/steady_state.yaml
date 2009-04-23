@@ -40,7 +40,7 @@ selection_rank: #optional
   class: Ranking
 
 replacement:
-  class: Tournament # RankRoulette 
+  class: Tournament # Truncation 
   tournament_size: 10
 replacement_rank:
   class: Ranking
