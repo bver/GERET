@@ -22,7 +22,7 @@ class SteadyState < SingleObjective
     @population_size.times do
       @selection.population = @population
       
-      individual = breed_individual
+      individual = breed_individual @selection 
       next unless individual.valid?
 
       bad = @replacement.select_one @population

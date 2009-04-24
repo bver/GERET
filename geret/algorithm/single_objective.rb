@@ -52,9 +52,9 @@ class SingleObjective
 
   protected
 
-  def breed_individual
+  def breed_individual selection 
     if rand < @probabilities['crossover'] 
-      parents = @selection.select 2 
+      parents = selection.select 2 
       chromozome, dummy = @crossover.crossover( parents.first.genotype, parents.last.genotype ) 
       @cross += 1
     else
@@ -62,7 +62,7 @@ class SingleObjective
         chromozome = init_chromozome @inject
         @injections += 1
       else
-        chromozome = @selection.select_one.genotype 
+        chromozome = selection.select_one.genotype 
         @copies +=1
       end
     end

@@ -24,7 +24,7 @@ class Generational < SingleObjective
 
     @cross, @injections, @mutate, @copies = 0, 0, 0, 0
     while new_population.size < @population_size
-      individual = breed_individual
+      individual = breed_individual @selection 
       new_population << individual if individual.valid?
     end
 
