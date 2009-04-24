@@ -22,4 +22,5 @@ require 'lib/round_robin'
 
 require 'algorithm/generational'
 require 'algorithm/steady_state'
+require 'algorithm/mu_lambda'
 
