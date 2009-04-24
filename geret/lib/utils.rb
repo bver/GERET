@@ -37,5 +37,15 @@ module Utils
       "#{(100.0*nominator/denominator).round}%"
     end
   end
+
+  def Utils.permutate( arr, rnd=Kernel )
+    src = arr.clone
+    res = []
+    until src.empty?
+      i = rnd.rand src.size  
+      res << src.delete_at( i )
+    end
+    res
+  end
  
 end

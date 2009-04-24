@@ -2,6 +2,7 @@
 
 require 'test/unit'
 require 'lib/utils'
+require 'test/mock_rand'
 
 class TC_Utils < Test::Unit::TestCase
 
@@ -28,5 +29,12 @@ class TC_Utils < Test::Unit::TestCase
     assert_equal( 'N/A%', Utils.percent(1,0) )
     assert_equal( '10%', Utils.percent(1,10) )
   end
+
+  def test_permutation
+    r = MockRand.new [ {5=>3}, {4=>1}, {3=>1}, {2=>0}, {1=>0} ]
+    p = Utils.permutate( [1, 2, 3, 4, 5], r )
+    assert_equal( [4, 2, 3, 1, 5], p )
+  end
+
 end
 
