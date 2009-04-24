@@ -29,6 +29,7 @@ class MuLambda < SingleObjective
     lambda_population.concat @population if @comma_or_plus == 'plus'
 
     @population = @selection.select( @population_size, lambda_population )
+
     @report['numof_crossovers'] << @cross   
     @report['numof_injections'] << @injections
     @report['numof_copies'] << @copies
