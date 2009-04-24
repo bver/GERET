@@ -18,6 +18,7 @@ require 'lib/utils'
 require 'lib/validator'
 require 'lib/individual'
 require 'lib/truncation'
+require 'lib/round_robin'
 
 require 'algorithm/generational'
 require 'algorithm/steady_state'
