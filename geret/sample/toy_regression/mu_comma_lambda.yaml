@@ -9,7 +9,7 @@ algorithm:
   elite_size: 10 
 
   probabilities:
-    crossover: 0.5
+    crossover: 0.9
     mutation: 0.01
     injection: 0.2
 
@@ -38,7 +38,7 @@ mapper:
   wraps_to_fail: 3 
 
 selection:
-  class: Truncation #RankSampling
+  class: RankSampling  #Truncation 
 selection_rank: #optional
   class: Ranking
 #  min: 0.5

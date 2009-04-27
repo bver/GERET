@@ -6,7 +6,7 @@ algorithm:
 
   population_size: 500
   lambda_size: 100
-  elite_size: 10
+  elite_size: 3 # 0
  
   probabilities:
     crossover: 0.9

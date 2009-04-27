@@ -23,7 +23,8 @@ class MuLambda < SingleObjective
 
     round_robin = RoundRobin.new Utils.permutate( @population )
 
-    lambda_population = elite @population
+    lambda_population = []
+    elite_population = elite @population
 
     while lambda_population.size < @lambda_size
       individual = breed_individual round_robin
@@ -32,7 +33,9 @@ class MuLambda < SingleObjective
 
     lambda_population.concat @population if @comma_or_plus == 'plus'
 
-    @population = @selection.select( @population_size, lambda_population )
+    @population = @selection.select( @population_size - elite_population.size, lambda_population )
+    @population.concat elite_population
+
     @report['numof_crossovers'] << @cross   
     @report['numof_injections'] << @injections
     @report['numof_copies'] << @copies
