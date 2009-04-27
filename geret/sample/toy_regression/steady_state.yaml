@@ -14,10 +14,10 @@ algorithm:
     on_individual: :stopping_condition
 
   init:
-    method: grow # grow or full or random or ramped
+    method: ramped # grow or full or random or ramped
     random_magnitude: 16 #same as mutation.magnitude
     random_length: 8
-    sensible_depth: 3   
+    sensible_depth: 4   
 
   inject: # alternative to a crossover or copy
     method: full # grow or full or random

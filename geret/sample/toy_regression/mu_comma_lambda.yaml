@@ -5,23 +5,23 @@ algorithm:
   comma_or_plus: comma
 
   population_size: 500
-  lambda_size: 1000
+  lambda_size: 600
   elite_size: 10 
 
   probabilities:
     crossover: 0.9
     mutation: 0.01
-    injection: 0.2
+    injection: 0.9
 
   termination:
     max_steps: 2000
     on_individual: :stopping_condition
 
   init:
-    method: grow # grow or full or random or ramped
+    method: ramped # grow or full or random or ramped
     random_magnitude: 16 #same as mutation.magnitude
     random_length: 8
-    sensible_depth: 3   
+    sensible_depth: 4   
 
   inject: # alternative to a crossover or copy
     method: full # grow or full or random
@@ -34,7 +34,7 @@ grammar:
   filename: sample/toy_regression/grammar.abnf
 
 mapper:
-  class: DepthFirst
+  class: DepthLocus
   wraps_to_fail: 3 
 
 selection:
