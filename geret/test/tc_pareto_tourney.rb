@@ -40,11 +40,49 @@ class TC_ParetoTourney < Test::Unit::TestCase
   end
 
   def test_population_attr
+    pt = ParetoTourney.new 4
+    pt.population = @population 
+    
+    pt.random = MockRand.new [{8=>6}, {7=>3}, {6=>2}, {5=>0}]
+    winners = pt.select
+    assert_equal( 2, winners.size )
+    assert_equal( 'c', winners[0].id )
+    assert_equal( 'a', winners[1].id )   
+
+    pt.random = MockRand.new [{8=>7}, {7=>6}, {6=>5}, {5=>4}]
+    assert_equal( 2, winners.size )   
+    winners = pt.select
+    assert_equal( 'f', winners[0].id )
+    assert_equal( 'e', winners[1].id ) 
+
+    assert_equal( @population, pt.population )
   end
 
   def test_tournament_size
+    pt = ParetoTourney.new 2
+    assert_equal( 2, pt.tournament_size )
+    pt.tournament_size = 4
+    assert_equal( 4, pt.tournament_size )
+
+    pt.random = MockRand.new [{8=>6}, {7=>3}, {6=>2}, {5=>0}]
+    winners = pt.select @population
+    assert_equal( 2, winners.size )
+    assert_equal( 'c', winners[0].id )
+    assert_equal( 'a', winners[1].id )   
   end
 
+  def test_tour_size_too_big
+    pt = ParetoTourney.new 20
+    exception = assert_raise( RuntimeError ) { pt.select( @population ) }
+    assert_equal( "ParetoTourney: tournament_size bigger than population.size", exception.message )
+  end
+
+  def test_empty_population
+    pt = ParetoTourney.new 2
+    exception = assert_raise( RuntimeError ) { pt.select( [] ) }
+    assert_equal( "ParetoTourney: empty population", exception.message )
+  end
+ 
 end
 
 
