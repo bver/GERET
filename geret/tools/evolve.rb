@@ -19,6 +19,10 @@ begin
   report = algorithm.teardown
   puts report.output 
 
+rescue Interrupt => msg   
+  puts "\n#{$0} INTERRUPTED: '#{msg}'"
+  algorithm.teardown
+
 rescue => msg
   abort msg.to_s
 end
