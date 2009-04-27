@@ -22,10 +22,29 @@ class AlgorithmBase
     @population = @store.load
     @population = [] if @population.nil?
     @report << "loaded #{@population.size} individuals"   
-    @report << "creating #{@population_size - @population.size} individuals"     
-    while @population.size < @population_size
-      individual = @cfg.factory( 'individual', @mapper, init_chromozome(@init) )
-      @population << individual if individual.valid? 
+    @report << "creating #{@population_size - @population.size} individuals"
+
+    if @init['method'] == 'ramped'
+
+      @init['method'] = 'full'
+      depth = @init['sensible_depth']
+      while @population.size < @population_size
+        individual = @cfg.factory( 'individual', @mapper, init_chromozome(@init) )
+        next unless individual.valid? 
+        @population << individual       
+        @init['method'] = ( @init['method'] == 'full' ) ? 'grow' : 'full'     
+        if @population.size.divmod(2).last == 0
+          @init['sensible_depth'] = ( @init['sensible_depth'] == depth ) ? 2 : @init['sensible_depth']+1
+        end
+      end
+
+    else
+
+      while @population.size < @population_size
+        individual = @cfg.factory( 'individual', @mapper, init_chromozome(@init) )
+        @population << individual if individual.valid? 
+      end
+
     end
 
     @steps = 0
