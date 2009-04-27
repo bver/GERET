@@ -1,7 +1,7 @@
 
 include Selection
 
-class SingleObjective
+class AlgorithmBase
 
   attr_accessor :termination, :init, :inject, :population_size, :probabilities
 

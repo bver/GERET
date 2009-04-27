@@ -1,8 +1,8 @@
 
 require 'algorithm/elitism'
-require 'algorithm/single_objective'
+require 'algorithm/algorithm_base'
 
-class Generational < SingleObjective
+class Generational < AlgorithmBase
 
   include Elitism
 
