@@ -6,6 +6,7 @@ algorithm:
 
   population_size: 500
   lambda_size: 1000
+  elite_size: 10 
 
   probabilities:
     crossover: 0.5
@@ -42,7 +43,10 @@ selection_rank: #optional
   class: Ranking
 #  min: 0.5
 #  max: 1.5
-        
+
+elite_rank:
+  class: Ranking
+         
 crossover:
   class: Crossover
   margin: 1

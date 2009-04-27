@@ -1,25 +1,23 @@
 
+require 'algorithm/elitism'
 require 'algorithm/single_objective'
 
 class Generational < SingleObjective
 
-  attr_accessor :elite_size
+  include Elitism
 
   def setup config
     super
-    raise "Generational: elite_size >= population_size" if @elite_size >= @population_size
-
-    @elite_rank = @cfg.factory('elite_rank')     
+    init_elitism @population_size
     return @report    
   end
 
   def step
     @report << "--------- step #{@steps += 1}" 
+    @report.report @population 
 
-    ranked_population = ( @elite_rank.rank @population ).map { |ranked| ranked.original }
-    @report.report ranked_population
-       
-    new_population = ranked_population[0...@elite_size]  
+    new_population = elite @population
+
     @selection.population = @population  
 
     @cross, @injections, @mutate, @copies = 0, 0, 0, 0

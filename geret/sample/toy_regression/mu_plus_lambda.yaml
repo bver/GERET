@@ -6,7 +6,8 @@ algorithm:
 
   population_size: 500
   lambda_size: 100
-
+  elite_size: 10
+ 
   probabilities:
     crossover: 0.9
     mutation: 0.01
@@ -41,6 +42,9 @@ selection:
 selection_rank: #optional
   class: Ranking
         
+elite_rank:
+  class: Ranking
+         
 crossover:
   class: Crossover
   margin: 1

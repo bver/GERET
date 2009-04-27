@@ -1,14 +1,17 @@
 
+require 'algorithm/elitism'
 require 'algorithm/single_objective'
 
 class MuLambda < SingleObjective
- 
+
+  include Elitism
+
   attr_accessor :comma_or_plus, :lambda_size
 
   def setup config
     super
     raise "MuLambda: lambda_size < population_size" if @comma_or_plus == 'comma' and @lambda_size < @population_size
-
+    init_elitism @population_size
     return @report    
   end
 
@@ -20,7 +23,8 @@ class MuLambda < SingleObjective
 
     round_robin = RoundRobin.new Utils.permutate( @population )
 
-    lambda_population = []
+    lambda_population = elite @population
+
     while lambda_population.size < @lambda_size
       individual = breed_individual round_robin
       lambda_population << individual if individual.valid?
