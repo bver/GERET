@@ -15,18 +15,13 @@ module Selection
       @tournament_size.times { selection << pop.delete_at( @random.rand(pop.size) ) }
       
       front = []
-      losers = []
       selection.each do |individual|
 
-        if front.detect { |f| f.dominates? individual }
-          losers.push individual
-          next
-        end
+        next if front.detect { |f| f.dominates? individual }
 
         removal = []
         front.each do |f|
           next unless individual.dominates? f
-          losers.push f
           removal.push f
         end
         removal.each { |r| front.delete r }
