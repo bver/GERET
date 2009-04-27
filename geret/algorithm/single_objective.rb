@@ -40,8 +40,10 @@ class SingleObjective
   end
 
   def finished?
-    if ( ! @termination['max_steps'].nil? and @steps >= @termination['max_steps'] ) or
-       ( ! @termination['on_individual'].nil? and @population.detect { |individual| individual.send @termination['on_individual'] } )
+    max_steps = @termination['max_steps']
+    on_individual = @termination['on_individual']
+    if ( not max_steps.nil? and @steps >= max_steps ) or
+       ( not on_individual.nil? and @population.detect { |individual| individual.send on_individual } )
  
       @report.report @population
 
