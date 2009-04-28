@@ -12,7 +12,7 @@ class AntIndividualSingleObjective < Individual
       0
     else
       ant = Ant.new
-      400.times { eval @phenotype }
+      eval @phenotype while ant.steps < Ant::MaxSteps
       ant.consumed_food
     end
     

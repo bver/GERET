@@ -3,6 +3,7 @@ class Ant
 
   Food = '*'
   Empty = '.'
+  MaxSteps = 400
 
   Left = { :north => :west, :west => :south, :south => :east, :east => :north }
   Right = { :north => :east, :east => :south, :south => :west, :west => :north }
@@ -21,23 +22,30 @@ class Ant
     @dir = :south
     @x, @y = 0, 0
     @consumed_food = 0
+    @steps = 0 
   end
 
-  attr_reader :consumed_food, :x, :y, :dir
+  attr_reader :consumed_food, :steps, :x, :y, :dir
 
   def move
-    @x, @y = ahead_x, ahead_y  
+    return if @steps >= MaxSteps
+    @x, @y = ahead_x, ahead_y 
+    @steps += 1
     return unless @grid[@y][@x] == Food
     @consumed_food += 1
     @grid[@y][@x] = Empty
   end
 
   def right
+    return if @steps >= MaxSteps 
     @dir = Right[ @dir ]
+    @steps += 1   
   end
 
   def left
+    return if @steps >= MaxSteps 
     @dir = Left[ @dir ]
+    @steps += 1   
   end
 
   def food_ahead

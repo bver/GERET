@@ -7,10 +7,11 @@ abort "use:\n #$0 ant_code.rb\n" unless ARGV.size==1
 code = IO.read ARGV[0] 
 ant = Ant.new
 
-400.times do 
-  puts ant.show_scene
+while ant.steps < Ant::MaxSteps 
   eval code
+  puts ant.show_scene 
   puts "food items consumed: #{ant.consumed_food}"
+  puts "steps elapsed: #{ant.steps}" 
   $stdin.gets
 end
 
