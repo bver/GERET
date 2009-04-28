@@ -32,6 +32,12 @@ class SingleProcMin < Struct.new( :data )
   Pareto.objective :SingleProcMin, :data, proc { |one,two| two.size <=> one.size }
 end
 
+class BasicPairFancy < Struct.new( :up, :down )
+  include Pareto
+  Pareto.minimize BasicPairFancy, :down
+  Pareto.maximize BasicPairFancy, :up 
+end
+
 class TC_Pareto < Test::Unit::TestCase
 
   def test_basic_max
@@ -107,6 +113,32 @@ class TC_Pareto < Test::Unit::TestCase
     assert_equal( -1, i3 <=> i2 )
   
   end
+
+  def test_pair_fancy
+
+    i1 = BasicPairFancy.new 42, -30
+    i2 = BasicPairFancy.new 30, -42   
+    assert_equal( 0, i1 <=> i2 )
+    assert_equal( 0, i2 <=> i1 )
+
+    i3 = BasicPairFancy.new 42, -42  
+    assert_equal( -1, i3 <=> i1 )
+    assert_equal( 1, i1 <=> i3 )
+    assert_equal( -1, i3 <=> i2 )
+    assert_equal( 1, i2 <=> i3 )
+
+    i4 = BasicPairFancy.new 30, -30 
+    assert_equal( 1, i4 <=> i1 )
+    assert_equal( -1, i1 <=> i4 )
+    assert_equal( 1, i4 <=> i2 )
+    assert_equal( -1, i2 <=> i4 )
+
+    i5 = BasicPairFancy.new 30, -30   
+    assert_equal( 0, i5 <=> i4 )
+    assert_equal( 0, i4 <=> i5 )
+ 
+  end
+
  
 end
 

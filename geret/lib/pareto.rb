@@ -44,5 +44,13 @@ module Pareto
     return domination
   end
 
+  def Pareto.minimize( user, symb ) 
+    Pareto.objective( user, symb, :minimize )   
+  end
+
+  def Pareto.maximize( user, symb ) 
+    Pareto.objective( user, symb, :maximize )   
+  end
+ 
 end
 
