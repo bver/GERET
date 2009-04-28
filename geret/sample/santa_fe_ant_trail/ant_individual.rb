@@ -30,3 +30,9 @@ class AntIndividualSingleObjective < Individual
  
 end
 
+class AntIndividualMultiObjective < AntIndividualSingleObjective
+  include Pareto
+  Pareto.minimize AntIndividualMultiObjective, :used_length
+  Pareto.maximize AntIndividualMultiObjective, :fitness
+end
+
