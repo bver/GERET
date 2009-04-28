@@ -16,7 +16,7 @@ class Ant
       @grid << line.sub(/\n/,'').split( // )
     end
     @grid_height = @grid.size
-    @grid_width = ( @grid.max { |line| line.size } ).size
+    @grid_width = @grid.first.size
 
     @dir = :south
     @x, @y = 0, 0

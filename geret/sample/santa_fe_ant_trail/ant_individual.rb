@@ -8,9 +8,13 @@ class AntIndividualSingleObjective < Individual
 
     super
 
-    ant = Ant.new
-    400.times { eval @phenotype }
-    @fitness = ant.consumed_food
+    @fitness = if @phenotype.nil?
+      0
+    else
+      ant = Ant.new
+      400.times { eval @phenotype }
+      ant.consumed_food
+    end
     
   end
 
@@ -20,5 +24,9 @@ class AntIndividualSingleObjective < Individual
     other.fitness <=> self.fitness
   end
 
+  def stopping_condition
+    @fitness >= 89
+  end
+ 
 end
 
