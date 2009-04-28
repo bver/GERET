@@ -21,9 +21,9 @@ module Pareto
  
   def <=>(other)
     if dominates? other
-      return 1
+      return -1
     else
-      return -1 if other.dominates? self
+      return 1 if other.dominates? self
       return 0
     end
   end
@@ -43,12 +43,6 @@ module Pareto
     end
     return domination
   end
-
-#  def objective_maximize( *symbs )
-#  end
-
-#  def objective_minimize( *symbs )
-#  end
 
 end
 

@@ -47,8 +47,8 @@ class TC_Pareto < Test::Unit::TestCase
 
     assert_equal( 0, i1 <=> i2 )
     assert_equal( 0, i2 <=> i1 )
-    assert_equal( 1, i2 <=> i3 )
-    assert_equal( -1, i3 <=> i2 )
+    assert_equal( -1, i2 <=> i3 )
+    assert_equal( 1, i3 <=> i2 )
   
   end
 
@@ -65,8 +65,8 @@ class TC_Pareto < Test::Unit::TestCase
 
     assert_equal( 0, i1 <=> i2 )
     assert_equal( 0, i2 <=> i1 )
-    assert_equal( -1, i2 <=> i3 )
-    assert_equal( 1, i3 <=> i2 )
+    assert_equal( 1, i2 <=> i3 )
+    assert_equal( -1, i3 <=> i2 )
   
   end
 
@@ -78,16 +78,16 @@ class TC_Pareto < Test::Unit::TestCase
     assert_equal( 0, i2 <=> i1 )
 
     i3 = BasicPair.new 42, -42  
-    assert_equal( 1, i3 <=> i1 )
-    assert_equal( -1, i1 <=> i3 )
-    assert_equal( 1, i3 <=> i2 )
-    assert_equal( -1, i2 <=> i3 )
+    assert_equal( -1, i3 <=> i1 )
+    assert_equal( 1, i1 <=> i3 )
+    assert_equal( -1, i3 <=> i2 )
+    assert_equal( 1, i2 <=> i3 )
 
     i4 = BasicPair.new 30, -30 
-    assert_equal( -1, i4 <=> i1 )
-    assert_equal( 1, i1 <=> i4 )
-    assert_equal( -1, i4 <=> i2 )
-    assert_equal( 1, i2 <=> i4 )
+    assert_equal( 1, i4 <=> i1 )
+    assert_equal( -1, i1 <=> i4 )
+    assert_equal( 1, i4 <=> i2 )
+    assert_equal( -1, i2 <=> i4 )
 
     i5 = BasicPair.new 30, -30   
     assert_equal( 0, i5 <=> i4 )
@@ -103,8 +103,8 @@ class TC_Pareto < Test::Unit::TestCase
 
     assert_equal( 0, i1 <=> i2 )
     assert_equal( 0, i2 <=> i1 )
-    assert_equal( -1, i2 <=> i3 )
-    assert_equal( 1, i3 <=> i2 )
+    assert_equal( 1, i2 <=> i3 )
+    assert_equal( -1, i3 <=> i2 )
   
   end
  
