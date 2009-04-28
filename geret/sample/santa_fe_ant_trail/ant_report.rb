@@ -3,14 +3,17 @@ class AntReport < ReportText
 
   def report population
     diversity = Utils.diversity( population ) { |individual| individual.genotype }
-    self['diversity_genotypic'] << diversity[0...10].inspect   
+    self['diversity_genotypic'] << diversity[0...10].inspect + " (#{diversity.size} unique)"  
     
     diversity =  Utils.diversity( population ) { |individual| individual.phenotype }
-    self['diversity_phenotypic'] << diversity[0...10].inspect
+    self['diversity_phenotypic'] << diversity[0...10].inspect + " (#{diversity.size} unique)"
 
-    min, max, avg, n = Utils.statistics( population.map { |individual| individual.fitness } )
+    fits = population.map { |individual| individual.fitness } 
+    min, max, avg, n = Utils.statistics( fits )
     self['fitness_max'] << max
     self['fitness_avg'] << avg
+    diversity =  Utils.diversity( fits )
+    self['diversity_fitness'] << diversity[0...10].inspect + " (#{diversity.size} unique)"
 
     min, max, avg, n = Utils.statistics( population.map { |individual| individual.used_length } )
     self['usedlen_min'] << min

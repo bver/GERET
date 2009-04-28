@@ -2,10 +2,10 @@
 algorithm:
   class: SteadyState
 
-  population_size: 500
+  population_size: 800
 
   probabilities:
-    crossover: 0.9
+    crossover: 0.5
     mutation: 0.01
     injection: 0.9
 
@@ -30,12 +30,13 @@ grammar:
   filename: sample/santa_fe_ant_trail/grammar.abnf
 
 mapper:
-  class: DepthFirst
-  wraps_to_fail: 3 
+  class: DepthBucket
+  consume_trivial_codons: false
 
 selection:
-  class: Tournament # RankRoulette
-  tournament_size: 3
+  class: Tournament
+#  proportional_by: fitness   
+  tournament_size: 2
 selection_rank: #optional
   class: Ranking
 
