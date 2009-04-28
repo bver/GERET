@@ -4,7 +4,7 @@ code = line / code line
 
 line = if-statement / op
 
-if-statement = "if food_ahead\n  " line "  else\n  " line "end\n"
+if-statement = "if ant.food_ahead\n  " line "  else\n  " line "end\n"
 
-op = "left\n" / "right\n" / "move\n"
+op = "ant.left\n" / "ant.right\n" / "ant.move\n"
 

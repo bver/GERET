@@ -8,12 +8,15 @@ class Ant
   Right = { :north => :east, :east => :south, :south => :west, :west => :north }
   DirX = { :north => 0, :west => -1, :south => 0, :east => 1 } 
   DirY = { :north => -1, :west => 0, :south => 1, :east => 0 }
+  Avatar = { :north => '^', :west => '<', :south => 'v', :east => '>' }
 
   def initialize
     @grid = []
-    IO.read( 'trail.txt' ).each { |line| @grid << line.split( // ) }
+    IO.read( "#{File.dirname(__FILE__)}/trail.txt" ).each_line do |line| 
+      @grid << line.sub(/\n/,'').split( // )
+    end
     @grid_height = @grid.size
-    @grid_width = @grid.max { |line| line.size }
+    @grid_width = ( @grid.max { |line| line.size } ).size
 
     @dir = :south
     @x, @y = 0, 0
@@ -24,7 +27,7 @@ class Ant
 
   def move
     @x, @y = ahead_x, ahead_y  
-    next unless @grid[@y][@x] == Food
+    return unless @grid[@y][@x] == Food
     @consumed_food += 1
     @grid[@y][@x] = Empty
   end
@@ -39,6 +42,17 @@ class Ant
 
   def food_ahead
     Food == @grid[ ahead_y ][ ahead_x ]
+  end
+
+  def show_scene
+    scene = ''
+    @grid.each_with_index do |line,y|
+      line.each_with_index do |field,x|
+        scene += ( @x == x and @y == y ) ? Avatar[@dir] : field
+      end
+      scene += "\n" 
+    end
+    scene
   end
 
   protected
