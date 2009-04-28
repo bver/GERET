@@ -4,12 +4,12 @@ algorithm:
 
   comma_or_plus: plus
 
-  population_size: 800
+  population_size: 500
   lambda_size: 100
   elite_size: 10 # 0
  
   probabilities:
-    crossover: 0.7
+    crossover: 0.9
     mutation: 0.01
     injection: 0.9
 
