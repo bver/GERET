@@ -1,0 +1,46 @@
+---
+algorithm:
+  class: SimpleParetoGP
+
+  population_size: 500
+  archive_size: 500 
+
+  generations_per_cascade: 10
+
+  archive_tourney_size: 10
+  population_tourney_size: 10
+  consolidation_tourney_size: 10
+  
+  init:
+    method: ramped # grow or full or ramped
+    sensible_depth: 5   
+
+  termination:
+    max_steps: 2000
+    on_individual: :stopping_condition
+ 
+grammar:
+  class: AbnfFile
+  filename: sample/santa_fe_ant_trail/grammar.abnf
+
+mapper:
+  class: DepthBucket
+  consume_trivial_codons: false
+
+crossover:
+  class: Crossover
+  margin: 1
+
+store:
+  class: Store
+  filename: ./ant_trail.store
+       
+report:
+  class: AntParetoReport
+  require: sample/santa_fe_ant_trail/ant_pareto_report.rb
+
+individual:
+  class: AntIndividualMultiObjective
+  require: sample/santa_fe_ant_trail/ant_individual.rb
+  shorten_chromozome: false
+
