@@ -41,6 +41,12 @@ module Selection
       front
     end
 
+    def ParetoTourney.dominated selection
+      ids = ParetoTourney.front( selection ).map { |dominated| dominated.object_id }
+      selection.delete_if { |individual| ids.include? individual.object_id }
+      selection
+    end
+
   end
 end
 

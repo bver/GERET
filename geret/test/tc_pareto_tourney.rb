@@ -90,7 +90,17 @@ class TC_ParetoTourney < Test::Unit::TestCase
     assert_equal( 'c', front[1].id )
     assert_equal( 'f', front[2].id )   
   end
- 
+
+  def test_dominated
+    dominated = ParetoTourney.dominated @population
+    assert_equal( 5, dominated.size )
+    assert_equal( 'b', dominated[0].id )   
+    assert_equal( 'd', dominated[1].id )
+    assert_equal( 'e', dominated[2].id )      
+    assert_equal( 'g', dominated[3].id )   
+    assert_equal( 'h', dominated[4].id )      
+  end
+  
 end
 
 
