@@ -82,6 +82,14 @@ class TC_ParetoTourney < Test::Unit::TestCase
     exception = assert_raise( RuntimeError ) { pt.select( [] ) }
     assert_equal( "ParetoTourney: empty population", exception.message )
   end
+
+  def test_front
+    front = ParetoTourney.front @population
+    assert_equal( 3, front.size )
+    assert_equal( 'a', front[0].id )   
+    assert_equal( 'c', front[1].id )
+    assert_equal( 'f', front[2].id )   
+  end
  
 end
 

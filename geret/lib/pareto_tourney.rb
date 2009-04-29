@@ -18,7 +18,11 @@ module Selection
 
       selection = []
       @tournament_size.times { selection << pop.delete_at( @random.rand(pop.size) ) }
-      
+     
+      ParetoTourney.front selection
+    end
+
+    def ParetoTourney.front selection
       front = []
       selection.each do |individual|
 
