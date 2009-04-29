@@ -9,7 +9,7 @@ module Selection
 
     attr_accessor :random, :population, :tournament_size 
 
-    def select population=self.population
+    def select_front population=self.population
       ParetoTourney.front( random_select( population ) )
     end
 
