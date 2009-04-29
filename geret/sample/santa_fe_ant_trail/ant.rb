@@ -3,7 +3,7 @@ class Ant
 
   Food = '*'
   Empty = '.'
-  MaxSteps = 400
+  MaxSteps = 615 # 400?
 
   Left = { :north => :west, :west => :south, :south => :east, :east => :north }
   Right = { :north => :east, :east => :south, :south => :west, :west => :north }
@@ -19,7 +19,7 @@ class Ant
     @grid_height = @grid.size
     @grid_width = @grid.first.size
 
-    @dir = :south
+    @dir = :east
     @x, @y = 0, 0
     @consumed_food = 0
     @steps = 0 
