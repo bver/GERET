@@ -25,8 +25,8 @@ class AntParetoReport < ReportText
     self['gensize_max'] << max
     self['gensize_avg'] << avg
 
-    best = population.min # assuming individual_1 <=> individual_2
-    self['best_phenotype'] << "\n#{best.phenotype}"
+#    best = population.min # assuming individual_1 <=> individual_2
+#    self['best_phenotype'] << "\n#{best.phenotype}"
   end
 
 end
