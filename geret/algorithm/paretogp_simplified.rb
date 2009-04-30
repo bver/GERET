@@ -10,8 +10,8 @@ class ParetoGPSimplified < AlgorithmBase
 
     @archive = @store.load
     @archive = [] if @archive.nil?
-    @report << "loaded #{@archive.size} individuals"   
-    @report << "creating #{@archive_size - @archive.size} individuals"
+    @report << "loaded #{@archive.size} archive individuals"   
+    @report << "creating #{@archive_size - @archive.size} archive individuals"
     init_population( @archive, @archive_size )  
 
     @population = []
@@ -21,62 +21,72 @@ class ParetoGPSimplified < AlgorithmBase
     @consolidation_tourney = @cfg.factory( 'consolidation_tourney' )  # todo: needed?
 
     @steps = 0
-
+    @generation = 0
     return @report       
   end
 
   def step
-    @report << "--------- step #{@steps += 1}" 
-    @report.report @archive 
+    @report << "--------- step #{@steps += 1}, generation #{@generation}" 
+
+     # init population   
+    if @generation == 0
+      @report.report @archive 
+      @report << "initializing population"     
    
-    # init population
-    @population = []
-    init_population( @population, @population_size )   
+      @population = []
+      init_population( @population, @population_size )   
+    end
 
     cross = mutate = 0
-    @generations_per_cascade.times do
 
-      # create a new population
-      population_pipe = []
-      archive_pipe = []
-      new_population = []
-      while new_population.size < @population_size
+    # create a new population from the current one
+    population_pipe = []
+    archive_pipe = []
+    new_population = []
+    while new_population.size < @population_size
 
-        population_pipe = @population_tourney.select_front @population while population_pipe.empty?
-        archive_pipe = @archive_tourney.select_front @archive while archive_pipe.empty?
+      population_pipe = @population_tourney.select_front @population while population_pipe.empty?
+      archive_pipe = @archive_tourney.select_front @archive while archive_pipe.empty?
 
-        chromozome1, chromozome2 = @crossover.crossover( population_pipe.shift.genotype, archive_pipe.shift.genotype )     
-        cross += 1
+      chromozome1, chromozome2 = @crossover.crossover( population_pipe.shift.genotype, archive_pipe.shift.genotype )     
+      cross += 1
 
-        if rand < @mutation_probability 
-          chromozome1 = @mutation.mutation chromozome1       
-          mutate += 1
-        end
-        
-        individual = @cfg.factory( 'individual', @mapper, chromozome1 ) 
-        new_population << individual if individual.valid?
-        individual = @cfg.factory( 'individual', @mapper, chromozome2 ) 
-        new_population << individual if individual.valid?
-       
+      if rand < @mutation_probability 
+        chromozome1 = @mutation.mutation chromozome1       
+        mutate += 1
       end
-      @population = new_population
-    
-    end # of a single generation
+        
+      individual = @cfg.factory( 'individual', @mapper, chromozome1 ) 
+      new_population << individual if individual.valid?
+      individual = @cfg.factory( 'individual', @mapper, chromozome2 ) 
+      new_population << individual if individual.valid?
+       
+    end
+    @population = new_population
   
     @report['numof_crossovers'] << cross   
     @report['numof_mutations'] << mutate
 
-    # consolidate
-    @archive.concat @population
-    while @archive.size > @archive_size 
-      dominated_ids = ParetoTourney.dominated( @archive ).map { |individual| individual.object_id }
-      if dominated_ids.empty?
-        @report << "cannot select dominated individuals, keeping a bigger archive.size=#{@archive.size}"
-        break
-      end
-      @archive.delete_if { |individual| dominated_ids.include? individual.object_id }
-    end
+    # consolidation
+    if @generation == @generations_per_cascade 
 
+      @report << "archive consolidation"
+      @archive.concat @population
+      while @archive.size > @archive_size 
+        dominated_ids = ParetoTourney.dominated( @archive ).map { |individual| individual.object_id }
+        if dominated_ids.empty?
+          @report << "cannot select dominated individuals, keeping a bigger archive.size=#{@archive.size}"
+          break
+        end
+        @archive.delete_if { |individual| dominated_ids.include? individual.object_id }
+      end
+
+      @generation = 0
+    else
+      @generation += 1
+    end # consolidation
+
+    @report.next     
     return @report 
   end
 

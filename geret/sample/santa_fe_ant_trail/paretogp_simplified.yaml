@@ -49,8 +49,8 @@ store:
   filename: ./ant_trail.store
        
 report:
-  class: AntReport
-  require: sample/santa_fe_ant_trail/ant_report.rb
+  class: AntParetoReport
+  require: sample/santa_fe_ant_trail/ant_pareto_report.rb
 
 individual:
   class: AntIndividualMultiObjective
