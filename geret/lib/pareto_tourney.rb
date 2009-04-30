@@ -2,7 +2,7 @@
 module Selection
   class ParetoTourney
 
-    def initialize tournament_size
+    def initialize tournament_size=2
       @tournament_size = tournament_size
       @random = Kernel
     end

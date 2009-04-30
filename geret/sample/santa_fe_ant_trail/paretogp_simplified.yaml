@@ -1,22 +1,19 @@
 ---
 algorithm:
-  class: SimpleParetoGP
+  class: ParetoGPSimplified
 
   population_size: 500
-  archive_size: 500 
+  archive_size: 100 
 
   generations_per_cascade: 10
-
-  archive_tourney_size: 10
-  population_tourney_size: 10
-  consolidation_tourney_size: 10
-  
+  mutation_probability: 0.01
+ 
   init:
     method: ramped # grow or full or ramped
     sensible_depth: 5   
 
   termination:
-    max_steps: 2000
+    max_steps: 100
     on_individual: :stopping_condition
  
 grammar:
@@ -26,6 +23,18 @@ grammar:
 mapper:
   class: DepthBucket
   consume_trivial_codons: false
+
+archive_tourney:
+  class: ParetoTourney # cannot be changed
+  tournament_size: 10
+
+population_tourney:
+  class: ParetoTourney # cannot be changed
+  tournament_size: 10
+
+consolidation_tourney:
+  class: ParetoTourney # cannot be changed
+  tournament_size: 50
 
 crossover:
   class: Crossover
@@ -40,8 +49,8 @@ store:
   filename: ./ant_trail.store
        
 report:
-  class: AntParetoReport
-  require: sample/santa_fe_ant_trail/ant_pareto_report.rb
+  class: AntReport
+  require: sample/santa_fe_ant_trail/ant_report.rb
 
 individual:
   class: AntIndividualMultiObjective

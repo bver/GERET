@@ -19,8 +19,10 @@ require 'lib/validator'
 require 'lib/individual'
 require 'lib/truncation'
 require 'lib/round_robin'
+require 'lib/pareto_tourney'
 
 require 'algorithm/generational'
 require 'algorithm/steady_state'
 require 'algorithm/mu_lambda'
+require 'algorithm/paretogp_simplified'
 

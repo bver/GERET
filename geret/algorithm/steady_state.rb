@@ -1,7 +1,7 @@
 
-require 'algorithm/algorithm_base'
+require 'algorithm/single_objective'
 
-class SteadyState < AlgorithmBase
+class SteadyState < SingleObjective
 
   def setup config
     super

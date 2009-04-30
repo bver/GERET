@@ -77,6 +77,11 @@ class TC_ParetoTourney < Test::Unit::TestCase
     assert_equal( "ParetoTourney: tournament_size bigger than population.size", exception.message )
   end
 
+  def test_default_tournament_size
+    pt = ParetoTourney.new
+    assert_equal( 2, pt.tournament_size )
+  end
+  
   def test_empty_population
     pt = ParetoTourney.new 2
     exception = assert_raise( RuntimeError ) { pt.select_front( [] ) }
