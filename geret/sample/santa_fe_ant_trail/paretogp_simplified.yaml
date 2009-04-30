@@ -30,6 +30,10 @@ mapper:
 crossover:
   class: Crossover
   margin: 1
+ 
+mutation:
+  class: Mutation
+  magnitude: 16
 
 store:
   class: Store

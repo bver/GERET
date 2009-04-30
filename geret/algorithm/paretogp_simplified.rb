@@ -15,40 +15,22 @@ class ParetoGPSimplified
     @crossover = @cfg.factory('crossover')
     @mutation = @cfg.factory('mutation')   
 
-    @population = @store.load
-    @population = [] if @population.nil?
-    @report << "loaded #{@population.size} individuals"   
-    @report << "creating #{@population_size - @population.size} individuals"
+    @archive = @store.load
+    @archive = [] if @archive.nil?
+    @report << "loaded #{@archive.size} individuals"   
+    @report << "creating #{@archive_size - @archive.size} individuals"
+    init_population( @archive, @archive_size )  
 
-    if @init['method'] == 'ramped'
-
-      @init['method'] = 'full'
-      depth = @init['sensible_depth']
-      while @population.size < @population_size
-        individual = @cfg.factory( 'individual', @mapper, init_chromozome(@init) )
-        next unless individual.valid? 
-        @population << individual       
-        @init['method'] = ( @init['method'] == 'full' ) ? 'grow' : 'full'     
-        if @population.size.divmod(2).last == 0
-          @init['sensible_depth'] = ( @init['sensible_depth'] == depth ) ? 2 : @init['sensible_depth']+1
-        end
-      end
-
-    else
-
-      while @population.size < @population_size
-        individual = @cfg.factory( 'individual', @mapper, init_chromozome(@init) )
-        @population << individual if individual.valid? 
-      end
-
-    end
-  
     @steps = 0
-
     return @report       
   end
 
   def step
+    @report << "--------- step #{@steps += 1}" 
+    @report.report @archive 
+   
+    @population = []
+    init_population( @population, @population_size )   
   end
 
   def teardown
