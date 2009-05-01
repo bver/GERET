@@ -32,6 +32,8 @@ class AntParetoReport < ReportText
 
     best = population.max  { |a,b| a.fitness <=> b.fitness }
     self['best_fit_phenotype'] << "\n#{best.phenotype}"
+
+#population.each { |i| puts "u=#{i.used_length} f=#{i.fitness}" }
   end
 
 end

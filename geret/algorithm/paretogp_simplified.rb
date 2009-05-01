@@ -30,7 +30,6 @@ class ParetoGPSimplified < AlgorithmBase
 
      # init population   
     if @generation == 0
-      @report.report @archive 
       @report << "initializing population"  
       @population = []
       init_population( @population, @population_size )   
@@ -46,12 +45,8 @@ class ParetoGPSimplified < AlgorithmBase
       archive_pipe = @archive_tourney.select_front @archive while archive_pipe.empty?
 
       chromozome1, chromozome2 = @crossover.crossover( population_pipe.shift.genotype, archive_pipe.shift.genotype )     
-      cross += 1
 
-      if rand < @mutation_probability 
-        chromozome1 = @mutation.mutation chromozome1       
-        mutate += 1
-      end
+      chromozome1 = @mutation.mutation chromozome1 if rand < @mutation_probability 
         
       individual = @cfg.factory( 'individual', @mapper, chromozome1 ) 
       new_population << individual if individual.valid?
@@ -67,9 +62,11 @@ class ParetoGPSimplified < AlgorithmBase
     # consolidation
     if @generation == @generations_per_cascade 
 
-      @report << "archive consolidation"
       @archive.concat @population
       @archive = ParetoTourney.front( @archive )
+      uniq = {}
+      @archive.each { |individual| uniq[ individual.genotype ]=nil }
+      @archive = uniq.keys.map { |chromozome| @cfg.factory( 'individual', @mapper, chromozome ) }
 
 #      while @archive.size > @archive_size 
 #        dominated_ids = ParetoTourney.dominated( @archive ).map { |individual| individual.object_id }
@@ -81,6 +78,8 @@ class ParetoGPSimplified < AlgorithmBase
 #        @archive.delete_if { |individual| dominated_ids.include? individual.object_id }
 #      end
 
+      @report << "archive consolidation"     
+      @report.report @archive      
       @generation = 0
     else
       @generation += 1
@@ -88,6 +87,12 @@ class ParetoGPSimplified < AlgorithmBase
 
     @report.next     
     return @report 
+  end
+
+  def teardown
+    @report << "--------- finished:"
+    @store.save @archive
+    return @report   
   end
 
 end
