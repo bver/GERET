@@ -36,7 +36,8 @@ module Selection
       front
     end
 
-    def ParetoTourney.dominated selection
+    def ParetoTourney.dominated population
+      selection = population.clone
       ids = ParetoTourney.front( selection ).map { |dominated| dominated.object_id }
       selection.delete_if { |individual| ids.include? individual.object_id }
       selection

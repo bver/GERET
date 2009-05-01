@@ -106,7 +106,6 @@ class TC_ParetoTourney < Test::Unit::TestCase
     assert_equal( 'h', dominated[4].id )      
   end
 
-
   def test_select_dominated
     pt = ParetoTourney.new 4
     pt.random = MockRand.new [{8=>6}, {7=>3}, {6=>2}, {5=>0}] # g d c a
@@ -122,7 +121,12 @@ class TC_ParetoTourney < Test::Unit::TestCase
     assert_equal( 'g', winners[1].id )   
   end
  
-  
+  def test_dominated_bugfix
+    orig_size = @population.size 
+    dominated = ParetoTourney.dominated @population
+    assert_equal( orig_size, @population.size )
+  end
+ 
 end
 
 
