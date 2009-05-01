@@ -31,13 +31,10 @@ class ParetoGPSimplified < AlgorithmBase
      # init population   
     if @generation == 0
       @report.report @archive 
-      @report << "initializing population"     
-   
+      @report << "initializing population"  
       @population = []
       init_population( @population, @population_size )   
     end
-
-    cross = mutate = 0
 
     # create a new population from the current one
     population_pipe = []
@@ -64,22 +61,25 @@ class ParetoGPSimplified < AlgorithmBase
     end
     @population = new_population
   
-    @report['numof_crossovers'] << cross   
-    @report['numof_mutations'] << mutate
+#    @report << 'new population'
+#    @report.report new_population
 
     # consolidation
     if @generation == @generations_per_cascade 
 
       @report << "archive consolidation"
       @archive.concat @population
-      while @archive.size > @archive_size 
-        dominated_ids = ParetoTourney.dominated( @archive ).map { |individual| individual.object_id }
-        if dominated_ids.empty?
-          @report << "cannot select dominated individuals, keeping a bigger archive.size=#{@archive.size}"
-          break
-        end
-        @archive.delete_if { |individual| dominated_ids.include? individual.object_id }
-      end
+      @archive = ParetoTourney.front( @archive )
+
+#      while @archive.size > @archive_size 
+#        dominated_ids = ParetoTourney.dominated( @archive ).map { |individual| individual.object_id }
+#        @report['dominated_removed'] << dominated_ids.size        
+#        if dominated_ids.empty?
+#          @report << "cannot select dominated individuals, keeping a bigger archive.size=#{@archive.size}"
+#          break
+#        end
+#        @archive.delete_if { |individual| dominated_ids.include? individual.object_id }
+#      end
 
       @generation = 0
     else
