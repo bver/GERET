@@ -2,10 +2,10 @@
 algorithm:
   class: ParetoGPSimplified
 
-  population_size: 500
+  population_size: 300
   archive_size: 100 
 
-  generations_per_cascade: 10
+  generations_per_cascade: 7
   mutation_probability: 0.01
  
   init:
@@ -32,9 +32,14 @@ population_tourney:
   class: ParetoTourney # cannot be changed
   tournament_size: 10
 
-consolidation_tourney:
-  class: ParetoTourney # cannot be changed
-  tournament_size: 50
+consolidation:
+  class: Tournament
+  tournament_size: 10
+  unique_winners: true        
+consolidation_rank:
+  class: Ranking
+  order_by: :fitness
+  direction: :minimize  
 
 crossover:
   class: Crossover

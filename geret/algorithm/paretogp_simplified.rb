@@ -18,7 +18,9 @@ class ParetoGPSimplified < AlgorithmBase
 
     @archive_tourney = @cfg.factory( 'archive_tourney' )
     @population_tourney = @cfg.factory( 'population_tourney' )
-    @consolidation_tourney = @cfg.factory( 'consolidation_tourney' )  # todo: needed?
+    @consolidation = @cfg['consolidation_rank'].nil? ? 
+                     @cfg.factory('consolidation') : 
+                     @cfg.factory('consolidation', @cfg.factory('consolidation_rank') ) 
 
     @steps = 0
     @generation = 0
@@ -64,9 +66,22 @@ class ParetoGPSimplified < AlgorithmBase
 
       @archive.concat @population
       @archive = ParetoTourney.front( @archive )
-      uniq = {}
-      @archive.each { |individual| uniq[ individual.genotype ]=nil }
-      @archive = uniq.keys.map { |chromozome| @cfg.factory( 'individual', @mapper, chromozome ) }
+      to_be_removed =  @archive.size - @archive_size
+      if to_be_removed > 0
+        ids = @consolidation.select( to_be_removed, @archive ).map { |individual| individual.object_id }
+        @archive.delete_if { |individual| ids.include? individual.object_id }
+        @report['removed_from_archive'] << to_be_removed
+      end
+
+#      if @archive.size > @archive_size
+#        uniq = {}
+#        @archive.each { |individual| uniq[ individual.phenotype ] = individual }
+#        @archive = uniq.values
+#        puts "!!!!  #{@archive.size}"
+#      end
+
+#      @archive.each { |individual| uniq[ individual.genotype ]=nil }
+#      @archive = uniq.keys.map { |chromozome| @cfg.factory( 'individual', @mapper, chromozome ) }
 
 #      while @archive.size > @archive_size 
 #        dominated_ids = ParetoTourney.dominated( @archive ).map { |individual| individual.object_id }
