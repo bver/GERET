@@ -21,12 +21,6 @@ class AlgorithmBase
     return @report    
   end
 
-  def teardown
-    @report << "--------- finished:"
-    @store.save @population
-    return @report   
-  end
-
   def finished?
     max_steps = @termination['max_steps']
     on_individual = @termination['on_individual']
