@@ -44,7 +44,8 @@ class ParetoGPSimplified < AlgorithmBase
     while new_population.size < @population_size
 
       population_pipe = @population_tourney.select_front @population while population_pipe.empty?
-      archive_pipe = @archive_tourney.select_front @archive while archive_pipe.empty?
+      #archive_pipe = @archive_tourney.select_front @archive while archive_pipe.empty?
+      archive_pipe = Utils.permutate @archive while archive_pipe.empty?
 
       chromozome1, chromozome2 = @crossover.crossover( population_pipe.shift.genotype, archive_pipe.shift.genotype )     
 
@@ -66,12 +67,24 @@ class ParetoGPSimplified < AlgorithmBase
 
       @archive.concat @population
       @archive = ParetoTourney.front( @archive )
-      to_be_removed =  @archive.size - @archive_size
-      if to_be_removed > 0
-        ids = @consolidation.select( to_be_removed, @archive ).map { |individual| individual.object_id }
-        @archive.delete_if { |individual| ids.include? individual.object_id }
-        @report['removed_from_archive'] << to_be_removed
+      if @archive.size > @archive_size
+        @report << 'genotype uniqueness guaranteed'
+        uniq = {}
+        @archive.each do |individual| 
+          individual.shorten_chromozome = true         
+          uniq[ individual.genotype ] = individual
+        end
+        @archive = uniq.values
       end
+
+
+
+#      to_be_removed =  @archive.size - @archive_size
+#      if to_be_removed > 0
+#        ids = @consolidation.select( to_be_removed, @archive ).map { |individual| individual.object_id }
+#        @archive.delete_if { |individual| ids.include? individual.object_id }
+#        @report['removed_from_archive'] << to_be_removed
+#      end
 
 #      if @archive.size > @archive_size
 #        uniq = {}

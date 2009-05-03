@@ -2,8 +2,8 @@
 class AntParetoReport < ReportText 
 
   def report population
-    diversity = Utils.diversity( population ) { |individual| individual.genotype }
-    self['diversity_genotypic'] << diversity[0...10].inspect + " (#{diversity.size} unique)"  
+    #diversity = Utils.diversity( population ) { |individual| individual.genotype }
+    #self['diversity_genotypic'] << diversity[0...10].inspect + " (#{diversity.size} unique)"  
     
     diversity =  Utils.diversity( population ) { |individual| individual.phenotype }
     self['diversity_phenotypic'] << diversity[0...10].inspect + " (#{diversity.size} unique)"
