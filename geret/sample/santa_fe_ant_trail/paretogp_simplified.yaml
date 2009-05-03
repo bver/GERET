@@ -21,8 +21,10 @@ grammar:
   filename: sample/santa_fe_ant_trail/grammar.abnf
 
 mapper:
-  class: DepthBucket
-  consume_trivial_codons: false
+  class: DepthLocus
+
+#  class: DepthBucket
+#  consume_trivial_codons: false
 
 archive_tourney:
   class: ParetoTourney # cannot be changed
@@ -43,7 +45,8 @@ consolidation_rank:
 
 crossover:
   class: Crossover
-  margin: 1
+  margin: 2 #1
+  step: 2
  
 mutation:
   class: Mutation
