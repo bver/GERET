@@ -2,10 +2,10 @@
 algorithm:
   class: ParetoGPSimplified
 
-  population_size: 500
+  population_size: 800
   archive_size: 200 
 
-  generations_per_cascade: 5
+  generations_per_cascade: 4
   mutation_probability: 0.00
  
   init:

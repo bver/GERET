@@ -15,6 +15,7 @@ class ParetoGPSimplified < AlgorithmBase
     init_population( @archive, @archive_size )  
 
     @population = []
+    @elite = []
 
     @archive_tourney = @cfg.factory( 'archive_tourney' )
     @population_tourney = @cfg.factory( 'population_tourney' )
@@ -34,13 +35,14 @@ class ParetoGPSimplified < AlgorithmBase
     if @generation == 0
       @report << "initializing population"  
       @population = []
+      @elite = []
       init_population( @population, @population_size )   
     end
 
     # create a new population from the current one
     population_pipe = []
     archive_pipe = []
-    new_population = []
+    new_population = @elite
     while new_population.size < @population_size
 
       population_pipe = @population_tourney.select_front @population while population_pipe.empty?
@@ -62,20 +64,34 @@ class ParetoGPSimplified < AlgorithmBase
 #    @report << 'new population'
 #    @report.report new_population
 
+    @elite = ParetoTourney.front( @population )
+    uniq = {}
+    @elite.each do |individual|
+      individual.shorten_chromozome = true
+      uniq[ individual.genotype ] = individual
+    end
+    @elite = uniq.values
+    @report['elite_size'] << @elite.size
+
+    fits = @population.map { |individual| individual.fitness } 
+    min, max, avg, n = Utils.statistics( fits )
+    @report['pop_fitness_max'] << max
+    @report['pop_fitness_avg'] << avg
+
+
     # consolidation
     if @generation == @generations_per_cascade 
 
-      @archive.concat @population
+      @archive.concat @elite # @population
       @archive = ParetoTourney.front( @archive )
-      if @archive.size > @archive_size
-        @report << 'genotype uniqueness guaranteed'
+#      if @archive.size > @archive_size
         uniq = {}
         @archive.each do |individual| 
           individual.shorten_chromozome = true         
           uniq[ individual.genotype ] = individual
         end
         @archive = uniq.values
-      end
+#      end
 
 
 
