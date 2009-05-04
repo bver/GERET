@@ -10,7 +10,6 @@ class AntParetoReport < ReportText
     self['fitness_min'] << min
     self['fitness_max'] << max
     self['fitness_avg'] << avg
-    self['archive_size'] << n
     diversity =  Utils.diversity( fits )
     self['diversity_fitness'] << diversity[0...10].inspect + " (#{diversity.size} unique)"
 
@@ -22,13 +21,17 @@ class AntParetoReport < ReportText
     diversity =  Utils.diversity( lens )
     self['diversity_usedlen'] << diversity[0...10].inspect + " (#{diversity.size} unique)"
 
+    combo = population.map { |individual| "#{individual.fitness},#{individual.used_length}" } 
+    diversity =  Utils.diversity( combo )
+    self['diversity_combo'] << diversity[0...10].inspect + " (#{diversity.size} unique)"
+
     min, max, avg, n = Utils.statistics( population.map { |individual| individual.genotype.size } )
     self['gensize_min'] << min
     self['gensize_max'] << max
     self['gensize_avg'] << avg
 
     best = population.max  { |a,b| a.fitness <=> b.fitness }
-    self['best_fit_phenotype'] << "\n#{best.phenotype}"
+    self['best_fit_phenotype'] << "\n#{best.phenotype}\n"
   end
 
 end
