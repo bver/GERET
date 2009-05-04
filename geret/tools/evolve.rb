@@ -9,11 +9,13 @@ begin
   config = ConfigYaml.new ARGV[0]
 
   algorithm = config.factory('algorithm')
-  algorithm.setup config
+  report = algorithm.setup config
+  puts report.output
 
   until algorithm.finished?
     report = algorithm.step
     puts report.output
+    $stdout.flush
   end
 
   report = algorithm.teardown
