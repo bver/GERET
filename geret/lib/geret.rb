@@ -25,4 +25,5 @@ require 'algorithm/generational'
 require 'algorithm/steady_state'
 require 'algorithm/mu_lambda'
 require 'algorithm/paretogp_simplified'
+require 'algorithm/pareto_elitist'
 

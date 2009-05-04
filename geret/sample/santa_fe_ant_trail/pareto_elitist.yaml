@@ -1,0 +1,50 @@
+---
+algorithm:
+  class: ParetoElitist
+
+  population_size: 800
+  init_size: 200
+  mutation_probability: 0.00
+ 
+  init:
+    method: ramped # grow or full or ramped
+    sensible_depth: 7   
+
+  termination:
+    max_steps: 1000
+    on_individual: :stopping_condition
+ 
+grammar:
+  class: AbnfFile
+  filename: sample/santa_fe_ant_trail/grammar.abnf
+
+mapper:
+  class: DepthLocus
+
+tourney:
+  class: ParetoTourney # cannot be changed
+  tournament_size: 5
+
+crossover:
+  class: Crossover
+  margin: 2 #1
+  step: 2
+ 
+mutation:
+  class: Mutation
+  magnitude: 16
+
+store:
+  class: Store
+  filename: ./ant_trail.store
+       
+report:
+  class: AntParetoReport
+  require: sample/santa_fe_ant_trail/ant_elite_report.rb
+
+individual:
+  class: AntIndividualMultiObjective
+  require: sample/santa_fe_ant_trail/ant_individual.rb
+  shorten_chromozome: false 
+         
+   
