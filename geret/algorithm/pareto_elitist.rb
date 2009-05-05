@@ -19,6 +19,7 @@ class ParetoElitist < AlgorithmBase
     @report << "creating #{@population_size - @population.size} individuals"
     init_population( @population, @population_size )
 
+    @report.next    
     return @report 
   end
 
@@ -26,8 +27,10 @@ class ParetoElitist < AlgorithmBase
     @report << "--------- step #{@steps += 1}" 
    
     # parents come from elite and previous population:
-    parents = @elite.values
+    parents = []
     parents.concat @tourney.select_front( @population ) while parents.size < @population_size
+    parents.concat @elite.values  
+    @report['parents_size'] << parents.size
     
     # exploration part of the population
     new_population = []
