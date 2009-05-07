@@ -11,13 +11,15 @@ class ParetoElitist < AlgorithmBase
     raise "ParetoElitist: init_size >= population_size" if @init_size >= @population_size
 
     @tourney = @cfg.factory( 'tourney' )
-    @elite = {}
 
-    @population = @store.load
+    @population, @elite = @store.load
     @population = [] if @population.nil?
-    @report << "loaded #{@population.size} individuals"   
-    @report << "creating #{@population_size - @population.size} individuals"
+    @elite = {} if @elite.nil?
+
+    @report << "loaded #{@population.size} population individuals"   
+    @report << "creating #{@population_size - @population.size} population individuals"
     init_population( @population, @population_size )
+    @report << "loaded #{@elite.size} elite individuals"
 
     @report.next    
     return @report 
@@ -67,7 +69,7 @@ class ParetoElitist < AlgorithmBase
 
   def teardown
     @report << "--------- finished:"
-    @store.save @population
+    @store.save [ @population, @elite ]
     return @report   
   end
 
