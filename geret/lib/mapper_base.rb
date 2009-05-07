@@ -16,6 +16,8 @@ module Mapper
     attr_accessor :wraps_to_fail, :wraps_to_fading, :consume_trivial_codons 
 
     def phenotype genome
+      return nil if genome.empty?
+
       tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
       @used_length = 0
 

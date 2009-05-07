@@ -271,5 +271,12 @@ class TC_Mappers < Test::Unit::TestCase
     assert_equal( false, m2.consume_trivial_codons ) 
   end
  
+  def test_empty
+    m = Mapper::BreadthFirst.new @grammar
+    genotype1 = []
+    assert_equal( nil, m.phenotype( genotype1 ) ) 
+  end
+
 end
+
 
