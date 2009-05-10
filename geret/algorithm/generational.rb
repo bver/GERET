@@ -9,6 +9,7 @@ class Generational < SingleObjective
   def setup config
     super
     init_elitism @population_size
+    @report.next    
     return @report    
   end
 

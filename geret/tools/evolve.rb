@@ -11,6 +11,7 @@ begin
   algorithm = config.factory('algorithm')
   report = algorithm.setup config
   puts report.output
+  $stdout.flush 
 
   until algorithm.finished?
     report = algorithm.step

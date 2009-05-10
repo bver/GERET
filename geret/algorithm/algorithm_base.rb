@@ -3,7 +3,7 @@ include Selection
 
 class AlgorithmBase
 
-  attr_accessor :termination, :init, :inject, :population_size, :probabilities
+  attr_accessor :termination, :init, :population_size, :probabilities
 
   def setup config
     @cfg = config

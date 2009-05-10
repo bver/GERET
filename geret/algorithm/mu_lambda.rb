@@ -12,6 +12,7 @@ class MuLambda < SingleObjective
     super
     raise "MuLambda: lambda_size < population_size" if @comma_or_plus == 'comma' and @lambda_size < @population_size
     init_elitism @population_size
+    @report.next    
     return @report    
   end
 

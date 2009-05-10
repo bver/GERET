@@ -9,7 +9,8 @@ class SteadyState < SingleObjective
     @replacement = @cfg['replacement_rank'].nil? ? 
                  @cfg.factory('replacement') : 
                  @cfg.factory('replacement', @cfg.factory('replacement_rank') ) 
-   
+
+    @report.next   
     return @report    
   end
 
