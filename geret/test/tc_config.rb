@@ -131,6 +131,13 @@ class TC_Config < Test::Unit::TestCase
     exception = assert_raise( RuntimeError ) { ConfigYaml.new 'test/data/not_hash.yaml' }
     assert_equal( "ConfigYaml: top level yaml object is not a hash", exception.message )
   end
+
+  def test_parse_options
+    args = ['file.txt', '--arg=12', '--no', '--opt-sub=xyz', 'file2.out', '--opt-sub2-sub3=z']
+    opts = ConfigYaml.parse_options args
+    assert_equal( { 'arg'=>'12', 'no'=>nil, 'opt'=>{'sub'=>'xyz', 'sub2'=>{'sub3'=>'z'} } }, opts )
+    assert_equal( ['file.txt', 'file2.out'], args )
+  end
   
 end
 

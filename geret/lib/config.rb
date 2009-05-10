@@ -48,5 +48,25 @@ class ConfigYaml < Hash
     instance
   end
 
+  def ConfigYaml.parse_options args
+    opts = {}
+    removal = []
+    args.each do |arg|
+      next unless /^--/ =~ arg
+      removal.push arg
+      key, value = arg.sub( /^--/, '' ).split('=')
+      hsh = opts
+      keys = key.split(/-/)
+      while keys.size > 1
+        k = keys.shift
+        hsh[k] = {} unless hsh.has_key? k
+        hsh = hsh[k]
+      end
+      hsh[ keys.last ] = value
+    end
+    args.delete_if { |arg| removal.include? arg }
+    opts
+  end
+
 end
 
