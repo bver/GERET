@@ -3,10 +3,12 @@
 
 require 'lib/geret'
 
-abort "use:\n #$0 config.yaml\n" unless ARGV.size==1
-
 begin
-  config = ConfigYaml.new ARGV[0]
+  argv = ARGV.clone
+  ConfigYaml.remove_options! ARGV
+  abort "use:\n #$0 [options] config.yaml\n" unless ARGV.size==1
+  config = ConfigYaml.new ARGV.first
+  config = ConfigYaml.parse_options( argv, config )
 
   algorithm = config.factory('algorithm')
   report = algorithm.setup config

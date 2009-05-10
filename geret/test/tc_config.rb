@@ -134,9 +134,17 @@ class TC_Config < Test::Unit::TestCase
 
   def test_parse_options
     args = ['file.txt', '--arg=12', '--no', '--opt-sub=xyz', 'file2.out', '--opt-sub2-sub3=z']
+    args_orig = args.clone
     opts = ConfigYaml.parse_options args
     assert_equal( { 'arg'=>'12', 'no'=>nil, 'opt'=>{'sub'=>'xyz', 'sub2'=>{'sub3'=>'z'} } }, opts )
+    assert_equal( args_orig, args )
+
+    ConfigYaml.remove_options! args
     assert_equal( ['file.txt', 'file2.out'], args )
+
+    orig = { 'opt'=>{'orig'=>'o'}, 'arg1'=>1 }
+    opts = ConfigYaml.parse_options( args_orig, orig )
+    assert_equal( { 'arg1'=>1, 'arg'=>'12', 'no'=>nil, 'opt'=>{'orig'=>'o', 'sub'=>'xyz', 'sub2'=>{'sub3'=>'z'} } }, opts )
   end
   
 end
