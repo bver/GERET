@@ -15,8 +15,8 @@ class SteadyState < SingleObjective
   end
 
   def step
+    @report.next    
     @report << "--------- step #{@steps += 1}"
-
     @report.report @population
 
     @cross, @injections, @mutate, @copies = 0, 0, 0, 0   
@@ -36,7 +36,6 @@ class SteadyState < SingleObjective
     @report['numof_copies'] << @copies
     @report['numof_mutations'] << @mutate
    
-    @report.next   
     return @report
   end
 

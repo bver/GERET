@@ -14,6 +14,7 @@ class Generational < SingleObjective
   end
 
   def step
+    @report.next    
     @report << "--------- step #{@steps += 1}" 
     @report.report @population 
 
@@ -34,7 +35,6 @@ class Generational < SingleObjective
 
     @population = new_population
 
-    @report.next   
     return @report
   end
 

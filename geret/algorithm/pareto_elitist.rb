@@ -26,6 +26,7 @@ class ParetoElitist < AlgorithmBase
   end
 
   def step
+    @report.next    
     @report << "--------- step #{@steps += 1}" 
    
     # parents come from elite and previous population:
@@ -63,7 +64,6 @@ class ParetoElitist < AlgorithmBase
     # reporting
     @report.report @elite.values
  
-    @report.next     
     return @report 
   end
 

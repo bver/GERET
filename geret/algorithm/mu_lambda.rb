@@ -17,6 +17,7 @@ class MuLambda < SingleObjective
   end
 
   def step
+    @report.next    
     @report << "--------- step #{@steps += 1}" 
     @report.report @population
 
@@ -42,7 +43,6 @@ class MuLambda < SingleObjective
     @report['numof_copies'] << @copies
     @report['numof_mutations'] << @mutate
 
-    @report.next   
     return @report
   end
 
