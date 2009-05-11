@@ -53,3 +53,10 @@ class ToyIndividualSingleObjective < Individual
  
 end
 
+class ToyIndividualMultiObjective < ToyIndividualSingleObjective
+  include Pareto
+  Pareto.minimize ToyIndividualMultiObjective, :used_length
+  Pareto.minimize ToyIndividualMultiObjective, :error
+end
+
+
