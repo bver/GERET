@@ -1,0 +1,25 @@
+
+I have observed a suspicious warning in 1.8.6.368 when evaluating NaN immediately after Infinity:
+
+$ ruby -vwe 'Math::exp Math::exp(42); eval "0.0/0.0"'
+ruby 1.8.6 (2009-03-31 patchlevel 368) [i686-linux]
+(eval):1: warning: Float 0.0 out of range
+
+Without reaching Infinity first, there is no such warning produced:
+
+$ ruby -vwe 'eval "0.0/0.0"'
+ruby 1.8.6 (2009-03-31 patchlevel 368) [i686-linux]
+
+It seems an older patchlevel of 1.8.6 has a different behavior:
+
+$ ruby -vwe 'Math::exp Math::exp(42); eval "0.0/0.0"'
+ruby 1.8.6 (2008-03-03 patchlevel 114) [i686-linux]
+
+The 1.9 version of ruby remains silent (which is imho correct) as well:
+
+$ ruby -vwe 'Math::exp Math::exp(42); eval "0.0/0.0"'
+ruby 1.9.1p0 (2009-01-30 revision 21907) [i686-linux]
+
+Am I missing something? 
+
+
