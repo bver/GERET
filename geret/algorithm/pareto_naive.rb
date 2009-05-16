@@ -33,7 +33,6 @@ class ParetoElitist < AlgorithmBase
     parents = []
     parents.concat @tourney.select_front( @population ) while parents.size < @population_size
     parents.concat @elite.values  
-    @report['parents_size'] << parents.size
     
     # exploration part of the population
     new_population = []
@@ -52,15 +51,18 @@ class ParetoElitist < AlgorithmBase
       new_individual = @cfg.factory( 'individual', @mapper, chromozome2 ) 
       new_population << new_individual if new_individual.valid?
     end
+
+    # next generation
     @population = new_population
 
     # update elite
-    ParetoTourney.front( @population ).each do |individual|
+    new_population.concat @elite.values
+    @elite = {}
+    ParetoTourney.front( new_population ).each do |individual|
       individual.shorten_chromozome = true
       @elite[ individual.genotype ] = individual
     end
-    @report['elite_size'] << @elite.size
-    
+
     # reporting
     @report.report @elite.values
  

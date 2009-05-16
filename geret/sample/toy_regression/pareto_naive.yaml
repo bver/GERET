@@ -3,7 +3,7 @@ algorithm:
   class: ParetoElitist
 
   population_size: 500
-  init_size: 100
+  init_size: 300
   mutation_probability: 0.00
  
   init:
@@ -23,7 +23,7 @@ mapper:
 
 tourney:
   class: ParetoTourney # cannot be changed
-  tournament_size: 5
+  tournament_size: 20 
 
 crossover:
   class: Crossover
