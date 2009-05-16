@@ -10,7 +10,21 @@ class Dominance
   end
 
   def rank_count population
-    dom = coreMatrix population
+    dom = population.map { |orig| DominanceHelper.new( orig, {}, {} ) }
+
+    dom.each_with_index do |individual1, index1|
+      for index2 in ( (index1+1) ... dom.size )
+        individual2 = dom[index2] 
+        case @comparison.call( individual1.original, individual2.original )
+        when 1
+          individual1.dominates[individual2.object_id]=nil
+          individual2.dominated_by[individual1.object_id]=nil         
+        when -1
+          individual2.dominates[individual1.object_id]=nil
+          individual1.dominated_by[individual2.object_id]=nil         
+        end
+      end
+    end
 
     if block_given?
       dom.each { |fields| yield( fields.original, fields.dominated_by.size, fields.dominates.size ) }
@@ -57,28 +71,6 @@ class Dominance
     raise "Dominance: possibly cyclic dominance found" unless nil == dom.detect {|i| i.depth == nil }
     return dom unless block_given?
     dom.each { |fields| yield( fields.original, fields.depth ) }
-  end
-
-  protected
-
-  def coreMatrix population
-    dom = population.map { |orig| DominanceHelper.new( orig, {}, {} ) }
-
-    dom.each_with_index do |individual1, index1|
-      for index2 in ( (index1+1) ... dom.size )
-        individual2 = dom[index2] 
-        case @comparison.call( individual1.original, individual2.original )
-        when 1
-          individual1.dominates[individual2.object_id]=nil
-          individual2.dominated_by[individual1.object_id]=nil         
-        when -1
-          individual2.dominates[individual1.object_id]=nil
-          individual1.dominated_by[individual2.object_id]=nil         
-        end
-      end
-    end
- 
-    dom
   end
 
 end
