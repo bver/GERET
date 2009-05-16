@@ -52,5 +52,13 @@ module Pareto
     Pareto.objective( user, symb, :maximize )   
   end
  
+  def Pareto.objective_symbols user
+    @@objectives.fetch( user.to_s ).map { |obj| obj.symb }
+  end
+
+  def objective_symbols
+    Pareto.objective_symbols self.class
+  end
+
 end
 

@@ -139,6 +139,11 @@ class TC_Pareto < Test::Unit::TestCase
  
   end
 
+  def test_pareto_objective_symbols
+    assert_equal( [:down, :up], Pareto.objective_symbols( BasicPair ) )
+    assert_equal( [:down, :up], BasicPair.new.objective_symbols )
+    assert_equal( [:data], SingleProcMin.new.objective_symbols )
+  end
  
 end
 
