@@ -47,10 +47,10 @@ class ParetoElitist < AlgorithmBase
       chromozome1, chromozome2 = @crossover.crossover( pipe.shift.genotype, pipe.shift.genotype ) 
       chromozome1 = @mutation.mutation chromozome1 if rand < @mutation_probability 
         
-      individual = @cfg.factory( 'individual', @mapper, chromozome1 ) 
-      new_population << individual if individual.valid?
-      individual = @cfg.factory( 'individual', @mapper, chromozome2 ) 
-      new_population << individual if individual.valid?
+      new_individual = @cfg.factory( 'individual', @mapper, chromozome1 ) 
+      new_population << new_individual if new_individual.valid?
+      new_individual = @cfg.factory( 'individual', @mapper, chromozome2 ) 
+      new_population << new_individual if new_individual.valid?
     end
     @population = new_population
 
