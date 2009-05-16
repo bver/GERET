@@ -145,5 +145,27 @@ class TC_Pareto < Test::Unit::TestCase
     assert_equal( [:data], SingleProcMin.new.objective_symbols )
   end
  
+  def test_objective_sorting
+    population = []
+    population << BasicPair.new( 42, -30 )
+    population << BasicPair.new( 30, -12 )
+    population << BasicPair.new(  5, -32 )
+    population << BasicPair.new( 25, -10 )
+
+    ups = Pareto.objective_sort( population, BasicPair, :up )
+    assert_equal( 4, ups.size ) 
+    assert_equal( population[0], ups[0] )
+    assert_equal( population[1], ups[1] )
+    assert_equal( population[3], ups[2] )   
+    assert_equal( population[2], ups[3] )
+
+    downs = Pareto.objective_sort( population, BasicPair, :down )
+    assert_equal( 4, downs.size ) 
+    assert_equal( population[2], downs[0] )
+    assert_equal( population[0], downs[1] )
+    assert_equal( population[1], downs[2] )   
+    assert_equal( population[3], downs[3] )
+  end
+
 end
 

@@ -60,5 +60,10 @@ module Pareto
     Pareto.objective_symbols self.class
   end
 
+  def Pareto.objective_sort( population, user, symb )
+    obj = @@objectives.fetch( user.to_s ).find {|obj| obj.symb == symb }  
+    population.sort { |a,b| obj.how.call( b.send(obj.symb), a.send(obj.symb) ) }
+  end
+
 end
 
