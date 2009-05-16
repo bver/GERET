@@ -2,7 +2,7 @@
 class Dominance
   DominanceHelper = Struct.new( 'DominanceHelper', :original, :dominated_by, :dominates )
   DominanceFields = Struct.new( 'DominanceFields', :original, :rank, :count )
-  DominanceDepth = Struct.new( 'DominanceDepth', :original, :depth )
+  DominanceDepth = Struct.new( 'DominanceDepth', :original, :depth, :counter, :dominates )
 
   def initialize &comparison
     comparison = proc { |a,b| a<=>b } if comparison.nil?
@@ -20,24 +20,43 @@ class Dominance
     end
   end
 
+  # see Deb's NGSA2 O(MN^2)
   def depth population
-    dom = coreMatrix population
-    result = dom.map { |f| DominanceDepth.new( f.original ) }
-    depth = 0
-    until dom.empty?
-      nondominated = dom.find_all { |f| f.dominated_by.empty? }
-      raise "Dominance: possibly cyclic dominance found" if nondominated.empty?
-      nondominated.each do |nd|
-        dom.delete nd
-        dom.each { |f| f.dominated_by.delete nd.object_id }
-        ndres = result.find { |f| nd.original == f.original }
-        ndres.depth = depth
+
+    dom = population.map { |orig| DominanceDepth.new( orig, nil, 0, {} ) }
+    dom.each do |p|
+      dom.each_with_index do |q,qindex|
+        next if p.original.object_id == q.original.object_id
+        case @comparison.call( p.original, q.original )
+        when 1
+          p.dominates[qindex]=nil
+        when -1
+          p.counter += 1 
+        end
       end
-      depth += 1
+      p.depth = 0 if p.counter == 0
     end
 
-    return result unless block_given?
-    result.each { |fields| yield( fields.original, fields.depth ) }
+    front = 0
+    nondominated = dom.find_all { |i| i.depth == front }
+    until nondominated.empty?
+      nextfront = []
+      nondominated.each do |p|
+        p.dominates.keys.each do |qindex|
+          q = dom[qindex]
+          q.counter -= 1
+          next unless q.counter == 0
+          q.depth = front + 1
+          nextfront.push q
+        end
+      end
+      front += 1
+      nondominated = nextfront
+    end
+
+    raise "Dominance: possibly cyclic dominance found" unless nil == dom.detect {|i| i.depth == nil }
+    return dom unless block_given?
+    dom.each { |fields| yield( fields.original, fields.depth ) }
   end
 
   protected
