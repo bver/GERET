@@ -60,9 +60,17 @@ class TC_Crowding < Test::Unit::TestCase
   end
 
   def test_empty_population
+    exception = assert_raise( RuntimeError ) { Crowding.distance [] }
+    assert_equal( "Crowding: cannot compute empty population", exception.message )
   end
 
   def test_population_size_1
+    population = [ CrowdPair.new( 2, 3 ) ]
+   
+    crowd = Crowding.distance population
+    assert_equal( 1, crowd.size )
+    assert_equal( population.first.object_id, crowd.first.original.object_id ) 
+    assert_equal( Crowding::Inf, crowd.first.cdist )
   end
   
 end
