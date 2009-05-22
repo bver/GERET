@@ -9,8 +9,10 @@ class CrowdPair < Struct.new( :x, :y )
   Pareto.maximize CrowdPair, :y 
 end
 
-class CrowdTriplet < CrowdPair
-  attr_accessor :distance
+class CrowdTriplet < Struct.new( :x, :y, :distance )
+  include Pareto
+  Pareto.minimize CrowdTriplet, :x
+  Pareto.maximize CrowdTriplet, :y 
 end
 
 class TC_Crowding < Test::Unit::TestCase
@@ -41,10 +43,12 @@ class TC_Crowding < Test::Unit::TestCase
 
   def test_block
     population = @population.map { |pair| CrowdTriplet.new( pair.x, pair.y )  }
-    Crowding.distance( population ) { |t,dist| t.distance = dist }
-    
+    res = Crowding.distance( population ) { |t,dist| t.distance = dist }
+    assert_equal( population.object_id, res.object_id )
+
     population.each_with_index do |c,i|
-      assert_equal( @population[i].object_id, c.object_id )
+      assert_equal( @population[i].x, c.x )
+      assert_equal( @population[i].y, c.y )    
     end
 
     assert_equal( Crowding::Inf, population[0].distance )
