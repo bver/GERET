@@ -267,7 +267,78 @@ class TC_Dominance < Test::Unit::TestCase
     assert_equal( 0, rankedPopulation[5].depth )
     assert_equal( nil, rankedPopulation[6].depth )   
     assert_equal( nil, rankedPopulation[7].depth )  
+
+    d.at_least = @population.size 
+    assert_equal( @population.size, d.at_least )
+    rankedPopulation = d.depth @population
+
+    @population.each_index { |i| assert_equal( @population[i].object_id, rankedPopulation[i].original.object_id ) }
+
+    assert_equal( 0, rankedPopulation[0].depth )
+    assert_equal( 1, rankedPopulation[1].depth )
+    assert_equal( 0, rankedPopulation[2].depth )
+    assert_equal( 2, rankedPopulation[3].depth )
+    assert_equal( 1, rankedPopulation[4].depth )
+    assert_equal( 0, rankedPopulation[5].depth )
+    assert_equal( 2, rankedPopulation[6].depth )   
+    assert_equal( 3, rankedPopulation[7].depth )  
   end
- 
+
+  def test_layers
+    d = Dominance.new
+    assert_equal( nil, d.at_least )
+
+    fronts = d.layers @population
+    assert_equal( 4, fronts.size )
+    assert_equal( 3, fronts[0].size )
+    assert( fronts[0].include? @population[0] )
+    assert( fronts[0].include? @population[2] )
+    assert( fronts[0].include? @population[5] )
+    assert_equal( 2, fronts[1].size )
+    assert( fronts[1].include? @population[1] )
+    assert( fronts[1].include? @population[4] )
+    assert_equal( 2, fronts[2].size )
+    assert( fronts[2].include? @population[3] )
+    assert( fronts[2].include? @population[6] )
+    assert_equal( [ @population[7] ], fronts[3] )
+   
+    d.at_least = 4
+    fronts = d.layers @population 
+
+    assert_equal( 2, fronts.size )
+    assert_equal( 3, fronts[0].size )
+    assert( fronts[0].include? @population[0] )
+    assert( fronts[0].include? @population[2] )
+    assert( fronts[0].include? @population[5] )
+    assert_equal( 2, fronts[1].size )
+    assert( fronts[1].include? @population[1] )
+    assert( fronts[1].include? @population[4] )
+
+    d.at_least = 2
+    fronts = d.layers @population 
+
+    assert_equal( 1, fronts.size )
+    assert_equal( 3, fronts[0].size )
+    assert( fronts[0].include? @population[0] )
+    assert( fronts[0].include? @population[2] )
+    assert( fronts[0].include? @population[5] )
+   
+    d.at_least = @population.size 
+    fronts = d.layers @population
+
+    assert_equal( 4, fronts.size )
+    assert_equal( 3, fronts[0].size )
+    assert( fronts[0].include? @population[0] )
+    assert( fronts[0].include? @population[2] )
+    assert( fronts[0].include? @population[5] )
+    assert_equal( 2, fronts[1].size )
+    assert( fronts[1].include? @population[1] )
+    assert( fronts[1].include? @population[4] )
+    assert_equal( 2, fronts[2].size )
+    assert( fronts[2].include? @population[3] )
+    assert( fronts[2].include? @population[6] )
+    assert_equal( [ @population[7] ], fronts[3] )
+  end
+  
 end
 

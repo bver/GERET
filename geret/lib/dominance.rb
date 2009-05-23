@@ -39,9 +39,17 @@ class Dominance
 
   # see Deb's NGSA2 O(MN^2)
   def depth population
-    dom = depth_core population
+    dom, front = depth_core population 
     return dom unless block_given?
     dom.each { |fields| yield( fields.original, fields.depth ) }
+  end
+
+  # see Deb's NGSA2 O(MN^2)
+  def layers population
+    dom, front = depth_core population    
+    front.map do |layer|
+      layer.map { |item| item.original }
+    end
   end
 
   protected
@@ -49,6 +57,7 @@ class Dominance
   def depth_core population
     classified = 0
     nondominated = []
+
     dom = population.map { |orig| DominanceDepth.new( orig, nil, 0, {} ) }
     dom.each do |p|
       dom.each_with_index do |q,qindex|
@@ -67,7 +76,8 @@ class Dominance
       end
     end
 
-    return dom if @at_least != nil and classified >= @at_least
+    fronts = [nondominated.clone]
+    return [dom,fronts] if @at_least != nil and classified >= @at_least
 
     front = 0
     until nondominated.empty?
@@ -84,11 +94,12 @@ class Dominance
       front += 1
       nondominated = nextfront
       classified += nondominated.size
-      return dom if @at_least != nil and classified >= @at_least     
+      fronts.push nondominated.clone unless nondominated.empty?    
+      return [dom,fronts] if @at_least != nil and classified >= @at_least     
     end
    
     raise "Dominance: possibly cyclic dominance found" unless nil == dom.detect {|i| i.depth == nil }
-    dom
+    [dom,fronts]
   end
 
 end
