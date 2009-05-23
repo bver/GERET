@@ -42,9 +42,8 @@ class TC_Crowding < Test::Unit::TestCase
   end
 
   def test_block
-    population = @population.map { |pair| CrowdTriplet.new( pair.x, pair.y )  }
-    res = Crowding.distance( population ) { |t,dist| t.distance = dist }
-    assert_equal( population.object_id, res.object_id )
+    population = Crowding.distance( @population ) { |t,dist| CrowdTriplet.new( t.x, t.y, dist ) }
+    assert_equal( @population.size, population.size )
 
     population.each_with_index do |c,i|
       assert_equal( @population[i].x, c.x )

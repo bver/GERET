@@ -18,12 +18,9 @@ class Crowding
       end
     end
 
-    if block_given?
-      result.each { |individual| yield( population[individual.index], individual.cdist ) }
-      return population
-    else
-      return result.sort { |a,b| a.index <=> b.index }
-    end 
+    result.sort! { |a,b| a.index <=> b.index }
+    return result unless block_given?
+    result.map { |individual| yield( population[individual.index], individual.cdist ) }
   end
 
 end
