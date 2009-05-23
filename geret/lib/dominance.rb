@@ -48,6 +48,7 @@ class Dominance
 
   def depth_core population
     classified = 0
+    nondominated = []
     dom = population.map { |orig| DominanceDepth.new( orig, nil, 0, {} ) }
     dom.each do |p|
       dom.each_with_index do |q,qindex|
@@ -62,13 +63,13 @@ class Dominance
       if p.counter == 0
         p.depth = 0       
         classified += 1
+        nondominated.push p
       end
     end
 
     return dom if @at_least != nil and classified >= @at_least
 
     front = 0
-    nondominated = dom.find_all { |i| i.depth == front }
     until nondominated.empty?
       nextfront = []
       nondominated.each do |p|
