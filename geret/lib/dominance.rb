@@ -7,7 +7,10 @@ class Dominance
   def initialize &comparison
     comparison = proc { |a,b| a<=>b } if comparison.nil?
     @comparison = comparison
+    @at_least = nil
   end
+
+  attr_accessor :at_least
 
   def rank_count population
     dom = population.map { |orig| DominanceHelper.new( orig, {}, {} ) }
@@ -36,7 +39,15 @@ class Dominance
 
   # see Deb's NGSA2 O(MN^2)
   def depth population
+    dom = depth_core population
+    return dom unless block_given?
+    dom.each { |fields| yield( fields.original, fields.depth ) }
+  end
 
+  protected
+
+  def depth_core population
+    classified = 0
     dom = population.map { |orig| DominanceDepth.new( orig, nil, 0, {} ) }
     dom.each do |p|
       dom.each_with_index do |q,qindex|
@@ -48,8 +59,13 @@ class Dominance
           p.counter += 1 
         end
       end
-      p.depth = 0 if p.counter == 0
+      if p.counter == 0
+        p.depth = 0       
+        classified += 1
+      end
     end
+
+    return dom if @at_least != nil and classified >= @at_least
 
     front = 0
     nondominated = dom.find_all { |i| i.depth == front }
@@ -66,11 +82,12 @@ class Dominance
       end
       front += 1
       nondominated = nextfront
+      classified += nondominated.size
+      return dom if @at_least != nil and classified >= @at_least     
     end
-
+   
     raise "Dominance: possibly cyclic dominance found" unless nil == dom.detect {|i| i.depth == nil }
-    return dom unless block_given?
-    dom.each { |fields| yield( fields.original, fields.depth ) }
+    dom
   end
 
 end

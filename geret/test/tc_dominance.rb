@@ -219,5 +219,55 @@ class TC_Dominance < Test::Unit::TestCase
     assert_equal( "Dominance: possibly cyclic dominance found", exception.message )
   end
 
+  def test_depth_max
+    d = Dominance.new
+    assert_equal( nil, d.at_least )
+    d.at_least = 4
+    assert_equal( 4, d.at_least )
+   
+    rankedPopulation = d.depth @population 
+
+    @population.each_index { |i| assert_equal( @population[i].object_id, rankedPopulation[i].original.object_id ) }
+
+    assert_equal( 0, rankedPopulation[0].depth )
+    assert_equal( 1, rankedPopulation[1].depth )
+    assert_equal( 0, rankedPopulation[2].depth )
+    assert_equal( nil, rankedPopulation[3].depth )
+    assert_equal( 1, rankedPopulation[4].depth )
+    assert_equal( 0, rankedPopulation[5].depth )
+    assert_equal( nil, rankedPopulation[6].depth )   
+    assert_equal( nil, rankedPopulation[7].depth )  
+
+    d.at_least = 6
+    assert_equal( 6, d.at_least )
+   
+    d.depth( @population2 ) { |individual,depth| individual.smartDepth = depth }
+
+    assert_equal( 0, @population2[0].smartDepth )
+    assert_equal( 1, @population2[1].smartDepth )
+    assert_equal( 0, @population2[2].smartDepth )
+    assert_equal( 2, @population2[3].smartDepth )
+    assert_equal( 1, @population2[4].smartDepth )
+    assert_equal( 0, @population2[5].smartDepth )
+    assert_equal( 2, @population2[6].smartDepth )   
+    assert_equal( nil, @population2[7].smartDepth )  
+
+    d.at_least = 2
+    assert_equal( 2, d.at_least )
+   
+    rankedPopulation = d.depth @population 
+
+    @population.each_index { |i| assert_equal( @population[i].object_id, rankedPopulation[i].original.object_id ) }
+
+    assert_equal( 0, rankedPopulation[0].depth )
+    assert_equal( nil, rankedPopulation[1].depth )
+    assert_equal( 0, rankedPopulation[2].depth )
+    assert_equal( nil, rankedPopulation[3].depth )
+    assert_equal( nil, rankedPopulation[4].depth )
+    assert_equal( 0, rankedPopulation[5].depth )
+    assert_equal( nil, rankedPopulation[6].depth )   
+    assert_equal( nil, rankedPopulation[7].depth )  
+  end
+ 
 end
 
