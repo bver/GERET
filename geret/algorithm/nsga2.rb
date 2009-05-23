@@ -1,0 +1,89 @@
+
+require 'algorithm/algorithm_base'
+
+class Nsga2Individual < Struct.new( :orig, :depth, :crowding )
+  def dominates? other
+    return true if self.depth < other.depth
+    return false if self.depth > other.depth
+    return self.crowding > other.crowding
+  end
+end
+
+class Nsga2 < AlgorithmBase
+
+  def setup config
+    super
+
+    initial_pop = @store.load
+    initial_pop = [] if initial_pop.nil?
+    @report << "loaded #{initial_pop.size} individuals"   
+    @report << "creating #{@population_size - initial_pop.size} individuals"
+    init_population( initial_pop, @population_size )
+
+    @population = []   
+    @dom_sort = Dominance.new
+    @dom_sort.layers( initial_population ).each do |layer|
+      front = Crowding.distance( layer ) { |individual, cdist| Nsga2Individual.new( individual, depth, cdist ) }
+      depth += 1
+      @population.concat front
+    end
+
+    @dom_sort.at_least = @population_size
+  
+    @report.next    
+    return @report 
+  end
+
+  def step
+    @report.next    
+    @report << "--------- step #{@steps += 1}"
+
+    combined_population = @population.map { |individual| individual.orig }
+    while combined_population.size < @population_size * 2
+      candidate1 = @population[ rand(@population.size) ] 
+      candidate2 = @population[ rand(@population.size) ]
+      parent1 = candidate1.dominates? candidate2 ? candidate1 : candidate2
+
+      if rand < @probabilities['mutation']
+        chromozome1 = @mutation.mutation parent1.orig.genotype 
+      else
+        candidate1 = @population[ rand(@population.size) ] 
+        candidate2 = @population[ rand(@population.size) ]
+        parent2 = candidate1.dominates? candidate2 ? candidate1 : candidate2
+
+        chromozome1, chromozome2 = @crossover.crossover( parent1.orig.genotype, parent2.orig.genotype )       
+        individual = @cfg.factory( 'individual', @mapper, chromozome2 )
+        combined_population << individual if individual.valid?
+      end
+
+      individual = @cfg.factory( 'individual', @mapper, chromozome1 )
+      combined_population << individual if individual.valid?
+    end
+
+    depth = 0
+    @population = []
+    @dom_sort.layers( combined_population ).each do |layer|
+      front = Crowding.distance( layer ) { |individual, cdist| Nsga2Individual.new( individual, depth, cdist ) }
+      depth += 1
+      empty_slots = @population_size - @population.size
+      if empty_slots > front.size 
+        @population.concat front
+      else
+        front.sort! { |a,b| b.crowding <=> a.crowding }
+        @population.concat front[0...empty_slots]
+      end
+    end
+
+    return @report
+  end
+
+  def teardown
+    @report << "--------- finished:"
+    @population.map! { |individual| individual.orig }   
+    @store.save @population
+    return @report   
+  end
+
+ 
+end
+ 
