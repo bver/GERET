@@ -5,7 +5,7 @@ algorithm:
   population_size: 500
 
   probabilities:
-    crossover: 0.9
+    crossover: 0.5
     mutation: 0.01
     injection: 0.9
 

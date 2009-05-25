@@ -90,10 +90,12 @@ class Nsga2 < AlgorithmBase
 
     depth = 0
     @population = []
+    front_report = []
     @dom_sort.layers( combined_population ).each do |layer|
       front = Crowding.distance( layer ) { |orig, cdist| Nsga2Individual.new( orig, depth, cdist ) }
       depth += 1
       empty_slots = @population_size - @population.size
+      front_report << front.size
       if empty_slots > front.size 
         @population.concat front
       else
@@ -101,6 +103,8 @@ class Nsga2 < AlgorithmBase
         @population.concat front[0...empty_slots]
       end
     end
+
+    @report['front_report'] << front_report.inspect
 
     return @report
   end
