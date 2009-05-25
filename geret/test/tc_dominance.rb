@@ -5,8 +5,8 @@ require 'lib/dominance'
 
 class Point2D < Struct.new( :x, :y )
   def <=> other
-    return 1 if (self.x >= other.x and self.y > other.y) or (self.x > other.x and self.y >= other.y)
-    return -1 if (self.x <= other.x and self.y < other.y) or (self.x < other.x and self.y <= other.y)
+    return -1 if (self.x >= other.x and self.y > other.y) or (self.x > other.x and self.y >= other.y)
+    return 1 if (self.x <= other.x and self.y < other.y) or (self.x < other.x and self.y <= other.y)
     return 0
   end
 
