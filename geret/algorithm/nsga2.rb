@@ -38,6 +38,8 @@ class Nsga2 < AlgorithmBase
     return @report 
   end
 
+  attr_accessor :inject
+
   def step
     @report.next    
     @report << "--------- step #{@steps += 1}"
@@ -46,26 +48,45 @@ class Nsga2 < AlgorithmBase
     
     @report.report combined_population # reporting
     
+    cross = injections = copies = mutate = 0
     while combined_population.size < @population_size * 2
       candidate1 = @population[ rand(@population.size) ] 
       candidate2 = @population[ rand(@population.size) ]
       parent1 = candidate1.dominates?( candidate2 ) ? candidate1 : candidate2
 
-      if rand < @probabilities['mutation']
-        chromozome1 = @mutation.mutation parent1.orig.genotype 
-      else
+      if rand < @probabilities['crossover']
         candidate1 = @population[ rand(@population.size) ] 
         candidate2 = @population[ rand(@population.size) ]
         parent2 = candidate1.dominates?( candidate2 ) ? candidate1 : candidate2
 
-        chromozome1, chromozome2 = @crossover.crossover( parent1.orig.genotype, parent2.orig.genotype )       
-        individual = @cfg.factory( 'individual', @mapper, chromozome2 )
+        chromozome, chromozome2 = @crossover.crossover( parent1.orig.genotype, parent2.orig.genotype )       
+        individual = @cfg.factory( 'individual', @mapper, chromozome2 ) #do not waste the 2nd offspring
         combined_population << individual if individual.valid?
+
+        cross += 1
+      else
+        if rand < @probabilities['injection']
+          chromozome = init_chromozome @inject       
+          injections += 1
+        else 
+          chromozome = parent1.orig.genotype.clone
+          copies += 1
+        end
       end
 
-      individual = @cfg.factory( 'individual', @mapper, chromozome1 )
+      if rand < @probabilities['mutation'] 
+        chromozome = @mutation.mutation chromozome      
+        mutate +=1
+      end
+
+      individual = @cfg.factory( 'individual', @mapper, chromozome )
       combined_population << individual if individual.valid?
     end
+
+    @report['numof_crossovers'] << cross   
+    @report['numof_injections'] << injections
+    @report['numof_copies'] << copies
+    @report['numof_mutations'] << mutate
 
     depth = 0
     @population = []

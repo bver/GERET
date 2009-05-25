@@ -5,12 +5,18 @@ algorithm:
   population_size: 500
 
   probabilities:
-    mutation: 0.1
- 
+    crossover: 0.9
+    mutation: 0.01
+    injection: 0.9
+
   init:
     method: ramped # grow or full or ramped
     sensible_depth: 7   
 
+  inject:
+    method: grow # grow or full or random
+    sensible_depth: 7   
+ 
   termination:
     max_steps: 1000
     on_individual: stop_cond
