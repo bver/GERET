@@ -59,4 +59,14 @@ class ToyIndividualMultiObjective < ToyIndividualSingleObjective
   Pareto.minimize ToyIndividualMultiObjective, :error
 end
 
+class ToyIndividualMOStrict < ToyIndividualMultiObjective
+  include Pareto
+  Pareto.minimize ToyIndividualMOStrict, :used_length
+  Pareto.minimize ToyIndividualMOStrict, :error
+
+  def valid?
+    @error != Inf
+  end
+end
+
 
