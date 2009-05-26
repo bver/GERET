@@ -2,7 +2,7 @@
 algorithm:
   class: Nsga2
 
-  population_size: 300
+  population_size: 400
 
   probabilities:
     crossover: 0.5
