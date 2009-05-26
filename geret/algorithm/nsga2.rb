@@ -7,9 +7,6 @@ class Nsga2Individual < Struct.new( :orig, :depth, :crowding )
     return false if self.depth > other.depth
     return self.crowding > other.crowding
   end
-  def stop_cond
-    orig.stopping_condition
-  end
 end
 
 class Nsga2 < AlgorithmBase
@@ -48,20 +45,25 @@ class Nsga2 < AlgorithmBase
     
     @report.report combined_population # reporting
     
+    uniq = {}
     cross = injections = copies = mutate = 0
-    while combined_population.size < @population_size * 2
+    while uniq.size < @population_size * 2  #combined_population.size < @population_size * 2
       candidate1 = @population[ rand(@population.size) ] 
       candidate2 = @population[ rand(@population.size) ]
+      next if !candidate1.dominates?( candidate2 ) and !candidate2.dominates?( candidate1 )     
       parent1 = candidate1.dominates?( candidate2 ) ? candidate1 : candidate2
 
       if rand < @probabilities['crossover']
         candidate1 = @population[ rand(@population.size) ] 
         candidate2 = @population[ rand(@population.size) ]
+        next if !candidate1.dominates?( candidate2 ) and !candidate2.dominates?( candidate1 )    
         parent2 = candidate1.dominates?( candidate2 ) ? candidate1 : candidate2
 
         chromozome, chromozome2 = @crossover.crossover( parent1.orig.genotype, parent2.orig.genotype )       
         individual = @cfg.factory( 'individual', @mapper, chromozome2 ) #do not waste the 2nd offspring
-        combined_population << individual if individual.valid?
+        #combined_population << individual if individual.valid?
+        individual.shorten_chromozome = true
+        uniq[ individual.genotype ] = individual if individual.valid?
 
         cross += 1
       else
@@ -80,8 +82,12 @@ class Nsga2 < AlgorithmBase
       end
 
       individual = @cfg.factory( 'individual', @mapper, chromozome )
-      combined_population << individual if individual.valid?
+      #combined_population << individual if individual.valid?
+      individual.shorten_chromozome = true
+      uniq[ individual.genotype ] = individual if individual.valid?
+
     end
+    combined_population.concat uniq.values
 
     @report['numof_crossovers'] << cross   
     @report['numof_injections'] << injections
@@ -104,7 +110,7 @@ class Nsga2 < AlgorithmBase
       end
     end
 
-    @report['front_report'] << front_report.inspect
+    @report['fronts_sizes'] << front_report.inspect
 
     return @report
   end
@@ -116,6 +122,21 @@ class Nsga2 < AlgorithmBase
     return @report   
   end
 
+  def finished?
+    population = @population.map { |individual| individual.orig }   
+    max_steps = @termination['max_steps']
+    on_individual = @termination['on_individual']
+
+    if ( not max_steps.nil? and @steps >= max_steps ) or
+       ( not on_individual.nil? and population.detect { |individual| individual.send on_individual } )
+ 
+      @report.report population
+
+      return true
+    end
+    return false
+  end
+ 
  
 end
  

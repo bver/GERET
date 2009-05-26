@@ -2,7 +2,7 @@
 algorithm:
   class: Nsga2
 
-  population_size: 500
+  population_size: 300
 
   probabilities:
     crossover: 0.5
@@ -19,7 +19,7 @@ algorithm:
  
   termination:
     max_steps: 1000
-    on_individual: stop_cond
+    on_individual: stopping_condition
 
 grammar:
   class: AbnfFile
