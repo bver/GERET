@@ -1,4 +1,6 @@
 
+require 'set'
+
 class Dominance
   DominanceHelper = Struct.new( 'DominanceHelper', :original, :dominated_by, :dominates )
   DominanceFields = Struct.new( 'DominanceFields', :original, :rank, :count )
@@ -13,18 +15,18 @@ class Dominance
   attr_accessor :at_least
 
   def rank_count population
-    dom = population.map { |orig| DominanceHelper.new( orig, {}, {} ) }
+    dom = population.map { |orig| DominanceHelper.new( orig, Set.new, Set.new ) }
 
     dom.each_with_index do |individual1, index1|
       for index2 in ( (index1+1) ... dom.size )
         individual2 = dom[index2] 
         case @comparison.call( individual1.original, individual2.original )
         when -1
-          individual1.dominates[individual2.object_id]=nil
-          individual2.dominated_by[individual1.object_id]=nil         
+          individual1.dominates.add(individual2.object_id)
+          individual2.dominated_by.add(individual1.object_id)
         when 1
-          individual2.dominates[individual1.object_id]=nil
-          individual1.dominated_by[individual2.object_id]=nil         
+          individual2.dominates.add(individual1.object_id)
+          individual1.dominated_by.add(individual2.object_id)         
         end
       end
     end
@@ -58,13 +60,13 @@ class Dominance
     classified = 0
     nondominated = []
 
-    dom = population.map { |orig| DominanceDepth.new( orig, nil, 0, {} ) }
+    dom = population.map { |orig| DominanceDepth.new( orig, nil, 0, Set.new ) }
     dom.each do |p|
       dom.each_with_index do |q,qindex|
         next if p.original.object_id == q.original.object_id
         case @comparison.call( p.original, q.original )
         when -1
-          p.dominates[qindex]=nil
+          p.dominates.add(qindex)
         when 1
           p.counter += 1 
         end
@@ -83,7 +85,7 @@ class Dominance
     until nondominated.empty?
       nextfront = []
       nondominated.each do |p|
-        p.dominates.keys.each do |qindex|
+        p.dominates.each do |qindex|
           q = dom[qindex]
           q.counter -= 1
           next unless q.counter == 0

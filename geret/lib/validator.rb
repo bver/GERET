@@ -1,4 +1,5 @@
 
+require 'set'
 require 'lib/grammar'
 
 module Mapper
@@ -91,9 +92,9 @@ module Mapper
   protected 
 
     def Validator.recursivity_over container
-      result = {}
-      container.each { |item| result[ item.recursivity ] = nil }
-      result.keys
+      result = Set.new
+      container.each { |item| result.add( item.recursivity ) }
+      result.to_a
     end
     
   end #Validator
