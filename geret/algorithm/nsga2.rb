@@ -2,11 +2,39 @@
 require 'algorithm/algorithm_base'
 
 class Nsga2Individual < Struct.new( :orig, :depth, :crowding )
+  @@uniq = {}
+  @@uniq.default = 0
+
+  def Nsga2Individual.uniq_clear 
+    @@uniq.clear
+  end
+
+  def initialize( orig, depth, crowding ) 
+    super
+    @@uniq[orig.phenotype] += 1
+  end
+
+  def uniq
+    @@uniq[orig.phenotype]
+  end
+
   def dominates? other
     return true if self.depth < other.depth
     return false if self.depth > other.depth
-    return self.crowding > other.crowding
+    return true if self.crowding > other.crowding
+    return false if self.crowding < other.crowding   
+    return self.uniq < other.uniq
   end
+  
+  def <=>(other)
+    if dominates? other
+      return -1
+    else
+      return 1 if other.dominates? self
+      return 0
+    end
+  end
+ 
 end
 
 class Nsga2 < AlgorithmBase
@@ -45,9 +73,8 @@ class Nsga2 < AlgorithmBase
     
     @report.report combined_population # reporting
     
-    uniq = {}
     cross = injections = copies = mutate = 0
-    while uniq.size < @population_size * 2  #combined_population.size < @population_size * 2
+    while combined_population.size < @population_size * 2
       candidate1 = @population[ rand(@population.size) ] 
       candidate2 = @population[ rand(@population.size) ]
       next if !candidate1.dominates?( candidate2 ) and !candidate2.dominates?( candidate1 )     
@@ -61,9 +88,7 @@ class Nsga2 < AlgorithmBase
 
         chromozome, chromozome2 = @crossover.crossover( parent1.orig.genotype, parent2.orig.genotype )       
         individual = @cfg.factory( 'individual', @mapper, chromozome2 ) #do not waste the 2nd offspring
-        #combined_population << individual if individual.valid?
-        individual.shorten_chromozome = true
-        uniq[ individual.genotype ] = individual if individual.valid?
+        combined_population << individual if individual.valid?
 
         cross += 1
       else
@@ -82,12 +107,9 @@ class Nsga2 < AlgorithmBase
       end
 
       individual = @cfg.factory( 'individual', @mapper, chromozome )
-      #combined_population << individual if individual.valid?
-      individual.shorten_chromozome = true
-      uniq[ individual.genotype ] = individual if individual.valid?
+      combined_population << individual if individual.valid?
 
     end
-    combined_population.concat uniq.values
 
     @report['numof_crossovers'] << cross   
     @report['numof_injections'] << injections
@@ -97,6 +119,7 @@ class Nsga2 < AlgorithmBase
     depth = 0
     @population = []
     front_report = []
+    Nsga2Individual.uniq_clear
     @dom_sort.layers( combined_population ).each do |layer|
       front = Crowding.distance( layer ) { |orig, cdist| Nsga2Individual.new( orig, depth, cdist ) }
       depth += 1
@@ -105,7 +128,7 @@ class Nsga2 < AlgorithmBase
       if empty_slots > front.size 
         @population.concat front
       else
-        front.sort! { |a,b| b.crowding <=> a.crowding }
+        front.sort! # { |a,b| b.crowding <=> a.crowding }
         @population.concat front[0...empty_slots]
       end
     end

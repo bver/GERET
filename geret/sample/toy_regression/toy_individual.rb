@@ -67,6 +67,10 @@ class ToyIndividualMOStrict < ToyIndividualMultiObjective
   def valid?
     @error != Inf
   end
+
+  def stopping_condition
+    (@error < 0.01) and (!self.used_length.nil?) and (self.used_length < 40)
+  end
 end
 
 

@@ -27,6 +27,20 @@ class ToyReport < ReportText
 
     best = population.min {|a,b| a.error <=> b.error }
     self['best_phenotype'] << best.phenotype
+
+    uniq = {}
+    count = {}
+    count.default = 0
+    population.each do |individual| 
+      uniq[individual.phenotype] = individual 
+      count[individual.phenotype] += 1
+    end
+    sorted = uniq.values.sort { |a,b| a.error <=> b.error }
+    text = "\n"
+    sorted[0...10].each { |i| text += "#{count[i.phenotype]}*[#{i.error}, #{i.used_length}] #{i.phenotype}\n" }
+    text += "..." if sorted.size > 10
+    self['phenotypes'] << text
+   
   end
 
 end
