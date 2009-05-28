@@ -1,9 +1,9 @@
 
 require 'algorithm/algorithm_base'
 
-class CroppingIndividual < Struct.new( :orig, :uniq )
+class CroppingIndividual < Struct.new( :orig )
   @@uniq = {}
-  @@uniq.default = 0
+  @@uniq.default = []
 
   def CroppingIndividual.uniq_clear 
     @@uniq.clear
@@ -11,20 +11,18 @@ class CroppingIndividual < Struct.new( :orig, :uniq )
 
   def initialize( orig ) 
     super
-    @@uniq[orig.phenotype] += 1
+    @@uniq[orig.phenotype] << orig
   end
 
-  def cache_uniq
-    self.uniq = @@uniq[orig.phenotype]
-  end
- 
-  def <=>(other)
-    if self.uniq < other.uniq
-      return -1
-    else
-      return 1 if other.uniq < self.uniq
-      return 0
+  def CroppingIndividual.slim max_size
+    current_size = @@uniq.values.flatten.size
+    while current_size > max_size 
+      candidate = @@uniq.values.max {|a,b| a.size <=> b.size }
+      return @@uniq.values.flatten if candidate.size == 1
+      candidate.pop
+      current_size -= 1
     end
+    @@uniq.values.flatten
   end
 end
 
@@ -64,8 +62,10 @@ class ParetoNaive < AlgorithmBase
    
     # parents come from the archive and the previous population:
     parents = []
-    parents.concat @tourney.select_front( @population ) while parents.size < @population_size
-    parents.concat @archive  
+    while parents.size < @population_size
+      parents.concat @tourney.select_front( @population ) 
+      parents.concat @archive
+    end
     
     # exploration part of the population
     new_population = []
@@ -90,10 +90,23 @@ class ParetoNaive < AlgorithmBase
 
     # update archive
     new_population.concat @archive
-    CroppingIndividual.uniq_clear 
-    cropping = ParetoTourney.front( new_population ).map { |individual| CroppingIndividual.new( individual ) }
-    cropping.each { |crop| crop.cache_uniq }
-    @archive = cropping.sort[ 0...@max_archive_size ].map { |crop| crop.orig }
+    uniq = {}
+    ParetoTourney.front( new_population ).map do |individual| 
+      slot = uniq.fetch( individual.phenotype, [] ) 
+      slot.push individual
+      uniq[individual.phenotype] = slot
+    end
+
+    # trim archive size, decimate duplicate phenotypes first
+    current_size = uniq.values.flatten.size
+    @report['size_before_truncation'] << current_size
+    while current_size > @max_archive_size 
+      candidate = uniq.values.max {|a,b| a.size <=> b.size }
+      break if candidate.size == 1
+      candidate.pop
+      current_size -= 1
+    end
+    @archive = uniq.values.flatten
 
     # reporting
     @report.report @archive
