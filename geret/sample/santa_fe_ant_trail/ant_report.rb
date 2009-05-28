@@ -25,7 +25,7 @@ class AntReport < ReportText
     self['gensize_max'] << max
     self['gensize_avg'] << avg
 
-    best = population.min # assuming individual_1 <=> individual_2
+    best = population.max { |a,b| a.fitness <=> b.fitness }
     self['best_phenotype'] << "\n#{best.phenotype}"
   end
 

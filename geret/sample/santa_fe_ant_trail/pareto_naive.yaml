@@ -2,9 +2,9 @@
 algorithm:
   class: ParetoNaive
 
-  population_size: 800
+  population_size: 500
   max_archive_size: 100
-  init_size: 200
+  init_size: 300
 
   mutation_probability: 0.00
  
@@ -41,8 +41,8 @@ store:
   filename: ./ant_pareto_naive.store
        
 report:
-  class: AntParetoReport
-  require: sample/santa_fe_ant_trail/ant_elite_report.rb
+  class: AntReport
+  require: sample/santa_fe_ant_trail/ant_report.rb
 
 individual:
   class: AntIndividualMultiObjective
