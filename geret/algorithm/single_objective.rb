@@ -20,12 +20,6 @@ class SingleObjective < AlgorithmBase
     return @report 
   end
 
-  def teardown
-    @report << "--------- finished:"
-    @store.save @population
-    return @report   
-  end
-
   protected
 
   def breed_individual selection 

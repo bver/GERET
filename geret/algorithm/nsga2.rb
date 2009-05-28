@@ -86,19 +86,13 @@ class Nsga2 < AlgorithmBase
     
     cross = injections = copies = mutate = 0
     while @population.size < @population_size * 2
-      candidate1 = parent_population[ rand(parent_population.size) ] 
-      candidate2 = parent_population[ rand(parent_population.size) ]
-      next if !candidate1.dominates?( candidate2 ) and !candidate2.dominates?( candidate1 )     
-      parent1 = candidate1.dominates?( candidate2 ) ? candidate1 : candidate2
+      parent1 = binary_tournament parent_population
 
       if rand < @probabilities['crossover']
-        candidate1 = parent_population[ rand(parent_population.size) ] 
-        candidate2 = parent_population[ rand(parent_population.size) ]
-        next if !candidate1.dominates?( candidate2 ) and !candidate2.dominates?( candidate1 )    
-        parent2 = candidate1.dominates?( candidate2 ) ? candidate1 : candidate2
+        parent2 = binary_tournament parent_population
 
         chromozome, chromozome2 = @crossover.crossover( parent1.orig.genotype, parent2.orig.genotype )       
-        individual = @cfg.factory( 'individual', @mapper, chromozome2 ) #do not waste the 2nd offspring
+        individual = @cfg.factory( 'individual', @mapper, chromozome2 ) 
         @population << individual if individual.valid?
 
         cross += 1
@@ -128,6 +122,17 @@ class Nsga2 < AlgorithmBase
     @report['numof_mutations'] << mutate
 
     return @report
+  end
+
+  protected 
+
+  def binary_tournament population
+    begin
+      candidate1 = population[ rand(population.size) ] 
+      candidate2 = population[ rand(population.size) ]
+    end while !candidate1.dominates?( candidate2 ) and !candidate2.dominates?( candidate1 )     
+
+    return candidate1.dominates?( candidate2 ) ? candidate1 : candidate2
   end
 
 end
