@@ -69,11 +69,5 @@ class ParetoElitist < AlgorithmBase
     return @report 
   end
 
-  def teardown
-    @report << "--------- finished:"
-    @store.save [ @population, @elite ]
-    return @report   
-  end
-
 end
 

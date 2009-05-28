@@ -133,11 +133,5 @@ class ParetoGPSimplified < AlgorithmBase
     return @report 
   end
 
-  def teardown
-    @report << "--------- finished:"
-    @store.save @archive
-    return @report   
-  end
-
 end
 
