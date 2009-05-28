@@ -1,6 +1,6 @@
 ---
 algorithm:
-  class: ParetoElitist
+  class: ParetoNaive
 
   population_size: 500
   init_size: 300

@@ -1,14 +1,14 @@
 
 require 'algorithm/algorithm_base'
 
-class ParetoElitist < AlgorithmBase
+class ParetoNaive < AlgorithmBase
  
   attr_accessor :init_size, :mutation_probability
 
   def setup config
     super
   
-    raise "ParetoElitist: init_size >= population_size" if @init_size >= @population_size
+    raise "ParetoNaive: init_size >= population_size" if @init_size >= @population_size
 
     @tourney = @cfg.factory( 'tourney' )
 
