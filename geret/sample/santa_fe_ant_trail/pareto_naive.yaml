@@ -3,7 +3,9 @@ algorithm:
   class: ParetoNaive
 
   population_size: 800
+  max_archive_size: 100
   init_size: 200
+
   mutation_probability: 0.00
  
   init:
@@ -36,7 +38,7 @@ mutation:
 
 store:
   class: Store
-  filename: ./ant_trail.store
+  filename: ./ant_pareto_naive.store
        
 report:
   class: AntParetoReport

@@ -3,7 +3,9 @@ algorithm:
   class: ParetoNaive
 
   population_size: 500
+  max_archive_size: 100
   init_size: 300
+  
   mutation_probability: 0.00
  
   init:
@@ -36,11 +38,11 @@ mutation:
 
 store:
   class: Store
-  filename: ./toy_multiobjective.store
+  filename: ./toy_pareto_naive.store
        
 report:
-  class: ToyParetoReport
-  require: sample/toy_regression/toy_elite_report.rb
+  class: ToyReport
+  require: sample/toy_regression/toy_report.rb
 
 individual:
   class: ToyIndividualMultiObjective
