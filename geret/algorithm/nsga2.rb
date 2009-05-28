@@ -1,7 +1,7 @@
 
 require 'algorithm/algorithm_base'
 
-class Nsga2Individual < Struct.new( :orig, :depth, :crowding )
+class Nsga2Individual < Struct.new( :orig, :depth, :crowding, :uniq )
   @@uniq = {}
   @@uniq.default = 0
 
@@ -14,8 +14,8 @@ class Nsga2Individual < Struct.new( :orig, :depth, :crowding )
     @@uniq[orig.phenotype] += 1
   end
 
-  def uniq
-    @@uniq[orig.phenotype]
+  def cache_uniq
+    self.uniq = @@uniq[orig.phenotype]
   end
 
   def dominates? other
@@ -67,6 +67,7 @@ class Nsga2 < AlgorithmBase
     Nsga2Individual.uniq_clear
     @dom_sort.layers( @population ).each do |layer|
       front = Crowding.distance( layer ) { |orig, cdist| Nsga2Individual.new( orig, depth, cdist ) }
+      front.each { |individual| individual.cache_uniq }     
       depth += 1
       empty_slots = @population_size - parent_population.size
       front_report << front.size
