@@ -28,7 +28,7 @@ end
 
 class ParetoNaive < AlgorithmBase
  
-  attr_accessor :init_size, :mutation_probability, :max_archive_size
+  attr_accessor :init_size, :mutation_probability, :max_archive_size, :shorten_archive_individual 
 
   def setup config
     super
@@ -91,7 +91,8 @@ class ParetoNaive < AlgorithmBase
     # update archive
     new_population.concat @archive
     uniq = {}
-    ParetoTourney.front( new_population ).map do |individual| 
+    ParetoTourney.front( new_population ).map do |individual|
+      individual.shorten_chromozome = @shorten_archive_individual
       slot = uniq.fetch( individual.phenotype, [] ) 
       slot.push individual
       uniq[individual.phenotype] = slot

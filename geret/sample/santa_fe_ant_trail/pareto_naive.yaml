@@ -7,6 +7,7 @@ algorithm:
   init_size: 300
 
   mutation_probability: 0.00
+  shorten_archive_individual: true 
  
   init:
     method: ramped # grow or full or ramped

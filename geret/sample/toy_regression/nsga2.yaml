@@ -9,6 +9,8 @@ algorithm:
     mutation: 0.01
     injection: 0.9
 
+  shorten_individual: true
+
   init:
     method: ramped # grow or full or ramped
     sensible_depth: 7   

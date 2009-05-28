@@ -55,7 +55,7 @@ class Nsga2 < AlgorithmBase
     return @report 
   end
 
-  attr_accessor :inject
+  attr_accessor :inject, :shorten_individual 
 
   def step
     @report.next    
@@ -81,7 +81,10 @@ class Nsga2 < AlgorithmBase
 
     @report['fronts_sizes'] << front_report.inspect
 
-    @population = parent_population.map { |individual| individual.orig }
+    @population = parent_population.map do |individual| 
+      individual.orig.shorten_chromozome = @shorten_individual
+      individual.orig
+    end
     
     @report.report @population # reporting
     
