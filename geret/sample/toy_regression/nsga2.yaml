@@ -2,7 +2,7 @@
 algorithm:
   class: Nsga2
 
-  population_size: 100
+  population_size: 300
 
   probabilities:
     crossover: 0.5
@@ -18,7 +18,7 @@ algorithm:
     sensible_depth: 7   
  
   termination:
-    max_steps: 10
+    max_steps: 1000
     on_individual: stopping_condition
 
 grammar:
