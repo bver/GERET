@@ -61,14 +61,16 @@ class ParetoGPSimplified < AlgorithmBase
     end
     @population = new_population
  
-    fits = @population.map { |individual| individual.fitness }
-    min, max, avg, n = Utils.statistics( fits )
-    @report['pop_fitness_max'] << max
-    @report['pop_fitness_avg'] << avg
- 
-    # consolidation
+    # keep population extremes
+    @population.first.objective_symbols.each do |obj|
+      sorted = Pareto.objective_sort( @population, @population.first.class, obj )
+      @archive.push sorted.first
+      @report['pop_best_' + obj.to_s] << sorted.first.send(obj)
+    end
+
     if @generation == @generations_per_cascade 
 
+     # archive merging     
       uniq = {}
       @archive.concat @population
       ParetoTourney.front( @archive ).map do |individual|
