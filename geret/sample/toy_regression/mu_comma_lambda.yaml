@@ -49,7 +49,8 @@ elite_rank:
          
 crossover:
   class: Crossover
-  margin: 1
+  margin: 2 #1
+  step: 2
 
 mutation:
   class: Mutation
@@ -57,7 +58,7 @@ mutation:
 
 store:
   class: Store
-  filename: ./toy_regression.store
+  filename: ./toy_mu_comma_lambda.store
 
 report:
   class: ToyReport

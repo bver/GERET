@@ -1,32 +1,34 @@
 ---
 algorithm:
-  class: ParetoNaive
+  class: Nsga2
 
-  population_size: 500
-  max_archive_size: 100
-  init_size: 300
+  population_size: 300
 
-  mutation_probability: 0.00
-  shorten_archive_individual: true 
- 
+  probabilities:
+    crossover: 0.5
+    mutation: 0.01
+    injection: 0.9
+
+  shorten_individual: true
+
   init:
     method: ramped # grow or full or ramped
     sensible_depth: 7   
 
+  inject:
+    method: grow # grow or full or random
+    sensible_depth: 7   
+ 
   termination:
     max_steps: 1000
-    on_individual: :stopping_condition
- 
+    on_individual: stopping_condition
+
 grammar:
   class: AbnfFile
   filename: sample/santa_fe_ant_trail/grammar.abnf
 
 mapper:
   class: DepthLocus
-
-tourney:
-  class: ParetoTourney # cannot be changed
-  tournament_size: 5
 
 crossover:
   class: Crossover
@@ -39,8 +41,8 @@ mutation:
 
 store:
   class: Store
-  filename: ./ant_pareto_naive.store
-       
+  filename: ./ant_nsga2.store
+ 
 report:
   class: AntReport
   require: sample/santa_fe_ant_trail/ant_report.rb
@@ -49,4 +51,4 @@ individual:
   class: AntIndividualMultiObjective
   require: sample/santa_fe_ant_trail/ant_individual.rb
   shorten_chromozome: false 
-         
+ 

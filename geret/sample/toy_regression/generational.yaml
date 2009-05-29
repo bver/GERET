@@ -55,7 +55,7 @@ mutation:
 
 store:
   class: Store
-  filename: ./toy_regression.store
+  filename: ./toy_generational.store
 
 report:
   class: ToyReport

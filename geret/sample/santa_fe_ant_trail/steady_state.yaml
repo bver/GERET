@@ -58,7 +58,7 @@ mutation:
 
 store:
   class: Store
-  filename: ./ant_trail.store
+  filename: ./ant_steady_state.store
 
 report:
   class: AntReport

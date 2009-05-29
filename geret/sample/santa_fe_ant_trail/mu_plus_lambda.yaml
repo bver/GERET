@@ -1,0 +1,65 @@
+---
+algorithm:
+  class: MuLambda
+
+  comma_or_plus: plus
+
+  population_size: 500
+  lambda_size: 100
+  elite_size: 10 
+
+  probabilities:
+    crossover: 0.9
+    mutation: 0.01
+    injection: 0.9
+
+  termination:
+    max_steps: 2000
+    on_individual: :stopping_condition
+    
+  init:
+    method: ramped # grow or full or ramped
+    sensible_depth: 7   
+
+  inject:
+    method: grow # grow or full or random
+    sensible_depth: 7   
+ 
+grammar:
+  class: AbnfFile
+  filename: sample/santa_fe_ant_trail/grammar.abnf
+
+mapper:
+  class: DepthLocus
+
+selection:
+  class: RankSampling 
+selection_rank: #optional
+  class: Ranking
+
+elite_rank:
+  class: Ranking
+
+crossover:
+  class: Crossover
+  margin: 2 #1
+  step: 2
+
+mutation:
+  class: Mutation
+  magnitude: 16
+
+store:
+  class: Store
+  filename: ./ant_mu_plus_lambda.store
+ 
+report:
+  class: AntReport
+  require: sample/santa_fe_ant_trail/ant_report.rb
+
+individual:
+  class: AntIndividualSingleObjective
+  require: sample/santa_fe_ant_trail/ant_individual.rb
+  shorten_chromozome: true 
+         
+ 
