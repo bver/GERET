@@ -63,9 +63,9 @@ class ParetoGPSimplified < AlgorithmBase
  
     # keep population extremes
     @population.first.objective_symbols.each do |obj|
-      sorted = Pareto.objective_sort( @population, @population.first.class, obj )
-      @archive.push sorted.first
-      @report['pop_best_' + obj.to_s] << sorted.first.send(obj)
+      best = Pareto.objective_best( @population, @population.first.class, obj )
+      @archive.push best
+      @report['pop_best_' + obj.to_s] << best.send(obj)
     end
 
     if @generation == @generations_per_cascade 
@@ -73,11 +73,11 @@ class ParetoGPSimplified < AlgorithmBase
      # archive merging     
       uniq = {}
       @archive.concat @population
-      ParetoTourney.front( @archive ).map do |individual|
-        individual.shorten_chromozome = @shorten_archive_individual
-        slot = uniq.fetch( individual.phenotype, [] ) 
-        slot.push individual
-        uniq[individual.phenotype] = slot
+      ParetoTourney.front( @archive ).map do |ind|
+        ind.shorten_chromozome = @shorten_archive_individual
+        slot = uniq.fetch( ind.phenotype, [] ) 
+        slot.push ind
+        uniq[ind.phenotype] = slot
       end
 
       # trim archive size, decimate duplicate phenotypes first

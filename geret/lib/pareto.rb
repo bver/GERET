@@ -65,5 +65,10 @@ module Pareto
     population.sort { |a,b| objective.how.call( b.send(objective.symb), a.send(objective.symb) ) }
   end
 
+  def Pareto.objective_best( population, user, symb )
+    objective = @@objectives.fetch( user.to_s ).find { |obj| obj.symb == symb }  
+    population.min { |a,b| objective.how.call( b.send(objective.symb), a.send(objective.symb) ) }
+  end
+
 end
 

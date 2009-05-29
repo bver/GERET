@@ -167,5 +167,19 @@ class TC_Pareto < Test::Unit::TestCase
     assert_equal( population[3], downs[3] )
   end
 
+  def test_objective_best
+    population = []
+    population << BasicPair.new( 42, -30 )
+    population << BasicPair.new( 30, -12 )
+    population << BasicPair.new(  5, -32 )
+    population << BasicPair.new( 25, -10 )
+
+    up = Pareto.objective_best( population, BasicPair, :up )
+    assert_equal( population[0], up )
+
+    down = Pareto.objective_best( population, BasicPair, :down )
+    assert_equal( population[2], down )
+  end
+
 end
 
