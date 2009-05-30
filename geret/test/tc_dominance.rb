@@ -19,6 +19,12 @@ class Cyclic <  Struct.new( :id, :dominated )
   end
 end
 
+class WeakDominance < Struct.new( :x )
+  def dominates? other
+    self.x >= other.x
+  end
+end
+
 class TC_Dominance < Test::Unit::TestCase
 
   def setup
@@ -292,6 +298,40 @@ class TC_Dominance < Test::Unit::TestCase
     assert( fronts[2].include?( @population[6] ))
     assert_equal( [ @population[7] ], fronts[3] )
   end
-  
+
+  def test_weak_dominance
+    a = WeakDominance.new( 1 )   
+    b = WeakDominance.new( 2 ) 
+    c = WeakDominance.new( 2 )   
+    d = WeakDominance.new( 3 )   
+
+    assert( d.dominates?( b ) )
+    assert( d.dominates?( c ) )   
+    assert( b.dominates?( a ) )
+    assert( c.dominates?( a ) )
+    assert( b.dominates?( c ) )
+    assert( c.dominates?( b ) )
+    assert( a.dominates?( a ) )
+    assert( !a.dominates?( b ) )
+    assert( !a.dominates?( c ) )   
+    assert( !b.dominates?( d ) )
+    assert( !c.dominates?( d ) )  
+
+    population = [ a, b, c, d ]
+
+    d = Dominance.new  
+    rankedPopulation = d.rank_count population   
+
+    assert_equal( 4, rankedPopulation[0].rank )
+    assert_equal( 3, rankedPopulation[1].rank )
+    assert_equal( 3, rankedPopulation[2].rank )
+    assert_equal( 1, rankedPopulation[3].rank )
+
+    assert_equal( 1, rankedPopulation[0].count )
+    assert_equal( 3, rankedPopulation[1].count )
+    assert_equal( 3, rankedPopulation[2].count )
+    assert_equal( 4, rankedPopulation[3].count )
+  end
+
 end
 
