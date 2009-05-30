@@ -1,11 +1,13 @@
 
+require 'algorithm/algorithm_base'
 require 'algorithm/elitism'
-require 'algorithm/single_objective'
+require 'algorithm/breed_individual'
 
-class MuLambda < SingleObjective
+class MuLambda < AlgorithmBase
 
   include Elitism
-
+  include BreedIndividual
+  
   attr_accessor :comma_or_plus, :lambda_size
 
   def setup config

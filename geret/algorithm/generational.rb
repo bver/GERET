@@ -1,10 +1,12 @@
 
+require 'algorithm/algorithm_base'
 require 'algorithm/elitism'
-require 'algorithm/single_objective'
+require 'algorithm/breed_individual'
 
-class Generational < SingleObjective
+class Generational < AlgorithmBase
 
   include Elitism
+  include BreedIndividual 
 
   def setup config
     super

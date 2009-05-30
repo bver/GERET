@@ -1,9 +1,7 @@
 
-require 'algorithm/algorithm_base'
-
-class SingleObjective < AlgorithmBase
+module BreedIndividual 
   
-  attr_accessor :inject, :probabilities
+  attr_accessor :inject
 
   def setup config
     super

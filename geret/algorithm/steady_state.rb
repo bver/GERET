@@ -1,8 +1,11 @@
 
-require 'algorithm/single_objective'
+require 'algorithm/algorithm_base'
+require 'algorithm/breed_individual'
 
-class SteadyState < SingleObjective
+class SteadyState < AlgorithmBase
 
+  include BreedIndividual 
+ 
   def setup config
     super
 
