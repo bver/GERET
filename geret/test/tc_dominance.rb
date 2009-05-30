@@ -13,7 +13,6 @@ class SmartPoint < Point2D
   attr_accessor :smartRank, :smartCount, :smartDepth
 end
 
-
 class Cyclic <  Struct.new( :id, :dominated )
   def dominates? other
     other.id == self.dominated

@@ -6,7 +6,7 @@ class Dominance
   DominanceFields = Struct.new( 'DominanceFields', :original, :rank, :count )
   DominanceDepth = Struct.new( 'DominanceDepth', :original, :depth, :counter, :dominates )
 
-  def initialize &comparison
+  def initialize
     @at_least = nil
   end
 
