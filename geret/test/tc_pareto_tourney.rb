@@ -88,24 +88,6 @@ class TC_ParetoTourney < Test::Unit::TestCase
     assert_equal( "ParetoTourney: empty population", exception.message )
   end
 
-  def test_front
-    front = ParetoTourney.front @population
-    assert_equal( 3, front.size )
-    assert_equal( 'a', front[0].id )   
-    assert_equal( 'c', front[1].id )
-    assert_equal( 'f', front[2].id )   
-  end
-
-  def test_dominated
-    dominated = ParetoTourney.dominated @population
-    assert_equal( 5, dominated.size )
-    assert_equal( 'b', dominated[0].id )   
-    assert_equal( 'd', dominated[1].id )
-    assert_equal( 'e', dominated[2].id )      
-    assert_equal( 'g', dominated[3].id )   
-    assert_equal( 'h', dominated[4].id )      
-  end
-
   def test_select_dominated
     pt = ParetoTourney.new 4
     pt.random = MockRand.new [{8=>6}, {7=>3}, {6=>2}, {5=>0}] # g d c a
@@ -120,13 +102,7 @@ class TC_ParetoTourney < Test::Unit::TestCase
     assert_equal( 'h', winners[0].id )
     assert_equal( 'g', winners[1].id )   
   end
- 
-  def test_dominated_bugfix
-    orig_size = @population.size 
-    dominated = ParetoTourney.dominated @population
-    assert_equal( orig_size, @population.size )
-  end
- 
+
 end
 
 

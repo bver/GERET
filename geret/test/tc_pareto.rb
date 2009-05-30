@@ -40,6 +40,18 @@ end
 
 class TC_Pareto < Test::Unit::TestCase
 
+  def setup
+    @population = []
+    @population << PointPT.new( 'a', 2, 6 ) # rank 0
+    @population << PointPT.new( 'b', 3, 5 ) # rank 1    
+    @population << PointPT.new( 'c', 5, 5 ) # rank 0
+    @population << PointPT.new( 'd', 1, 4 ) # rank 4
+    @population << PointPT.new( 'e', 4, 4 ) # rank 1
+    @population << PointPT.new( 'f', 7, 3 ) # rank 0
+    @population << PointPT.new( 'g', 4, 2 ) # rank 3
+    @population << PointPT.new( 'h', 3, 1 ) # rank 5 
+  end
+ 
   def test_basic_max
     
     i1 = SingleMax.new 42
@@ -181,5 +193,29 @@ class TC_Pareto < Test::Unit::TestCase
     assert_equal( population[2], down )
   end
 
+  def test_nondominated
+    front = Pareto.nondominated @population
+    assert_equal( 3, front.size )
+    assert_equal( 'a', front[0].id )   
+    assert_equal( 'c', front[1].id )
+    assert_equal( 'f', front[2].id )   
+  end
+
+  def test_dominated
+    dominated = Pareto.dominated @population
+    assert_equal( 5, dominated.size )
+    assert_equal( 'b', dominated[0].id )   
+    assert_equal( 'd', dominated[1].id )
+    assert_equal( 'e', dominated[2].id )      
+    assert_equal( 'g', dominated[3].id )   
+    assert_equal( 'h', dominated[4].id )      
+  end
+
+  def test_dominated_bugfix
+    orig_size = @population.size 
+    dominated = Pareto.dominated @population
+    assert_equal( orig_size, @population.size )
+  end
+ 
 end
 

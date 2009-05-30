@@ -70,5 +70,31 @@ module Pareto
     population.min { |a,b| objective.how.call( b.send(objective.symb), a.send(objective.symb) ) }
   end
 
+  def Pareto.nondominated selection
+      front = []
+      selection.each do |individual|
+
+        next if front.detect { |f| f.dominates? individual }
+
+        removal = []
+        front.each do |f|
+          next unless individual.dominates? f
+          removal.push f
+        end
+        removal.each { |r| front.delete r }
+        
+        front.push individual
+      end
+
+      front
+  end
+
+  def Pareto.dominated population
+      selection = population.clone
+      ids = Pareto.nondominated( selection ).map { |dominated| dominated.object_id }
+      selection.delete_if { |individual| ids.include? individual.object_id }
+      selection
+  end
+
 end
 

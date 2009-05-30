@@ -73,7 +73,7 @@ class ParetoGPSimplified < AlgorithmBase
      # archive merging     
       uniq = {}
       @archive.concat @population
-      ParetoTourney.front( @archive ).map do |ind|
+      Pareto.nondominated( @archive ).map do |ind|
         ind.shorten_chromozome = @shorten_archive_individual
         slot = uniq.fetch( ind.phenotype, [] ) 
         slot.push ind

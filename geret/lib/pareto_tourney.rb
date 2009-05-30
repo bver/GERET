@@ -10,39 +10,13 @@ module Selection
     attr_accessor :random, :population, :tournament_size 
 
     def select_front population=self.population
-      ParetoTourney.front( random_select( population ) )
+      Pareto.nondominated( random_select( population ) )
     end
 
     def select_dominated population=self.population
-      ParetoTourney.dominated( random_select( population ) )
+      Pareto.dominated( random_select( population ) )
     end
    
-    def ParetoTourney.front selection
-      front = []
-      selection.each do |individual|
-
-        next if front.detect { |f| f.dominates? individual }
-
-        removal = []
-        front.each do |f|
-          next unless individual.dominates? f
-          removal.push f
-        end
-        removal.each { |r| front.delete r }
-        
-        front.push individual
-      end
-
-      front
-    end
-
-    def ParetoTourney.dominated population
-      selection = population.clone
-      ids = ParetoTourney.front( selection ).map { |dominated| dominated.object_id }
-      selection.delete_if { |individual| ids.include? individual.object_id }
-      selection
-    end
-
     protected
 
     def random_select population

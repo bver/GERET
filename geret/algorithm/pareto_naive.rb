@@ -91,7 +91,7 @@ class ParetoNaive < AlgorithmBase
     # update archive
     new_population.concat @archive
     uniq = {}
-    ParetoTourney.front( new_population ).map do |individual|
+    Pareto.nondominated( new_population ).map do |individual|
       individual.shorten_chromozome = @shorten_archive_individual
       slot = uniq.fetch( individual.phenotype, [] ) 
       slot.push individual
