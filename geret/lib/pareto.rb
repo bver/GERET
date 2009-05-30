@@ -18,7 +18,11 @@ module Pareto
     objs.push Objective.new( symb, how )
     @@objectives[user.to_s] = objs
   end
- 
+
+  def dominates? other
+    dominates_core( other, false )
+  end
+  
   def <=>(other)
     if dominates? other
       return -1
@@ -26,22 +30,6 @@ module Pareto
       return 1 if other.dominates? self
       return 0
     end
-  end
-
-  def dominates? other
-    domination = false
-    @@objectives.fetch(self.class.to_s).each do |obj| 
-      first = send obj.symb
-      second = other.send obj.symb 
-
-      case obj.how.call( first, second )
-      when 1
-        domination = true
-      when -1
-        return false
-      end
-    end
-    return domination
   end
 
   def Pareto.minimize( user, symb ) 
@@ -94,6 +82,42 @@ module Pareto
       ids = Pareto.nondominated( selection ).map { |dominated| dominated.object_id }
       selection.delete_if { |individual| ids.include? individual.object_id }
       selection
+  end
+
+  protected
+
+  def dominates_core( other, domination )
+    @@objectives.fetch(self.class.to_s).each do |obj| 
+      first = send obj.symb
+      second = other.send obj.symb 
+
+      case obj.how.call( first, second )
+      when 1
+        domination = true
+      when -1
+        return false
+      end
+    end
+    return domination
+  end
+
+end
+
+module WeakPareto
+  include Pareto
+
+  def dominates? other
+    dominates_core( other, true )
+  end
+ 
+  def <=>(other)
+    if dominates? other
+      return 0 if other.dominates? self
+      return -1
+    else
+      return 1 if other.dominates? self
+      return 0
+    end
   end
 
 end

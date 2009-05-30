@@ -8,6 +8,11 @@ class SingleMax < Struct.new( :value )
   Pareto.objective SingleMax, :value, :maximize   
 end
 
+class SingleMaxWeak < Struct.new( :value )
+  include WeakPareto
+  Pareto.objective SingleMaxWeak, :value, :maximize   
+end
+
 class SingleMin
   include Pareto
 
@@ -25,6 +30,12 @@ class BasicPair < Struct.new( :up, :down )
   include Pareto
   Pareto.objective BasicPair, :down, :minimize
   Pareto.objective BasicPair, :up, :maximize 
+end
+
+class BasicPairWeak < Struct.new( :up, :down )
+  include WeakPareto
+  Pareto.objective BasicPairWeak, :down, :minimize
+  Pareto.objective BasicPairWeak, :up, :maximize 
 end
 
 class SingleProcMin < Struct.new( :data )
@@ -110,6 +121,8 @@ class TC_Pareto < Test::Unit::TestCase
     i5 = BasicPair.new 30, -30   
     assert_equal( 0, i5 <=> i4 )
     assert_equal( 0, i4 <=> i5 )
+    assert_equal( false, i5.dominates?( i4 ) )
+    assert_equal( false, i4.dominates?( i5 ) ) 
  
   end
 
@@ -215,6 +228,39 @@ class TC_Pareto < Test::Unit::TestCase
     orig_size = @population.size 
     dominated = Pareto.dominated @population
     assert_equal( orig_size, @population.size )
+  end
+
+  def test_basic_max_weak
+    
+    i1 = SingleMaxWeak.new 42
+    i2 = SingleMaxWeak.new 42   
+    i3 = SingleMaxWeak.new 40  
+
+    assert_equal( true, i1.dominates?( i2 ) )
+    assert_equal( true, i2.dominates?( i1 ) )
+    assert_equal( true, i2.dominates?( i3 ) )
+    assert_equal( false, i3.dominates?( i2 ) )
+
+    assert_equal( 0, i1 <=> i2 )
+    assert_equal( 0, i2 <=> i1 )
+    assert_equal( -1, i2 <=> i3 )
+    assert_equal( 1, i3 <=> i2 )
+  
+  end
+
+  def test_basic_pair_weak
+
+    i1 = BasicPairWeak.new 42, -30
+    i4 = BasicPairWeak.new 30, -30 
+    assert_equal( 1, i4 <=> i1 )
+    assert_equal( -1, i1 <=> i4 )
+
+    i5 = BasicPairWeak.new 30, -30   
+    assert_equal( 0, i5 <=> i4 )
+    assert_equal( 0, i4 <=> i5 )
+    assert_equal( true, i5.dominates?( i4 ) )
+    assert_equal( true, i4.dominates?( i5 ) ) 
+
   end
  
 end
