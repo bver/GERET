@@ -7,8 +7,6 @@ class Dominance
   DominanceDepth = Struct.new( 'DominanceDepth', :original, :depth, :counter, :dominates )
 
   def initialize &comparison
-    comparison = proc { |a,b| a<=>b } if comparison.nil?
-    @comparison = comparison
     @at_least = nil
   end
 
@@ -17,16 +15,11 @@ class Dominance
   def rank_count population
     dom = population.map { |orig| DominanceHelper.new( orig, Set.new, Set.new ) }
 
-    dom.each_with_index do |individual1, index1|
-      for index2 in ( (index1+1) ... dom.size )
-        individual2 = dom[index2] 
-        case @comparison.call( individual1.original, individual2.original )
-        when -1
+    dom.each do |individual1|
+      dom.each do |individual2|
+        if individual1.original.dominates? individual2.original
           individual1.dominates.add(individual2.object_id)
           individual2.dominated_by.add(individual1.object_id)
-        when 1
-          individual2.dominates.add(individual1.object_id)
-          individual1.dominated_by.add(individual2.object_id)         
         end
       end
     end
@@ -64,10 +57,9 @@ class Dominance
     dom.each do |p|
       dom.each_with_index do |q,qindex|
         next if p.original.object_id == q.original.object_id
-        case @comparison.call( p.original, q.original )
-        when -1
+        if p.original.dominates? q.original
           p.dominates.add(qindex)
-        when 1
+        elsif q.original.dominates? p.original
           p.counter += 1 
         end
       end
