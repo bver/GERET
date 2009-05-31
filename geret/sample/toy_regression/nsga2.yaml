@@ -31,7 +31,7 @@ mapper:
   class: DepthLocus
 
 selection:
-  class: Nsga2BinaryTournament
+  class: Nsga2BinaryTournamentStrict
          
 crossover:
   class: Crossover
