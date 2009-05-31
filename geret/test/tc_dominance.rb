@@ -10,7 +10,7 @@ class Point2D < Struct.new( :x, :y )
 end
 
 class SmartPoint < Point2D
-  attr_accessor :smartRank, :smartCount, :smartDepth
+  attr_accessor :smartRank, :smartCount, :smartDepth, :smartSpea 
 end
 
 class Cyclic <  Struct.new( :id, :dominated )
@@ -64,14 +64,24 @@ class TC_Dominance < Test::Unit::TestCase
     assert_equal( 2, rankedPopulation[5].count )
     assert_equal( 1, rankedPopulation[6].count )   
     assert_equal( 0, rankedPopulation[7].count )  
+
+    assert_equal( 0,  rankedPopulation[0].spea ) #a nondominated
+    assert_equal( 5,  rankedPopulation[1].spea ) #b dominated by c(5)
+    assert_equal( 0,  rankedPopulation[2].spea ) #c nondominated
+    assert_equal( 11, rankedPopulation[3].spea ) #d dominated by a(1) + b(2) + c(5) + e(3)
+    assert_equal( 5,  rankedPopulation[4].spea ) #e dominated by c(5) 
+    assert_equal( 0,  rankedPopulation[5].spea ) #f nondominated
+    assert_equal( 10, rankedPopulation[6].spea ) #g dominated by c(5) + e(3) + f(2) 
+    assert_equal( 13, rankedPopulation[7].spea ) #h dominated by b(2) + c(5) + e(3) + f(2) + g(1)
   end
 
   def test_rank_count_block
  
     d = Dominance.new
-    d.rank_count( @population2 ) do |individual,rank,count| 
+    d.rank_count( @population2 ) do |individual,rank,count,spea| 
        individual.smartRank = rank 
        individual.smartCount = count
+       individual.smartSpea = spea
     end
 
     assert_equal( 0, @population2[0].smartRank )
@@ -91,6 +101,16 @@ class TC_Dominance < Test::Unit::TestCase
     assert_equal( 2, @population2[5].smartCount )
     assert_equal( 1, @population2[6].smartCount )   
     assert_equal( 0, @population2[7].smartCount )  
+  
+    assert_equal( 0,  @population2[0].smartSpea ) #a nondominated
+    assert_equal( 5,  @population2[1].smartSpea ) #b dominated by c(5)
+    assert_equal( 0,  @population2[2].smartSpea ) #c nondominated
+    assert_equal( 11, @population2[3].smartSpea ) #d dominated by a(1) + b(2) + c(5) + e(3)
+    assert_equal( 5,  @population2[4].smartSpea ) #e dominated by c(5) 
+    assert_equal( 0,  @population2[5].smartSpea ) #f nondominated
+    assert_equal( 10, @population2[6].smartSpea ) #g dominated by c(5) + e(3) + f(2) 
+    assert_equal( 13, @population2[7].smartSpea ) #h dominated by b(2) + c(5) + e(3) + f(2) + g(1)
+   
   end
  
   def test_rank_count_empty_population

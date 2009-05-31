@@ -2,8 +2,8 @@
 require 'set'
 
 class Dominance
-  DominanceHelper = Struct.new( 'DominanceHelper', :original, :dominated_by, :dominates )
-  DominanceFields = Struct.new( 'DominanceFields', :original, :rank, :count )
+  DominanceHelper = Struct.new( 'DominanceHelper', :original, :dominated_by, :dominates, :spea )
+  DominanceFields = Struct.new( 'DominanceFields', :original, :rank, :count, :spea )
   DominanceDepth = Struct.new( 'DominanceDepth', :original, :depth, :counter, :dominates )
 
   def initialize
@@ -13,22 +13,26 @@ class Dominance
   attr_accessor :at_least
 
   def rank_count population
-    dom = population.map { |orig| DominanceHelper.new( orig, Set.new, Set.new ) }
+    dom = population.map { |orig| DominanceHelper.new( orig, Set.new, Set.new, 0 ) }
 
     dom.each do |individual1|
-      dom.each do |individual2|
+      dom.each_with_index do |individual2,index2|
         if individual1.original.dominates? individual2.original
-          individual1.dominates.add(individual2.object_id)
+          individual1.dominates.add(index2)
           individual2.dominated_by.add(individual1.object_id)
         end
       end
     end
 
+    dom.each do |individual|
+      individual.dominates.each { |index| dom[index].spea += individual.dominates.size }
+    end
+
     if block_given?
-      dom.each { |fields| yield( fields.original, fields.dominated_by.size, fields.dominates.size ) }
+      dom.each { |fields| yield( fields.original, fields.dominated_by.size, fields.dominates.size, fields.spea ) }
       return population
     else
-      return dom.map { |fields| DominanceFields.new( fields.original, fields.dominated_by.size, fields.dominates.size )  }
+      return dom.map { |fields| DominanceFields.new( fields.original, fields.dominated_by.size, fields.dominates.size, fields.spea )  }
     end
   end
 
