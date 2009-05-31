@@ -30,6 +30,9 @@ grammar:
 mapper:
   class: DepthLocus
 
+selection:
+  class: Nsga2BinaryTournament
+         
 crossover:
   class: Crossover
   margin: 2 #1
