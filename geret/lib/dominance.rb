@@ -2,8 +2,7 @@
 require 'set'
 
 class Dominance
-  DominanceHelper = Struct.new( 'DominanceHelper', :original, :dominated_by, :dominates, :spea )
-  DominanceFields = Struct.new( 'DominanceFields', :original, :rank, :count, :spea )
+  DominanceFields = Struct.new( 'DominanceHelper', :original, :rank, :dominates, :spea, :count )
   DominanceDepth = Struct.new( 'DominanceDepth', :original, :depth, :counter, :dominates )
 
   def initialize
@@ -13,27 +12,28 @@ class Dominance
   attr_accessor :at_least
 
   def rank_count population
-    dom = population.map { |orig| DominanceHelper.new( orig, Set.new, Set.new, 0 ) }
+    dom = population.map { |orig| DominanceFields.new( orig, 0, Set.new, 0 ) }
 
     dom.each do |individual1|
       dom.each_with_index do |individual2,index2|
         if individual1.original.dominates? individual2.original
           individual1.dominates.add(index2)
-          individual2.dominated_by.add(individual1.object_id)
+          individual2.rank += 1
         end
       end
     end
 
     dom.each do |individual|
       individual.dominates.each { |index| dom[index].spea += individual.dominates.size }
+      individual.count = individual.dominates.size
     end
 
     if block_given?
-      dom.each { |fields| yield( fields.original, fields.dominated_by.size, fields.dominates.size, fields.spea ) }
+      dom.each { |fields| yield( fields.original, fields.rank, fields.count, fields.spea ) }
       return population
-    else
-      return dom.map { |fields| DominanceFields.new( fields.original, fields.dominated_by.size, fields.dominates.size, fields.spea )  }
     end
+    
+    dom
   end
 
   # see Deb's NGSA2 O(MN^2)
