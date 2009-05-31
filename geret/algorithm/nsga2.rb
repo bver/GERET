@@ -131,10 +131,10 @@ class Nsga2 < AlgorithmBase
   protected 
 
   def binary_tournament population
-    begin
+    #begin
       candidate1 = population[ rand(population.size) ] 
       candidate2 = population[ rand(population.size) ]
-    end while !candidate1.dominates?( candidate2 ) and !candidate2.dominates?( candidate1 )     
+    #end while !candidate1.dominates?( candidate2 ) and !candidate2.dominates?( candidate1 )     
 
     return candidate1.dominates?( candidate2 ) ? candidate1 : candidate2
   end
