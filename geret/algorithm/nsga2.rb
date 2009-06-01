@@ -1,5 +1,6 @@
 
 require 'algorithm/algorithm_base'
+require 'algorithm/breed_individual'
 
 class Nsga2Individual < Struct.new( :orig, :depth, :crowding, :uniq )
   @@uniq = {}
@@ -37,7 +38,21 @@ class Nsga2Individual < Struct.new( :orig, :depth, :crowding, :uniq )
  
 end
 
+class Nsga2BinaryTournament
+  attr_accessor :population
+
+  def select_one
+    #begin
+      candidate1 = @population[ rand(population.size) ] 
+      candidate2 = @population[ rand(population.size) ]  
+    #end while !candidate1.dominates?( candidate2 ) and !candidate2.dominates?( candidate1 )     
+    return candidate1.dominates?( candidate2 ) ? candidate1.orig : candidate2.orig
+  end
+end
+
 class Nsga2 < AlgorithmBase
+  
+  include BreedIndividual
 
   def setup config
     super
@@ -88,55 +103,20 @@ class Nsga2 < AlgorithmBase
     
     @report.report @population # reporting
     
-    cross = injections = copies = mutate = 0
+    @selection.population = parent_population
+
+    @cross = @injections = @copies = @mutate = 0
     while @population.size < @population_size * 2
-      parent1 = binary_tournament parent_population
-
-      if rand < @probabilities['crossover']
-        parent2 = binary_tournament parent_population
-
-        chromozome, chromozome2 = @crossover.crossover( parent1.orig.genotype, parent2.orig.genotype )       
-        individual = @cfg.factory( 'individual', @mapper, chromozome2 ) 
-        @population << individual if individual.valid?
-
-        cross += 1
-      else
-        if rand < @probabilities['injection']
-          chromozome = init_chromozome @inject       
-          injections += 1
-        else 
-          chromozome = parent1.orig.genotype.clone
-          copies += 1
-        end
-      end
-
-      if rand < @probabilities['mutation'] 
-        chromozome = @mutation.mutation chromozome      
-        mutate +=1
-      end
-
-      individual = @cfg.factory( 'individual', @mapper, chromozome )
+      individual = breed_individual @selection
       @population << individual if individual.valid?
-
     end
 
-    @report['numof_crossovers'] << cross   
-    @report['numof_injections'] << injections
-    @report['numof_copies'] << copies
-    @report['numof_mutations'] << mutate
+    @report['numof_crossovers'] << @cross   
+    @report['numof_injections'] << @injections
+    @report['numof_copies'] << @copies
+    @report['numof_mutations'] << @mutate
 
     return @report
-  end
-
-  protected 
-
-  def binary_tournament population
-    #begin
-      candidate1 = population[ rand(population.size) ] 
-      candidate2 = population[ rand(population.size) ]
-    #end while !candidate1.dominates?( candidate2 ) and !candidate2.dominates?( candidate1 )     
-
-    return candidate1.dominates?( candidate2 ) ? candidate1 : candidate2
   end
 
 end

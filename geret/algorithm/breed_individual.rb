@@ -21,16 +21,18 @@ module BreedIndividual
   protected
 
   def breed_individual selection 
+    parent1 = selection.select_one
+
     if rand < @probabilities['crossover'] 
-      parents = selection.select 2 
-      chromozome, dummy = @crossover.crossover( parents.first.genotype, parents.last.genotype ) 
+      parent2 = selection.select_one
+      chromozome, dummy = @crossover.crossover( parent1.genotype, parent2.genotype ) 
       @cross += 1
     else
       if rand < @probabilities['injection']
         chromozome = init_chromozome @inject
         @injections += 1
       else
-        chromozome = selection.select_one.genotype 
+        chromozome = parent1.genotype # copy
         @copies +=1
       end
     end
