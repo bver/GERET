@@ -1,5 +1,6 @@
 
 require 'algorithm/algorithm_base'
+require 'algorithm/phenotypic_truncation'
 
 class CroppingIndividual < Struct.new( :orig )
   @@uniq = {}
@@ -27,8 +28,9 @@ class CroppingIndividual < Struct.new( :orig )
 end
 
 class ParetoNaive < AlgorithmBase
- 
-  attr_accessor :init_size, :mutation_probability, :max_archive_size, :shorten_archive_individual 
+  include PhenotypicTruncation 
+  
+  attr_accessor :init_size, :mutation_probability, :max_archive_size 
 
   def setup config
     super
@@ -90,24 +92,7 @@ class ParetoNaive < AlgorithmBase
 
     # update archive
     new_population.concat @archive
-    uniq = {}
-    Pareto.nondominated( new_population ).map do |individual|
-      individual.shorten_chromozome = @shorten_archive_individual
-      slot = uniq.fetch( individual.phenotype, [] ) 
-      slot.push individual
-      uniq[individual.phenotype] = slot
-    end
-
-    # trim archive size, decimate duplicate phenotypes first
-    current_size = uniq.values.flatten.size
-    @report['size_before_truncation'] << current_size
-    while current_size > @max_archive_size 
-      candidate = uniq.values.max {|a,b| a.size <=> b.size }
-      break if candidate.size == 1
-      candidate.pop
-      current_size -= 1
-    end
-    @archive = uniq.values.flatten
+    @archive = phenotypic_truncation( Pareto.nondominated( new_population ), @max_archive_size )
 
     # reporting
     @report.report @archive
