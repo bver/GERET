@@ -251,21 +251,21 @@ class TC_Pareto < Test::Unit::TestCase
     assert_equal( 1, i3 <=> i2 )
 
     population = [i1, i2, i3, i4] 
-    dominated = WeakPareto.dominated population 
+    dominated = Pareto.dominated population 
     assert_equal( 3, dominated.size )
     assert( dominated.include?( i1 ) )
     assert( dominated.include?( i2 ) )    
     assert( dominated.include?( i3 ) ) 
-    nonominated = WeakPareto.nondominated population 
+    nonominated = Pareto.nondominated population 
     assert_equal( [i4], nonominated )
 
     population = [i1, i2, i3] 
-    dominated = WeakPareto.dominated population 
+    dominated = Pareto.dominated population 
     assert_equal( population.size, dominated.size )
     assert( dominated.include?( i1 ) )
     assert( dominated.include?( i2 ) )    
     assert( dominated.include?( i3 ) ) 
-    nonominated = WeakPareto.nondominated population 
+    nonominated = Pareto.nondominated population 
     assert_equal( [], nonominated )
 
   end
