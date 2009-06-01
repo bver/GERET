@@ -27,4 +27,5 @@ require 'algorithm/mu_lambda'
 require 'algorithm/paretogp_simplified'
 require 'algorithm/pareto_naive'
 require 'algorithm/nsga2'
+require 'algorithm/spea2'
 

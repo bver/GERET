@@ -73,4 +73,10 @@ class ToyIndividualMOStrict < ToyIndividualMultiObjective
   end
 end
 
+class ToyIndividualMOWeak < ToyIndividualSingleObjective
+  include WeakPareto
+  Pareto.minimize ToyIndividualMOWeak, :used_length
+  Pareto.minimize ToyIndividualMOWeak, :error
+end
+
 

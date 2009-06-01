@@ -36,3 +36,9 @@ class AntIndividualMultiObjective < AntIndividualSingleObjective
   Pareto.maximize AntIndividualMultiObjective, :fitness
 end
 
+class AntIndividualMOWeak < AntIndividualSingleObjective
+  include WeakPareto
+  Pareto.minimize AntIndividualMOWeak, :used_length
+  Pareto.maximize AntIndividualMOWeak, :fitness
+end
+

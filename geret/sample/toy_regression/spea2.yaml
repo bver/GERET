@@ -1,0 +1,59 @@
+---
+algorithm:
+  class: Spea2
+
+  population_size: 300
+  archive_size: 100
+
+  probabilities:
+    crossover: 0.5
+    mutation: 0.01
+    injection: 0.9
+
+  init:
+    method: ramped # grow or full or ramped
+    sensible_depth: 7   
+
+  inject:
+    method: grow # grow or full or random
+    sensible_depth: 7   
+ 
+  termination:
+    max_steps: 1000
+    on_individual: stopping_condition
+
+grammar:
+  class: AbnfFile
+  filename: sample/toy_regression/grammar.abnf
+
+mapper:
+  class: DepthLocus
+
+selection:
+  class: Tournament
+  tournament_size: 2
+selection_rank: # do not change
+  class: Spea2Ranking
+         
+crossover:
+  class: Crossover
+  margin: 2 #1
+  step: 2
+ 
+mutation:
+  class: Mutation
+  magnitude: 16
+
+store:
+  class: Store
+  filename: ./toy_spea2.store
+
+report:
+  class: ToyReport
+  require: sample/toy_regression/toy_report.rb
+
+individual:
+  class: ToyIndividualMOWeak
+  require: sample/toy_regression/toy_individual.rb
+  shorten_chromozome: false 
+          
