@@ -3,8 +3,10 @@ algorithm:
   class: Spea2
 
   population_size: 300
-  archive_size: 100
+  max_archive_size: 200
 
+  shorten_archive_individual: true 
+ 
   probabilities:
     crossover: 0.5
     mutation: 0.01

@@ -2,8 +2,11 @@
 require 'algorithm/algorithm_base'
 require 'algorithm/breed_individual'
 require 'algorithm/population_archive'
+require 'algorithm/phenotypic_truncation'
 
 class Spea2Ranking < Ranking 
+  include PhenotypicTruncation
+
   def initialize
     @dominance = Dominance.new
     @reranker = Ranking.new( :spea, :minimize )
@@ -20,9 +23,11 @@ class Spea2Ranking < Ranking
     reranked
   end
 
-  def environmental_selection best_size
-    @ranked_pop.sort! {|a,b| a.spea <=> b.spea }         
-    @ranked_pop[ 0...best_size ].map { |individual| individual.original }
+  def environmental_selection max_size
+    valid_population = @ranked_pop.find_all { |individual| individual.original.valid? }
+    valid_population.sort! {|a,b| a.spea <=> b.spea } 
+    limited_population = valid_population[ 0...max_size ].map { |individual| individual.original }
+    phenotypic_truncation( limited_population, 0 )   
   end
 end
 
@@ -30,12 +35,13 @@ class Spea2 < AlgorithmBase
   include BreedIndividual
   include PopulationArchiveSupport
   
-  attr_accessor :archive_size
+  attr_accessor :max_archive_size, :shorten_archive_individual 
 
   def setup config
     super
   
     @ranker = @selection.ranker
+    @ranker.shorten_individual = @shorten_archive_individual 
     
     prepare_archive_and_population
     
@@ -47,11 +53,11 @@ class Spea2 < AlgorithmBase
     @report.next    
     @report << "--------- step #{@steps += 1}"
 
-    combined = @population
+    combined = @population.clone
     combined.concat @archive
     @ranker.population = combined
 
-    @archive = @ranker.environmental_selection @archive_size
+    @archive = @ranker.environmental_selection @max_archive_size
     @selection.population = @archive
 
     @cross, @injections, @mutate, @copies = 0, 0, 0, 0

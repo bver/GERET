@@ -12,6 +12,7 @@ class AntReport < ReportText
     min, max, avg, n = Utils.statistics( fits )
     self['fitness_max'] << max
     self['fitness_avg'] << avg
+    self['fitness_size'] << n 
     diversity =  Utils.diversity( fits )
     self['diversity_fitness'] << diversity[0...10].inspect + " (#{diversity.size} unique)"
 
