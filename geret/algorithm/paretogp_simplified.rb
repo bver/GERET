@@ -1,9 +1,11 @@
 
 require 'algorithm/algorithm_base'
+require 'algorithm/phenotypic_truncation'
 
 class ParetoGPSimplified < AlgorithmBase
- 
-  attr_accessor :archive_size, :generations_per_cascade, :mutation_probability, :shorten_archive_individual 
+  include PhenotypicTruncation
+
+  attr_accessor :archive_size, :generations_per_cascade, :mutation_probability 
 
   def setup config
     super
@@ -70,26 +72,8 @@ class ParetoGPSimplified < AlgorithmBase
 
     if @generation == @generations_per_cascade 
 
-     # archive merging     
-      uniq = {}
-      @archive.concat @population
-      Pareto.nondominated( @archive ).map do |ind|
-        ind.shorten_chromozome = @shorten_archive_individual
-        slot = uniq.fetch( ind.phenotype, [] ) 
-        slot.push ind
-        uniq[ind.phenotype] = slot
-      end
-
-      # trim archive size, decimate duplicate phenotypes first
-      current_size = uniq.values.flatten.size
-      @report['size_before_truncation'] << current_size
-      while current_size > @archive_size 
-        candidate = uniq.values.max {|a,b| a.size <=> b.size }
-        break if candidate.size == 1
-        candidate.pop
-        current_size -= 1
-      end
-      @archive = uniq.values.flatten
+      # archive merging     
+      @archive = phenotypic_truncation( Pareto.nondominated( @archive ), @archive_size )
 
       @report.report @archive      
       @generation = 0
