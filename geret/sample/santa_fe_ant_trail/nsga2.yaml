@@ -2,7 +2,7 @@
 algorithm:
   class: Nsga2
 
-  population_size: 300
+  population_size: 200
 
   probabilities:
     crossover: 0.5
@@ -51,7 +51,7 @@ report:
   require: sample/santa_fe_ant_trail/ant_report.rb
 
 individual:
-  class: AntIndividualMultiObjective
+  class: AntIndividualMultiObjective # AntIndividualMOWeak
   require: sample/santa_fe_ant_trail/ant_individual.rb
   shorten_chromozome: false 
  
