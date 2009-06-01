@@ -59,29 +59,29 @@ module Pareto
   end
 
   def Pareto.nondominated selection
-      front = []
-      selection.each do |individual|
+    front = []
+    selection.each do |individual|
 
-        next if front.detect { |f| f.dominates? individual }
+      next if front.detect { |f| f.dominates? individual }
 
-        removal = []
-        front.each do |f|
-          next unless individual.dominates? f
-          removal.push f
-        end
-        removal.each { |r| front.delete r }
-        
-        front.push individual
+      removal = []
+      front.each do |f|
+        next unless individual.dominates? f
+        removal.push f
       end
+      removal.each { |r| front.delete r }
+        
+      front.push individual
+    end
 
-      front
+    front
   end
 
   def Pareto.dominated population
-      selection = population.clone
-      ids = Pareto.nondominated( selection ).map { |dominated| dominated.object_id }
-      selection.delete_if { |individual| ids.include? individual.object_id }
-      selection
+    selection = population.clone
+    ids = Pareto.nondominated( selection ).map { |dominated| dominated.object_id }
+    selection.delete_if { |individual| ids.include? individual.object_id }
+    selection
   end
 
   protected
@@ -118,6 +118,23 @@ module WeakPareto
       return 1 if other.dominates? self
       return 0
     end
+  end
+
+  def WeakPareto.nondominated selection
+    front = []
+    selection.each do |individual|
+      next if selection.detect { |f| f.object_id != individual.object_id and f.dominates? individual }  
+      front.push individual 
+    end
+
+    front
+  end
+
+  def WeakPareto.dominated population
+    selection = population.clone
+    ids = WeakPareto.nondominated( selection ).map { |dominated| dominated.object_id }
+    selection.delete_if { |individual| ids.include? individual.object_id }
+    selection
   end
 
 end

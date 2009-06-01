@@ -235,17 +235,39 @@ class TC_Pareto < Test::Unit::TestCase
     i1 = SingleMaxWeak.new 42
     i2 = SingleMaxWeak.new 42   
     i3 = SingleMaxWeak.new 40  
+    i4 = SingleMaxWeak.new 44
 
     assert_equal( true, i1.dominates?( i2 ) )
     assert_equal( true, i2.dominates?( i1 ) )
     assert_equal( true, i2.dominates?( i3 ) )
     assert_equal( false, i3.dominates?( i2 ) )
-
+    assert_equal( true, i4.dominates?( i3 ) )
+    assert_equal( true, i4.dominates?( i4 ) )
+    assert_equal( false, i3.dominates?( i4 ) )
+  
     assert_equal( 0, i1 <=> i2 )
     assert_equal( 0, i2 <=> i1 )
     assert_equal( -1, i2 <=> i3 )
     assert_equal( 1, i3 <=> i2 )
-  
+
+    population = [i1, i2, i3, i4] 
+    dominated = WeakPareto.dominated population 
+    assert_equal( 3, dominated.size )
+    assert( dominated.include?( i1 ) )
+    assert( dominated.include?( i2 ) )    
+    assert( dominated.include?( i3 ) ) 
+    nonominated = WeakPareto.nondominated population 
+    assert_equal( [i4], nonominated )
+
+    population = [i1, i2, i3] 
+    dominated = WeakPareto.dominated population 
+    assert_equal( population.size, dominated.size )
+    assert( dominated.include?( i1 ) )
+    assert( dominated.include?( i2 ) )    
+    assert( dominated.include?( i3 ) ) 
+    nonominated = WeakPareto.nondominated population 
+    assert_equal( [], nonominated )
+
   end
 
   def test_basic_pair_weak
