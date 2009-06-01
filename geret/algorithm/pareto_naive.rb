@@ -1,5 +1,6 @@
 
 require 'algorithm/algorithm_base'
+require 'algorithm/population_archive'
 require 'algorithm/phenotypic_truncation'
 
 class CroppingIndividual < Struct.new( :orig )
@@ -28,6 +29,7 @@ class CroppingIndividual < Struct.new( :orig )
 end
 
 class ParetoNaive < AlgorithmBase
+  include PopulationArchiveSupport
   include PhenotypicTruncation 
   
   attr_accessor :init_size, :mutation_probability, :max_archive_size 
@@ -39,23 +41,10 @@ class ParetoNaive < AlgorithmBase
 
     @tourney = @cfg.factory( 'tourney' )
 
-    @archive, @population = @store.load
-    @archive = [] if @archive.nil?
-    @population = [] if @population.nil?
-
-    @report << "loaded #{@population.size} population individuals"   
-    @report << "creating #{@population_size - @population.size} population individuals"
-    init_population( @population, @population_size )
-    @report << "loaded #{@archive.size} archive individuals"
+    prepare_archive_and_population
 
     @report.next    
     return @report 
-  end
-
-  def teardown
-    @report << "--------- finished:"
-    @store.save [@archive, @population]
-    return @report   
   end
   
   def step
