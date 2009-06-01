@@ -5,8 +5,8 @@ class ToyReport < ReportText
     diversity = Utils.diversity( population ) { |individual| individual.genotype }
     self['diversity_genotypic'] << diversity[0...10].inspect   
     
-    diversity =  Utils.diversity( population ) { |individual| individual.phenotype }
-    self['diversity_phenotypic'] << diversity[0...10].inspect
+#    diversity =  Utils.diversity( population ) { |individual| individual.phenotype }
+#    self['diversity_phenotypic'] << diversity[0...10].inspect
 
     errors = population.map { |individual| individual.error }   
     min, max, avg, n = Utils.statistics( errors.find_all { |e| e.infinite?.nil? } )
