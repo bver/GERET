@@ -60,13 +60,21 @@ module Pareto
 
   def Pareto.nondominated selection
     front = []
-    selection.each do |individual|
-      next if selection.detect { |f| f.object_id != individual.object_id and f.dominates? individual }  
-      front.push individual 
+    selection.each_with_index do |individual1, index1|
+      nondominated = true
+      selection.each_with_index do |individual2, index2|
+        next if index1==index2
+        if individual2.dominates? individual1
+          nondominated = false
+          break
+        end
+      end
+      front.push individual1 if nondominated
     end
 
     front
   end
+
 #  faster, but assuming a.dominates?(b) -> !b.dominates?(a) which is not ok for weak pareto dominance:
 #  def Pareto.nondominated selection
 #      front = []

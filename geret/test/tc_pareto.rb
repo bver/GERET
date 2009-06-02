@@ -270,6 +270,12 @@ class TC_Pareto < Test::Unit::TestCase
 
   end
 
+  def test_weak_bugfix
+    duplicate = SingleMaxWeak.new 42
+    pop = [ duplicate, duplicate ]
+    assert_equal( [], Pareto.nondominated( pop ) )
+  end
+
   def test_basic_pair_weak
 
     i1 = BasicPairWeak.new 42, -30
