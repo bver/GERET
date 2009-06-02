@@ -25,7 +25,10 @@ class ToyReport < ReportText
     self['gensize_max'] << max
     self['gensize_avg'] << avg
 
-    best = population.min {|a,b| a.error <=> b.error }
+    best = population.min do |a,b| 
+      c = a.error <=> b.error
+      (c == 0)? a.used_length <=> b.used_length  : c 
+    end
     self['best_phenotype'] << best.phenotype
 
     uniq = {}
