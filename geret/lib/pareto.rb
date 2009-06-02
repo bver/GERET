@@ -58,11 +58,11 @@ module Pareto
     population.min { |a,b| objective.how.call( b.send(objective.symb), a.send(objective.symb) ) }
   end
 
-  def Pareto.nondominated selection
+  def Pareto.nondominated population
     front = []
-    selection.each_with_index do |individual1, index1|
+    population.each_with_index do |individual1, index1|
       nondominated = true
-      selection.each_with_index do |individual2, index2|
+      population.each_with_index do |individual2, index2|
         next if index1==index2
         if individual2.dominates? individual1
           nondominated = false
@@ -71,10 +71,23 @@ module Pareto
       end
       front.push individual1 if nondominated
     end
-
     front
   end
 
+  def Pareto.dominated population
+    dominated = []
+    population.each_with_index do |individual1, index1|
+      population.each_with_index do |individual2, index2|
+        next if index1==index2
+        if individual2.dominates? individual1
+          dominated.push individual1
+          break
+        end
+      end
+    end
+    dominated
+  end
+ 
 #  faster, but assuming a.dominates?(b) -> !b.dominates?(a) which is not ok for weak pareto dominance:
 #  def Pareto.nondominated selection
 #      front = []
@@ -95,13 +108,6 @@ module Pareto
 #      front
 #  end
  
-  def Pareto.dominated population
-    selection = population.clone
-    ids = Pareto.nondominated( selection ).map { |dominated| dominated.object_id }
-    selection.delete_if { |individual| ids.include? individual.object_id }
-    selection
-  end
-
   protected
 
   def dominates_core( other, domination )
