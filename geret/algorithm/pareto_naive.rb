@@ -32,7 +32,7 @@ class ParetoNaive < AlgorithmBase
   include PopulationArchiveSupport
   include PhenotypicTruncation 
   
-  attr_accessor :init_size, :mutation_probability, :max_archive_size 
+  attr_accessor :init_size, :mutation_probability, :max_archive_size, :keep_extremes 
 
   def setup config
     super
@@ -53,15 +53,28 @@ class ParetoNaive < AlgorithmBase
    
     # parents come from the archive and the previous population:
     parents = []
+    population_part = archive_part = current_size = 0
+    #ratio = (@archive.size / @tourney.tournament_size).to_i
+    ratio = @archive.empty? ? 1 : @archive.size
+    @report['part_ratio'] << ratio
     while parents.size < @population_size
-      parents.concat @tourney.select_front( @population ) 
+      ratio.times do
+        parents.concat @tourney.select_front( @population ) 
+        population_part += ( parents.size - current_size )
+        current_size = parents.size
+      end
+      
       parents.concat @archive
+      archive_part += ( parents.size - current_size )    
+      current_size = parents.size
     end
-    
+    @report['part_population'] << population_part
+    @report['part_archive'] << archive_part
+
     # exploration part of the population
     new_population = []
     init_population( new_population, @init_size )
-    
+
     # exploitation part
     pipe = []
     while new_population.size < @population_size
@@ -77,11 +90,20 @@ class ParetoNaive < AlgorithmBase
     end
 
     # next generation
-    @population = new_population
+    @population = new_population.clone
 
     # update archive
     new_population.concat @archive
-    @archive = phenotypic_truncation( Pareto.nondominated( new_population ), @max_archive_size )
+    @archive = Pareto.nondominated( phenotypic_truncation( new_population, @max_archive_size ) )
+
+    # keep population extremes
+    if @keep_extremes
+      new_population.first.objective_symbols.each do |obj|
+        best = Pareto.objective_best( new_population, new_population.first.class, obj )
+        @archive.push best
+        @report['pop_best_' + obj.to_s] << best.send(obj)
+      end
+    end
 
     # reporting
     @report.report @archive

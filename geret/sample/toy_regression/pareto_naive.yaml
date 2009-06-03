@@ -2,12 +2,13 @@
 algorithm:
   class: ParetoNaive
 
-  population_size: 500
-  max_archive_size: 100
-  init_size: 300
+  population_size: 300
+  max_archive_size: 50
+  init_size: 100
   
   mutation_probability: 0.00
   shorten_individual: true
+  keep_extremes: false
 
   init:
     method: ramped # grow or full or ramped
@@ -26,7 +27,7 @@ mapper:
 
 tourney:
   class: ParetoTourney # cannot be changed
-  tournament_size: 20 
+  tournament_size: 10 # 20
 
 crossover:
   class: Crossover
@@ -46,7 +47,7 @@ report:
   require: sample/toy_regression/toy_report.rb
 
 individual:
-  class: ToyIndividualMultiObjective
+  class: ToyIndividualMultiObjective #ToyIndividualMOWeak 
   require: sample/toy_regression/toy_individual.rb
   shorten_chromozome: false 
          
