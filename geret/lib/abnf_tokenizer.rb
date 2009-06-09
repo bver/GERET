@@ -3,8 +3,10 @@ require 'lib/grammar'
 
 module Abnf
   
+  # Abnf::Tokenizer is able to preprocess ABNF syntax for the subsequent parsing by the Abnf::Parser
   class Tokenizer
 
+    # Prepare the RegExp machinery of the tokenizer.
     def initialize
       @rex = [
         [ /\A\r?\n/m, :newline ],
@@ -78,6 +80,8 @@ module Abnf
       ]
     end
 
+    # Do the tokenization. The string txt will be processed into the stream of Tokens
+    # The resultant value is the array of Mapper::Token structures. 
     def tokenize( txt )
       tokens = tokenize_internal( txt, @rex )
       tokens.push Mapper::Token.new( :eof )    
