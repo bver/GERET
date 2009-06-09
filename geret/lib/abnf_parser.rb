@@ -128,8 +128,7 @@ module Abnf
 
     end
 
-    # creates Mapper::Grammar structure from the token stream preprocessed by the Abnf::Tokenizer
-    #
+    # Create Mapper::Grammar structure from the token stream preprocessed by the Abnf::Tokenizer
     def parse stream
       @stack = []
       @iv = 0
@@ -148,7 +147,7 @@ module Abnf
     end
     
     protected
-    
+   
     def start_symbol=(symbol)
       @gram.start_symbol = symbol
     end
