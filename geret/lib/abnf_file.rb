@@ -2,7 +2,7 @@
 require 'lib/abnf_parser'
 require 'lib/abnf_tokenizer'
 
-# This subclass of Mapper::Grammar parses the ABNF syntax loaded from the file
+# This subclass of Mapper::Grammar parses the ABNF syntax loaded from the file.
 class AbnfFile < Mapper::Grammar
 
   # Load the file when creating the instance, if the optional fname argument is ommited, 

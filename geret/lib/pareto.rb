@@ -88,6 +88,8 @@ module Pareto
     dominated
   end
  
+#--
+#
 #  faster, but assuming a.dominates?(b) -> !b.dominates?(a) which is not ok for weak pareto dominance:
 #  def Pareto.nondominated selection
 #      front = []
@@ -107,6 +109,8 @@ module Pareto
 #
 #      front
 #  end
+#
+#++  
  
   protected
 

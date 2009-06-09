@@ -7,24 +7,25 @@ module Abnf
   
   # Abnf::Parser understands the ABNF syntax specified by RFC 5234
   # http://www.ietf.org/rfc/rfc5234.txt
-  # with important exceptions:
+  # -- with these important exceptions:
   #
-  # 1. Variable repetitions (Chapter 3.6.) have limited maximal number of occurences (ie the <b>
-  # decimal value in the original specification).
-  # Thus, parsing expressions 30000 HTAB, 3*CHAR or *SP terminates with an exception. 
-  # This limit is controlled by the Parser#max_repetitions attribute. 
+  # 1. Variable repetitions (Chapter 3.6.) have limited maximal number of occurences (ie the
+  #    decimal value in the original specification).
+  #    Thus, parsing expressions 30000 HTAB, 3*CHAR or *SP terminates with an exception. 
+  #    This limit is controlled by the Parser#max_repetitions attribute. 
   #
   # 2. The core rule LWSP (Appendix B.1) is not implemented, for the same reason (there is 
-  # an infinite repetition in the declaration of this rule).
+  #    an infinite repetition in the declaration of this rule).
   #
   # 3. Rule names (nonterminal external symbols) cannot begin with the underscore character ('_').
-  # All the internal nodes created by the parser begin with the underscore.
+  #    (Reason: All the internal nodes created by the parser begin with the underscore.)
   #
   class Parser
-    Slot = Struct.new( :name, :rule, :end )
    
+    # the limit for the repetition rules (such as 1000*CRLF), defaulting to 100
     attr_accessor :max_repetitions
 
+    # Create the new RegExp machinery of the ABNF parser 
     def initialize
       @max_repetitions = 100
       @transitions = {
@@ -128,7 +129,8 @@ module Abnf
 
     end
 
-    # Create Mapper::Grammar structure from the token stream preprocessed by the Abnf::Tokenizer
+    # Create Mapper::Grammar structure from the token _stream_ (ie. array of Mapper::Token items) 
+    # preprocessed by the Abnf::Tokenizer.
     def parse stream
       @stack = []
       @iv = 0
@@ -147,6 +149,8 @@ module Abnf
     end
     
     protected
+
+    Slot = Struct.new( :name, :rule, :end )   
    
     def start_symbol=(symbol)
       @gram.start_symbol = symbol

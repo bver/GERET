@@ -1,11 +1,17 @@
 
-# Single point GE crossover. It assumes two parents has the form of Arrays. First, the cutting points in both parents are randomly selected, 
+# Single point GE crossover. It assumes two parents has the form of Arrays. 
+# First, the cutting points in both parents are randomly selected, 
 # then the parts after these points are swapped, forming two new offsprings.
+#
 # The positions of possible cutting points can be flexibly configured
 # (which may be important for complex Mappers using more than one genome value per codon).
 # Production of empty offsprings can be allowed or prohibited as well by the crossover's configuration.
 # The cutting point positions in both parents can be either fixed or independent.
+#
 class Crossover
+
+  # Create a new crossover facility with the default attribute values.
+  #
   def initialize
     @random = Kernel
     @margin = 0
@@ -14,12 +20,20 @@ class Crossover
     @tolerance = true
   end
 
-  # * random .. the source of randomness, used for calling "random.rand( limit )", defaulting to 'Kernel' class
-  # * margin .. the minimal number of genome vector values kept from the beginning and ending of the parent vector, defaulting to 0
-  # * step .. the number of genome vector values between tho possible cutting points, defaulting to 1
-  # * fixed .. whether the Crossover uses the same position (Array index) for both parents' cutting points, defaulting to false
-  # * tolerance .. whether the empty array is allowed as the valid offspring (if set to false, the exception is raised), defaulting to true
-  attr_accessor :random, :margin, :step, :fixed, :tolerance
+  # the source of randomness, used for calling "random.rand( limit )", defaulting to 'Kernel' class.
+  attr_accessor :random
+
+  # the minimal number of genome vector values kept from the beginning and ending of the parent vector, defaulting to 0.
+  attr_accessor :margin
+
+  # the number of genome vector values between tho possible cutting points, defaulting to 1.
+  attr_accessor :step
+
+  # whether the Crossover uses the same position (Array index) for both parents' cutting points, defaulting to false.
+  attr_accessor :fixed
+
+  # whether the empty array is allowed as the valid offspring (if set to false, the exception is raised), defaulting to true.
+  attr_accessor :tolerance
 
   # Take parent1, parent2 arguments and produce [offspring1, offspring2].
   # For instance:
@@ -43,13 +57,15 @@ class Crossover
   #
   # now producing the offsprings:
   #   offspring1, offspring2 = xover.crossover( parent1, parent2 )
-  #   # offspring1 is [ 1, 2, 3, 4, 5, 6, 7, 16, 17, 18, 19, 20, 21, 22, 23 ] 
-  #   # offspring2 is [ 11, 12, 13, 14, 15, 8, 9, 10 ]
+  # offspring1 is [ 1, 2, 3, 4, 5, 6, 7, 16, 17, 18, 19, 20, 21, 22, 23 ] 
+  # offspring2 is [ 11, 12, 13, 14, 15, 8, 9, 10 ]
   #
-  # this is stochastic, thus: 
+  # this is stochastic process, thus repeating: 
   #   offspring1, offspring2 = xover.crossover( parent1, parent2 )
-  #   # offspring1 = [ 1, 2, 3, 18, 19, 20, 21, 22, 23 ]
-  #   # offspring2 = [ 11, 12, 13, 14, 15, 16, 17, 4, 5, 6, 7, 8, 9, 10 ]
+  # produces:  
+  # offspring1 : [ 1, 2, 3, 18, 19, 20, 21, 22, 23 ]
+  # offspring2 : [ 11, 12, 13, 14, 15, 16, 17, 4, 5, 6, 7, 8, 9, 10 ]
+  # 
   def crossover( parent1, parent2 )
     pts1 = []
     @margin.step( parent1.size - @margin, @step ) { |i| pts1.push i }
