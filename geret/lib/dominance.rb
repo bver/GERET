@@ -1,8 +1,14 @@
 
 require 'set'
 
+# General purpose class for computing various pareto dominance metrics. It provides these types of dominance rankings:
+#   * Dominance Count 
+#   * Dominance Rank
+#   * Dominance Depth (NSGA), see http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?arnumber=996017
+#   * Pareto Strength (SPEA), see http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=934438 or https://eprints.kfupm.edu.sa/52319/1/52319.pdf 
+#
 class Dominance
-  DominanceFields = Struct.new( 'DominanceHelper', :original, :rank, :dominates, :spea, :count )
+  DominanceFields = Struct.new( 'DominanceFields', :original, :rank, :dominates, :spea, :count )
   DominanceDepth = Struct.new( 'DominanceDepth', :original, :depth, :counter, :dominates )
 
   def initialize
@@ -11,6 +17,8 @@ class Dominance
 
   attr_accessor :at_least
 
+  # Compute Dominance Rank, Dominance Count and Pareto Strength
+  # 
   def rank_count population
     dom = population.map { |orig| DominanceFields.new( orig, 0, Set.new, 0 ) }
 
@@ -36,13 +44,16 @@ class Dominance
     dom
   end
 
+  # Compute Pareto Depth
   # see Deb's NGSA2 O(MN^2)
+  # 
   def depth population
     dom, front = depth_core population 
     return dom unless block_given?
     dom.each { |fields| yield( fields.original, fields.depth ) }
   end
 
+  # Compute Pareto Depth 
   # see Deb's NGSA2 O(MN^2)
   def layers population
     dom, front = depth_core population    

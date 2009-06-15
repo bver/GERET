@@ -1,9 +1,21 @@
 require 'lib/pareto'
 
+# Crowding distance computation class for preserving good spread of the pareto front (diversity of MOEA solutions).
+# Fully described in the original NSGA-II paper:
+# http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?arnumber=996017 or
+# http://sci2s.ugr.es/docencia/doctobio/2002-6-2-DEB-NSGA-II.pdf
+#
 class Crowding
   Inf = 1.0/0.0
   CrowdingFields = Struct.new( 'CrowdingFields', :original, :cdist, :index )
 
+  # It computes the crowding distance for each member of the population.
+  # There are two variants:
+  #   population2 = Crowding.distance population
+  #     where population2[i].original is the original population[i] member, population2[i].cdist is the crowding distance, or
+  #   Crowding.distance( population ) { |member, cdist| .... }
+  #     2-argument of the block are: the original population member, cdist is the associated crowding distance.
+  #     
   def Crowding.distance population
     raise "Crowding: cannot compute empty population" if population.empty? 
     result = []
