@@ -16,6 +16,12 @@ class Crowding
   #   Crowding.distance( population ) { |member, cdist| .... }
   #     2-argument of the block are: the original population member, cdist is the associated crowding distance.
   #     
+  # The Crowding.distance method assumes that 
+  #   1. the population is the Enumerable container of individuals, and 
+  #   2. existence of the method individual.dominates?( other ) returning true if the individual dominates other one, and
+  #   3. existence of the method individual.objective_symbols returning the enumerable with symbols for accessing objective values
+  #        (See Pareto#objective_symbols method)
+  #   
   def Crowding.distance population
     raise "Crowding: cannot compute empty population" if population.empty? 
     result = []

@@ -2,10 +2,15 @@
 require 'set'
 
 # General purpose class for computing various pareto dominance metrics. It provides these types of dominance rankings:
-#   * Dominance Count 
-#   * Dominance Rank
+#   * Dominance Count  - http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.12.4172&rep=rep1&type=pdf 
+#   * Dominance Rank   - http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.12.4172&rep=rep1&type=pdf  
 #   * Dominance Depth (NSGA), see http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?arnumber=996017
-#   * Pareto Strength (SPEA), see http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=934438 or https://eprints.kfupm.edu.sa/52319/1/52319.pdf 
+#   * Pareto Strength (SPEA), see http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=934438 
+#                             or https://eprints.kfupm.edu.sa/52319/1/52319.pdf 
+#
+# All Dominance methods assume that 
+#   1. the population is the Enumerable container of individuals and 
+#   2. the existence of the method individual.dominates?( other ) returning true if the individual dominates other one.
 #
 class Dominance
   DominanceFields = Struct.new( 'DominanceFields', :original, :rank, :dominates, :spea, :count )
@@ -15,10 +20,22 @@ class Dominance
     @at_least = nil
   end
 
+  # how much individuals should be classified into Pareto Layers before the classification stops (nil means unlimited, ie. population.size)
   attr_accessor :at_least
 
-  # Compute Dominance Rank, Dominance Count and Pareto Strength
-  # 
+  # Compute Dominance Rank, Dominance Count and Pareto Strength for the individual i.
+  #   There are two variants: 
+  #   
+  #     population2 = Dominance.new.rank_count population
+  #     * population2[i].original ... original population's individual
+  #     * population2[i].rank (Dominance Rank) ... the number of individuals by which the individual i is dominated
+  #     * population2[i].count (Dominance Count)  ... the number of individuals dominated by the individual i
+  #     * population2[i].spea (Pareto Strength) ... sum of Dominance Counts of all individals dominating the individual i
+  #
+  #     or
+  #     population2 = Dominance.new.rank_count( population ) { |original,rank,count,spea| ... }
+  #       where the block is called for each individual in the population.
+  #   
   def rank_count population
     dom = population.map { |orig| DominanceFields.new( orig, 0, Set.new, 0 ) }
 
@@ -44,8 +61,14 @@ class Dominance
     dom
   end
 
-  # Compute Pareto Depth
-  # see Deb's NGSA2 O(MN^2)
+  # Compute Pareto Depth (see Deb's NGSA-II) 
+  # with the complexity O(MN^2) where N is the population size and M is the number of objectives.
+  # 
+  #   Dominance.new.depth( population ) { |original,depth| ... }
+  #   The block is called with the original population's individual and the depth value.
+  #   The depth is the index of the dominance layer whose the individual is a member (see Dominance#layers)
+  # 
+  # The block need not to be called for individuals with the higher depth (see the at_least attribute).
   # 
   def depth population
     dom, front = depth_core population 
@@ -53,8 +76,19 @@ class Dominance
     dom.each { |fields| yield( fields.original, fields.depth ) }
   end
 
-  # Compute Pareto Depth 
-  # see Deb's NGSA2 O(MN^2)
+  # Compute Pareto Dominance Layers (see Deb's NGSA-II)
+  # with the complexity O(MN^2) where N is the population size and M is the number of objectives.
+  #     layers = Dominance.new.depth( population ) 
+  #     
+  # The array of layers is returned. Each layer is an array of original individuals, such as:
+  #   - the layers[0] contains only nondominated individuals
+  #   - layers[1] contains nondominated individuals of the population1 (ie the original population without layers[0] members)
+  #   - layers[2] contains nondominated individuals of the population2 (ie the population1 without layers[1] members) 
+  #   ... 
+  #    
+  # Note the at_least attribute may limit the number of individuals classified to layers. 
+  # The classification stops when layers.flatten.size >= at_least.
+  # 
   def layers population
     dom, front = depth_core population    
     front.map do |layer|
