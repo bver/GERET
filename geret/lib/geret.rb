@@ -1,3 +1,7 @@
+
+# The common "require proxy" for GERET library.
+# Please add require statement for every new dependency which should be considered as a part of lib/* or algorithm/*
+
 require 'lib/abnf_renderer'
 require 'lib/abnf_file'
 require 'lib/config'
