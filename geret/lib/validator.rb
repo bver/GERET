@@ -4,9 +4,11 @@ require 'lib/grammar'
 
 module Mapper
 
+  # Utilities for Mapper::Grammar validation.
+  # 
   class Validator
 
-    # checks the left hand sides of all rules for the presence of unused symbols.
+    # Check the left hand sides of all rules for the presence of unused symbols.
     # (The symbol is used (referenced) if there is at least one rule using it on 
     # it's right hand side.)
     # Returns the array of all unused symbols.
@@ -27,7 +29,7 @@ module Mapper
       defs
     end
 
-    # checks the right hand sides of all rules for the presence of undefined symbols.
+    # Check the right hand sides of all rules for the presence of undefined symbols.
     # (The symbol is defined if there is exactly one rule where the symbol is used 
     # on the left hand side.)
     # Returns the array of all undefined symbols.
@@ -47,6 +49,20 @@ module Mapper
       undefs
     end   
 
+    # Compute Rule#recursivity and RuleAlt#recursivity attributes for the Mapper::Grammar syntax tree.
+    # 
+    # The symbol S may have one of three possible recursivity values:
+    #   grammar[S].recursivity == :terminating ... all possible expansions of S lead to terminal symbols (literals) ( S -> T1 | T2 )
+    #   grammar[S].recursivity == :infinite  ... all possible expansions of S lead to infinite syntax loops ( S -> R, R -> S )
+    #   grammar[S].recursivity == :cyclic ... expansions of S sometimes terminates, but some of them are recursive ( S -> R, R -> S | T ) 
+    #   
+    # This method is utilised in the sensitive initialisation (Mapper::Generator) and for general classification of Grammars:
+    #   grammar.start_symbol.recursivity == :terminating ... trivial grammars, producing only phenotypes of intrinsically limited sizes 
+    #   grammar.start_symbol.recursivity == :infinite ... a grammar unusable for mapping (Mapper::Base#phenotype would not terminate in a finite time).
+    #   grammar.start_symbol.recursivity == :cyclic ... a typical grammar producing nontrivial phenotypes (intrinsically unlimited in size) 
+    #   
+    # Note: The termination of mapping with :cyclic grammars is guaranteed by external means (Mapper::Base#wraps_to_fail, Mapper::Base#wraps_to_fading)
+    # 
     def Validator.analyze_recursivity grammar
       gram = grammar.deep_copy
 
