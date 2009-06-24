@@ -3,6 +3,8 @@ require 'lib/mapper_base'
 
 module Mapper
 
+  # "Sensible Initialization" of genotypes for Grammatical Evolution.
+  # See
   class Generator < Base
     def initialize *args
       super
