@@ -4,7 +4,31 @@ require 'lib/validator'
 
 module Mapper
 
+  # The core Grammatical Evolution genotype->phenotype mapper.
+  # It generates a program (phenotype) according syntactic rules (Mapper::Grammar).
+  # The selection of rules is driven by the vector of numbers (genotype),
+  # 
+  # See: 
+  #   http://www.grammatical-evolution.org/ 
+  #   https://eprints.kfupm.edu.sa/43213/1/43213.pdf 
+  #   
   class Base
+
+    # The required parameter is the grammar (Mapper::Grammar).
+    # 
+    # Optional wraps_to_fail argument specifies the maximal number of genotype wrappings. After the genotype vector is used
+    # wraps_to_fail times, the maping fails. Default is 1.
+    #  
+    # Optional wraps_to_fading argument specifies the number of genotype wrappings during which all possible (:terminating and.or :cyclic) 
+    # rule alternations (Mapper::RuleAlt) can be selected from. After wraps_to_fading wrappings only the :terminating rule alternations
+    # are available for selection. If wraps_to_fading is set to nil (default), the fading strategy is turned off.
+    # See also Validator.analyze_recursivity.
+    # 
+    # If the optional consume_trivial_codons argument is set to true (default), the allele codons are used even if the number of rule 
+    # alternations for selecting from is 1. Set to false if the codons should not be "wasted" during such trivial decision cases.
+    # Note that consume_trivial_codons=false can have undesirable effect when used alongside the "bucket-rule": The number of used codons
+    # cannot be asumed as even because of skipped codons. See Mapper::DepthBucket.
+    # 
     def initialize( grammar, wraps_to_fail=1, wraps_to_fading=nil, consume_trivial_codons=true )
       @grammar = Validator.analyze_recursivity grammar 
       @wraps_to_fail = wraps_to_fail
@@ -12,9 +36,18 @@ module Mapper
       @consume_trivial_codons = consume_trivial_codons 
     end
   
-    attr_reader :grammar, :used_length
+    # The gramar used.
+    attr_reader :grammar
+
+    # The number of codons used by the last mapping process. This value is set by the previous Mapper::Base#phenotype call.
+    # Note the used_length may be greather than the genotype.size because of the wrapping effect.
+    attr_reader :used_length
+
+    # see Mapper::Base#initialize
     attr_accessor :wraps_to_fail, :wraps_to_fading, :consume_trivial_codons 
 
+    # Take the genome (the vector of Fixnums) and use it for the genotype->phenotype mapping.
+    # Returns the phenotype string (or nil if the mapping process fails).
     def phenotype genome
       return nil if genome.empty?
 

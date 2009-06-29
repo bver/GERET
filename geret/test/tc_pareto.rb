@@ -132,6 +132,11 @@ class TC_Pareto < Test::Unit::TestCase
     i2 = SingleProcMin.new [nil, '', 'ok', nil]
     i3 = SingleProcMin.new [1000,"2000"]  
 
+    assert( i3.dominates?( i1 ) )
+    assert( i3.dominates?( i2  ) ) 
+    assert( ! i1.dominates?( i2 ) )  
+    assert( ! i2.dominates?( i1 ) ) 
+
     assert_equal( 0, i1 <=> i2 )
     assert_equal( 0, i2 <=> i1 )
     assert_equal( 1, i2 <=> i3 )
