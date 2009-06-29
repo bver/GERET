@@ -4,23 +4,45 @@ require 'lib/mapper_base'
 module Mapper
 
   # "Sensible Initialization" of genotypes for Grammatical Evolution.
-  # See
+  # See http://www.essex.ac.uk/dces/research/publications/technicalreports/2007/ces475.pdf
+  # 
+  # Mapper::Generator uses Mapper::Grammar and the source of randomness to create 
+  # "syntactically correct" genotypes with a given depth of a phenotype tree.
+  #
   class Generator < Base
+
+    # Initialize the generator with the arguments necessary for Mapper::Base#initialize
     def initialize *args
       super
       @random = Kernel
     end
  
+    # the source of randomness, used for calling "random.rand( limit )", defaulting to 'Kernel' class.
     attr_accessor :random 
  
+    # generate the genotype using the "full" method:
+    # if the depth of the current node is smaller 
+    # then select only :cyclic nodes for a deeper level,
+    # otherwise select only :terminating nodes.
+    #
+    # See also Mapper::Validator.analyze_recursivity for discussion of node recursivity types. 
     def generate_full required_depth 
       generate( [:cyclic], required_depth )
     end
 
+    # generate the genotype using the "grow" method:
+    # if the depth of the current node is smaller 
+    # then select :cyclic and/or :terminating nodes for a deeper level,
+    # otherwise select only :terminating nodes.
+    # 
+    # See also Mapper::Validator.analyze_recursivity for discussion of node recursivity types. 
     def generate_grow required_depth 
       generate( [:cyclic, :terminating], required_depth )
     end
 
+    # generate the genotype using the recursivity information.
+    # The recursivity argument is the array of allowed node recursivity types (before the required_depth is reached).
+    # Mapper::Generator#generate_full uses [:cyclic], Mapper::Generator#generate_grow uses [:cyclic, :terminating].
     def generate( recursivity, required_depth )
       genome = []
       tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
