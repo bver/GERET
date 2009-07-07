@@ -12,7 +12,7 @@ class Mutation
   # the source of randomness, used for calling "random.rand( limit )", defaulting to 'Kernel' class.
   attr_accessor :random
 
-  # the maximal possible value of the mutaton. If not specified, the maximal value over the original genotype values is used.
+  # the maximal possible value of the mutaton plus 1. If not specified, the maximal value over the original genotype values is used.
   attr_accessor :magnitude
 
   # Select the random position within the orig vector and mutate it.
