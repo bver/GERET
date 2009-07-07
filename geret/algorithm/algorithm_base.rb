@@ -1,5 +1,6 @@
 
 include Selection
+include Operator
 
 class AlgorithmBase
 

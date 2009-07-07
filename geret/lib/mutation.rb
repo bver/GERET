@@ -1,4 +1,6 @@
 
+module Operator
+
 # Simple mutation. It assumes the source genotype has the form of the Array of numbers.
 #
 class Mutation
@@ -28,3 +30,4 @@ class Mutation
 
 end
 
+end # Operator

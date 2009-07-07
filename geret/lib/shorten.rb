@@ -1,4 +1,6 @@
 
+module Operator
+
 # Cut off the unused tail of the chromozome.
 # This operator is typically applied after the GE mapping (see Mapping::Base) when there is 
 # an information about the numbers of codons used for the phenotype creation.
@@ -29,4 +31,6 @@ class Shorten
   end
 
 end
+
+end # Operator
 

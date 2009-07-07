@@ -1,4 +1,6 @@
 
+module Operator
+
 # Generate the random genotype of the specified size.
 # The maximal values of codons can be controlled by the settings.
 #
@@ -49,3 +51,4 @@ class RandomInit
 
 end
 
+end # Operator
