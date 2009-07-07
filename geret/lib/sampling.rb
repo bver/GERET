@@ -2,7 +2,7 @@
 require 'lib/roulette'
 
 module Selection
-
+ # http://en.wikipedia.org/wiki/Stochastic_universal_sampling 
   class Sampling < Roulette
   
     def initialize( proportional_by=nil, &block )

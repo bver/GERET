@@ -3,6 +3,7 @@ require 'lib/select_more'
 
 module Selection
 
+# http://www.obitko.com/tutorials/genetic-algorithms/selection.php 
   class Roulette
     include SelectMore
 
