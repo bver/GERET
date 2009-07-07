@@ -2,6 +2,7 @@
 include Selection
 include Operator
 include Moea
+include Util
 
 class AlgorithmBase
 

@@ -3,6 +3,8 @@
 require 'test/unit'
 require 'lib/report'
 
+include Util
+
 class TC_Report < Test::Unit::TestCase
 
   def test_basic

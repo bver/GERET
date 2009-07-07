@@ -1,4 +1,6 @@
 
+module Util
+
 # Population marshalling. Store class saves or loads the content of the population.
 #
 class Store
@@ -24,4 +26,5 @@ class Store
 
 end
 
+end # Util
 

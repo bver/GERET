@@ -1,4 +1,6 @@
 
+module Util
+
 class Report < Hash
 
   def initialize
@@ -51,4 +53,6 @@ class ReportText < Report
   end
 
 end
+
+end # Util
 
