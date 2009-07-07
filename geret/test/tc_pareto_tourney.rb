@@ -4,6 +4,8 @@ require 'test/unit'
 require 'test/mock_rand'
 require 'lib/pareto_tourney'
 
+include Selection 
+
 class PointPT < Struct.new( :id, :x, :y )
   def dominates? other
     (self.x >= other.x and self.y > other.y) or (self.x > other.x and self.y >= other.y)

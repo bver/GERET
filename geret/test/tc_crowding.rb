@@ -3,6 +3,8 @@
 require 'test/unit'
 require 'lib/crowding'
 
+include Moea
+
 class CrowdPair < Struct.new( :x, :y )
   include Pareto
   Pareto.minimize CrowdPair, :x

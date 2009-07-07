@@ -1,4 +1,6 @@
 
+require 'lib/pareto'
+
 module Selection
   
   # ParetoTourneySelect method (without replacement) as described in:
@@ -23,12 +25,12 @@ module Selection
 
     # Select all nondominated solutions from the random subset of the population.
     def select_front population=self.population
-      Pareto.nondominated( random_select( population ) )
+      Moea::Pareto.nondominated( random_select( population ) )
     end
 
     # Select all dominated solutions from the random subset of the population.   
     def select_dominated population=self.population
-      Pareto.dominated( random_select( population ) )
+      Moea::Pareto.dominated( random_select( population ) )
     end
    
     protected
