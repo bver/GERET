@@ -2,9 +2,16 @@
 require 'lib/roulette'
 
 module Selection
- # http://en.wikipedia.org/wiki/Stochastic_universal_sampling 
+
+  # Stochastic Universal Sampling selection method. The probability of the individual selection is
+  # proportional to some (usually fitness) non-negative value as in Roulette selection.
+  # However, more individuals can be selected at once, which brings a better spread of the results.
+  # 
+  # See http://en.wikipedia.org/wiki/Stochastic_universal_sampling 
+  # 
   class Sampling < Roulette
   
+    # Set the proportional_by or the block for obtaining invividual's proportion.
     def initialize( proportional_by=nil, &block )
       super
     end

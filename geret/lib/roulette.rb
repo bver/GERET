@@ -3,7 +3,7 @@ require 'lib/select_more'
 
 module Selection
 
-  # Roulette Selection method. This is th classic stochastic selection method with the probability 
+  # Roulette Selection method. This is the classic stochastic selection method with the probability 
   # of the individual selection proportional to some (usually fitness) non-negative value.
   # 
   # See http://www.obitko.com/tutorials/genetic-algorithms/selection.php 
