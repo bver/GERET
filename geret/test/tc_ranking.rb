@@ -3,6 +3,8 @@
 require 'test/unit'
 require 'lib/ranking'
 
+include Selection
+
 TrivialIndividual = Struct.new( 'TrivialIndividual', :fitness )
 
 class LikeTrivialIndividual 

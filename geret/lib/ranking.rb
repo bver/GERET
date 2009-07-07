@@ -1,4 +1,6 @@
 
+module Selection
+
 class Ranking
 
   RankedFields = Struct.new( 'RankedFields', :original, :rank, :proportion, :index )
@@ -74,4 +76,5 @@ class Ranking
 
 end
 
+end # Selection
 
