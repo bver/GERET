@@ -3,6 +3,8 @@
 require 'test/unit'
 require 'lib/evaluator'
 
+include Util
+
 class TC_Evaluator < Test::Unit::TestCase
   def test_basic
      engine = Evaluator.new

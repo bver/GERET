@@ -27,12 +27,12 @@ class TC_AbnfFile < Test::Unit::TestCase
   end
 
   def test_basic
-    grammar_file = AbnfFile.new 'test/data/simple_file.abnf'   
+    grammar_file = Abnf::File.new 'test/data/simple_file.abnf'   
     assert_equal( @grammar_ref, grammar_file )
   end
 
   def test_filename_attr
-    grammar_file = AbnfFile.new
+    grammar_file = Abnf::File.new
     assert_equal( nil, grammar_file.filename )
     assert_equal( [], grammar_file.symbols )
     assert_equal( nil, grammar_file.start_symbol )

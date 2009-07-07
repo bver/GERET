@@ -1,4 +1,6 @@
 
+module Moea
+
 # The infrastructure for the multiobjective optimisation. 
 # See http://dces.essex.ac.uk/staff/rpoli/gp-field-guide/92KeepingtheObjectivesSeparate.html 
 #
@@ -207,4 +209,6 @@ module WeakPareto
     end
   end
 end
+
+end # Moea
 

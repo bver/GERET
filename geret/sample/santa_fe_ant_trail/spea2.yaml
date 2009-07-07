@@ -25,7 +25,7 @@ algorithm:
     on_individual: stopping_condition
 
 grammar:
-  class: AbnfFile
+  class: Abnf::File
   filename: sample/santa_fe_ant_trail/grammar.abnf
 
 mapper:

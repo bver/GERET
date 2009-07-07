@@ -1,12 +1,14 @@
 
 require 'lib/shorten'
 
+module Util
+
 # The superclass that wraps genotype and phenotype mapping process into the single instance, typically subclassed by the real-world task individuals.
 # The Individual class provides "duck-type interface" which separates a task from various algorithms.
 #
 class Individual
 
-  @@shortener = Shorten.new
+  @@shortener = Operator::Shorten.new
 
   # Create the new phenotype, based on the genotype, using the mapper.
   def initialize( mapper, genotype )
@@ -43,4 +45,5 @@ class Individual
 
 end
 
+end # Util
 

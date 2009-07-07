@@ -3,6 +3,8 @@
 require 'test/unit'
 require 'lib/dominance'
 
+include Moea
+
 class Point2D < Struct.new( :x, :y )
   def dominates? other
     (self.x >= other.x and self.y > other.y) or (self.x > other.x and self.y >= other.y)

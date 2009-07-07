@@ -1,5 +1,7 @@
 require 'lib/pareto'
 
+module Moea
+
 # Crowding distance computation class for preserving good spread of the pareto front (diversity of MOEA solutions).
 # Fully described in the original NSGA-II paper:
 # http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?arnumber=996017 or
@@ -42,3 +44,6 @@ class Crowding
   end
 
 end
+
+end # Moea
+

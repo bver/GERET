@@ -4,6 +4,8 @@ require 'test/unit'
 require 'test/mock_rand'
 require 'lib/crossover'
 
+include Operator
+
 class TC_Crossover < Test::Unit::TestCase
 
   def test_basics

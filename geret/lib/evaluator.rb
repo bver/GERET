@@ -1,4 +1,6 @@
 
+module Util
+
 # Simple Ruby Evaluator which uses Kernel.eval
 class Evaluator
   def initialize
@@ -28,4 +30,6 @@ class Evaluator
   end
 
 end
+
+end # Util
 

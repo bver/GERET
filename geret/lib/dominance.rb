@@ -1,6 +1,8 @@
 
 require 'set'
 
+module Moea
+
 # General purpose class for computing various pareto dominance metrics. It provides these types of dominance rankings:
 #   * Dominance Count  - http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.12.4172&rep=rep1&type=pdf 
 #   * Dominance Rank   - http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.12.4172&rep=rep1&type=pdf  
@@ -146,4 +148,6 @@ class Dominance
   end
 
 end
+
+end # Moea
 

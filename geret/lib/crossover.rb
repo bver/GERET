@@ -1,4 +1,6 @@
 
+module Operator
+
 # Single point GE crossover. It assumes two parents has the form of Arrays. 
 # First, the cutting points in both parents are randomly selected, 
 # then the parts after these points are swapped, forming two new offsprings.
@@ -96,4 +98,6 @@ class Crossover
   end
 
 end
+
+end # Operator
 

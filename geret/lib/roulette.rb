@@ -3,11 +3,17 @@ require 'lib/select_more'
 
 module Selection
 
+  # Roulette Selection method. This is the classic stochastic selection method with the probability 
+  # of the individual selection proportional to some (usually fitness) non-negative value.
+  # 
+  # See http://www.obitko.com/tutorials/genetic-algorithms/selection.php 
+  # 
   class Roulette
     include SelectMore
 
     Slot = Struct.new( 'Slot', :original, :width )
 
+    # Set the proportional_by or the block for obtaining invividual's proportion.
     def initialize proportional_by=nil, &block
       @prop = if proportional_by.nil?
                 block
@@ -20,15 +26,24 @@ module Selection
       @wheel = nil
     end
 
-    attr_accessor :random, :population
+    # The source of randomness, used for calling "random.rand( limit )", defaulting to 'Kernel' class.
+    attr_accessor :random
+   
+    # The population to select from.
+    attr_accessor :population
+
+    # The symbol for obtaining the proportion of an individual.
+    # The Roulette expect the proportion value on the call 'individual.send(proportional_by)'
     attr_reader :proportional_by
 
+    # Select one individual from the population. 
     def select_one population=self.population 
       @sum,@wheel = wheel_core population 
       @population = population
       select_one_internal
     end
 
+    # See proportional_by attribute.
     def proportional_by= proportional_by
       @prop = proc { |individual| individual.send(proportional_by) }
       @proportional_by = proportional_by     

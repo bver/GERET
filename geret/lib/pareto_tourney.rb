@@ -1,20 +1,36 @@
 
+require 'lib/pareto'
+
 module Selection
+  
+  # ParetoTourneySelect method (without replacement) as described in:
+  # http://www.evolved-analytics.com/selected_publications/pursuing_the_pareto_paradig.html
+  #
   class ParetoTourney
 
+    # Set the tournament_size (see the attribute) for selections.
     def initialize tournament_size=2
       @tournament_size = tournament_size
       @random = Kernel
     end
 
-    attr_accessor :random, :population, :tournament_size 
+    # The source of randomness, used for calling "random.rand( limit )", defaulting to 'Kernel' class.
+    attr_accessor :random
+   
+    # The population to select from. The same as the argument of ParetoTourney#select_front and ParetoTourney#select_dominated methods.
+    attr_accessor :population 
 
+    # The number of randomly selected individuals for dominance evaluation.
+    attr_accessor :tournament_size
+
+    # Select all nondominated solutions from the random subset of the population.
     def select_front population=self.population
-      Pareto.nondominated( random_select( population ) )
+      Moea::Pareto.nondominated( random_select( population ) )
     end
 
+    # Select all dominated solutions from the random subset of the population.   
     def select_dominated population=self.population
-      Pareto.dominated( random_select( population ) )
+      Moea::Pareto.dominated( random_select( population ) )
     end
    
     protected

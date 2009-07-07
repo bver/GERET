@@ -3,6 +3,8 @@
 require 'test/unit'
 require 'lib/store'
 
+include Util
+
 StoredIndividual = Struct.new( 'StoredIndividual', :chromozome ) 
 
 class TC_Config < Test::Unit::TestCase

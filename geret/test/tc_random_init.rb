@@ -4,6 +4,8 @@ require 'test/unit'
 require 'test/mock_rand'
 require 'lib/random_init'
 
+include Operator
+
 class TC_RandomInit < Test::Unit::TestCase
 
   def test_basic

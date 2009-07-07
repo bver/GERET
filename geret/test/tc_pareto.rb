@@ -3,6 +3,8 @@
 require 'test/unit'
 require 'lib/pareto'
 
+include Moea
+
 class SingleMax < Struct.new( :value )
   include Pareto
   Pareto.objective SingleMax, :value, :maximize   
@@ -49,18 +51,24 @@ class BasicPairFancy < Struct.new( :up, :down )
   Pareto.maximize BasicPairFancy, :up 
 end
 
+class PointPareto < Struct.new( :id, :x, :y )
+  def dominates? other
+    (self.x >= other.x and self.y > other.y) or (self.x > other.x and self.y >= other.y)
+  end
+end
+
 class TC_Pareto < Test::Unit::TestCase
 
   def setup
     @population = []
-    @population << PointPT.new( 'a', 2, 6 ) # rank 0
-    @population << PointPT.new( 'b', 3, 5 ) # rank 1    
-    @population << PointPT.new( 'c', 5, 5 ) # rank 0
-    @population << PointPT.new( 'd', 1, 4 ) # rank 4
-    @population << PointPT.new( 'e', 4, 4 ) # rank 1
-    @population << PointPT.new( 'f', 7, 3 ) # rank 0
-    @population << PointPT.new( 'g', 4, 2 ) # rank 3
-    @population << PointPT.new( 'h', 3, 1 ) # rank 5 
+    @population << PointPareto.new( 'a', 2, 6 ) # rank 0
+    @population << PointPareto.new( 'b', 3, 5 ) # rank 1    
+    @population << PointPareto.new( 'c', 5, 5 ) # rank 0
+    @population << PointPareto.new( 'd', 1, 4 ) # rank 4
+    @population << PointPareto.new( 'e', 4, 4 ) # rank 1
+    @population << PointPareto.new( 'f', 7, 3 ) # rank 0
+    @population << PointPareto.new( 'g', 4, 2 ) # rank 3
+    @population << PointPareto.new( 'h', 3, 1 ) # rank 5 
   end
  
   def test_basic_max

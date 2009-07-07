@@ -1,7 +1,7 @@
 
-module Utils
+module Util
  
-  def Utils.statistics arr
+  def Util.statistics arr
     max = nil
     min = nil
     sum = 0.0
@@ -20,7 +20,7 @@ module Utils
     return nil, nil, nil, 0
   end
 
-  def Utils.diversity arr
+  def Util.diversity arr
     count = Hash.new 0
     if block_given?
       arr.each { |val| count[ yield(val) ] += 1 }
@@ -30,7 +30,7 @@ module Utils
     count.values.sort {|a,b| b <=> a}
   end
 
-  def Utils.percent( nominator, denominator )
+  def Util.percent( nominator, denominator )
     if denominator == 0
       'N/A%'
     else
@@ -38,7 +38,7 @@ module Utils
     end
   end
 
-  def Utils.permutate( arr, rnd=Kernel )
+  def Util.permutate( arr, rnd=Kernel )
     src = arr.clone
     res = []
     until src.empty?

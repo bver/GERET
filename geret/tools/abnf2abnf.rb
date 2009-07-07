@@ -7,7 +7,7 @@ abort "use:\n #$0 some.abnf > canonical.abnf\n" unless ARGV.size==1
 
 begin
 
-  grammar = AbnfFile.new ARGV[0]
+  grammar = Abnf::File.new ARGV[0]
   output = Abnf::Renderer.canonical( grammar )
   puts output
 

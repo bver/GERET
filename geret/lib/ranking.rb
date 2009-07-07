@@ -1,17 +1,47 @@
 
+module Selection
+
+# Linear ranking assignment. Ranking sorts the population by the certain criteria and
+# asign the non-negative :proportion value to each individual. The best individual obtains 
+# the biggest value, the worst individual obtains the smallest one.
+#
+# See
+# http://reference.kfupm.edu.sa/content/c/o/a_comparative_analysis_of_selection_sche_73937.pdf 
+#
 class Ranking
 
+  # The result of ranking assignment for a single population member:
+  #   original .. the original individual object
+  #   rank .. Ranking. The best individuals obtain 0, the second ones 1, etc. Note that more individuals with the same
+  #           (fitness) criterion value can share the same rank value.
+  #   proportion = min + (max-min) * (N-rank)/N
+  #   index .. index (order) in the original population. 
   RankedFields = Struct.new( 'RankedFields', :original, :rank, :proportion, :index )
 
+  # Initialize the ranker. See attributes and Ranking#rank method.
   def initialize order_by=nil, direction=nil, &block 
     set_order( order_by, direction, block )
     @max = 1.1
     @min = 2.0 - @max
   end
 
-  attr_accessor :max, :min
-  attr_reader :order_by, :direction 
+  # The :proportion value of the best individual. Default is 0.9
+  attr_accessor :max
 
+  # The :proportion value of the worst individual. Default is 1.1
+  attr_accessor :min
+
+  # The symbol used as the sorting key. The value for ordering is retireved by calling: 
+  #   individual.send(order_by) 
+  attr_reader :order_by
+
+  # The sorting direction. Expected values are: :maximize, :minimize. 
+  attr_reader :direction  
+
+  # If the block was given to the constructor, calls 
+  #   { |original, rank, proportion| ... }
+  # for each population and returns the population container.
+  # Othervise, returns the array of the RankedFields structures, one for each population member.
   def rank population
     ranked = population.map { |orig| RankedFields.new orig }
     raise "Ranking: empty population" if ranked.empty?
@@ -38,10 +68,12 @@ class Ranking
     end
   end
 
+  # Set the order_by attribute.
   def order_by= order_by
     set_order( order_by, @direction, nil )   
   end
 
+  # Set the direction attribute.
   def direction= direction
     set_order( @order_by, direction, nil )  
   end
@@ -74,4 +106,5 @@ class Ranking
 
 end
 
+end # Selection
 

@@ -4,6 +4,8 @@ require 'test/unit'
 require 'test/mock_rand'
 require 'lib/mutation'
 
+include Operator
+
 class TC_Mutation < Test::Unit::TestCase
 
   def test_basic

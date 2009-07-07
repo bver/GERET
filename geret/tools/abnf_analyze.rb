@@ -9,7 +9,7 @@ abort "use:\n #$0 some.abnf > canonical.abnf\n" unless ARGV.size==1
 
 begin
 
-  grammar = AbnfFile.new ARGV[0]
+  grammar = Abnf::File.new ARGV[0]
   puts "start symbol: <#{grammar.start_symbol}>"
   undefined = Mapper::Validator.check_undefined grammar
   puts "undefined symbols: " + undefined.map{|s| "<#{s}>"}.join(', ')
