@@ -9,8 +9,8 @@ module Mapper
   # The selection of rules is driven by the vector of numbers (genotype),
   # 
   # See: 
-  #   http://www.grammatical-evolution.org/ 
-  #   https://eprints.kfupm.edu.sa/43213/1/43213.pdf 
+  # http://www.grammatical-evolution.org/ 
+  # https://eprints.kfupm.edu.sa/43213/1/43213.pdf 
   #   
   class Base
 
@@ -36,7 +36,7 @@ module Mapper
       @consume_trivial_codons = consume_trivial_codons 
     end
   
-    # The gramar used.
+    # The grammar used.
     attr_reader :grammar
 
     # The number of codons used by the last mapping process. This value is set by the previous Mapper::Base#phenotype call.
