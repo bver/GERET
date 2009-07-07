@@ -1,6 +1,8 @@
 
 require 'yaml'
 
+module Util
+
 # The main configuration component of the GERET library. The ConfigYaml instance loads the file with the YAML syntax
 # and provides the configuration values and the factory for the creation of Ruby classes.
 # This facility allows the separation of the generic GE algorithm from its internal classes.
@@ -144,3 +146,4 @@ class ConfigYaml < Hash
 
 end
 
+end # Util

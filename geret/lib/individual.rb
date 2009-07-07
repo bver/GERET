@@ -1,6 +1,8 @@
 
 require 'lib/shorten'
 
+module Util
+
 # The superclass that wraps genotype and phenotype mapping process into the single instance, typically subclassed by the real-world task individuals.
 # The Individual class provides "duck-type interface" which separates a task from various algorithms.
 #
@@ -43,4 +45,5 @@ class Individual
 
 end
 
+end # Util
 

@@ -3,6 +3,8 @@
 require 'test/unit'
 require 'lib/config'
 
+include Util
+
 class FactoryArtifact
   def initialize arg1='def1', arg2='def2', arg3='def3'
     @arg1 = arg1

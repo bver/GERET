@@ -3,6 +3,8 @@
 require 'test/unit'
 require 'lib/individual'
 
+include Util
+
 class MockMapper
   def initialize
     @used_length = 5

@@ -1,4 +1,6 @@
 
+module Selection
+
 # Helper module for various Selection methods.
 # It provides unique_winners atribute support and the select method.
 module SelectMore
@@ -29,4 +31,6 @@ module SelectMore
   end
 
 end
+
+end # Selection
 
