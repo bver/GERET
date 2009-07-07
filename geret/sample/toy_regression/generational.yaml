@@ -27,7 +27,7 @@ algorithm:
     sensible_depth: 3   
    
 grammar:
-  class: AbnfFile
+  class: Abnf::File
   filename: sample/toy_regression/grammar.abnf
 
 mapper:

@@ -34,7 +34,7 @@ class TC_Shorten < Test::Unit::TestCase
   
     assert_equal( gen, s.shorten(gen,50) ) #argument overflow
     assert( gen.object_id != s.shorten(gen,50).object_id ) #clone test
- end
+  end
 
 end
 
