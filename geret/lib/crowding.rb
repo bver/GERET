@@ -11,17 +11,18 @@ class Crowding
   Inf = 1.0/0.0
   CrowdingFields = Struct.new( 'CrowdingFields', :original, :cdist, :index )
 
-  # It computes the crowding distance for each member of the population.
+  # Compute the crowding distance for each member of the population.
   # There are two variants:
   #   population2 = Crowding.distance population
-  #     where population2[i].original is the original population[i] member, population2[i].cdist is the crowding distance, or
+  #     where population2[i].original is the original population[i] member, population2[i].cdist is the crowding distance, or:
+  #
   #   Crowding.distance( population ) { |member, cdist| .... }
   #     2-argument of the block are: the original population member, cdist is the associated crowding distance.
   #     
-  # The Crowding.distance method assumes that 
+  # The Crowding.distance method assumes: 
   #   1. the population is the Enumerable container of individuals, and 
-  #   2. existence of the method individual.dominates?( other ) returning true if the individual dominates other one, and
-  #   3. existence of the method individual.objective_symbols returning the enumerable with symbols for accessing objective values
+  #   2. the method individual.dominates?( other ) returning true if the individual dominates other one, and
+  #   3. the method individual.objective_symbols returning the enumerable with symbols for accessing objective values
   #        (See Pareto#objective_symbols method)
   #   
   def Crowding.distance population

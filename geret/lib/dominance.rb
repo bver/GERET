@@ -4,15 +4,19 @@ require 'set'
 module Moea
 
 # General purpose class for computing various pareto dominance metrics. It provides these types of dominance rankings:
-#   * Dominance Count  - http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.12.4172&rep=rep1&type=pdf 
-#   * Dominance Rank   - http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.12.4172&rep=rep1&type=pdf  
-#   * Dominance Depth (NSGA), see http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?arnumber=996017
-#   * Pareto Strength (SPEA), see http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=934438 
-#                             or https://eprints.kfupm.edu.sa/52319/1/52319.pdf 
+#   * Dominance Count, 
+#   * Dominance Rank,
+#   * Dominance Depth (NSGA), 
+#   * Pareto Strength (SPEA) 
+#
+# See http://citeseerx.ist.psu.edu/viewdoc/dowload?doi=10.1.1.12.4172&rep=rep1&type=pdf for Dominance Count and
+# Dominance Rank, see http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?arnumber=996017 for Dominance depth,
+# see http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=934438 or https://eprints.kfupm.edu.sa/52319/1/52319.pdf
+# for Pareto Strength.
 #
 # All Dominance methods assume that 
 #   1. the population is the Enumerable container of individuals and 
-#   2. the existence of the method individual.dominates?( other ) returning true if the individual dominates other one.
+#   2. the method individual.dominates?( other ) returning true if the individual dominates other one.
 #
 class Dominance
   DominanceFields = Struct.new( 'DominanceFields', :original, :rank, :dominates, :spea, :count )
@@ -22,11 +26,11 @@ class Dominance
     @at_least = nil
   end
 
-  # how much individuals should be classified into Pareto Layers before the classification stops (nil means unlimited, ie. population.size)
+  # How much individuals should be classified into Pareto Layers before the classification stops (nil means unlimited, ie. population.size)
   attr_accessor :at_least
 
   # Compute Dominance Rank, Dominance Count and Pareto Strength for the individual i.
-  #   There are two variants: 
+  # There are two variants: 
   #   
   #     population2 = Dominance.new.rank_count population
   #     * population2[i].original ... original population's individual
@@ -89,7 +93,8 @@ class Dominance
   #   ... 
   #    
   # Note the at_least attribute may limit the number of individuals classified to layers. 
-  # The classification stops when layers.flatten.size >= at_least.
+  # The classification stops when 
+  #    layers.flatten.size >= at_least.
   # 
   def layers population
     dom, front = depth_core population    

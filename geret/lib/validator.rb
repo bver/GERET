@@ -58,12 +58,14 @@ module Mapper
     #   
     # This method is utilised in the sensitive initialisation (Mapper::Generator) and for general classification of Grammars:
     #   grammar.start_symbol.recursivity == :terminating ... trivial grammars, producing only phenotypes of intrinsically limited sizes 
-    #   grammar.start_symbol.recursivity == :infinite ... a grammar unusable for mapping (Mapper::Base#phenotype would not terminate in a finite time).
-    #   grammar.start_symbol.recursivity == :cyclic ... a typical grammar producing nontrivial phenotypes (intrinsically unlimited in size) 
+    #   grammar.start_symbol.recursivity == :infinite ... a grammar unusable for mapping 
+    #                                                    (Mapper::Base#phenotype would not terminate in a finite time).
+    #   grammar.start_symbol.recursivity == :cyclic ... a typical grammar producing nontrivial phenotypes 
+    #                                                  (intrinsically unlimited in size) 
     #   
     # Note: The termination of mapping with :cyclic grammars is guaranteed by external means (Mapper::Base#wraps_to_fail, Mapper::Base#wraps_to_fading)
     # 
-    def Validator.analyze_recursivity grammar
+    def Validator.analyze_recursivity grammar                      
       gram = grammar.deep_copy
 
       gram.each_value do |rule|

@@ -7,7 +7,7 @@ module Abnf
 # This subclass of Mapper::Grammar parses the ABNF syntax loaded from the file.
 class File < Mapper::Grammar
 
-  # Load the file when creating the instance, if the optional fname argument is ommited, 
+  # Load the file when creating the instance. If the optional fname argument is ommited, 
   # do nothing.
   def initialize fname=nil
     grammar = load fname
@@ -17,7 +17,7 @@ class File < Mapper::Grammar
   # The name of the ABNF syntax file.
   attr_reader :filename
 
-  # Load a new ABNF syntax file, the previous content will be forgotten.  
+  # Load a new ABNF syntax file (previous grammar will be forgotten).  
   def filename=( fname )
     grammar = load fname
     clear

@@ -9,23 +9,23 @@ module Abnf
   # http://www.ietf.org/rfc/rfc5234.txt
   # -- with these important exceptions:
   #
-  # 1. Variable repetitions (Chapter 3.6.) have limited maximal number of occurences (ie the
+  # 1. Variable repetitions (Chapter 3.6. of the spec.) have limited maximal number of occurences (ie. the
   #    decimal value in the original specification).
-  #    Thus, parsing expressions 30000 HTAB, 3*CHAR or *SP terminates with an exception. 
+  #    Thus, parsing expressions like "30000 HTAB", "3*CHAR" or "*SP" terminate with an exception. 
   #    This limit is controlled by the Parser#max_repetitions attribute. 
   #
   # 2. The core rule LWSP (Appendix B.1) is not implemented, for the same reason (there is 
-  #    an infinite repetition in the declaration of this rule).
+  #    the infinite repetition in the declaration of this rule).
   #
   # 3. Rule names (nonterminal external symbols) cannot begin with the underscore character ('_').
   #    (Reason: All the internal nodes created by the parser begin with the underscore.)
   #
   class Parser
    
-    # the limit for the repetition rules (such as 1000*CRLF), defaulting to 100
+    # The limit for the repetition rules (such as 1000*CRLF), defaulting to 100.
     attr_accessor :max_repetitions
 
-    # Create the new RegExp machinery of the ABNF parser 
+    # Create the new RegExp machinery of the ABNF parser. 
     def initialize
       @max_repetitions = 100
       @transitions = {
