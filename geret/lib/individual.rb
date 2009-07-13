@@ -25,7 +25,7 @@ class Individual
   attr_reader :genotype 
 
   # Phenotype text (string representing typically the source of the program), the result of GP mapping.
-  # Phenotype attribute can be nil (if mapping process fails).
+  # Phenotype attribute can be nil (when the mapping process failed).
   attr_reader :phenotype 
 
   # The number of codons used in the mapping process (see Mapper::Base#used_length).
@@ -38,7 +38,7 @@ class Individual
     @genotype = @@shortener.shorten( @genotype, @used_length )
   end
 
-  # Return true if the phenotype is valid (the mapping process succeeded). 
+  # Return true if the phenotype is valid (the mapping process was succesful). 
   def valid?
     not self.phenotype.nil?
   end

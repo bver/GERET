@@ -66,7 +66,7 @@ class Report < Hash
 end
 
 # The simplest possible Reporter's subclass.
-# Suitable for command line utilities.
+# Suitable for commandline utilities.
 class ReportText < Report
 
   # Return the text consisting of "label: value" formatted rows.
