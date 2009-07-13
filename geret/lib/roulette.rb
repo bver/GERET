@@ -33,7 +33,7 @@ module Selection
     attr_accessor :population
 
     # The symbol for obtaining the proportion of an individual.
-    # The Roulette expect the proportion value on the call 'individual.send(proportional_by)'
+    # The Roulette expects the proportion value on the call 'individual.send(proportional_by)'
     attr_reader :proportional_by
 
     # Select one individual from the population. 

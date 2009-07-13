@@ -4,9 +4,9 @@ require 'lib/select_more'
 
 module Selection
 
-  # Tournament Selection method. This method selects the winner from the randomly 
+  # Tournament Selection method. This method selects the best individual from the randomly 
   # selected subset of the population. The subset size (tournament_size) and the pressure_modifier
-  # parameter control the selection pressure.
+  # parameters control the selection pressure.
   # 
   # See http://en.wikipedia.org/wiki/Tournament_selection 
   # 
@@ -14,7 +14,8 @@ module Selection
     include SelectMore
 
     # Set the instance of the Ranking object which will be used for ranking the population 
-    # before the selection. Optionally set also the tournament_size and/or pressure_modifier.   
+    # before the selection. 
+    # The tournament_size and/or pressure_modifier can also be set (optional).
     def initialize ranker, tournament_size=2, pressure_modifier=1.0
       raise "Tournament: invalid Ranking object" unless ranker.kind_of? Ranking 
       @ranker = ranker

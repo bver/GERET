@@ -2,14 +2,14 @@
 module Selection
 
 # Helper module for various Selection methods.
-# It provides unique_winners atribute support and the select method.
+# It provides unique_winners atribute support and the "select" method.
 module SelectMore
 
-  # Specify if the selection is without replacement (true means the results of 
+  # Specify whether the selection is without replacement (true means the results of 
   # the selection results are unique, false means the repetitions may occur).
   attr_writer :unique_winners
 
-  # See unique_winners attribute.
+  # Set the unique_winners attribute (see).
   def unique_winners
     @unique_winners = false unless defined? @unique_winners
     @unique_winners

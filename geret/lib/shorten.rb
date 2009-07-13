@@ -14,7 +14,7 @@ class Shorten
     @stochastic = false
   end
   
-  # the source of randomness, used for calling "random.rand( limit )", defaulting to 'Kernel' class.
+  # The source of randomness, used for calling "random.rand( limit )", defaulting to 'Kernel' class.
   attr_accessor :random
  
   # The mode of the operation:
@@ -22,7 +22,7 @@ class Shorten
   #    false .. the genotype is shortened at the random point after the specified index.
   attr_accessor :stochastic
 
-  # Shorten the genotype gen, specifying the point max.
+  # Reduce the size of the genotype gen, specifying the max point.
   # See stochastic attribute for meaning of the argument max.
   def shorten( gen, max )
     return gen.clone if gen.size <= max
