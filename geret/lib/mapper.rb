@@ -12,7 +12,8 @@ module Mapper
   #   5. Expand the symbol S.
   #   6. Repeat from the step 1 until the termination condition (see Mapper::Base) is met.
   #   
-  #   See https://eprints.kfupm.edu.sa/43213/1/43213.pdf 
+  # See 
+  # https://eprints.kfupm.edu.sa/43213/1/43213.pdf 
   #   
   class DepthFirst < Generator
     include LocusFirst
@@ -45,7 +46,8 @@ module Mapper
   #   6. Expand the symbol S. 
   #   7. Repeat from the step 1 until the termination condition (see Mapper::Base) is met.
   #   
-  #  See http://ncra.ucd.ie/papers/pigegecco2004.pdf
+  # See 
+  # http://ncra.ucd.ie/papers/pigegecco2004.pdf
   #  
   class DepthLocus < Generator
     include LocusGenetic
@@ -62,7 +64,8 @@ module Mapper
   #   6. Expand the symbol S.   
   #   7. Repeat from the step 1 until the termination condition (see Mapper::Base) is met.
   #   
-  #  See http://ncra.ucd.ie/papers/pigegecco2004.pdf
+  # See 
+  # http://ncra.ucd.ie/papers/pigegecco2004.pdf
   #  
   class BreadthLocus < Generator
     include LocusGenetic

@@ -4,11 +4,11 @@ require 'lib/ranking'
 
 module Selection
 
-  # Stochastic Universal Sampling Selection using given Ranking instance.
+  # "Stochastic Universal Sampling" selection using given Ranking instance.
   # Selection operator which uses SUS selection applied on :proportion value 
   # of pre-ranked individuals.
   #
-  # http://en.wikipedia.org/wiki/Stochastic_universal_sampling 
+  # See http://en.wikipedia.org/wiki/Stochastic_universal_sampling 
   class RankSampling
 
     # Set the instance of the Ranking object which will be used for ranking the population 

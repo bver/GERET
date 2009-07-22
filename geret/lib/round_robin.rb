@@ -2,7 +2,7 @@
 module Selection
 
   # Select members of the population one by one, when reaching the last individual, 
-  # start again from the first one (wrapping).
+  # start again from the first one (use wrapping).
   # 
   class RoundRobin
   

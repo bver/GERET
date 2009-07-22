@@ -18,7 +18,8 @@ class Store
     File.open( @filename, "w" ) { |f| Marshal.dump(population, f) }
   end
 
-  # Load the population using Marshal.load
+  # Load the population using Marshal.load and returns it to the caller.
+  # If loading fails, the _nil_ is returned.
   def load 
     return nil unless FileTest.readable? @filename
     File.open( @filename ) { |f| return Marshal.load(f)  }

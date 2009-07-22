@@ -6,7 +6,7 @@ module Selection
   # Stochastic Universal Sampling selection method. The probability of the individual selection is
   # proportional to some (usually fitness) non-negative value (as in Roulette selection).
   # However, more individuals can be selected at once by the single run of a wheel, which brings 
-  # a better spread of the results.
+  # a better spread of the results (in comparision with Roulette method).
   # 
   # See http://en.wikipedia.org/wiki/Stochastic_universal_sampling 
   # 

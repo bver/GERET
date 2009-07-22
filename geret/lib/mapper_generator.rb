@@ -17,11 +17,11 @@ module Mapper
       @random = Kernel
     end
  
-    # the source of randomness, used for calling "random.rand( limit )", defaulting to 'Kernel' class.
+    # The source of randomness, used for calling "random.rand( limit )", defaulting to 'Kernel' class.
     attr_accessor :random 
  
-    # generate the genotype using the "full" method:
-    # if the depth of the current node is smaller 
+    # Generate the genotype using the "full" method:
+    # if the depth of the current node is smaller, 
     # then select only :cyclic nodes for a deeper level,
     # otherwise select only :terminating nodes.
     #
@@ -30,8 +30,8 @@ module Mapper
       generate( [:cyclic], required_depth )
     end
 
-    # generate the genotype using the "grow" method:
-    # if the depth of the current node is smaller 
+    # Generate the genotype using the "grow" method:
+    # if the depth of the current node is smaller, 
     # then select :cyclic and/or :terminating nodes for a deeper level,
     # otherwise select only :terminating nodes.
     # 
@@ -40,7 +40,7 @@ module Mapper
       generate( [:cyclic, :terminating], required_depth )
     end
 
-    # generate the genotype using the recursivity information.
+    # Generate the genotype using the recursivity information.
     # The recursivity argument is the array of allowed node recursivity types (before the required_depth is reached).
     # Mapper::Generator#generate_full uses [:cyclic], Mapper::Generator#generate_grow uses [:cyclic, :terminating].
     def generate( recursivity, required_depth )

@@ -80,8 +80,8 @@ module Abnf
       ]
     end
 
-    # Do the tokenization. The string txt will be processed into the stream of Tokens
-    # The resultant value is the array of Mapper::Token structures. 
+    # Do the tokenization. The string text will be processed into the stream of Tokens.
+    # The resultant value is the Array of Mapper::Token structures. 
     def tokenize( txt )
       tokens = tokenize_internal( txt, @rex )
       tokens.push Mapper::Token.new( :eof )    

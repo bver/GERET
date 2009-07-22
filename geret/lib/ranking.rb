@@ -2,8 +2,9 @@
 module Selection
 
 # Linear ranking assignment. Ranking sorts the population by the certain criteria and
-# asign the non-negative :proportion value to each individual. The best individual obtains 
-# the biggest value, the worst individual obtains the smallest one.
+# asigns the :rank value and the non-negative :proportion value to each individual. 
+# The best individual obtains :rank==0 and the the biggest :proportion value, the worst 
+# individual obtains the biggest :rank value and the smallest :proportion value.
 #
 # See
 # http://reference.kfupm.edu.sa/content/c/o/a_comparative_analysis_of_selection_sche_73937.pdf 
@@ -25,10 +26,10 @@ class Ranking
     @min = 2.0 - @max
   end
 
-  # The :proportion value of the best individual. Default is 0.9
+  # The :proportion value of the best individual. Default is 1.1
   attr_accessor :max
 
-  # The :proportion value of the worst individual. Default is 1.1
+  # The :proportion value of the worst individual. Default is 0.9
   attr_accessor :min
 
   # The symbol used as the sorting key. The value for ordering is retireved by calling: 
@@ -41,7 +42,8 @@ class Ranking
   # If the block was given to the constructor, calls 
   #   { |original, rank, proportion| ... }
   # for each population and returns the population container.
-  # Othervise, returns the array of the RankedFields structures, one for each population member.
+  #
+  # Otherwise it returns the array of the RankedFields structures, one for each population member.
   def rank population
     ranked = population.map { |orig| RankedFields.new orig }
     raise "Ranking: empty population" if ranked.empty?

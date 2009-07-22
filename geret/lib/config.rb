@@ -4,8 +4,9 @@ require 'yaml'
 module Util
 
 # The main configuration component of the GERET library. The ConfigYaml instance loads the file with the YAML syntax
-# and provides the configuration values and the factory for the creation of Ruby classes.
-# This facility allows the separation of the generic GE algorithm from its internal classes.
+# and provides the configuration values and the generic factory for the creation of Ruby classes.
+# This facility allows the separation of the generic GE algorithm from its internal classes using the 
+# "Injection of control" design pattern.
 #
 class ConfigYaml < Hash
 
@@ -135,7 +136,7 @@ class ConfigYaml < Hash
   # This helper function removes all items beginning with '--' from the argument array.
   # Eg.: 
   #   ARGV = ['file.txt', '--option=42', 'file2.txt', '--quiet', '-x', 'output.txt']
-  #   ConfigYaml.remove_options!
+  #   ConfigYaml.remove_options! ARGV
   #   
   # ARGV is now:
   #   ['file.txt', 'file2.txt', '-x', 'output.txt']

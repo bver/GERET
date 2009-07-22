@@ -20,8 +20,8 @@ module Pareto
   #   dir .. direction of the optimisation. 
   #   
   # The possible values of dir are:
-  #   :maximize .. the objective should be maximized (the individual with a greater symb value is better)
-  #   :minimize .. the objective should be minimized (the individual with a smaller symb value is better) 
+  #   :maximize .. the objective should be maximized (the individual with a greater symb value is better),
+  #   :minimize .. the objective should be minimized (the individual with a smaller symb value is better), 
   #   proc { |a,b| ... } .. (procedure returns -1 if a is better than b, returns 1 if b is better than a, returns 0 if a and b cannot be distinguished)
   #   
   # For instance:
@@ -33,8 +33,8 @@ module Pareto
   #   
   # declares the user-defined BasicPair structure with two objectives (:up, :down).
   # BasicPair#up is maximized and BasicPair#down is minimized.
-  # The BasicPair#dominates? and BasicPair#<=> are now defined for the use within the library,
-  # BasicPair.objective si
+  # The BasicPair#dominates? and BasicPair#<=> methods are now defined for the use within the library,
+  # as well as BasicPair.objective_symbols.
   # 
   def Pareto.objective( user, symb, dir )
     
