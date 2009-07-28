@@ -67,7 +67,7 @@ class CrossoverRipple
   # offspring1 : [ 1, 2, 3, 18, 19, 20, 21, 22, 23 ]
   # offspring2 : [ 11, 12, 13, 14, 15, 16, 17, 4, 5, 6, 7, 8, 9, 10 ]
   # 
-  def crossover( parent1, parent2 )
+  def crossover( parent1, parent2, dummy1=nil, dummy2=nil )
     pts1 = []
     @margin.step( parent1.size - @margin, @step ) { |i| pts1.push i }
     pts2 = []

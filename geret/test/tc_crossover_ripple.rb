@@ -176,6 +176,16 @@ class TC_CrossoverRipple < Test::Unit::TestCase
     exception = assert_raise( RuntimeError ) { c.crossover( parent1, parent2 ) }
     assert_equal( "CrossoverRipple: operand(s) too short", exception.message )
   end
-  
+
+  def test_extended_iface
+    parent1 = [1, 2,    3, 4, 5]
+    parent2 = [6, 7, 8, 9, 10,   11, 12]
+
+    c = CrossoverRipple.new
+    c.random = MockRand.new [{6=>2}, {8=>5}]
+
+    c.crossover( parent1, parent2, nil, nil )   
+  end
+    
 end
 
