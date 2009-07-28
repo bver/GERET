@@ -64,7 +64,7 @@ module Mapper
       return nil if genome.empty?
 
       tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
-      tokens.first.track = [0,[]] if @track_support_on
+      tokens.first.track = [] if @track_support_on
       @used_length = 0
       @track_support = nil 
       
@@ -82,7 +82,6 @@ module Mapper
 
       end
 
-      track_backtrack( tokens ) if @track_support_on
       return ( tokens.collect {|t| t.data} ).join
     end
   
@@ -90,22 +89,14 @@ module Mapper
 
     def track_expansion( symbol_token, tokens )
       @track_support = [] if @track_support.nil?
-      ary = symbol_token.track.last.clone
+      index = @used_length-1 
+      ary = symbol_token.track.clone
+      ary.each { |i| @track_support[i].to = index }
       ary.push  @track_support.size
-      tokens.each { |t| t.track = [ @used_length-1, ary.clone ] }
-      @track_support.push TrackNode.new( symbol_token.data )
+      tokens.each { |t| t.track = ary.clone }
+      @track_support.push TrackNode.new( symbol_token.data, index, index )
     end
-    
-    def track_backtrack tokens
-      tokens.each do |t|
-        t.track.last.each do |i| 
-          node = @track_support[i]
-          node.from = t.track.first if node.from.nil? or t.track.first < node.from
-          node.to = t.track.first if node.to.nil? or t.track.first > node.to
-        end
-      end
-    end
- 
+   
     def enough_wrapping genome
       if @used_length > @wraps_to_fail*genome.size
         @used_length -= 1
