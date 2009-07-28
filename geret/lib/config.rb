@@ -111,16 +111,18 @@ class ConfigYaml < Hash
   # 
   # For example:
   # 
-  #   args = ['file.txt', '--arg=12', '--no', '--opt-sub=xyz', 'file2.out', '--opt-sub2-sub3=z']
+  #   args = ['file.txt', '--arg=12', '--no', '--opt-sub=xyz', 'file2.out', '--opt-sub2-sub3=4.4']
   #   opts = ConfigYaml.parse_options( args, {'orig'=>42, 'arg'=>'22'} )
   #   
   # opts will be:
-  #   { 'orig'=>42, 'arg'=>'12', 'no'=>nil, 'opt'=>{'sub'=>'xyz', 'sub2'=>{'sub3'=>'z'} }  }
+  #   { 'orig'=>42, 'arg'=>12, 'no'=>nil, 'opt'=>{'sub'=>'xyz', 'sub2'=>{'sub3'=>4.4} }  }
   #
   def ConfigYaml.parse_options( args, options = {} )
     args.each do |arg|
       next unless /^--/ =~ arg
       key, value = arg.sub( /^--/, '' ).split('=')
+      value = value.to_i if value.to_i.to_s == value
+      value = value.to_f if value.to_f.to_s == value     
       hsh = options 
       keys = key.split(/-/)
       while keys.size > 1
