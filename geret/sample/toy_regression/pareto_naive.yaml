@@ -29,7 +29,7 @@ tourney:
   tournament_size: 20 
 
 crossover:
-  class: Crossover
+  class: CrossoverRipple
   margin: 2 #1
   step: 2
  

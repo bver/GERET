@@ -34,7 +34,7 @@ selection:
   class: Nsga2BinaryTournament
          
 crossover:
-  class: Crossover
+  class: CrossoverRipple
   margin: 2 #1
   step: 2
  
