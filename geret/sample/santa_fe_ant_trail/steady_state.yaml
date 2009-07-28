@@ -49,7 +49,7 @@ replacement_rank:
   direction: :minimize  
 
 crossover:
-  class: Crossover
+  class: CrossoverRipple
   margin: 1
 
 mutation:

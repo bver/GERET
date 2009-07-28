@@ -10,7 +10,7 @@ module Operator
 # Production of empty offsprings can be allowed or prohibited as well by the crossover's configuration.
 # The cutting point positions in both parents can be either fixed or independent.
 #
-class Crossover
+class CrossoverRipple
 
   # Create a new crossover facility with the default attribute values.
   def initialize
@@ -30,7 +30,7 @@ class Crossover
   # The number of genome vector values between tho possible cutting points, defaulting to 1.
   attr_accessor :step
 
-  # Whether the Crossover uses the same position (Array index) for both parents' cutting points, defaulting to false.
+  # Whether the CrossoverRipple uses the same position (Array index) for both parents' cutting points, defaulting to false.
   attr_accessor :fixed
 
   # Whether the empty array is allowed as the valid offspring (if set to false, the exception is raised), defaulting to true.
@@ -41,7 +41,7 @@ class Crossover
   # 
   #   parent1 = [ 1,  2,  3,  4,  5,  6,  7,  8,  9,  10 ]
   #   parent2 = [ 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 ]
-  #   xover = Crossover.new
+  #   xover = CrossoverRipple.new
   # 
   # possible cutting points with default setting (denoted by '|' symbol):
   # 
@@ -75,7 +75,7 @@ class Crossover
 
     if pts1.empty? or pts2.empty? 
       return parent1.clone, parent2.clone if @tolerance #fallback 
-      raise "Crossover: operand(s) too short"
+      raise "CrossoverRipple: operand(s) too short"
     end
   
     if @fixed 

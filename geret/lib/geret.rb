@@ -5,7 +5,7 @@
 require 'lib/abnf_renderer'
 require 'lib/abnf_file'
 require 'lib/config'
-require 'lib/crossover'
+require 'lib/crossover_ripple'
 require 'lib/dominance'
 require 'lib/evaluator'
 require 'lib/mapper'

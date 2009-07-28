@@ -2,17 +2,17 @@
 
 require 'test/unit'
 require 'test/mock_rand'
-require 'lib/crossover'
+require 'lib/crossover_ripple'
 
 include Operator
 
-class TC_Crossover < Test::Unit::TestCase
+class TC_CrossoverRipple < Test::Unit::TestCase
 
   def test_basics
     parent1 = [1, 2,    3, 4, 5]
     parent2 = [6, 7, 8, 9, 10,   11, 12]
 
-    c = Crossover.new
+    c = CrossoverRipple.new
     c.random = MockRand.new [{6=>2}, {8=>5}]
     offspring1, offspring2 = c.crossover( parent1, parent2 ) 
 
@@ -27,7 +27,7 @@ class TC_Crossover < Test::Unit::TestCase
     parent1 = [1  ]
     parent2 = [2, 3, 4, 5,    6, 7, 8, 9]
 
-    c = Crossover.new
+    c = CrossoverRipple.new
     c.random = MockRand.new [{2=>1}, {9=>4}]
     offspring1, offspring2 = c.crossover( parent1, parent2 ) 
 
@@ -45,7 +45,7 @@ class TC_Crossover < Test::Unit::TestCase
     parent1 = [1, 2, 3,   4, 5]
     parent2 = [6, 7, 8, 9,    10, 11, 12]
 
-    c = Crossover.new
+    c = CrossoverRipple.new
     c.random = MockRand.new [{2=>1}, {4=>2}]
 
     assert_equal( 0, c.margin )
@@ -78,7 +78,7 @@ class TC_Crossover < Test::Unit::TestCase
     parent1 = [1, 2,    3, 4, 5, 6]
     parent2 = [7, 8, 9, 10, 11, 12  ]
 
-    c = Crossover.new
+    c = CrossoverRipple.new
     r = MockRand.new [{4=>1}, {4=>3}]      
     c.random = r
 
@@ -97,7 +97,7 @@ class TC_Crossover < Test::Unit::TestCase
     parent1 = [1,    2, 3, 4, 5, 6]
     parent2 = [7, 8, 9,   10, 11, 12]
 
-    c = Crossover.new
+    c = CrossoverRipple.new
     r = MockRand.new [{3=>0}, {3=>1}]      
     c.random = r
 
@@ -113,7 +113,7 @@ class TC_Crossover < Test::Unit::TestCase
     parent1 = [1, 2,   3, 4, 5]
     parent2 = [6, 7, 8, 9, 10, 11,   12]
 
-    c = Crossover.new
+    c = CrossoverRipple.new
     assert_equal( false, c.fixed )
     c.fixed = true
     assert_equal( true, c.fixed )
@@ -140,7 +140,7 @@ class TC_Crossover < Test::Unit::TestCase
     parent1 = [1, 2, 3,   4, 5, 6]
     parent2 = [7, 8, 9,   10, 11]
 
-    c = Crossover.new
+    c = CrossoverRipple.new
     r = MockRand.new [{2=>1}]      
     c.random = r
     c.step = 2
@@ -157,7 +157,7 @@ class TC_Crossover < Test::Unit::TestCase
     parent1 = [1]
     parent2 = [7, 8, 9, 10, 11]
 
-    c = Crossover.new
+    c = CrossoverRipple.new
     r = MockRand.new [{2=>1}]      
     c.random = r
     c.step = 2
@@ -174,7 +174,7 @@ class TC_Crossover < Test::Unit::TestCase
     assert_equal( false, c.tolerance )
 
     exception = assert_raise( RuntimeError ) { c.crossover( parent1, parent2 ) }
-    assert_equal( "Crossover: operand(s) too short", exception.message )
+    assert_equal( "CrossoverRipple: operand(s) too short", exception.message )
   end
   
 end
