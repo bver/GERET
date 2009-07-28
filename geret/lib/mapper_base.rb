@@ -4,6 +4,9 @@ require 'lib/validator'
 
 module Mapper
 
+  # The support for the mapper_support array. See mapper_support attribute.
+  TrackNode = Struct.new( 'TrackNode', :symbol, :from, :to )  
+
   # The core Grammatical Evolution genotype->phenotype mapper.
   # It generates a program (phenotype) according syntactic rules (Mapper::Grammar).
   # The selection of rules is driven by the vector of numbers (genotype),
@@ -36,6 +39,7 @@ module Mapper
       @wraps_to_fail = wraps_to_fail
       @wraps_to_fading = wraps_to_fading
       @consume_trivial_codons = consume_trivial_codons 
+      @track_support_on = false
     end
   
     # The grammar used.
@@ -48,15 +52,24 @@ module Mapper
     # See Mapper::Base#initialize
     attr_accessor :wraps_to_fail, :wraps_to_fading, :consume_trivial_codons 
 
+    # true means the mapper_support for LHS Crossover is turned on 
+    attr_accessor :track_support_on
+    
+    # The output array for the LHS Crossover support. (See Operator::CrossoverLHS for explanation)
+    attr_accessor :track_support
+    
     # Take the genome (the vector of Fixnums) and use it for the genotype->phenotype mapping.
     # Returns the phenotype string (or nil if the mapping process fails).
     def phenotype genome
       return nil if genome.empty?
 
       tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
+      tokens.first.track = [0,[]] if @track_support_on
       @used_length = 0
-
+      @track_support = nil 
+      
       until ( selected_indices = find_nonterminals( tokens ) ).empty?
+      
         return nil if enough_wrapping genome       
         selected_index = pick_locus( selected_indices, genome )
         selected_token = tokens[selected_index]
@@ -64,14 +77,34 @@ module Mapper
         return nil if enough_wrapping genome
         expansion = pick_rule( selected_token.data, genome )
         expansion.each { |t| t.depth = selected_token.depth+1 }
+        track_expansion( selected_token, expansion ) if @track_support_on
         tokens[selected_index,1] = expansion
 
       end
 
+      track_backtrack( tokens ) if @track_support_on
       return ( tokens.collect {|t| t.data} ).join
     end
   
   protected
+
+    def track_expansion( symbol_token, tokens )
+      @track_support = [] if @track_support.nil?
+      ary = symbol_token.track.last.clone
+      ary.push  @track_support.size
+      tokens.each { |t| t.track = [ @used_length-1, ary.clone ] }
+      @track_support.push TrackNode.new( symbol_token.data )
+    end
+    
+    def track_backtrack tokens
+      tokens.each do |t|
+        t.track.last.each do |i| 
+          node = @track_support[i]
+          node.from = t.track.first if node.from.nil? or t.track.first < node.from
+          node.to = t.track.first if node.to.nil? or t.track.first > node.to
+        end
+      end
+    end
  
     def enough_wrapping genome
       if @used_length > @wraps_to_fail*genome.size
