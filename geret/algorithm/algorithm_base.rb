@@ -31,7 +31,7 @@ class AlgorithmBase
   end
  
   def finished?
-    max_steps = @termination['max_steps']
+    max_steps = @termination['max_steps'].to_i
     on_individual = @termination['on_individual']
     if ( not max_steps.nil? and @steps >= max_steps ) or
        ( not on_individual.nil? and @population.detect { |individual| individual.send on_individual } )

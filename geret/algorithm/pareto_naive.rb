@@ -65,7 +65,7 @@ class ParetoNaive < AlgorithmBase
     # exploitation part
     pipe = []
     while new_population.size < @population_size
-      pipe = Utils.permutate parents if pipe.size < 2
+      pipe = Util.permutate parents if pipe.size < 2
 
       chromozome1, chromozome2 = @crossover.crossover( pipe.shift.genotype, pipe.shift.genotype ) 
       chromozome1 = @mutation.mutation chromozome1 if rand < @mutation_probability 

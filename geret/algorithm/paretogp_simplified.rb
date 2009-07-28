@@ -49,7 +49,7 @@ class ParetoGPSimplified < AlgorithmBase
     while new_population.size < @population_size
 
       population_pipe = @population_tourney.select_front @population while population_pipe.empty?
-      archive_pipe = Utils.permutate @archive while archive_pipe.empty?
+      archive_pipe = Util.permutate @archive while archive_pipe.empty?
 
       chromozome1, chromozome2 = @crossover.crossover( population_pipe.shift.genotype, archive_pipe.shift.genotype )     
 

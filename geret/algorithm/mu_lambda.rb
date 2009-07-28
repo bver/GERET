@@ -25,7 +25,7 @@ class MuLambda < AlgorithmBase
 
     @cross, @injections, @mutate, @copies = 0, 0, 0, 0
 
-    round_robin = RoundRobin.new Utils.permutate( @population )
+    round_robin = RoundRobin.new Util.permutate( @population )
 
     lambda_population = []
     elite_population = elite @population
