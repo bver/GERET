@@ -1,5 +1,8 @@
 #!/usr/bin/ruby
 
+abort "abnf2abnf failed" unless system "tools/abnf2abnf.rb sample/abnf/example.abnf"
+abort "abnf_analyze failed" unless system "tools/abnf_analyze.rb sample/abnf/example.abnf"
+
 Command = 'tools/evolve.rb --algorithm-termination-max_steps=2 '
 system "rm *.store"
 
@@ -24,4 +27,4 @@ abort "santa_fe_ant_trail/spea2 failed" unless system Command+" sample/santa_fe_
 abort "santa_fe_ant_trail/steady_state failed" unless system Command+" sample/santa_fe_ant_trail/steady_state.yaml"
 abort "santa_fe_ant_trail/steady_state_lhsc failed" unless system Command+" sample/santa_fe_ant_trail/steady_state_lhsc.yaml"
 
-puts "integration tests ok."
+puts "integration tests 'runnable'."
