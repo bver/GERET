@@ -19,7 +19,7 @@ class Individual
     return if @phenotype.nil?
 
     @used_length = mapper.used_length
-    @mapper_track = mapper.mapper_track 
+    @track_support = mapper.track_support 
   end
 
   # Genotype vector (array of codons) as provided by the constructor.
@@ -33,7 +33,7 @@ class Individual
   attr_reader :used_length   
 
   # The LHS crossover support from the Mapper::Base (see Operator::CrossoverLHS) 
-  attr_reader :mapper_track
+  attr_reader :track_support
   
   # If set to true, the genome is shortened by the Shorten#shorten with the used_length argument.
   def shorten_chromozome=( shorten )

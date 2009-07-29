@@ -14,7 +14,7 @@ class MockMapper
     genotype.size > 3 ? "some creative phenotype" : nil
   end
 
-  def mapper_track
+  def track_support
     ['track']
   end
   
@@ -49,7 +49,7 @@ class TC_Individual < Test::Unit::TestCase
   
   def test_track_support
     individual = Individual.new( @mapper, [1, 2, 3, 4, 5, 6, 7] )
-    assert_equal( ['track'], individual.mapper_track )
+    assert_equal( ['track'], individual.track_support )
   end
 
 end
