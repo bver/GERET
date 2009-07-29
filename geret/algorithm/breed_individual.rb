@@ -25,7 +25,7 @@ module BreedIndividual
 
     if rand < @probabilities['crossover'] 
       parent2 = selection.select_one
-      chromozome, dummy = @crossover.crossover( parent1.genotype, parent2.genotype ) 
+      chromozome, dummy = @crossover.crossover( parent1.genotype, parent2.genotype, parent1.track_support, parent2.track_support ) 
       @cross += 1
     else
       if rand < @probabilities['injection']
