@@ -4,6 +4,12 @@ require 'lib/validator'
 
 module Mapper
 
+  # The support for the mapper_support array. See mapper_support attribute.
+  # :symbol is the rule name used during a single genotype->phenotype mapping step,
+  # :from is the index of the first codon 'covered' by the rule,
+  # :to is the index of the last codon 'covered' by the rule.
+  TrackNode = Struct.new( 'TrackNode', :symbol, :from, :to )  
+
   # The core Grammatical Evolution genotype->phenotype mapper.
   # It generates a program (phenotype) according syntactic rules (Mapper::Grammar).
   # The selection of rules is driven by the vector of numbers (genotype),
@@ -36,6 +42,7 @@ module Mapper
       @wraps_to_fail = wraps_to_fail
       @wraps_to_fading = wraps_to_fading
       @consume_trivial_codons = consume_trivial_codons 
+      @track_support_on = false
     end
   
     # The grammar used.
@@ -48,15 +55,24 @@ module Mapper
     # See Mapper::Base#initialize
     attr_accessor :wraps_to_fail, :wraps_to_fading, :consume_trivial_codons 
 
+    # true means the track_support for LHS Crossover is turned on 
+    attr_accessor :track_support_on
+    
+    # The output array of the TrackNodes. (See Operator::CrossoverLHS and Mapper::TrackNode for explanation.)
+    attr_reader :track_support
+    
     # Take the genome (the vector of Fixnums) and use it for the genotype->phenotype mapping.
     # Returns the phenotype string (or nil if the mapping process fails).
     def phenotype genome
       return nil if genome.empty?
 
       tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
+      tokens.first.track = [] if @track_support_on
       @used_length = 0
-
+      @track_support = nil 
+      
       until ( selected_indices = find_nonterminals( tokens ) ).empty?
+      
         return nil if enough_wrapping genome       
         selected_index = pick_locus( selected_indices, genome )
         selected_token = tokens[selected_index]
@@ -64,6 +80,7 @@ module Mapper
         return nil if enough_wrapping genome
         expansion = pick_rule( selected_token.data, genome )
         expansion.each { |t| t.depth = selected_token.depth+1 }
+        track_expansion( selected_token, expansion ) if @track_support_on
         tokens[selected_index,1] = expansion
 
       end
@@ -72,7 +89,17 @@ module Mapper
     end
   
   protected
- 
+
+    def track_expansion( symbol_token, tokens )
+      @track_support = [] if @track_support.nil?
+      index = @used_length-1 
+      ary = symbol_token.track.clone
+      ary.each { |i| @track_support[i].to = index }
+      ary.push  @track_support.size
+      tokens.each { |t| t.track = ary.clone }
+      @track_support.push TrackNode.new( symbol_token.data, index, index )
+    end
+   
     def enough_wrapping genome
       if @used_length > @wraps_to_fail*genome.size
         @used_length -= 1

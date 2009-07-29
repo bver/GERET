@@ -277,6 +277,52 @@ class TC_Mappers < Test::Unit::TestCase
     assert_equal( nil, m.phenotype( genotype1 ) ) 
   end
 
+  def test_mapper_track
+    m = Mapper::DepthFirst.new @grammar
+    
+    assert_equal( false, m.track_support_on )
+    assert_equal( '((x +y) *x)', m.phenotype( [2, 2, 0, 0, 1, 1, 0] ) )
+    assert_equal( nil, m.track_support )
+    
+    m.track_support_on = true
+    assert_equal( true, m.track_support_on )
+    assert_equal( '((x +y) *x)', m.phenotype( [2, 2, 0, 0, 1, 1, 0] ) )
+    
+    track = [
+      Mapper::TrackNode.new( 'expr', 0, 6 ),
+      Mapper::TrackNode.new( 'expr', 1, 4 ),
+      Mapper::TrackNode.new( 'expr', 2, 2 ),
+      Mapper::TrackNode.new( 'aop', 3, 3 ),
+      Mapper::TrackNode.new( 'expr', 4, 4 ),
+      Mapper::TrackNode.new( 'aop', 5, 5 ),
+      Mapper::TrackNode.new( 'expr', 6, 6 )
+    ]
+    assert_equal( track, m.track_support )
+    
+    m.track_support_on = false
+    assert_equal( false, m.track_support_on )
+    assert_equal( '((x +y) *x)', m.phenotype( [2, 2, 0, 0, 1, 1, 0] ) )
+    assert_equal( nil, m.track_support )
+  
+  end
+  
+  def test_mapper_track2
+    m = Mapper::DepthFirst.new @grammar
+    m.track_support_on = true
+    assert_equal( '(y *(x +y))', m.phenotype( [2, 4, 3, 5, 0, 6, 1, 3, 5] ) )  
+
+    track = [
+      Mapper::TrackNode.new( 'expr', 0, 6 ),
+      Mapper::TrackNode.new( 'expr', 1, 1 ),
+      Mapper::TrackNode.new( 'aop', 2, 2 ),
+      Mapper::TrackNode.new( 'expr', 3, 6 ),
+      Mapper::TrackNode.new( 'expr', 4, 4 ),     
+      Mapper::TrackNode.new( 'aop', 5, 5 ),     
+      Mapper::TrackNode.new( 'expr', 6, 6 ),          
+    ]
+    assert_equal( track, m.track_support )
+  end
+
 end
 
 

@@ -80,7 +80,8 @@ class ParetoNaive < AlgorithmBase
     while new_population.size < @population_size
       pipe = Util.permutate parents if pipe.size < 2
 
-      chromozome1, chromozome2 = @crossover.crossover( pipe.shift.genotype, pipe.shift.genotype ) 
+      parent1, parent2 = [ pipe.shift, pipe.shift ]
+      chromozome1, chromozome2 = @crossover.crossover( parent1.genotype, parent2.genotype, parent1.track_support, parent2.track_support ) 
       chromozome1 = @mutation.mutation chromozome1 if rand < @mutation_probability 
         
       new_individual = @cfg.factory( 'individual', @mapper, chromozome1 ) 

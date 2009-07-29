@@ -51,7 +51,8 @@ class ParetoGPSimplified < AlgorithmBase
       population_pipe = @population_tourney.select_front @population while population_pipe.empty?
       archive_pipe = Util.permutate @archive while archive_pipe.empty?
 
-      chromozome1, chromozome2 = @crossover.crossover( population_pipe.shift.genotype, archive_pipe.shift.genotype )     
+      parent1, parent2 = [ population_pipe.shift, archive_pipe.shift ]
+      chromozome1, chromozome2 = @crossover.crossover( parent1.genotype, parent2.genotype, parent1.track_support, parent2.track_support )     
 
       chromozome1 = @mutation.mutation chromozome1 if rand < @mutation_probability 
         

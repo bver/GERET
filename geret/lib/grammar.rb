@@ -5,7 +5,8 @@ module Mapper
   # If :type is :symbol, then :data means the string representing a nonterminal symbol.
   # If :type is :literal, then :data means the string representing terminal symbol(s).
   # The depth attribute is reserved for purposes of the mapper.
-  Token = Struct.new( :type, :data, :depth )
+  # The :track is used only when Mapper#track_support_on == true 
+  Token = Struct.new( :type, :data, :depth, :track )
   
   # The internal representation of the language syntax, used for the genotype->phenotype mapping of 
   # Grammatical Evolution. The genotype is basically the array of fixnums, the phenotype is the source

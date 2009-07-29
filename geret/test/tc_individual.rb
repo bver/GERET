@@ -14,6 +14,10 @@ class MockMapper
     genotype.size > 3 ? "some creative phenotype" : nil
   end
 
+  def track_support
+    ['track']
+  end
+  
   attr_reader :used_length
 end
 
@@ -41,6 +45,11 @@ class TC_Individual < Test::Unit::TestCase
     assert_equal( [1, 2], individual.genotype )
     assert_equal( nil, individual.phenotype )
     assert_equal( false, individual.valid? )
+  end
+  
+  def test_track_support
+    individual = Individual.new( @mapper, [1, 2, 3, 4, 5, 6, 7] )
+    assert_equal( ['track'], individual.track_support )
   end
 
 end
