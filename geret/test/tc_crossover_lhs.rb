@@ -75,6 +75,21 @@ class TC_CrossoverLHS < Test::Unit::TestCase
     assert_equal( [2, 2, 0, 0, 1, 1, 0], parent1 ) # do not spoil parents
     assert_equal( [2, 4, 3, 5, 0, 6, 1, 3, 5], parent2 ) # do not spoil parents
   end
+
+  def test_track_nil
+    parent1 = [2,   2, 0, 0, 1,   1, 0]
+    track1 = [
+      Mapper::TrackNode.new( 'some', 0, 6 ),
+      Mapper::TrackNode.new( 'another', 1, 4 )
+    ]
+
+    parent2 = [2, 4, 3,   5, 0, 6, 1,   3, 5] 
+    track2 = nil
+
+    c = CrossoverLHS.new   
+    exception = assert_raise( RuntimeError ) { c.crossover( parent1, parent2, track1, track2 ) }
+    assert_equal( "CrossoverLHS: no track_support. Check Mapper#track_support_on", exception.message )
+  end
  
 end
 
