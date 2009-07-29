@@ -5,6 +5,9 @@ require 'lib/validator'
 module Mapper
 
   # The support for the mapper_support array. See mapper_support attribute.
+  # :symbol is the rule name used during a single genotype->phenotype mapping step,
+  # :from is the index of the first codon 'covered' by the rule,
+  # :to is the index of the last codon 'covered' by the rule.
   TrackNode = Struct.new( 'TrackNode', :symbol, :from, :to )  
 
   # The core Grammatical Evolution genotype->phenotype mapper.
@@ -52,11 +55,11 @@ module Mapper
     # See Mapper::Base#initialize
     attr_accessor :wraps_to_fail, :wraps_to_fading, :consume_trivial_codons 
 
-    # true means the mapper_support for LHS Crossover is turned on 
+    # true means the track_support for LHS Crossover is turned on 
     attr_accessor :track_support_on
     
-    # The output array for the LHS Crossover support. (See Operator::CrossoverLHS for explanation)
-    attr_accessor :track_support
+    # The output array of the TrackNodes. (See Operator::CrossoverLHS and Mapper::TrackNode for explanation.)
+    attr_reader :track_support
     
     # Take the genome (the vector of Fixnums) and use it for the genotype->phenotype mapping.
     # Returns the phenotype string (or nil if the mapping process fails).
