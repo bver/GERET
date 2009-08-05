@@ -72,7 +72,9 @@ begin
   mapper.track_support_on = true if track
 
   $stdin.each_line do |chromozome|
-    phenotype = mapper.phenotype eval(chromozome)
+    genotype = eval chromozome
+    next unless genotype.kind_of? Array
+    phenotype = mapper.phenotype genotype 
     next if phenotype.nil?
     puts phenotype unless supress
     mapper.track_support.each { |node| puts "#{node.symbol} #{node.from}..#{node.to}" } if track
