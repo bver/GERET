@@ -2,6 +2,7 @@
 
 abort "abnf2abnf failed" unless system "tools/abnf2abnf.rb sample/abnf/example.abnf"
 abort "abnf_analyze failed" unless system "tools/abnf_analyze.rb sample/abnf/example.abnf"
+abort "sensible_init and gpmap failed" unless system "tools/sensible_init.rb -n 7 -d 7 -m grow sample/toy_regression/generational.yaml |tools/gpmap.rb -u sample/toy_regression/generational.yaml"
 
 Command = 'tools/evolve.rb --algorithm-termination-max_steps=2 '
 system "rm *.store"
