@@ -69,7 +69,7 @@ begin
   config = ConfigYaml.new ARGV.shift
   grammar = config.factory('grammar')
   mapper = config.factory('mapper', grammar)
-  mapper.track_support_on = true if track
+  mapper.track_support_on = track
 
   $stdin.each_line do |chromozome|
     genotype = eval chromozome
