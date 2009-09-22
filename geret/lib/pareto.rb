@@ -1,20 +1,23 @@
 
 module Moea
 
-# see Pareto.objective
-def objective( symb, dir )
-  Pareto.objective( self.to_s, symb, dir )
-end
+  # Shorthand for
+  # Pareto.objective( MyClassName, symb, dir )
+  def objective( symb, dir )
+    Pareto.objective( self.to_s, symb, dir )
+  end
 
-# see Pareto.maximize
-def maximize symb
-  Pareto.maximize( self.to_s, symb )
-end
+  # Shorthand for
+  # Pareto.maximize( MyClassName, symb )
+  def maximize symb
+    Pareto.maximize( self.to_s, symb )
+  end
 
-# see Pareto.minimize
-def minimize symb 
-  Pareto.minimize( self.to_s, symb )
-end
+  # Shorthand for
+  # Pareto.minimize( MyClassName, symb )
+  def minimize symb 
+    Pareto.minimize( self.to_s, symb )
+  end
 
 # The infrastructure for the multiobjective optimisation. 
 # See http://dces.essex.ac.uk/staff/rpoli/gp-field-guide/92KeepingtheObjectivesSeparate.html 
@@ -50,6 +53,13 @@ module Pareto
   # BasicPair#up is maximized and BasicPair#down is minimized.
   # The BasicPair#dominates? and BasicPair#<=> methods are now defined for the use within the library,
   # as well as BasicPair.objective_symbols.
+  # 
+  # Short versions of Pareto.objective can also be used:
+  #   class BasicPair < Struct.new( :up, :down )
+  #     include Pareto
+  #     minimize :down
+  #     maximize :up
+  #   end
   # 
   def Pareto.objective( user, symb, dir )
     
