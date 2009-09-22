@@ -7,12 +7,12 @@ include Moea
 
 class SingleMax < Struct.new( :value )
   include Pareto
-  Pareto.objective SingleMax, :value, :maximize   
+  objective :value, :maximize   
 end
 
 class SingleMaxWeak < Struct.new( :value )
   include WeakPareto
-  Pareto.objective SingleMaxWeak, :value, :maximize   
+  objective :value, :maximize   
 end
 
 class SingleMin
@@ -30,25 +30,25 @@ Pareto.objective SingleMin, :value, :minimize
 
 class BasicPair < Struct.new( :up, :down )
   include Pareto
-  Pareto.objective BasicPair, :down, :minimize
+  objective :down, :minimize
   Pareto.objective BasicPair, :up, :maximize 
 end
 
 class BasicPairWeak < Struct.new( :up, :down )
   include WeakPareto
-  Pareto.objective BasicPairWeak, :down, :minimize
-  Pareto.objective BasicPairWeak, :up, :maximize 
+  minimize :down
+  objective :up, :maximize 
 end
 
 class SingleProcMin < Struct.new( :data )
   include Pareto
-  Pareto.objective :SingleProcMin, :data, proc { |one,two| two.size <=> one.size }
+  objective :data, proc { |one,two| two.size <=> one.size }
 end
 
 class BasicPairFancy < Struct.new( :up, :down )
   include Pareto
   Pareto.minimize BasicPairFancy, :down
-  Pareto.maximize BasicPairFancy, :up 
+  maximize :up 
 end
 
 class PointPareto < Struct.new( :id, :x, :y )

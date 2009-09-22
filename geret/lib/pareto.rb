@@ -1,6 +1,21 @@
 
 module Moea
 
+# see Pareto.objective
+def objective( symb, dir )
+  Pareto.objective( self.to_s, symb, dir )
+end
+
+# see Pareto.maximize
+def maximize symb
+  Pareto.maximize( self.to_s, symb )
+end
+
+# see Pareto.minimize
+def minimize symb 
+  Pareto.minimize( self.to_s, symb )
+end
+
 # The infrastructure for the multiobjective optimisation. 
 # See http://dces.essex.ac.uk/staff/rpoli/gp-field-guide/92KeepingtheObjectivesSeparate.html 
 #
