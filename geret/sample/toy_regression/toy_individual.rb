@@ -55,14 +55,14 @@ end
 
 class ToyIndividualMultiObjective < ToyIndividualSingleObjective
   include Pareto
-  Pareto.minimize ToyIndividualMultiObjective, :used_length
-  Pareto.minimize ToyIndividualMultiObjective, :error
+  minimize :used_length
+  minimize :error
 end
 
-class ToyIndividualMOStrict < ToyIndividualMultiObjective
+class ToyIndividualMOStrict < ToyIndividualSingleObjective
   include Pareto
-  Pareto.minimize ToyIndividualMOStrict, :used_length
-  Pareto.minimize ToyIndividualMOStrict, :error
+  minimize :used_length
+  minimize :error
 
   def valid?
     @error != Inf
@@ -75,8 +75,8 @@ end
 
 class ToyIndividualMOWeak < ToyIndividualSingleObjective
   include WeakPareto
-  Pareto.minimize ToyIndividualMOWeak, :used_length
-  Pareto.minimize ToyIndividualMOWeak, :error
+  minimize :used_length
+  minimize :error
 
   def stopping_condition
     (@error < 0.01) and (!self.used_length.nil?) and (self.used_length < 40)

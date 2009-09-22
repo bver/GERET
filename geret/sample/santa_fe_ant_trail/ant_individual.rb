@@ -32,13 +32,13 @@ end
 
 class AntIndividualMultiObjective < AntIndividualSingleObjective
   include Pareto
-  Pareto.minimize AntIndividualMultiObjective, :used_length
-  Pareto.maximize AntIndividualMultiObjective, :fitness
+  minimize :used_length
+  maximize :fitness
 end
 
 class AntIndividualMOWeak < AntIndividualSingleObjective
   include WeakPareto
-  Pareto.minimize AntIndividualMOWeak, :used_length
-  Pareto.maximize AntIndividualMOWeak, :fitness
+  minimize :used_length
+  maximize :fitness
 end
 
