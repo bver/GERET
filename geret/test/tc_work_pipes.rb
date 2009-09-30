@@ -70,12 +70,6 @@ class TC_WorkPipes  < Test::Unit::TestCase
     assert_equal( "1st 30\n", result[2] )
   end
 
-  def test_command_status
-    #pipes = WorkPipes.new
-    #assert_equal( [], pipes.active_commands )
-    #assert false
-  end
-
   def test_failing_pipe
     #assert false
   end
@@ -84,7 +78,7 @@ class TC_WorkPipes  < Test::Unit::TestCase
     #assert false
   end
 
-  def test_failing_all_pipes
+  def test_no_more_pipes
     #assert false
   end
 
