@@ -3,18 +3,23 @@ module Util
 
   class WorkPipes
 
-    def initialize cmds #=nil
+    def initialize cmds=nil
       @pipes = []
-      self.commands = cmds #unless cmds.nil?
+      @commands = {}
+      self.commands = cmds unless cmds.nil?
     end
 
-    def active_commands
-      nil #todo
+    def commands
+      @pipes.map { |pipe| @commands[pipe] }
     end
 
     def commands= cmds
       self.close
-      @pipes = cmds.map { |cmd| IO.popen( cmd, 'r+' ) }
+      cmds.each do |cmd| 
+        p = IO.popen( cmd, 'r+' )
+        @pipes << p 
+        @commands[ p ] = cmd
+      end
     end
 
     def run data
@@ -46,6 +51,7 @@ module Util
     def close
       @pipes.each { |pipe| pipe.close }
       @pipes = []
+      @commands = {}
     end
 
   end

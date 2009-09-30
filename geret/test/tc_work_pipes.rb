@@ -50,13 +50,24 @@ class TC_WorkPipes  < Test::Unit::TestCase
     assert_equal( "second 6\n", result[5] )
     assert_equal( "first 7\n", result[6] )
 
-    pipes.close
+    #pipes.close
   end
 
   def test_empty_new
-    #pipes = WorkPipes.new
-    #assert_equal( [], pipes.commands )
-    #assert false
+    pipes = WorkPipes.new
+    assert_equal( [], pipes.commands )
+
+    cmds = [ "#{@dir}/pipe1.rb 1st", "#{@dir}/pipe1.rb 2nd" ] 
+    pipes.commands = cmds
+    assert_equal( cmds, pipes.commands )
+
+    jobs = [ "10", "20", "30" ]
+    result = pipes.run jobs
+
+    assert_equal( jobs.size, result.size )
+    assert_equal( "1st 10\n", result[0] )
+    assert_equal( "2nd 20\n", result[1] )
+    assert_equal( "1st 30\n", result[2] )
   end
 
   def test_command_status
