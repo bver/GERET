@@ -32,4 +32,4 @@ require 'test/tc_round_robin'
 require 'test/tc_pareto_tourney'
 require 'test/tc_crowding'
 require 'test/tc_crossover_lhs'
-
+require 'test/tc_work_pipes'
