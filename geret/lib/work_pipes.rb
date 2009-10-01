@@ -3,11 +3,16 @@ module Util
 
   class WorkPipes
 
-    def initialize cmds=nil
+    def initialize cmds=nil, dest='fitness=', src='phenotype'
       @pipes = []
       @commands = {}
+      @destination = dest
+      @source = src
       self.commands = cmds unless cmds.nil?
     end
+
+    attr_accessor :destination
+    attr_accessor :source
 
     def commands
       @pipes.map { |pipe| @commands[pipe] }
@@ -40,13 +45,13 @@ module Util
             @pipes.delete pipe
             next
           end
-          jobs[ assigned[pipe].shift ].fitness = output
+          jobs[ assigned[pipe].shift ].send( @destination, output )
         end
 
         # write end
         ready[1].each do |pipe|
           break if index >= jobs.size         
-          input = jobs[index].phenotype
+          input = jobs[index].send( @source )
           tasks = assigned.fetch( pipe, [] )
           tasks.push index
           assigned[pipe] = tasks

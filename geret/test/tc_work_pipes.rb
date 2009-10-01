@@ -6,6 +6,7 @@ require 'lib/work_pipes'
 include Util
 
 WPop = Struct.new( 'WPop', :phenotype, :fitness )
+WPopFT = Struct.new( 'WPopFT', :from, :to, :to2 )
 
 class TC_WorkPipes  < Test::Unit::TestCase
  
@@ -79,6 +80,40 @@ class TC_WorkPipes  < Test::Unit::TestCase
       assert_equal( 2,  j.fitness.split(' ').size )
       assert_equal( j.phenotype, j.fitness.split(' ').last )
       worker[ j.fitness.split(' ').first ] = nil
+    end
+    assert_equal( ['1st', '2nd'], worker.keys.sort )
+  end
+
+  def test_target_source
+    cmds = [ "#{@dir}/pipe1.rb 1st", "#{@dir}/pipe1.rb 2nd" ] 
+    pipes = WorkPipes.new( cmds, 'to=', :from )
+    assert_equal( 'to=', pipes.destination )
+    assert_equal( :from, pipes.source )
+
+    jobs = [ "10", "20", "30", "foo", "5", "6", "7" ].map { |v| WPopFT.new v }
+    
+    pipes.run jobs
+
+    worker = {}
+    jobs.each do |j|
+      assert_equal( 2,  j.to.split(' ').size )
+      assert_equal( j.from, j.to.split(' ').last )
+      worker[ j.to.split(' ').first ] = nil
+    end
+    assert_equal( ['1st', '2nd'], worker.keys.sort )
+
+    pipes.destination = :to2=
+    pipes.source = 'to'
+    assert_equal( :to2=, pipes.destination )
+    assert_equal( 'to', pipes.source )
+
+    pipes.run jobs
+
+    worker = {}
+    jobs.each do |j|
+      assert_equal( 3, j.to2.split(' ').size )
+      assert_equal( j.from, j.to2.split(' ').last )
+      worker[ j.to2.split(' ').first ] = nil
     end
     assert_equal( ['1st', '2nd'], worker.keys.sort )
   end
