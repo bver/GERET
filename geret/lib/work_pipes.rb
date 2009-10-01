@@ -22,30 +22,39 @@ module Util
       end
     end
 
-    def run data
-      result = []
-      jobs = data.clone
+    def run jobs 
 
-      until data.size == result.size
+      assigned = {}
+      index = 0
+      while index < jobs.size or assigned.values.detect { |t| !t.empty? }
 
         ready = select( @pipes, @pipes, nil, 0 )
         next if ready.nil?
 
+        # read end
         ready.first.each do |pipe|
-          out = pipe.gets
-          if out.nil?
+          output = pipe.gets
+          if output.nil?
+            #raise "WorkPipes: lost assignments?" unless assigned[pipe].empty?
             pipe.close
             @pipes.delete pipe
             next
           end
-          result << out
+          jobs[ assigned[pipe].shift ].fitness = output
         end
 
-        ready[1].each { |pipe| pipe.puts jobs.shift unless jobs.empty? }
+        # write end
+        ready[1].each do |pipe|
+          break if index >= jobs.size         
+          input = jobs[index].phenotype
+          tasks = assigned.fetch( pipe, [] )
+          tasks.push index
+          assigned[pipe] = tasks
+          pipe.puts input
+          index += 1
+        end
 
       end
-
-      result
     end
 
     def close
