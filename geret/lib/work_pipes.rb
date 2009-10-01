@@ -32,7 +32,7 @@ module Util
       assigned = {}
       index = 0
       while index < jobs.size or assigned.values.detect { |t| !t.empty? }
-
+        raise "WorkPipes: no pipes available" if @pipes.empty?
         ready = select( @pipes, @pipes, nil, 0 )
         next if ready.nil?
 

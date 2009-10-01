@@ -131,14 +131,13 @@ class TC_WorkPipes  < Test::Unit::TestCase
   end
 
   def test_no_commands_provided
-    #assert false
+    pipes = WorkPipes.new   
+    jobs = [ "1", "2", "3" ].map { |v| WPop.new v }   
+    exception = assert_raise( RuntimeError ) { pipes.run jobs } 
+    assert_equal( "WorkPipes: no pipes available", exception.message )   
   end
 
   def test_blocking_pipe
-    #assert false
-  end
-
-  def test_preparation_of_jobs
     #assert false
   end
 
