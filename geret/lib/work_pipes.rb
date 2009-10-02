@@ -39,12 +39,7 @@ module Util
         # read end
         ready.first.each do |pipe|
           output = pipe.gets
-          if output.nil?
-            #raise "WorkPipes: lost assignments?" unless assigned[pipe].empty?
-            pipe.close
-            @pipes.delete pipe
-            next
-          end
+          raise "WorkPipes: pipe '#{@commands[pipe]}' ended" if output.nil?
           jobs[ assigned[pipe].shift ].send( @destination, output )
         end
 
