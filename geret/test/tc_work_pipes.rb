@@ -118,9 +118,12 @@ class TC_WorkPipes  < Test::Unit::TestCase
     assert_equal( ['1st', '2nd'], worker.keys.sort )
   end
 
-  def test_failing_pipe
-    #assert false
-  end
+#  def test_stderr_pipe
+#    pipes = WorkPipes.new [ "#{@dir}/pipe1.rb 1st", "#{@dir}/pipe_stderr.rb" ]
+#    jobs = [ "1", "2", "3", "2", "3", "2", "3" ].map { |v| WPop.new v }
+#    exception = assert_raise( RuntimeError ) { pipes.run jobs } 
+#    assert_equal( "WorkPipes: pipe '#{@dir}/pipe_stderr.rb' wrote to stderr", exception.message )      
+#  end
 
   def test_ending_pipe
     pipes = WorkPipes.new [ "#{@dir}/pipe1.rb 1st", "#{@dir}/pipe_ending.rb 2" ]
