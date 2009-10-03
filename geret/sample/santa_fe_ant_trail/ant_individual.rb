@@ -2,6 +2,31 @@
 $: << 'sample/santa_fe_ant_trail'
 require 'ant'
 
+class AntIndividualSingleObjectiveTcc < Individual
+
+  def initialize( mapper, genotype )
+    super
+
+    @fitness = nil
+  end
+ 
+  attr_reader :fitness
+
+  def fitness= val
+    @fitness = val.to_i
+  end
+
+  def <=> other
+    other.fitness <=> self.fitness
+  end
+
+  def stopping_condition
+    @fitness >= 89
+  end
+ 
+end
+
+
 class AntIndividualSingleObjective < Individual
 
   def initialize( mapper, genotype )

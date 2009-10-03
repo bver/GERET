@@ -19,6 +19,8 @@ class AlgorithmBase
     @crossover = @cfg.factory('crossover')
     @mutation = @cfg.factory('mutation')   
 
+    @evaluator = @cfg.factory('evaluator') unless @cfg['evaluator'].nil? 
+
     @steps = 0
 
     return @report    
@@ -68,6 +70,9 @@ class AlgorithmBase
       end
 
     end
+
+    @evaluator.run population if defined? @evaluator
+  
   end
 
   def init_chromozome hash

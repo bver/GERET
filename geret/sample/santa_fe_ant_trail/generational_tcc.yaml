@@ -1,0 +1,69 @@
+---
+algorithm:
+  class: Generational
+
+  population_size: 500
+  elite_size: 50
+
+  probabilities:
+    crossover: 0.9
+    mutation: 0.01
+    injection: 0.9
+
+  termination:
+    max_steps: 1000
+    on_individual: stopping_condition
+
+  init:
+    method: ramped # grow or full or ramped
+    sensible_depth: 7   
+
+  inject:
+    method: grow # grow or full or random
+    sensible_depth: 7   
+ 
+grammar:
+  class: Abnf::File
+  filename: sample/santa_fe_ant_trail/grammar_tcc.abnf
+
+mapper:
+  class: DepthLocus
+
+elite_rank:
+  class: Ranking
+  order_by: :fitness  #optional
+  direction: :maximize #optional 
+
+selection:
+  class: Tournament # RankRoulette
+  tournament_size: 2
+selection_rank: #optional
+  class: Ranking
+        
+crossover:
+  class: CrossoverRipple
+  margin: 2 #1
+  step: 2
+ 
+mutation:
+  class: Mutation
+  magnitude: 16
+
+store:
+  class: Store
+  filename: ./ant_generational_tcc.store
+ 
+report:
+  class: AntReport
+  require: sample/santa_fe_ant_trail/ant_report.rb
+
+individual:
+  class: AntIndividualSingleObjectiveTcc
+  require: sample/santa_fe_ant_trail/ant_individual.rb
+  shorten_chromozome: true 
+ 
+evaluator:
+  class: WorkPipes
+  commands: 
+    - 'sample/santa_fe_ant_trail/ant_pipe.rb sample/santa_fe_ant_trail/ant_evaluate.c'
+

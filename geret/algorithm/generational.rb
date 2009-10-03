@@ -30,6 +30,8 @@ class Generational < AlgorithmBase
       new_population << individual if individual.valid?
     end
 
+    @evaluator.run new_population if defined? @evaluator
+
     @report['numof_crossovers'] << @cross   
     @report['numof_injections'] << @injections
     @report['numof_copies'] << @copies
