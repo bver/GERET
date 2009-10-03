@@ -25,6 +25,7 @@ require 'lib/individual'
 require 'lib/truncation'
 require 'lib/round_robin'
 require 'lib/pareto_tourney'
+require 'lib/work_pipes'
 
 require 'algorithm/generational'
 require 'algorithm/steady_state'
