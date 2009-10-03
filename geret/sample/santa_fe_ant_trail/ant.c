@@ -131,12 +131,22 @@ void show_scene()
 
 int ahead_x()
 {
-  return ( x + DirX[dir] ) % GridWidth;
+  int xx = x + DirX[dir];
+  if( xx < 0 )
+    return 0;
+  if( xx >= GridWidth )
+    return GridWidth-1;
+  return xx;
 }
 
 int ahead_y()
 {
-  return ( y + DirY[dir] ) % GridHeight; 
+  int yy = y + DirY[dir];
+  if( yy < 0 )
+    return 0;
+  if( yy >= GridHeight )
+    return GridHeight-1;
+  return yy;
 }
 
 
