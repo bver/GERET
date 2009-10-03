@@ -115,7 +115,7 @@ void left()
 
 BOOL food_ahead()
 {
-  return Food == grid[ ahead_y() ][ ahead_x() ] ? TRUE : FALSE;
+  return ( Food == grid[ ahead_y() ][ ahead_x() ] ) ? TRUE : FALSE;
 }
 
 void show_scene()
