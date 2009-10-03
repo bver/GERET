@@ -31,12 +31,16 @@ module Util
 
       assigned = {}
       index = 0
+      watchdog = 100000
       while index < jobs.size or assigned.values.detect { |t| !t.empty? }
+        watchdog -= 1
+        raise "WorkPipes: watchdog barked" if watchdog <= 0
+
         raise "WorkPipes: no pipes available" if @pipes.empty?
-        ready = select( @pipes, @pipes, nil, 0 ) # [$stderr], 0 )
+        ready = select( @pipes, @pipes, nil, 0 )
         next if ready.nil?
 
-        # error end
+        # error end - does not work, Open3.popen3 either
         #raise "WorkPipes: pipe '#{@commands[ready.last.first]}' wrote to stderr'" unless ready.last.empty?
        
         # read end
@@ -44,6 +48,7 @@ module Util
           output = pipe.gets
           raise "WorkPipes: pipe '#{@commands[pipe]}' ended" if output.nil?
           jobs[ assigned[pipe].shift ].send( @destination, output )
+          watchdog = 100000         
         end
 
         # write end
@@ -55,6 +60,7 @@ module Util
           assigned[pipe] = tasks
           pipe.puts input
           index += 1
+          watchdog = 100000         
         end
 
       end
