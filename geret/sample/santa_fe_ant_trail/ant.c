@@ -109,7 +109,7 @@ void left()
 {
   if( steps >= MaxSteps )
     return;
-  dir = Right[ dir ];
+  dir = Left[ dir ];
   steps++;
 }
 
