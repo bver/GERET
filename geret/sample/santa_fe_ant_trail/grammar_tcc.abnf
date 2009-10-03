@@ -1,0 +1,10 @@
+; start symbol is <code>
+
+code = line / code line
+
+line = if-statement / op
+
+if-statement = "if( food_ahead() ) {" LF line "} else {" LF line "}" LF
+
+op = "left();" LF / "right();" LF / "move();" LF
+
