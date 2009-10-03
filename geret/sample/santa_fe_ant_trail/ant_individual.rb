@@ -15,6 +15,7 @@ class AntIndividualSingleObjectiveTcc < Individual
   attr_reader :fitness
 
   def fitness= val
+    raise "FAILED:\nval: #{val}\n#{@phenotype}" if /^\d+$/ !~ val
     @fitness = val.to_i
   end
 
