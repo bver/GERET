@@ -7,6 +7,8 @@ class AntIndividualSingleObjectiveTcc < Individual
   def initialize( mapper, genotype )
     super
 
+    @phenotype += "\nMARKER\n" unless @phenotype.nil?
+
     @fitness = nil
   end
  

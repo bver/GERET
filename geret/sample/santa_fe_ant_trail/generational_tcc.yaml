@@ -65,5 +65,6 @@ individual:
 evaluator:
   class: WorkPipes
   commands: 
-    - 'sample/santa_fe_ant_trail/ant_pipe.rb sample/santa_fe_ant_trail/ant_evaluate.c'
+    - 'sample/santa_fe_ant_trail/ant_pipe.rb sample/santa_fe_ant_trail/ant_evaluate.c 1'
+    - 'sample/santa_fe_ant_trail/ant_pipe.rb sample/santa_fe_ant_trail/ant_evaluate.c 2'
 
