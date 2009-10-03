@@ -5,7 +5,7 @@ require 'lib/validator'
 
 ###
 
-abort "use:\n #$0 some.abnf > canonical.abnf\n" unless ARGV.size==1
+abort "use:\n #$0 some.abnf\n" unless ARGV.size==1
 
 begin
 
