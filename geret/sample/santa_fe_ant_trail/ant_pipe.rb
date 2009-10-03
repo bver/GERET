@@ -4,7 +4,7 @@ AntLib = "#{File.dirname(__FILE__)}/ant.c"
 ProgramSource = '/tmp/tcc_ant_source.c'
 
 abort "use:\n #$0 ant_main.c\n" unless ARGV.size==1
-main = IO.read ARGV[1]
+main = IO.read ARGV[0]
 lib = IO.read AntLib
 
 code = ''
@@ -18,9 +18,9 @@ $stdin.each do |line|
     $stdout.flush
 
     code = ''
+  else
+    code += line
   end
-
-  code += line
 
 end
 
