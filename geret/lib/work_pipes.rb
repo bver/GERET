@@ -8,11 +8,13 @@ module Util
       @commands = {}
       @destination = dest
       @source = src
+      @timeout = 120
       self.commands = cmds unless cmds.nil?
     end
 
     attr_accessor :destination
     attr_accessor :source
+    attr_accessor :timeout
 
     def commands
       @pipes.map { |pipe| @commands[pipe] }
@@ -31,12 +33,12 @@ module Util
 
       assigned = {}
       index = 0
-      watchdog = 100000
+      restart_watchdog
       while index < jobs.size or assigned.values.detect { |t| !t.empty? }
-        watchdog -= 1
-        raise "WorkPipes: watchdog barked" if watchdog <= 0
+        raise "WorkPipes: watchdog barked" if watchdog_barking?
 
         raise "WorkPipes: no pipes available" if @pipes.empty?
+
         ready = select( @pipes, @pipes, nil, 0 )
         next if ready.nil?
 
@@ -48,7 +50,7 @@ module Util
           output = pipe.gets
           raise "WorkPipes: pipe '#{@commands[pipe]}' ended" if output.nil?
           jobs[ assigned[pipe].shift ].send( @destination, output )
-          watchdog = 100000         
+          restart_watchdog         
         end
 
         # write end
@@ -60,7 +62,7 @@ module Util
           assigned[pipe] = tasks
           pipe.puts input
           index += 1
-          watchdog = 100000         
+          restart_watchdog        
         end
 
       end
@@ -70,6 +72,16 @@ module Util
       @pipes.each { |pipe| pipe.close }
       @pipes = []
       @commands = {}
+    end
+
+    protected
+
+    def restart_watchdog
+      @watchdog = Time.now.tv_sec     
+    end
+
+    def watchdog_barking?
+      Time.now.tv_sec - @watchdog >= @timeout 
     end
 
   end

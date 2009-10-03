@@ -141,11 +141,14 @@ class TC_WorkPipes  < Test::Unit::TestCase
 
   def test_blocking_pipe
     pipes = WorkPipes.new [ "#{@dir}/pipe1.rb 1st", "#{@dir}/pipe_blocking.rb" ]
+
+    assert_equal( 120, pipes.timeout )
+    pipes.timeout = 2
+    assert_equal( 2, pipes.timeout )
+
     jobs = [ "1", "2", "3", "2", "3", "2", "3" ].map { |v| WPop.new v }
     exception = assert_raise( RuntimeError ) { pipes.run jobs } 
     assert_equal( "WorkPipes: watchdog barked", exception.message )      
   end
 
-  def test_lost_assignments_xpt
-  end
 end
