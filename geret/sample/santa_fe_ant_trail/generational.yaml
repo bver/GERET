@@ -2,7 +2,7 @@
 algorithm:
   class: Generational
 
-  population_size: 500
+  population_size: 1000
   elite_size: 50
 
   probabilities:
