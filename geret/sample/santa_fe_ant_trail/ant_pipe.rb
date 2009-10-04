@@ -1,11 +1,12 @@
 #!/usr/bin/ruby
 
 AntLib = "#{File.dirname(__FILE__)}/ant.c"
+AntMain = "#{File.dirname(__FILE__)}/ant_evaluate.c"
 
-abort "use:\n #$0 ant_main.c ID\n" unless ARGV.size==2
-main = IO.read ARGV[0]
+abort "use:\n #$0 ID\n" unless ARGV.size==1
+main = IO.read AntMain 
 lib = IO.read AntLib
-program = "/tmp/tcc_ant_source_#{ARGV[1]}.c"
+program = "/tmp/tcc_ant_source_#{ARGV[0]}.c"
 
 code = ''
 $stdin.each do |line|

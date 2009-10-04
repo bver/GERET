@@ -65,6 +65,15 @@ individual:
 evaluator:
   class: WorkPipes
   commands: 
-    - 'sample/santa_fe_ant_trail/ant_pipe.rb sample/santa_fe_ant_trail/ant_evaluate.c 1'
-    - 'sample/santa_fe_ant_trail/ant_pipe.rb sample/santa_fe_ant_trail/ant_evaluate.c 2'
+    - 'sample/santa_fe_ant_trail/ant_pipe.rb ONE'
+    - 'sample/santa_fe_ant_trail/ant_pipe.rb TWO'
+   
+# for the remote pipe configuration, use:
+#
+#   - 'ssh user@host "/full/path/to/geret/sample/santa_fe_ant_trail/ant_pipe.rb ID"'
+#
+# note the ssh connection must use public/private key pair (no password) for authentication. 
+# (see eg. http://www.petefreitag.com/item/532.cfm 
+# or  http://www.debian-administration.org/article/SSH_with_authentication_key_instead_of_password )
+    
 
