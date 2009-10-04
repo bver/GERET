@@ -101,16 +101,6 @@ module Mapper
       @track_support.push TrackNode.new( symbol_token.data, index, index )
     end
    
-    def read_genome_rule( genome, rule )
-      if not @wraps_to_fading.nil? and @used_length > @wraps_to_fading*genome.size     
-        @used_length += 1
-        terminal = rule.find {|alt| alt.recursivity == :terminating }
-        return 0 if terminal.nil? # desperate case (only :cyclic or :infinite alts found)
-        return rule.index( terminal )
-      end  
-      read_genome( genome, rule.size )   
-    end
-
     def read_genome( genome, choices )
       return 0 if choices == 1 and @consume_trivial_codons == false     
    
@@ -121,7 +111,18 @@ module Mapper
    
     def pick_rule( symbol, genome )
       rule = @grammar.fetch( symbol )
-      alt_index = polymorphism( symbol, read_genome_rule( genome, rule ) )
+
+      # respect fading strategy:
+      if not @wraps_to_fading.nil? and @used_length > @wraps_to_fading*genome.size     
+        @used_length += 1
+        terminal = rule.find {|alt| alt.recursivity == :terminating }
+        faded_index = 0 if terminal.nil? # desperate case (only :cyclic or :infinite alts found)
+        faded_index = rule.index( terminal )
+      else  
+        faded_index = read_genome( genome, rule.size )
+      end
+
+      alt_index = polymorphism( symbol, faded_index )
       alt_index = alt_index.divmod( rule.size ).last 
       alt = rule.at alt_index
       return alt.deep_copy
