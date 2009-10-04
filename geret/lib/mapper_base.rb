@@ -23,7 +23,7 @@ module Mapper
     # The required parameter is the grammar (Mapper::Grammar).
     # 
     # Optional wraps_to_fail argument specifies the maximal number of genotype wrappings. If the genotype vector is used
-    # wraps_to_fail times, the maping fails. Default is 1.
+    # repetitively wraps_to_fail times, the maping fails. Default is 1.
     #  
     # Optional wraps_to_fading argument specifies the number of genotype wrappings during which all possible 
     # (:terminating and/or :cyclic) rule alternations (Mapper::RuleAlt) can be selected from. 
@@ -70,14 +70,15 @@ module Mapper
       tokens.first.track = [] if @track_support_on
       @used_length = 0
       @track_support = nil 
-      
+      length_limit = @wraps_to_fail*genome.size
+
       until ( selected_indices = find_nonterminals( tokens ) ).empty?
       
-        return nil if enough_wrapping genome       
+        return nil if @used_length > length_limit
         selected_index = pick_locus( selected_indices, genome )
         selected_token = tokens[selected_index]
 
-        return nil if enough_wrapping genome
+        return nil if @used_length > length_limit
         expansion = pick_rule( selected_token.data, genome )
         expansion.each { |t| t.depth = selected_token.depth+1 }
         track_expansion( selected_token, expansion ) if @track_support_on
@@ -100,14 +101,6 @@ module Mapper
       @track_support.push TrackNode.new( symbol_token.data, index, index )
     end
    
-    def enough_wrapping genome
-      if @used_length > @wraps_to_fail*genome.size
-        @used_length -= 1
-        return true
-      end
-      false
-    end
-    
     def read_genome_rule( genome, rule )
       if not @wraps_to_fading.nil? and @used_length > @wraps_to_fading*genome.size     
         @used_length += 1

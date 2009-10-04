@@ -127,14 +127,14 @@ class TC_Mappers < Test::Unit::TestCase
     assert_equal( 1, m.wraps_to_fail ) #default value
 
     assert_equal( nil, m.phenotype( genotype1 ) ) 
-    assert_equal( genotype1.size * m.wraps_to_fail, m.used_length )
+    assert( genotype1.size * m.wraps_to_fail < m.used_length )
     assert_equal( nil, m.phenotype( genotype2 ) ) 
-    assert_equal( genotype2.size * m.wraps_to_fail, m.used_length )
+    assert( genotype2.size * m.wraps_to_fail < m.used_length )
 
     m.wraps_to_fail = 2
     assert_equal( 2, m.wraps_to_fail )
     assert_equal( nil, m.phenotype( genotype1 ) ) 
-    assert_equal( genotype1.size * m.wraps_to_fail, m.used_length )
+    assert( genotype1.size * m.wraps_to_fail < m.used_length )
     assert_equal( '(y +(x +y))', m.phenotype( genotype2 ) ) 
     assert_equal( 7, m.used_length )
 
@@ -150,14 +150,14 @@ class TC_Mappers < Test::Unit::TestCase
     assert_equal( 1, m.wraps_to_fail ) #default value
 
     assert_equal( nil, m.phenotype( genotype1 ) ) 
-    assert_equal( genotype1.size * m.wraps_to_fail, m.used_length )
+    assert( genotype1.size * m.wraps_to_fail < m.used_length )
     assert_equal( nil, m.phenotype( genotype2 ) ) 
-    assert_equal( genotype2.size * m.wraps_to_fail, m.used_length )
+    assert( genotype2.size * m.wraps_to_fail < m.used_length )
 
     m.wraps_to_fail = 2
     assert_equal( 2, m.wraps_to_fail )
     assert_equal( nil, m.phenotype( genotype1 ) ) 
-    assert_equal( genotype1.size * m.wraps_to_fail, m.used_length )
+    assert( genotype1.size * m.wraps_to_fail < m.used_length )
     assert_equal( '(y +(x +y))', m.phenotype( genotype2 ) ) 
     assert_equal( 7*2, m.used_length )
   end
@@ -170,7 +170,7 @@ class TC_Mappers < Test::Unit::TestCase
     assert_equal( nil, m.wraps_to_fading ) #default value
 
     assert_equal( nil, m.phenotype( genotype1 ) ) 
-    assert_equal( genotype1.size * m.wraps_to_fail, m.used_length )
+    assert( genotype1.size * m.wraps_to_fail < m.used_length )
 
     m.wraps_to_fail = 3
     m.wraps_to_fading = 2
@@ -222,7 +222,7 @@ class TC_Mappers < Test::Unit::TestCase
     assert_equal( nil, m.wraps_to_fading ) #default value
 
     assert_equal( nil, m.phenotype( genotype1 ) ) 
-    assert_equal( genotype1.size * m.wraps_to_fail, m.used_length )
+    assert( genotype1.size * m.wraps_to_fail < m.used_length )
 
     m.wraps_to_fail = 3
     m.wraps_to_fading = 2
