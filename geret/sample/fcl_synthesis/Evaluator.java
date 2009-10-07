@@ -1,4 +1,5 @@
 //export CLASSPATH=".:./jFuzzyLogic_2.0.6.jar"
+//java Evaluator < ruleblock.fcl
 
 /*
  * adapted from original jFuzzyLogic's net/sourceforge/jFuzzyLogic/test/TestTipper.java 
@@ -15,14 +16,25 @@ public class Evaluator {
         // Read RULEBLOCK from stdin
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String rules = "";
-        String s;
-        while ((s = in.readLine()) != null) {
-          rules += s;
+        String line;
+
+        while ( (line = in.readLine() ) != null) {
+          rules += line;
           rules += "\n";
+
+          if( line.equalsIgnoreCase( "END_RULEBLOCK" ) ) {
+            //System.out.println(rules);
+
+            // Do evaluate if there is a complete RULEBLOCK present
+            evaluateRuleBlock(rules);
+
+            rules = "";
+          }
         }
 
-        System.out.println(rules);
+    }
 
+    private static void evaluateRuleBlock( String rules ) throws Exception { 
 		// Create FCL system
 		String fcl = "FUNCTION_BLOCK tipper\n" + //
 		"\n" + //
@@ -53,17 +65,7 @@ public class Evaluator {
 		"   METHOD : COG;\n" + //
 		"   DEFAULT := 0;\n" + //
 		"END_DEFUZZIFY\n" + //
-		"\n" + //
-		"RULEBLOCK No1\n" + //
-		"   ACCU : MAX;\n" + //
-		"   AND : MIN;\n" + //
-		"   ACT : MIN;\n" + //
-		"\n" + //
-		"   RULE 1 : IF service IS poor OR food is rancid THEN tip IS cheap;\n" + //
-		"   RULE 2 : IF service IS good THEN tip IS average; \n" + //
-		"   RULE 3 : IF service IS excellent AND food IS delicious THEN tip is generous;\n" + //
-		"END_RULEBLOCK\n" + //
-		"\n" + //
+		"\n" + rules + "\n" + //
 		"END_FUNCTION_BLOCK\n";
 
 		FIS fis = FIS.createFromString(fcl, true);

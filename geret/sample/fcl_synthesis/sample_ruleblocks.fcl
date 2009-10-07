@@ -1,0 +1,31 @@
+RULEBLOCK No1
+	AND : MIN;		
+    ACT : MIN;
+	ACCU : MAX;
+
+	RULE 1 : IF service IS poor OR food is rancid THEN tip IS cheap;
+	RULE 2 : IF service IS good THEN tip IS average; 
+	RULE 3 : IF service IS excellent AND food IS delicious THEN tip is generous;
+END_RULEBLOCK
+
+
+RULEBLOCK No1
+	AND : MIN;		
+    ACT : MIN;
+	ACCU : MAX;
+
+	RULE 1 : IF service IS poor OR food is rancid THEN tip IS cheap;
+	RULE 2 : IF service IS good THEN tip IS average; 
+END_RULEBLOCK
+
+
+RULEBLOCK No1
+	AND : MIN;		
+    ACT : MIN;
+	ACCU : MAX;
+
+	RULE 1 : IF service IS poor THEN tip IS cheap;
+	RULE 2 : IF service IS good THEN tip IS average; 
+	RULE 3 : IF service IS excellent AND food IS delicious THEN tip is generous;
+END_RULEBLOCK
+
