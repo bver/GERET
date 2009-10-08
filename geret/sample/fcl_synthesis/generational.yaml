@@ -2,7 +2,7 @@
 algorithm:
   class: Generational
 
-  population_size: 500
+  population_size: 700
   elite_size: 50
 
   probabilities:
@@ -31,7 +31,7 @@ mapper:
 
 elite_rank:
   class: Ranking
-  order_by: :fitness  
+  order_by: :error  
   direction: :minimize 
 
 selection:
@@ -64,9 +64,9 @@ individual:
  
 evaluator:
   class: WorkPipes
-  destination: error=
+  destination: 'error='
   commands: 
-    - 'cd sample/fcl_synthesis/ &&  CLASSPATH=".:./jFuzzyLogic_2.0.6.jar" java Evaluator'
-   
-   
-
+#    - ssh swirl 'cd /home/pavel/numergence/g/geret/sample/fcl_synthesis && CLASSPATH=".:./jFuzzyLogic_2.0.6.jar" java Evaluator'
+#    - ssh swirl 'cd /home/pavel/numergence/g/geret/sample/fcl_synthesis && CLASSPATH=".:./jFuzzyLogic_2.0.6.jar" java Evaluator'
+    - 'cd sample/fcl_synthesis/ && CLASSPATH=".:./jFuzzyLogic_2.0.6.jar" java Evaluator'
+        

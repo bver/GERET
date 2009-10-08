@@ -37,7 +37,7 @@ class FclReport < ReportText
     end
     sorted = uniq.values.sort { |a,b| a.error <=> b.error }
     text = "\n"
-    sorted[0...10].each { |i| text += "#{count[i.phenotype]}*[#{i.error}, #{i.used_length}] #{i.phenotype}\n" }
+    sorted[0...10].each { |i| text += "#{count[i.phenotype]}*[#{i.error}, #{i.used_length}]\n" }
     text += "..." if sorted.size > 10
     self['phenotypes'] << text
    
