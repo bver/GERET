@@ -1,9 +1,13 @@
 
 block = "RULEBLOCK main" LF 
-         "  AND : MIN;" LF 
-         "  ACCU : MAX;" LF
+         operator_definition ";" LF 
+         accumulation_method ";" LF
          rules
          "END_RULEBLOCK"
+
+operator_definition = "  AND : " ( "MIN" / "PROD" / "BDIF" )
+
+accumulation_method = "  ACCU : " ( "MAX" / "BSUM" / "NSUM" )
 
 rules = "  RULE 1 : " rule 
       [ "  RULE 2 : " rule
@@ -23,9 +27,9 @@ subcondition = positive_subcondition
 
 positive_subcondition = food_subcondition / service_subcondition
 
-food_subcondition = "food IS " ( "rancid" / "delicious" ) 
+food_subcondition = "food IS " [ "NOT " ] ( "rancid" / "delicious" ) 
 
-service_subcondition = "service IS " ( "poor" / "good" / "excellent" ) 
+service_subcondition = "service IS " [ "NOT " ] ( "poor" / "good" / "excellent" ) 
 
 conclusion = "tip IS " ( "cheap"/ "average" / "generous" )
 

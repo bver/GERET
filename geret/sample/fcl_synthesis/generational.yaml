@@ -15,7 +15,7 @@ algorithm:
     on_individual: stopping_condition
 
   init:
-    method: grow # grow or full or ramped
+    method: ramped # grow or full or ramped
     sensible_depth: 7   
 
   inject:
