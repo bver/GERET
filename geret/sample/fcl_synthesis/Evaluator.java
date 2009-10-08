@@ -1,5 +1,5 @@
 //export CLASSPATH=".:./jFuzzyLogic_2.0.6.jar"
-//java Evaluator < ruleblock.fcl
+//java Evaluator < sample_ruleblock.fcl
 
 /*
  * adapted from original jFuzzyLogic's net/sourceforge/jFuzzyLogic/test/TestTipper.java 

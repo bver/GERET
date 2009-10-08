@@ -1,0 +1,36 @@
+
+block = "RULEBLOCK main" LF 
+         operator_definition ";" LF 
+         accumulation_method ";" LF
+         rules
+         "END_RULEBLOCK"
+
+operator_definition = "  AND : " ( "MIN" / "PROD" / "BDIF" )
+
+accumulation_method = "  ACCU : " ( "MAX" / "BSUM" / "NSUM" )
+
+rules = "  RULE 1 : " rule 
+      [ "  RULE 2 : " rule
+      [ "  RULE 3 : " rule 
+      [ "  RULE 4 : " rule 
+      [ "  RULE 5 : " rule ]]]]
+
+rule = "IF " condition " THEN " conclusion ";" LF
+
+condition = subcondition [ bool_operator condition ]
+ 
+bool_operator = " AND " / " OR "
+
+subcondition = positive_subcondition 
+             / ( "NOT ( " positive_subcondition " ) " )
+             / ( " ( " positive_subcondition " ) " )
+
+positive_subcondition = food_subcondition / service_subcondition
+
+food_subcondition = "food IS " [ "NOT " ] ( "rancid" / "delicious" ) 
+
+service_subcondition = "service IS " [ "NOT " ] ( "poor" / "good" / "excellent" ) 
+
+conclusion = "tip IS " ( "cheap"/ "average" / "generous" )
+
+
