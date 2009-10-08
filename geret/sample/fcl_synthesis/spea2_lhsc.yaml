@@ -1,0 +1,69 @@
+---
+algorithm:
+  class: Spea2
+
+  population_size: 300
+  max_archive_size: 200
+
+  shorten_archive_individual: true 
+ 
+  probabilities:
+    crossover: 0.5
+    mutation: 0.01
+    injection: 0.9
+
+  init:
+    method: ramped # grow or full or ramped
+    sensible_depth: 7   
+
+  inject:
+    method: grow # grow or full or random
+    sensible_depth: 7   
+ 
+  termination:
+    max_steps: 1000
+    on_individual: stopping_condition
+
+grammar:
+  class: Abnf::File
+  filename: sample/fcl_synthesis/grammar.abnf
+
+mapper:
+  class: DepthFirst
+  wraps_to_fail: 3
+  track_support_on: true        
+
+selection:
+  class: Tournament
+  tournament_size: 2
+selection_rank: # do not change
+  class: Spea2Ranking
+         
+crossover:
+  class: CrossoverLHS
+ 
+mutation:
+  class: Mutation
+  magnitude: 16
+
+store:
+  class: Store
+  filename: ./fcl_spea2_lhsc.store
+
+report:
+  class: FclReport
+  require: sample/fcl_synthesis/fcl_report.rb
+
+individual:
+  class: FclIndividualMOWeak
+  require: sample/fcl_synthesis/fcl_individual.rb
+  shorten_chromozome: false 
+  
+evaluator:
+  class: WorkPipes
+  destination: 'error='
+  commands: 
+    - ssh swirl 'cd /home/pavel/numergence/g/geret/sample/fcl_synthesis && CLASSPATH=".:./jFuzzyLogic_2.0.6.jar" java Evaluator'
+    - ssh swirl 'cd /home/pavel/numergence/g/geret/sample/fcl_synthesis && CLASSPATH=".:./jFuzzyLogic_2.0.6.jar" java Evaluator'
+#    - 'cd sample/fcl_synthesis/ && CLASSPATH=".:./jFuzzyLogic_2.0.6.jar" java Evaluator'
+ 

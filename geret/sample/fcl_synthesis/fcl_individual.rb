@@ -25,3 +25,10 @@ class FclIndividualSingleObjective < Individual
 end
 
 
+
+class FclIndividualMOWeak < FclIndividualSingleObjective
+  include WeakPareto
+  minimize :used_length
+  minimize :error
+end
+
