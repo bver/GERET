@@ -1,5 +1,6 @@
 #!/usr/bin/ruby
 
+require 'rbconfig'
 require 'test/unit'
 require 'lib/work_pipes'
 
@@ -12,12 +13,13 @@ class TC_WorkPipes  < Test::Unit::TestCase
  
   def setup
     @dir = "#{File.dirname(__FILE__)}/data/"
+    @ruby = File.join( Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'] )
   end
 
   def test_basic
-    pipes = WorkPipes.new [ "#{@dir}/pipe1.rb ONE", 
-                            "#{@dir}/pipe1.rb TWO", 
-                            "#{@dir}/pipe1.rb THREE" ]
+    pipes = WorkPipes.new [ "#{@ruby} #{@dir}/pipe1.rb ONE",
+                            "#{@ruby} #{@dir}/pipe1.rb TWO",
+                            "#{@ruby} #{@dir}/pipe1.rb THREE" ]
     jobs = [ "1", "2", "3", "foo", "5", "6", "7" ].map { |v| WPop.new v } 
 
     pipes.run jobs
@@ -44,7 +46,7 @@ class TC_WorkPipes  < Test::Unit::TestCase
     end
     assert_equal( ['ONE', 'THREE', 'TWO'], worker.keys.sort )
 
-    cmds = [ "#{@dir}/pipe1.rb first", "#{@dir}/pipe1.rb second" ] 
+    cmds = [ "#{@ruby} #{@dir}/pipe1.rb first", "#{@ruby} #{@dir}/pipe1.rb second" ]
     pipes.commands = cmds
 
     jobs = [ "1", "2", "3", "foo", "5", "6", "7" ].map { |v| WPop.new v } 
@@ -67,7 +69,7 @@ class TC_WorkPipes  < Test::Unit::TestCase
     pipes = WorkPipes.new
     assert_equal( [], pipes.commands )
 
-    cmds = [ "#{@dir}/pipe1.rb 1st", "#{@dir}/pipe1.rb 2nd" ] 
+    cmds = [ "#{@ruby} #{@dir}/pipe1.rb 1st", "#{@ruby} #{@dir}/pipe1.rb 2nd" ]
     pipes.commands = cmds
     assert_equal( cmds, pipes.commands )
 
@@ -85,7 +87,7 @@ class TC_WorkPipes  < Test::Unit::TestCase
   end
 
   def test_target_source
-    cmds = [ "#{@dir}/pipe1.rb 1st", "#{@dir}/pipe1.rb 2nd" ] 
+    cmds = [ "#{@ruby} #{@dir}/pipe1.rb 1st", "#{@ruby} #{@dir}/pipe1.rb 2nd" ]
     pipes = WorkPipes.new( cmds, 'to=', :from )
     assert_equal( 'to=', pipes.destination )
     assert_equal( :from, pipes.source )
@@ -119,14 +121,14 @@ class TC_WorkPipes  < Test::Unit::TestCase
   end
 
 #  def test_stderr_pipe
-#    pipes = WorkPipes.new [ "#{@dir}/pipe1.rb 1st", "#{@dir}/pipe_stderr.rb" ]
+#    pipes = WorkPipes.new [ "#{@ruby} #{@dir}/pipe1.rb 1st", "#{@ruby} #{@dir}/pipe_stderr.rb" ]
 #    jobs = [ "1", "2", "3", "2", "3", "2", "3" ].map { |v| WPop.new v }
 #    exception = assert_raise( RuntimeError ) { pipes.run jobs } 
 #    assert_equal( "WorkPipes: pipe '#{@dir}/pipe_stderr.rb' wrote to stderr", exception.message )      
 #  end
 
   def test_ending_pipe
-    pipes = WorkPipes.new [ "#{@dir}/pipe1.rb 1st", "#{@dir}/pipe_ending.rb 2" ]
+    pipes = WorkPipes.new [ "#{@ruby} #{@dir}/pipe1.rb 1st", "#{@ruby} #{@dir}/pipe_ending.rb 2" ]
     jobs = [ "1", "2", "3", "2", "3", "2", "3" ].map { |v| WPop.new v }
     exception = assert_raise( RuntimeError ) { pipes.run jobs } 
     assert_equal( "WorkPipes: pipe '#{@dir}/pipe_ending.rb 2' ended", exception.message )      
@@ -140,7 +142,7 @@ class TC_WorkPipes  < Test::Unit::TestCase
   end
 
   def test_blocking_pipe
-    pipes = WorkPipes.new [ "#{@dir}/pipe1.rb 1st", "#{@dir}/pipe_blocking.rb" ]
+    pipes = WorkPipes.new [ "#{@ruby} #{@dir}/pipe1.rb 1st", "#{@ruby} #{@dir}/pipe_blocking.rb" ]
 
     assert_equal( 120, pipes.timeout )
     pipes.timeout = 2
