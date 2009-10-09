@@ -63,6 +63,7 @@ module Util
       self.close
       cmds.each do |cmd| 
         p = IO.popen( cmd, 'r+' )
+        #p.sync = true
         @pipes << p 
         @commands[ p ] = cmd
       end
