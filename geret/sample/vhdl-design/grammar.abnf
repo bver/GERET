@@ -1,0 +1,10 @@
+architecture = "architecture rtl of adder is begin" LF "  s <= " expr ";" LF "  co <= " expr ";" LF "end rtl;" LF
+
+expr = var / subexpr / ( " ( " subexpr " ) " )
+
+subexpr = ( expr op expr ) / ( " not " expr )
+
+op = " and " / " or " / " nand " / " nor " / " xor " / " xnor "
+
+var = "i0" / "i1" / "ci"
+
