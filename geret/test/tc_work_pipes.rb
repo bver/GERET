@@ -131,7 +131,7 @@ class TC_WorkPipes  < Test::Unit::TestCase
     pipes = WorkPipes.new [ "#{@ruby} #{@dir}/pipe1.rb 1st", "#{@ruby} #{@dir}/pipe_ending.rb 2" ]
     jobs = [ "1", "2", "3", "2", "3", "2", "3" ].map { |v| WPop.new v }
     exception = assert_raise( RuntimeError ) { pipes.run jobs } 
-    assert_equal( "WorkPipes: pipe '#{@dir}/pipe_ending.rb 2' ended", exception.message )      
+    assert( /ended$/ =~ exception.message )      
   end
 
   def test_no_commands_provided
