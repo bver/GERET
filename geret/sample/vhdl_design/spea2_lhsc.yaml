@@ -26,7 +26,7 @@ algorithm:
 
 grammar:
   class: Abnf::File
-  filename: sample/vhdl-design/grammar.abnf
+  filename: sample/vhdl_design/grammar.abnf
 
 mapper:
   class: DepthFirst
@@ -61,7 +61,7 @@ individual:
   
 evaluator:
   class: WorkPipes
-  destination: 'error='
+  destination: 'fitness='
   commands: 
     - 'sample/vhdl_design/adder_pipe.rb 1'
  
