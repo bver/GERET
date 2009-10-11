@@ -1,4 +1,6 @@
 
+require 'rbconfig'
+
 module Util
 
   # This class separates GERET engine from the domain-specific scripts.
@@ -75,7 +77,49 @@ module Util
     # for the work script using WorkPipes#source and has to be able to store the work script's output 
     # using the WorkPipes#destination method (eg. the 'fitness=' method).
     # The WorkPipes#run can be called more times (eg. once per population's generation).
-    def run jobs 
+    def run jobs
+      if /win/ =~ Config::CONFIG['host_os']
+        run_select_broken jobs # IO.select is broken on windows
+      else
+        run_select_works jobs
+      end
+    end
+
+    # Terminate all worker scripts.
+    def close
+      @pipes.each { |pipe| pipe.close }
+      @pipes = []
+      @commands = {}
+    end
+
+    protected
+
+    def run_select_broken jobs
+      raise "WorkPipes: no pipes available" if @pipes.empty?
+
+      index = 0
+      while index < jobs.size
+        
+        # feed
+        @pipes.each_with_index do |pipe, pind|
+          break if index+pind >= jobs.size
+          input = jobs[index+pind].send( @source )
+          pipe.puts input
+        end
+
+        # harvest
+        @pipes.each_with_index do |pipe, pind|
+          break if index+pind >= jobs.size
+          output = pipe.gets
+          raise "WorkPipes: pipe '#{@commands[pipe]}' ended" if output.nil?
+          jobs[ index+pind ].send( @destination, output )
+        end
+
+        index += @pipes.size
+      end
+    end
+
+    def run_select_works jobs
 
       assigned = {}
       index = 0
@@ -113,15 +157,6 @@ module Util
 
       end
     end
-
-    # Terminate all worker scripts.
-    def close
-      @pipes.each { |pipe| pipe.close }
-      @pipes = []
-      @commands = {}
-    end
-
-    protected
 
     def restart_watchdog
       @watchdog = Time.now.tv_sec     
