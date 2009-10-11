@@ -24,7 +24,7 @@ algorithm:
  
 grammar:
   class: Abnf::File
-  filename: sample/santa_fe_ant_trail/grammar_tcc.abnf
+  filename: sample/ant_trail_tcc/grammar_tcc.abnf
 
 mapper:
   class: DepthLocus
@@ -55,22 +55,22 @@ store:
  
 report:
   class: AntReport
-  require: sample/santa_fe_ant_trail/ant_report.rb
+  require: sample/ant_trail_tcc/ant_report.rb
 
 individual:
   class: AntIndividualSingleObjectiveTcc
-  require: sample/santa_fe_ant_trail/ant_individual.rb
+  require: sample/ant_trail_tcc/ant_individual.rb
   shorten_chromozome: true 
  
 evaluator:
   class: WorkPipes
   commands: 
-    - 'sample/santa_fe_ant_trail/ant_pipe.rb ONE'
-    - 'sample/santa_fe_ant_trail/ant_pipe.rb TWO'
+    - 'sample/ant_trail_tcc/ant_pipe.rb ONE'
+    - 'sample/ant_trail_tcc/ant_pipe.rb TWO'
    
 # for the remote pipe configuration, use:
 #
-#   - 'ssh user@host "/full/path/to/geret/sample/santa_fe_ant_trail/ant_pipe.rb ID"'
+#   - 'ssh user@host "/full/path/to/geret/sample/ant_trail_tcc/ant_pipe.rb ID"'
 #
 # note the ssh connection must use public/private key pair (no password) for authentication. 
 # (see eg. http://www.petefreitag.com/item/532.cfm 
