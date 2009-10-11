@@ -149,8 +149,12 @@ class TC_WorkPipes  < Test::Unit::TestCase
     assert_equal( 2, pipes.timeout )
 
     jobs = [ "1", "2", "3", "2", "3", "2", "3" ].map { |v| WPop.new v }
-    exception = assert_raise( RuntimeError ) { pipes.run jobs } 
-    assert_equal( "WorkPipes: watchdog barked", exception.message )      
+    exception = assert_raise( RuntimeError ) { pipes.run jobs }
+    if /win/ =~ Config::CONFIG['host_os']
+      assert( /ended$/ =~ exception.message )
+    else
+      assert_equal( "WorkPipes: watchdog barked", exception.message )
+    end
   end
 
 end
