@@ -19,7 +19,7 @@ class VhdlIndividualSingleObjective < Individual
   end
 
   def stopping_condition
-    @fitness >= 16
+    @fitness >= 16 and @used_length <= 70
   end
  
 end
