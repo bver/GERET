@@ -1,0 +1,15 @@
+This demo requires jFuzzyLogic (FCL simulator, see http://jfuzzylogic.sourceforge.net/) installed.
+
+Visit http://jfuzzylogic.sourceforge.net/ and copy downloaded java archive jFuzzyLogic_2.0.6.jar 
+to the current directory, 
+OR
+run ./loadFclEngine.sh which downloads this archive.
+
+The "tipper" FCL program is the simplest possible example of the fuzzy controller
+suitable for evolution by GERET.
+The source of  "tipper" demo is adapted from the jFuzzyLogic page:
+http://jfuzzylogic.sourceforge.net/html/example_fcl.html
+
+
+
+

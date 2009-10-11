@@ -1,0 +1,7 @@
+This demo requires TCC (Tiny C Compiler, see http://bellard.org/tcc/) installed.
+
+Visithttp://bellard.org/tcc/ or install TCC by another way.
+
+Do not forget to add path to "tcc" tool to your PATH environment directory.
+
+

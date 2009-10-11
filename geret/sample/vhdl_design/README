@@ -1,0 +1,11 @@
+This demo requires GHDL (the VHDL simulator, see http://ghdl.free.fr/) installed.
+Visit http://ghdl.free.fr/download.html or install the GHDL package by another way.
+
+Do not forget to add path to "ghdl" tool to your PATH environment directory.
+
+The "adder" circuit is the simplest possible example of the digital circuit
+suitable for evolution by GERET.
+Sources of "adder" demo are adapted from the GHTL manual:
+http://ghdl.free.fr/ghdl/A-full-adder.html
+Please see original copyrights at: http://ghdl.free.fr/ghdl/Copyrights.html 
+
