@@ -1,4 +1,7 @@
- use std.textio.all; --  Imports the standard textio package.
+-- Adapted from the original source: 
+-- http://ghdl.free.fr/ghdl/A-full-adder.html
+
+use std.textio.all; --  Imports the standard textio package.
 
      --  A testbench has no ports.
      entity adder_tb is
@@ -50,8 +53,7 @@
               
               --  Wait for the results.
               wait for 1 ns;
-              --  Check the outputs.
-
+ 
               if s = patterns(i).s then
                  cnt := cnt + 1;
               end if;
@@ -61,8 +63,8 @@
               end if;
 
            end loop;
-           --assert false report "end of test" severity note;
 
+           -- Write the fitness value to stdout:
            write(my_line, cnt);
            writeline (output, my_line);
 

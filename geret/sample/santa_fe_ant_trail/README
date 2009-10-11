@@ -1,0 +1,14 @@
+This is the classic AI benchmark problem. See:
+http://books.google.cz/books?id=5xp8KtosrV8C&pg=PA55&lpg=PA55&dq=santa+fe+ant+trail
+or
+http://bds.ul.ie/libGE/libGE/Santa-Fe-Ant-Trail-Problem.html
+for detailed description.
+
+The ant environment is defined in the trail.txt file, the ant commands ("ant library") is implemented in ant.rb.
+
+Run 
+./animate.rb simple_ant_code.rb
+to see the suboptimal phenotype in action.
+
+No dependencies, pure Ruby code.
+

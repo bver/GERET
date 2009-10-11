@@ -1,7 +1,12 @@
 This demo requires TCC (Tiny C Compiler, see http://bellard.org/tcc/) installed.
 
-Visithttp://bellard.org/tcc/ or install TCC by another way.
+Visit http://bellard.org/tcc/ or install TCC by another way.
 
 Do not forget to add path to "tcc" tool to your PATH environment directory.
 
+This is the classic AI benchmark problem. See sample/santa_fe_ant_trial/README for details.
+
+Run 
+./animate_c.rb winner.c ant_animate.c
+to see the animation of the winner.c phenotype.
 

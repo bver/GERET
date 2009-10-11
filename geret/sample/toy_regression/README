@@ -1,0 +1,8 @@
+Finding the expression:
+y = sin(x) + x + x^2
+using symbolic regression on 20 data samples.
+
+See http://eprints.kfupm.edu.sa/43212/1/43212.pdf (section 3.3 Symbolic Integration) for details.
+
+No dependencies, pure Ruby code.
+
