@@ -29,6 +29,8 @@ class SteadyState < AlgorithmBase
       individual = breed_individual @selection 
       next unless individual.valid?
 
+      @evaluator.run [ individual ] if defined? @evaluator
+
       bad = @replacement.select_one @population
       @population.delete bad
       @population << individual

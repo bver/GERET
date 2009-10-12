@@ -1,0 +1,86 @@
+---
+algorithm:
+  class: SteadyState
+
+  population_size: 800
+
+  probabilities:
+    crossover: 0.5
+    mutation: 0.01
+    injection: 0.9
+
+  termination:
+    max_steps: 2000
+    on_individual: :stopping_condition
+
+  init:
+    method: ramped # grow or full or random or ramped
+    random_magnitude: 16 #same as mutation.magnitude
+    random_length: 8
+    sensible_depth: 5   
+
+  inject: # alternative to a crossover or copy
+    method: grow # grow or full or random
+    random_magnitude: 16 #same as mutation.magnitude
+    random_length: 8
+    sensible_depth: 5   
+   
+grammar:
+  class: Abnf::File
+  filename: sample/ant_trail_tcc/grammar.abnf
+
+mapper:
+  class: BreadthFirst 
+  track_support_on: true
+
+selection:
+  class: Tournament
+#  proportional_by: fitness   
+  tournament_size: 2
+selection_rank: #optional
+  class: Ranking
+
+replacement:
+  class: Tournament # Truncation 
+  tournament_size: 10
+replacement_rank:
+  class: Ranking
+  order_by: :fitness
+  direction: :minimize  
+
+crossover:
+  class: CrossoverLHS
+
+mutation:
+  class: Mutation
+  magnitude: 16 # same as individual.init_magnitude
+
+store:
+  class: Store
+  filename: ./ant_steady_state_tcc.store
+
+report:
+  class: AntReport
+  require: sample/ant_trail_tcc/ant_report.rb
+
+individual:
+  class: AntIndividualMultiObjectiveTcc
+  require: sample/ant_trail_tcc/ant_individual.rb
+  shorten_chromozome: true
+
+evaluator:
+  class: WorkPipes
+  commands: 
+#    - 'sample/ant_trail_tcc/ant_pipe.rb SINGLE'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb SINGLE"'
+
+# no need for establishing more than one pipe
+
+# for the remote pipe configuration, use:
+#
+#   - 'ssh user@host "/full/path/to/geret/sample/ant_trail_tcc/ant_pipe.rb ID"'
+#
+# note the ssh connection must use public/private key pair (no password) for authentication. 
+# (see eg. http://www.petefreitag.com/item/532.cfm 
+# or  http://www.debian-administration.org/article/SSH_with_authentication_key_instead_of_password )
+              

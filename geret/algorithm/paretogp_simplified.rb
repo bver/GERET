@@ -62,6 +62,9 @@ class ParetoGPSimplified < AlgorithmBase
       new_population << individual if individual.valid?
        
     end
+
+    @evaluator.run new_population if defined? @evaluator
+
     @population = new_population
  
     # keep population extremes

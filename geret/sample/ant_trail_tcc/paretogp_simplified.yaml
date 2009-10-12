@@ -1,0 +1,76 @@
+---
+algorithm:
+  class: ParetoGPSimplified
+
+  population_size: 800
+  archive_size: 200 
+
+  generations_per_cascade: 10
+  mutation_probability: 0.00
+  shorten_individual: true
+
+  init:
+    method: ramped # grow or full or ramped
+    sensible_depth: 7   
+
+  termination:
+    max_steps: 1000
+    on_individual: :stopping_condition
+ 
+grammar:
+  class: Abnf::File
+  filename: sample/ant_trail_tcc/grammar.abnf
+
+mapper:
+  class: DepthLocus
+
+population_tourney:
+  class: ParetoTourney # cannot be changed
+  tournament_size: 10
+
+crossover:
+  class: CrossoverRipple
+  margin: 2 #1
+  step: 2
+ 
+mutation:
+  class: Mutation
+  magnitude: 16
+
+store:
+  class: Store
+  filename: ./ant_paretogp_simplified_tcc.store
+       
+report:
+  class: AntReport
+  require: sample/ant_trail_tcc/ant_report.rb
+
+individual:
+  class: AntIndividualMultiObjectiveTcc
+  require: sample/ant_trail_tcc/ant_individual.rb
+  shorten_chromozome: false 
+
+evaluator:
+  class: WorkPipes
+  commands: 
+#    - 'sample/ant_trail_tcc/ant_pipe.rb ONE'
+#    - 'sample/ant_trail_tcc/ant_pipe.rb TWO'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb ONE"'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb TWO"'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb THREE"'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb FOUR"'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb ONE2"'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb TWO2"'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb THREE2"'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb FOUR2"'
+
+
+# for the remote pipe configuration, use:
+#
+#   - 'ssh user@host "/full/path/to/geret/sample/ant_trail_tcc/ant_pipe.rb ID"'
+#
+# note the ssh connection must use public/private key pair (no password) for authentication. 
+# (see eg. http://www.petefreitag.com/item/532.cfm 
+# or  http://www.debian-administration.org/article/SSH_with_authentication_key_instead_of_password )
+          
+ 

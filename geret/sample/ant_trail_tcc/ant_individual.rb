@@ -32,5 +32,10 @@ class AntIndividualMultiObjectiveTcc < AntIndividualSingleObjectiveTcc
   maximize :fitness
 end
 
+class AntIndividualMOWeakTcc < AntIndividualSingleObjectiveTcc
+  include WeakPareto
+  minimize :used_length
+  maximize :fitness
+end
 
 

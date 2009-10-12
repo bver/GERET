@@ -1,0 +1,85 @@
+---
+algorithm:
+  class: Spea2
+
+  population_size: 300
+  max_archive_size: 200
+
+  shorten_archive_individual: true 
+ 
+  probabilities:
+    crossover: 0.5
+    mutation: 0.01
+    injection: 0.9
+
+  init:
+    method: ramped # grow or full or ramped
+    sensible_depth: 7   
+
+  inject:
+    method: grow # grow or full or random
+    sensible_depth: 7   
+ 
+  termination:
+    max_steps: 1000
+    on_individual: stopping_condition
+
+grammar:
+  class: Abnf::File
+  filename: sample/ant_trail_tcc/grammar.abnf
+
+mapper:
+  class: DepthLocus
+
+selection:
+  class: Tournament
+  tournament_size: 2
+selection_rank: # do not change
+  class: Spea2Ranking
+         
+crossover:
+  class: CrossoverRipple
+  margin: 2 #1
+  step: 2
+ 
+mutation:
+  class: Mutation
+  magnitude: 16
+
+store:
+  class: Store
+  filename: ./ant_spea2_tcc.store
+
+report:
+  class: AntReport
+  require: sample/ant_trail_tcc/ant_report.rb
+
+individual:
+  class: AntIndividualMOWeakTcc
+  require: sample/ant_trail_tcc/ant_individual.rb
+  shorten_chromozome: false 
+       
+evaluator:
+  class: WorkPipes
+  commands: 
+#    - 'sample/ant_trail_tcc/ant_pipe.rb ONE'
+#    - 'sample/ant_trail_tcc/ant_pipe.rb TWO'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb ONE"'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb TWO"'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb THREE"'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb FOUR"'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb ONE2"'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb TWO2"'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb THREE2"'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb FOUR2"'
+
+
+# for the remote pipe configuration, use:
+#
+#   - 'ssh user@host "/full/path/to/geret/sample/ant_trail_tcc/ant_pipe.rb ID"'
+#
+# note the ssh connection must use public/private key pair (no password) for authentication. 
+# (see eg. http://www.petefreitag.com/item/532.cfm 
+# or  http://www.debian-administration.org/article/SSH_with_authentication_key_instead_of_password )
+          
+
