@@ -24,7 +24,7 @@ algorithm:
  
 grammar:
   class: Abnf::File
-  filename: sample/ant_trail_tcc/grammar_tcc.abnf
+  filename: sample/ant_trail_tcc/grammar.abnf
 
 mapper:
   class: DepthLocus
@@ -65,9 +65,13 @@ individual:
 evaluator:
   class: WorkPipes
   commands: 
-    - 'sample/ant_trail_tcc/ant_pipe.rb ONE'
-    - 'sample/ant_trail_tcc/ant_pipe.rb TWO'
-   
+#    - 'sample/ant_trail_tcc/ant_pipe.rb ONE'
+#    - 'sample/ant_trail_tcc/ant_pipe.rb TWO'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb ONE"'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb TWO"'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb THREE"'
+    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb FOUR"'
+
 # for the remote pipe configuration, use:
 #
 #   - 'ssh user@host "/full/path/to/geret/sample/ant_trail_tcc/ant_pipe.rb ID"'

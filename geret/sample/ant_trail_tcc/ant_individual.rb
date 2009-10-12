@@ -26,4 +26,11 @@ class AntIndividualSingleObjectiveTcc < Individual
  
 end
 
+class AntIndividualMultiObjectiveTcc < AntIndividualSingleObjectiveTcc
+  include Pareto
+  minimize :used_length
+  maximize :fitness
+end
+
+
 

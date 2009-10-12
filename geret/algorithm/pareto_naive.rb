@@ -77,7 +77,8 @@ class ParetoNaive < AlgorithmBase
 
     # exploitation part
     pipe = []
-    while new_population.size < @population_size
+    exploitation_pop = []
+    while exploitation_pop.size+new_population.size < @population_size
       pipe = Util.permutate parents if pipe.size < 2
 
       parent1, parent2 = [ pipe.shift, pipe.shift ]
@@ -85,12 +86,14 @@ class ParetoNaive < AlgorithmBase
       chromozome1 = @mutation.mutation chromozome1 if rand < @mutation_probability 
         
       new_individual = @cfg.factory( 'individual', @mapper, chromozome1 ) 
-      new_population << new_individual if new_individual.valid?
+      exploitation_pop << new_individual if new_individual.valid?
       new_individual = @cfg.factory( 'individual', @mapper, chromozome2 ) 
-      new_population << new_individual if new_individual.valid?
+      exploitation_pop << new_individual if new_individual.valid?
     end
 
     # next generation
+    @evaluator.run exploitation_pop if defined? @evaluator
+    new_population.concat exploitation_pop   
     @population = new_population.clone
 
     # update archive

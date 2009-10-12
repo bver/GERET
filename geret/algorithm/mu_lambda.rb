@@ -35,6 +35,8 @@ class MuLambda < AlgorithmBase
       lambda_population << individual if individual.valid?
     end
 
+    @evaluator.run lambda_population if defined? @evaluator
+
     lambda_population.concat @population if @comma_or_plus == 'plus'
 
     @population = @selection.select( @population_size - elite_population.size, lambda_population )

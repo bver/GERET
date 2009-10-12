@@ -8,7 +8,8 @@ algorithm:
 
   mutation_probability: 0.00
   shorten_individual: true 
- 
+  keep_extremes: false 
+
   init:
     method: ramped # grow or full or ramped
     sensible_depth: 7   
