@@ -101,16 +101,19 @@ module Mapper
   class Rule < Array
     
     # Initialize the Rule from the ary argument (ie. from the Enumerable of RuleAlts)
-    # The recursive argument will be copied into self.recursivity attribute. 
-    def initialize( ary=nil, recursive=nil )
+    # The recursive and sn_altering arguments will be copied into self.recursivity and 
+    # self.sn_altering attribute, respectively. 
+    #  
+    def initialize( ary=nil, recursive=nil, sn_altering=nil )
       super ary unless ary.nil?
       @recursivity = recursive
+      @sn_altering = sn_altering
     end 
 
     # Return a deep copy of the instance.     
     def deep_copy
       rule = map {|r| r.deep_copy } 
-      Rule.new( rule, @recursivity )
+      Rule.new( rule, @recursivity, @sn_altering )
     end
 
     # The Rule (symbol) recursivity used in Validator.analyze_recursivity process (see).
@@ -121,6 +124,12 @@ module Mapper
     #   
     attr_accessor :recursivity   
 
+    # The sn_altering (structural/nodal altering) attribute is used in Validator.analyze_sn_altering process (see).
+    # Allowed values are:
+    #   :structural ... the mutation on this position can result in the structural change of the phenotype.
+    #   :nodal ... the mutation on this position cannot result in the structural change (the decision tree is unchanged).
+    #
+    attr_accessor :sn_altering
   end
 
 end

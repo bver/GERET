@@ -19,11 +19,17 @@ begin
   puts "undefined symbols: " + format_syms( undefined )
   unused = Mapper::Validator.check_unused g
   puts "not referenced symbols: " + format_syms( unused )
+  puts ''
 
-  puts ":terminating symbols: " + format_syms( g.symbols.find_all {|s| g[s].recursivity == :terminating } )
-  puts ":cyclic symbols: " + format_syms( g.symbols.find_all {|s| g[s].recursivity == :cyclic } )
-  puts ":infinite symbols: " + format_syms( g.symbols.find_all {|s| g[s].recursivity == :infinite } )
+  puts "recursivity :terminating symbols: " + format_syms( g.symbols.find_all {|s| g[s].recursivity == :terminating } )
+  puts "recursivity :cyclic symbols: " + format_syms( g.symbols.find_all {|s| g[s].recursivity == :cyclic } )
+  puts "recursivity :infinite symbols: " + format_syms( g.symbols.find_all {|s| g[s].recursivity == :infinite } )
   puts "grammar is #{g[g.start_symbol].recursivity}."
+  puts ''
+
+  Validator.analyze_sn_altering g
+  puts "altering :structural symbols: " + format_syms( g.symbols.find_all {|s| g[s].sn_altering == :structural } )
+  puts "altering :nodal symbols: " + format_syms( g.symbols.find_all {|s| g[s].sn_altering == :nodal } )
 
 rescue => msg
   abort msg

@@ -107,6 +107,27 @@ module Mapper
       gram
     end
 
+    # For all grammar's symbols fill :sn_altering attributes.
+    # These attributes (see Grammar#sn_altering) are used by MutationStructural and MutationNodal classes (see).
+    # Note the grammar argument is altered (no grammar.clone is done)
+    def Validator.analyze_sn_altering grammar  
+      
+      grammar.each_value do |rule|
+
+        rule.sn_altering = :nodal
+        subsyms = nil
+        rule.each do |alts|
+          sub = alts.find_all {|token| token.type == :symbol }
+          subsyms = sub if subsyms.nil?
+          next if subsyms == sub
+          rule.sn_altering = :structural
+          break
+        end
+      end
+
+      grammar
+    end
+
   protected 
 
     def Validator.recursivity_over container

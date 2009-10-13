@@ -31,11 +31,11 @@ class TC_Grammar < Test::Unit::TestCase
     grammar1 = Grammar.new( { 
       'expr' => Rule.new( [ 
                   RuleAlt.new( [ Token.new( :symbol, 'op' ) ], :terminating )
-                ], :cyclic ),
+                ], :cyclic, :structural ),
 
        'op'  => Rule.new( [ 
                   RuleAlt.new( [ Token.new( :symbol, 'expr', 42 ) ], :cyclic )
-                ], :infinite )
+                ], :infinite, :nodal )
     }, 'expr' )
 
     grammar2 = grammar1.deep_copy
@@ -60,7 +60,15 @@ class TC_Grammar < Test::Unit::TestCase
     grammar1['expr'].first.recursivity = :cyclic
     assert_equal( :cyclic, grammar1['expr'].first.recursivity )
     assert_equal( :terminating, grammar2['expr'].first.recursivity )
- 
+
+    grammar1['expr'].sn_altering = :nodal
+    assert_equal( :nodal, grammar1['expr'].sn_altering )
+    assert_equal( :structural, grammar2['expr'].sn_altering )
+
+    grammar1['op'].sn_altering = :structural
+    assert_equal( :structural, grammar1['op'].sn_altering )
+    assert_equal( :nodal, grammar2['op'].sn_altering )
+  
   end
  
 end

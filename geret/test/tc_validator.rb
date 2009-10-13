@@ -210,5 +210,83 @@ class TC_Validator < Test::Unit::TestCase
      assert_equal( :cyclic, gram['loop3'][0].recursivity )
      assert_equal( :terminating, gram['loop3'][1].recursivity ) 
   end
+
+  def test_structural_nodal_support
+    grammar = Grammar.new( { 
+      'start' => Rule.new( [   # nodal
+                   RuleAlt.new( [ 
+                     Token.new( :literal, 'one' ),
+                     Token.new( :symbol, 'potential' ), 
+                     Token.new( :literal, 'two' ),                   
+                   ] ),
+                   RuleAlt.new( [ 
+                     Token.new( :symbol, 'potential' ), 
+                     Token.new( :literal, 'three' ),                   
+                   ] ),
+                 ] ),
+      'potential' => Rule.new( [ # structural 
+                   RuleAlt.new( [  
+                     Token.new( :literal, 'one' ),
+                     Token.new( :symbol, 'term1' ), 
+                   ] ),
+                   RuleAlt.new( [ 
+                     Token.new( :symbol, 'term2' ), 
+                     Token.new( :symbol, 'term1' ),                   
+                   ] ),
+                 ] ),                
+      'term1' => Rule.new( [ # nodal 
+                   RuleAlt.new( [ 
+                     Token.new( :literal, 'TERM1' ),
+                   ] ),
+                 ] ),                
+      'term2' => Rule.new( [ # nodal 
+                   RuleAlt.new( [  
+                     Token.new( :literal, 'TERM2' ),
+                   ] ),
+                   RuleAlt.new( [ 
+                     Token.new( :literal, 'TERM3' ),
+                     Token.new( :literal, 'TERM1' ),                    
+                   ] ),
+                 ] ),                
+      'loop1' => Rule.new( [  # nodal
+                   RuleAlt.new( [
+                     Token.new( :symbol, 'loop2' ), 
+                     Token.new( :symbol, 'loop2' ),                   
+                   ] ),
+                 ] ),                
+      'loop2' => Rule.new( [ # structural 
+                   RuleAlt.new( [ 
+                     Token.new( :symbol, 'loop3' ), 
+                   ] ),
+                   RuleAlt.new( [ 
+                     Token.new( :symbol, 'loop1' ),                   
+                   ] ),
+                 ] ),                
+      'loop3' => Rule.new( [  # nodal
+                   RuleAlt.new( [ 
+                      Token.new( :literal, 'TERM3' ),
+                      Token.new( :symbol, 'loop1' ), 
+                   ] ),
+                   RuleAlt.new( [ 
+                     Token.new( :symbol, 'loop1' ), 
+                   ] ),
+                   RuleAlt.new( [ 
+                     Token.new( :symbol, 'loop1' ), 
+                     Token.new( :literal, 'TERM' ),                    
+                   ] ),
+                
+                 ] ),                
+     }, 'start' )
+   
+     Validator.analyze_sn_altering grammar
+
+     assert_equal( :nodal, grammar[ 'start' ].sn_altering )
+     assert_equal( :structural, grammar[ 'potential' ].sn_altering ) 
+     assert_equal( :nodal, grammar[ 'term1' ].sn_altering )    
+     assert_equal( :nodal, grammar[ 'term2' ].sn_altering )    
+     assert_equal( :nodal, grammar[ 'loop1' ].sn_altering )       
+     assert_equal( :structural, grammar[ 'loop2' ].sn_altering )   
+     assert_equal( :nodal, grammar[ 'loop3' ].sn_altering )      
+  end
 end
 
