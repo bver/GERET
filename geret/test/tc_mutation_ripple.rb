@@ -2,7 +2,7 @@
 
 require 'test/unit'
 require 'test/mock_rand'
-require 'lib/mutation'
+require 'lib/mutation_ripple'
 
 include Operator
 
