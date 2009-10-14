@@ -52,7 +52,7 @@ crossover:
   margin: 1
 
 mutation:
-  class: Mutation
+  class: MutationRipple
   magnitude: 16 # same as individual.init_magnitude
 
 store:

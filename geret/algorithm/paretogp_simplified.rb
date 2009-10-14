@@ -54,10 +54,14 @@ class ParetoGPSimplified < AlgorithmBase
       parent1, parent2 = [ population_pipe.shift, archive_pipe.shift ]
       chromozome1, chromozome2 = @crossover.crossover( parent1.genotype, parent2.genotype, parent1.track_support, parent2.track_support )     
 
-      chromozome1 = @mutation.mutation chromozome1 if rand < @mutation_probability 
+      individual = @cfg.factory( 'individual', @mapper, chromozome1 )
+      if individual.valid? and rand < @mutation_probability      
+        chromozome1 = @mutation.mutation( chromozome1, individual.track_support )
+        individual = @cfg.factory( 'individual', @mapper, chromozome1 ) 
+      end
         
-      individual = @cfg.factory( 'individual', @mapper, chromozome1 ) 
       new_population << individual if individual.valid?
+
       individual = @cfg.factory( 'individual', @mapper, chromozome2 ) 
       new_population << individual if individual.valid?
        

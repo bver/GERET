@@ -21,7 +21,7 @@ class MutationRipple
   # Select the random position within the orig vector and mutate it.
   # The resultant value (of a mutated codon) is a random number in the range 0..magnitude.
   # Return the mutated copy of the orig. genotype.
-  def mutation orig
+  def mutation( orig, dummy=nil )
     mutant = orig.clone
     max = @magnitude.nil? ? mutant.max+1 : @magnitude
     where = @random.rand( orig.size )

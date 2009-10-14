@@ -42,7 +42,7 @@ crossover:
   class: CrossoverLHS 
 
 mutation:
-  class: Mutation
+  class: MutationNodal
   magnitude: 16
 
 store:

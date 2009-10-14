@@ -17,7 +17,7 @@ class AlgorithmBase
     @grammar = @cfg.factory('grammar')
     @mapper = @cfg.factory('mapper', @grammar)
     @crossover = @cfg.factory('crossover')
-    @mutation = @cfg.factory('mutation')   
+    @mutation = @cfg.factory('mutation', @grammar)   
 
     @evaluator = @cfg.factory('evaluator') unless @cfg['evaluator'].nil? 
 

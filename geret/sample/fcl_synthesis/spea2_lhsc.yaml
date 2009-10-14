@@ -43,7 +43,7 @@ crossover:
   class: CrossoverLHS
  
 mutation:
-  class: Mutation
+  class: MutationRipple
   magnitude: 16
 
 store:

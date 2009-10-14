@@ -43,7 +43,7 @@ crossover:
   step: 2
  
 mutation:
-  class: Mutation
+  class: MutationRipple
   magnitude: 16
 
 store:

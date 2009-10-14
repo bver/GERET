@@ -37,12 +37,14 @@ module BreedIndividual
       end
     end
    
-    if rand < @probabilities['mutation']
-      chromozome = @mutation.mutation chromozome   
+    individual = @cfg.factory( 'individual', @mapper, chromozome )    
+    if individual.valid? and rand < @probabilities['mutation']
+      chromozome = @mutation.mutation( chromozome, individual.track_support )
+      individual = @cfg.factory( 'individual', @mapper, chromozome )
       @mutate += 1
     end
       
-    return @cfg.factory( 'individual', @mapper, chromozome ) 
+    return individual
   end
   
 end
