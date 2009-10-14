@@ -42,9 +42,9 @@ begin
     [ "--howmuch", '-n', GetoptLong::REQUIRED_ARGUMENT ],
     [ "--help", '-h', GetoptLong::NO_ARGUMENT ]
   )
- 
-  depth = 3
+
   howmuch = 1
+  depth_arg = nil
   recursivity = [:cyclic]
   opts.each do |opt, arg|
     case opt
@@ -56,7 +56,7 @@ begin
         end 
         exit 0
       when '--depth'
-        depth = arg.to_i
+        depth_arg = arg.to_i
       when '--method'
         case arg
         when 'full'
@@ -70,14 +70,24 @@ begin
         howmuch = arg.to_i     
     end
   end
-  
+
   raise "Missing config.yaml argument, try --help" if ARGV.length != 1
-  
   config = ConfigYaml.new ARGV.shift
+  if not depth_arg.nil?
+    depth = depth_arg
+  elsif config['algorithm'].nil? or 
+        config['algorithm']['init'].nil? or 
+        config['algorithm']['init']['sensible_depth'].nil?
+    depth = 3
+  else
+    depth = config['algorithm']['init']['sensible_depth'].to_i 
+  end
+ 
   grammar = config.factory('grammar')
   mapper = config.factory('mapper', grammar)
+
   howmuch.times { puts mapper.generate( recursivity, depth ).inspect }
- 
+
 rescue => msg
   abort msg.to_s
 end
