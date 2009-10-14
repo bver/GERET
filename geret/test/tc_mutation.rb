@@ -9,7 +9,7 @@ include Operator
 class TC_Mutation < Test::Unit::TestCase
 
   def test_basic
-    m = Mutation.new
+    m = MutationRipple.new
     m.random = MockRand.new [{6=>3}, {7=>2}]
     orig = [1, 2, 3, 4, 5, 6]
     mutant = m.mutation orig
@@ -18,7 +18,7 @@ class TC_Mutation < Test::Unit::TestCase
   end
 
   def  test_magnitude
-    m = Mutation.new 100
+    m = MutationRipple.new nil, 100
     assert_equal( 100, m.magnitude )
 
     m.random = MockRand.new [{6=>3}, {100=>42}]
@@ -27,7 +27,7 @@ class TC_Mutation < Test::Unit::TestCase
     assert_equal( [1, 2, 3, 42, 5, 6], mutant )
     assert_equal( [1, 2, 3, 4, 5, 6], orig ) 
    
-    assert_equal( nil, Mutation.new.magnitude )
+    assert_equal( nil, MutationRipple.new.magnitude )
   end
 
 end

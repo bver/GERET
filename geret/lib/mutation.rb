@@ -3,10 +3,10 @@ module Operator
 
 # Simple mutation. It assumes the source genotype has the form of the Array of numbers.
 #
-class Mutation
+class MutationRipple
 
   # Create the mutation operator with default settings.
-  def initialize magnitude=nil
+  def initialize dummy=nil, magnitude=nil
     @random = Kernel
     @magnitude = magnitude
   end
