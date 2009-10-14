@@ -16,7 +16,7 @@
 #    set method ('full' or 'grow', default is 'full')
 #
 # -d <D>, --depth=<D>:
-#    use D levels for generation (default is 3)
+#    use D levels for generation (default is yaml/algorithm/init/sensible_depth or 3)
 #
 # config.yaml is a configuration file with [grammar] and [mapper] sections.
 # for instance:
