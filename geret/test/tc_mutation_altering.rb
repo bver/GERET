@@ -98,5 +98,36 @@ class TC_MutationAltering < Test::Unit::TestCase
     assert_equal( [2, 2, 0, 123, 1, 1, 0], mutant )
   end
 
+  def test_nfo_not_found
+    track2 = [
+      Mapper::TrackNode.new( 'expr', 0, 6 ),
+      Mapper::TrackNode.new( 'expr', 1, 4 ),
+      Mapper::TrackNode.new( 'expr', 2, 2 ),
+      Mapper::TrackNode.new( 'expr', 4, 4 ),
+      Mapper::TrackNode.new( 'expr', 6, 6 )
+    ]
+
+    m = MutationStructural.new @grammar1
+ 
+    m.random = MockRand.new []
+    mutant = m.mutation( @parent1, track2 )
+
+    assert_equal( @parent1, mutant )
+
+
+    track3 = [
+      Mapper::TrackNode.new( 'aop', 3, 3 ), 
+      Mapper::TrackNode.new( 'aop', 5, 5 )
+    ]
+
+    m = MutationNodal.new @grammar1
+ 
+    m.random = MockRand.new []
+    mutant = m.mutation( @parent1, track3 )
+
+    assert_equal( @parent1, mutant )
+   
+  end
+
 end
 

@@ -30,6 +30,7 @@ module Operator
       mutant = orig.clone
       max = @magnitude.nil? ? mutant.max+1 : @magnitude
       filtered_track = track.find_all { |node| @grammar[ node.symbol ].sn_altering == filter }
+      return mutant if filtered_track.empty?
       where = @random.rand( filtered_track.size )
       index = filtered_track[where].from 
       mutant[ index ] = @random.rand( max )
