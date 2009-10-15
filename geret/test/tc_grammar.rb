@@ -30,11 +30,11 @@ class TC_Grammar < Test::Unit::TestCase
   def test_deep_copy
     grammar1 = Grammar.new( { 
       'expr' => Rule.new( [ 
-                  RuleAlt.new( [ Token.new( :symbol, 'op' ) ], :terminating )
+                  RuleAlt.new( [ Token.new( :symbol, 'op' ) ], :terminating, 12 )
                 ], :cyclic, :structural ),
 
        'op'  => Rule.new( [ 
-                  RuleAlt.new( [ Token.new( :symbol, 'expr', 42 ) ], :cyclic )
+                  RuleAlt.new( [ Token.new( :symbol, 'expr', 42 ) ], :cyclic, 33 )
                 ], :infinite, :nodal )
     }, 'expr' )
 
@@ -60,6 +60,11 @@ class TC_Grammar < Test::Unit::TestCase
     grammar1['expr'].first.recursivity = :cyclic
     assert_equal( :cyclic, grammar1['expr'].first.recursivity )
     assert_equal( :terminating, grammar2['expr'].first.recursivity )
+
+    grammar1['expr'].first.arity = 11
+    assert_equal( 12, grammar2['expr'].first.arity )   
+    grammar1['op'].first.arity = 1
+    assert_equal( 33, grammar2['op'].first.arity )   
 
     grammar1['expr'].sn_altering = :nodal
     assert_equal( :nodal, grammar1['expr'].sn_altering )

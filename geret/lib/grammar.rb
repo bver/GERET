@@ -69,15 +69,17 @@ module Mapper
     # Initialize the array of the rules.
     # The src argument is the instance of an array of Mapper::Token instances. 
     # The recursive argument will be copied into self.recursivity attribute.
-    def initialize( ary=nil, recursive=nil )
+    # The arity argument will be copied into self.arity attribute. 
+    def initialize( ary=nil, recursive=nil, arity=nil )
       super ary unless ary.nil? 
       @recursivity = recursive
+      @arity = arity
     end 
 
     # Return a deep copy of the instance.   
     def deep_copy
       alt = map {|t| Token.new( t.type, t.data, t.depth ) } 
-      RuleAlt.new( alt, @recursivity )
+      RuleAlt.new( alt, @recursivity, @arity )
     end
 
     # The RuleAlt recursivity used in Validator.analyze_recursivity process (see), based on nonterminal :symbol-ic Token-s.
@@ -87,6 +89,10 @@ module Mapper
     #   :terminating .. the RuleAlt does not contain :infinite nor :cyclic :symbol-s (ie. contains only :literal-s). 
     #   
     attr_accessor :recursivity
+
+    # The RuleAlt arity used id Validator.analyze_arity process (see). 
+    # 'arity' is the number of tokens with type == :symbol in the RuleAlt 
+    attr_accessor :arity
 
   end
  

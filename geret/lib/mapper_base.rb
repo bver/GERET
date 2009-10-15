@@ -40,6 +40,7 @@ module Mapper
     def initialize( grammar, wraps_to_fail=1, wraps_to_fading=nil, consume_trivial_codons=true )
       @grammar = Validator.analyze_recursivity grammar 
       Validator.analyze_sn_altering @grammar     
+      Validator.analyze_arity @grammar
       @wraps_to_fail = wraps_to_fail
       @wraps_to_fading = wraps_to_fading
       @consume_trivial_codons = consume_trivial_codons 
@@ -61,6 +62,16 @@ module Mapper
     
     # The output array of the TrackNodes. (See Operator::CrossoverLHS and Mapper::TrackNode for explanation.)
     attr_reader :track_support
+
+    # The complexity of the expression is the complexity of its root node. 
+    # The complexity of the node i is recursively defined as:
+    #    complexity(i) = node_count(i) + sum_over_all_subnodes_of_i( complexity(subnode) )
+    #    node_count(i) = 1 + sum_over_all_subnodes_of_i( node_count(subnode) )
+    #
+    # See:
+    # http://www.evolved-analytics.com/selected_publications/legacy_publications/gptp-04_pareto-front_exploi.html   
+    #
+    attr_reader :complexity
     
     # Take the genome (the vector of Fixnums) and use it for the genotype->phenotype mapping.
     # Returns the phenotype string (or nil if the mapping process fails).
@@ -71,6 +82,7 @@ module Mapper
       tokens.first.track = [] if @track_support_on
       @used_length = 0
       @track_support = nil 
+      @complexity = 1 
       length_limit = @wraps_to_fail*genome.size
 
       until ( selected_indices = find_nonterminals( tokens ) ).empty?
@@ -82,7 +94,10 @@ module Mapper
         return nil if @used_length > length_limit
         expansion = pick_rule( selected_token.data, genome )
         expansion.each { |t| t.depth = selected_token.depth+1 }
+
+        @complexity += selected_token.depth * expansion.arity + 1
         track_expansion( selected_token, expansion ) if @track_support_on
+
         tokens[selected_index,1] = expansion
 
       end

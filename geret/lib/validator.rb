@@ -110,6 +110,7 @@ module Mapper
     # For all grammar's symbols fill :sn_altering attributes.
     # These attributes (see Grammar#sn_altering) are used by MutationStructural and MutationNodal classes (see).
     # Note the grammar argument is altered (no grammar.clone is done)
+    #
     def Validator.analyze_sn_altering grammar  
       
       grammar.each_value do |rule|
@@ -126,6 +127,17 @@ module Mapper
       end
 
       grammar
+    end
+
+    # Fill the :arity attribute of each RuleAlt in the grammar. It is used later by the Mapping::Base process
+    # for the Mapper#complexity calculation.
+    # 
+    def Validator.analyze_arity grammar
+      grammar.each_value do |rule|
+        rule.each do |alt|
+          alt.arity = ( alt.find_all { |token| token.type == :symbol } ).size
+        end
+      end
     end
 
   protected 

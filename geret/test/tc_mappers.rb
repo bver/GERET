@@ -35,13 +35,19 @@ class TC_Mappers < Test::Unit::TestCase
 
     assert_equal( '((x +y) *x)', m.phenotype( [2, 2, 0, 0, 1, 1, 0] ) )
     assert_equal( 7, m.used_length )
+    assert_equal( 11, m.complexity )
+   
     assert_equal( '((x +y) *x)', m.phenotype( [5, 8, 3, 4, 1, 3, 6, 5, 3] ) )
     assert_equal( 7, m.used_length )
+    assert_equal( 11, m.complexity )
 
     assert_equal( '(y *(x +y))', m.phenotype( [2, 1, 1, 2, 0, 0, 1] ) )   
     assert_equal( 7, m.used_length )   
+    assert_equal( 11, m.complexity )   
+
     assert_equal( '(y *(x +y))', m.phenotype( [2, 4, 3, 5, 0, 6, 1, 3, 5] ) )      
     assert_equal( 7, m.used_length )   
+    assert_equal( 11, m.complexity )   
   end
 
   def test_breadth_first
@@ -51,13 +57,19 @@ class TC_Mappers < Test::Unit::TestCase
 
     assert_equal( '((x +y) *x)', m.phenotype( [2, 2, 1, 0, 0, 0, 1] ) )      
     assert_equal( 7, m.used_length )
+    assert_equal( 11, m.complexity )     
+
     assert_equal( '((x +y) *x)', m.phenotype( [2, 5, 1, 3, 6, 2, 4, 5, 3] ) )
     assert_equal( 7, m.used_length )
+    assert_equal( 11, m.complexity )     
 
     assert_equal( '(y *(x +y))', m.phenotype( [2, 1, 1, 2, 0, 0, 1] ) )   
     assert_equal( 7, m.used_length )   
+    assert_equal( 11, m.complexity )  
+
     assert_equal( '(y *(x +y))', m.phenotype( [2, 4, 3, 5, 0, 6, 1, 3, 5] ) )      
     assert_equal( 7, m.used_length )   
+    assert_equal( 11, m.complexity )     
   end
 
   def test_depth_locus
@@ -68,10 +80,12 @@ class TC_Mappers < Test::Unit::TestCase
     assert_equal( '((x +y) *(y +x))', 
                  m.phenotype( [0,2,  2,2,  1,0,  0,1,  0,0,  0,2,  1,0,  0,0,  0,1,  0,1] ) )      
     assert_equal( 20, m.used_length )   
+    assert_equal( 17, m.complexity )     
 
     assert_equal( '((x +y) *(y +x))', 
                  m.phenotype( [9,2,  5,5,  4,4,  2,7,  8,3,  0,8,  7,2,  6,0,  1,4,  3,1,  4,2,  1,3] ) )
     assert_equal( 20, m.used_length )
+    assert_equal( 17, m.complexity )        
   end
 
   def test_breadth_locus
@@ -82,9 +96,11 @@ class TC_Mappers < Test::Unit::TestCase
     assert_equal( '((x +y) *(y +x))', 
                  m.phenotype( [0,2,  2,2,  1,1,  0,2,  0,0,  0,0,  1,1,  0,1,  0,0,  0,0] ) )      
     assert_equal( 20, m.used_length )   
+    assert_equal( 17, m.complexity )        
     assert_equal( '((x +y) *(y +x))', 
                  m.phenotype( [4,5,  8,2,  3,3,  0,8,  6,6,  5,2,  1,4,  9,7,  2,4,  1,0,  4,2,  1,3] ) )
     assert_equal( 20, m.used_length )   
+    assert_equal( 17, m.complexity )        
   end
 
   def test_depth_bucket
