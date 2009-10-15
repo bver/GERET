@@ -20,6 +20,11 @@ class ToyReport < ReportText
     self['usedlen_max'] << max
     self['usedlen_avg'] << avg
 
+    min, max, avg, n = Util.statistics( population.map { |individual| individual.complexity } )
+    self['complexity_min'] << min
+    self['complexity_max'] << max
+    self['complexity_avg'] << avg
+   
     min, max, avg, n = Util.statistics( population.map { |individual| individual.genotype.size } )
     self['gensize_min'] << min
     self['gensize_max'] << max
@@ -27,7 +32,7 @@ class ToyReport < ReportText
 
     best = population.min do |a,b| 
       c = a.error <=> b.error
-      (c == 0)? a.used_length <=> b.used_length  : c 
+      (c == 0)? a.complexity <=> b.complexity  : c 
     end
     self['best_phenotype'] << best.phenotype
 
@@ -40,7 +45,7 @@ class ToyReport < ReportText
     end
     sorted = uniq.values.sort { |a,b| a.error <=> b.error }
     text = "\n"
-    sorted[0...10].each { |i| text += "#{count[i.phenotype]}*[#{i.error}, #{i.used_length}] #{i.phenotype}\n" }
+    sorted[0...10].each { |i| text += "#{count[i.phenotype]}*[#{i.error}, (#{i.used_length}) #{i.complexity}] #{i.phenotype}\n" }
     text += "..." if sorted.size > 10
     self['phenotypes'] << text
    

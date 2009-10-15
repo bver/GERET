@@ -40,8 +40,11 @@ class ToyIndividualSingleObjective < Individual
 
   def initialize( mapper, genotype )
     super
+    @complexity = mapper.complexity
     evaluate
   end
+
+  attr_reader :complexity
 
   def <=> other
     self.error <=> other.error
@@ -55,13 +58,13 @@ end
 
 class ToyIndividualMultiObjective < ToyIndividualSingleObjective
   include Pareto
-  minimize :used_length
+  minimize :complexity
   minimize :error
 end
 
 class ToyIndividualMOStrict < ToyIndividualSingleObjective
   include Pareto
-  minimize :used_length
+  minimize :complexity
   minimize :error
 
   def valid?
@@ -75,7 +78,7 @@ end
 
 class ToyIndividualMOWeak < ToyIndividualSingleObjective
   include WeakPareto
-  minimize :used_length
+  minimize :complexity
   minimize :error
 
   def stopping_condition
