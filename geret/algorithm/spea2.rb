@@ -58,17 +58,11 @@ class Spea2 < AlgorithmBase
     @ranker.population = combined
 
     @archive = @ranker.environmental_selection @max_archive_size
+
     @selection.population = @archive
-
-    @cross, @injections, @mutate, @copies = 0, 0, 0, 0
-    @population = []
-    while @population.size < @population_size
-      individual = breed_individual @selection 
-      @population << individual if individual.valid?
-    end
+   
+    @population = breed_by_selector( @selection, @population_size )
  
-    @evaluator.run @population if defined? @evaluator
-
     @report['numof_crossovers'] << @cross   
     @report['numof_injections'] << @injections
     @report['numof_copies'] << @copies
