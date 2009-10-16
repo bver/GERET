@@ -20,17 +20,9 @@ class Generational < AlgorithmBase
     @report << "--------- step #{@steps += 1}" 
     @report.report @population 
 
-    new_population = elite @population
-
-    @selection.population = @population  
-
-    @cross, @injections, @mutate, @copies = 0, 0, 0, 0
-    while new_population.size < @population_size
-      individual = breed_individual @selection 
-      new_population << individual if individual.valid?
-    end
-
-    @evaluator.run new_population if defined? @evaluator
+    parent_population = @selection.select( @population_size - @elite_size, @population )
+    new_population = breed_population( parent_population, @population_size - @elite_size )
+    new_population.concat elite( @population )
 
     @report['numof_crossovers'] << @cross   
     @report['numof_injections'] << @injections

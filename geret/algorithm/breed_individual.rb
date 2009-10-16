@@ -50,6 +50,7 @@ module BreedIndividual
   def breed_population( parent_population, required_size )
     robin = RoundRobin.new parent_population
     children = []
+    @cross, @injections, @mutate = 0, 0, 0, 0
 
     while children.size < required_size
       if rand < @probabilities['crossover']  
