@@ -19,14 +19,16 @@ module ToyRegression
     @error = Inf
 
     return if @phenotype.nil? 
-    @@engine.code = @phenotype
 
     error = 0.0
-    @@required_values.each_with_index do |required,index|
-      point = index*2*PI/Samples
-      value = @@engine.run( 'x' => point )
-      return if value.nil?
-      error += ( value - required ).abs
+    begin
+      @@required_values.each_with_index do |required,index|
+        point = index*2*PI/Samples
+        value = eval( "x = #{point};" + @phenotype )
+        error += ( value - required ).abs
+      end
+    rescue
+      return
     end
     
     return if error.nan?
