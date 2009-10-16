@@ -65,7 +65,6 @@ class Spea2 < AlgorithmBase
  
     @report['numof_crossovers'] << @cross   
     @report['numof_injections'] << @injections
-    @report['numof_copies'] << @copies
     @report['numof_mutations'] << @mutate
   
     @report.report @archive
