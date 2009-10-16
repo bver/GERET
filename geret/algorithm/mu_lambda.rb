@@ -25,17 +25,22 @@ class MuLambda < AlgorithmBase
 
     @cross, @injections, @mutate, @copies = 0, 0, 0, 0
 
-    round_robin = RoundRobin.new Util.permutate( @population )
 
-    lambda_population = []
+    lambda_population = breed_population( Util.permutate( @population ), @lambda_size )
     elite_population = elite @population
 
-    while lambda_population.size < @lambda_size
-      individual = breed_individual round_robin
-      lambda_population << individual if individual.valid?
-    end
+#    round_robin = RoundRobin.new Util.permutate( @population )
+#
+#    lambda_population = []
+#    elite_population = elite @population
+#
+#    while lambda_population.size < @lambda_size
+#      individual = breed_individual round_robin
+#      lambda_population << individual if individual.valid?
+#    end
+#
+#    @evaluator.run lambda_population if defined? @evaluator
 
-    @evaluator.run lambda_population if defined? @evaluator
 
     lambda_population.concat @population if @comma_or_plus == 'plus'
 

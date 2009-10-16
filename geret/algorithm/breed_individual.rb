@@ -46,6 +46,52 @@ module BreedIndividual
       
     return individual
   end
+
+  def breed_population( parent_population, required_size )
+    robin = RoundRobin.new parent_population
+    children = []
+
+    while children.size < required_size
+      if rand < @probabilities['crossover']  
+        parent1, parent2 = robin.select 2
+        child1, child2 = @crossover.crossover( parent1.genotype, parent2.genotype, 
+                                               parent1.track_support, parent2.track_support ) 
+
+        individual = @cfg.factory( 'individual', @mapper, child1 )
+        children << individual if individual.valid? 
   
+        individual = @cfg.factory( 'individual', @mapper, child2 )
+        children << individual if individual.valid? 
+
+        @cross += 1       
+      end
+
+      if rand < @probabilities['mutation']
+        parent = robin.select_one
+        child = @mutation.mutation( parent.genotype, parent.track_support )
+  
+        individual = @cfg.factory( 'individual', @mapper, child )
+        children << individual if individual.valid? 
+        
+        @mutate += 1
+      end
+
+      if rand < @probabilities['injection']
+        child1 = init_chromozome @inject
+  
+        individual = @cfg.factory( 'individual', @mapper, child1 )
+        children << individual if individual.valid? 
+
+        @injections += 1
+      end
+
+    end
+    children = children[ 0...required_size ]
+
+    @evaluator.run children if defined? @evaluator
+ 
+    children
+  end
+
 end
 
