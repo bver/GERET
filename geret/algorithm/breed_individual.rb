@@ -20,44 +20,17 @@ module BreedIndividual
 
   protected
 
-  def breed_individual selection 
-    parent1 = selection.select_one
-
-    if rand < @probabilities['crossover'] 
-      parent2 = selection.select_one
-      chromozome, dummy = @crossover.crossover( parent1.genotype, parent2.genotype, parent1.track_support, parent2.track_support ) 
-      @cross += 1
-    else
-      if rand < @probabilities['injection']
-        chromozome = init_chromozome @inject
-        @injections += 1
-      else
-        chromozome = parent1.genotype # copy
-        @copies +=1
-      end
-    end
-   
-    individual = @cfg.factory( 'individual', @mapper, chromozome )    
-    if individual.valid? and rand < @probabilities['mutation']
-      chromozome = @mutation.mutation( chromozome, individual.track_support )
-      individual = @cfg.factory( 'individual', @mapper, chromozome )
-      @mutate += 1
-    end
-      
-    return individual
-  end
-
-  def breed_population( parent_population, required_size )
-    robin = RoundRobin.new parent_population
-    breed_by_selector( robin, required_size )
-  end
-
-  def breed_by_selector( selector, required_size )
-
+  def breed_individual selector
     children = []
-    @cross, @injections, @mutate = 0, 0, 0, 0
+    breed_few( selector, children ) while children.empty?
+ 
+    @evaluator.run children[0..0] if defined? @evaluator
 
-    while children.size < required_size
+    return children.first
+  end
+
+  def breed_few( selector, children )
+
       if rand < @probabilities['crossover']  
         parent1, parent2 = selector.select 2
         child1, child2 = @crossover.crossover( parent1.genotype, parent2.genotype, 
@@ -90,8 +63,20 @@ module BreedIndividual
 
         @injections += 1
       end
+   
+  end
 
-    end
+  def breed_population( parent_population, required_size )
+    robin = RoundRobin.new parent_population
+    breed_by_selector( robin, required_size )
+  end
+
+  def breed_by_selector( selector, required_size )
+
+    children = []
+    @cross, @injections, @mutate = 0, 0, 0, 0
+
+    breed_few( selector, children ) while children.size < required_size
     children = children[ 0...required_size ]
 
     @evaluator.run children if defined? @evaluator

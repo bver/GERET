@@ -22,14 +22,11 @@ class SteadyState < AlgorithmBase
     @report << "--------- step #{@steps += 1}"
     @report.report @population
 
-    @cross, @injections, @mutate, @copies = 0, 0, 0, 0   
+    @cross, @injections, @mutate = 0, 0, 0  
     @population_size.times do
       @selection.population = @population
       
       individual = breed_individual @selection 
-      next unless individual.valid?
-
-      @evaluator.run [ individual ] if defined? @evaluator
 
       bad = @replacement.select_one @population
       @population.delete bad
@@ -38,7 +35,6 @@ class SteadyState < AlgorithmBase
 
     @report['numof_crossovers'] << @cross   
     @report['numof_injections'] << @injections
-    @report['numof_copies'] << @copies
     @report['numof_mutations'] << @mutate
    
     return @report

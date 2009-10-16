@@ -39,9 +39,18 @@ class Nsga2Individual < Struct.new( :orig, :depth, :crowding, :uniq )
 end
 
 class Nsga2BinaryTournament
+  include SelectMore
+
   attr_accessor :population
 
-  def select_one
+  def select_one population=self.population
+    @population = population
+    select_one_internal      
+  end
+
+  protected
+
+  def select_one_internal
     begin
       candidate1 = @population[ rand(population.size) ] 
       candidate2 = @population[ rand(population.size) ]  
@@ -105,17 +114,18 @@ class Nsga2 < AlgorithmBase
     
     @selection.population = parent_population
 
-    @cross = @injections = @copies = @mutate = 0
-    while @population.size < @population_size * 2
-      individual = breed_individual @selection
-      @population << individual if individual.valid?
-    end
+#    @cross = @injections = @copies = @mutate = 0
+#    while @population.size < @population_size * 2
+#      individual = breed_individual @selection
+#      @population << individual if individual.valid?
+#    end
+#
+#    @evaluator.run @population if defined? @evaluator   
 
-    @evaluator.run @population if defined? @evaluator   
+    @population.concat breed_by_selector( @selection, @population_size )
 
     @report['numof_crossovers'] << @cross   
     @report['numof_injections'] << @injections
-    @report['numof_copies'] << @copies
     @report['numof_mutations'] << @mutate
 
     return @report
