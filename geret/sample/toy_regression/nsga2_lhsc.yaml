@@ -6,8 +6,8 @@ algorithm:
 
   probabilities:
     crossover: 0.5
-    mutation: 0.1
-    injection: 0.4
+    mutation: 0.3
+    injection: 0.5
 
   shorten_individual: true
 
@@ -38,7 +38,7 @@ crossover:
   class: CrossoverLHS
  
 mutation:
-  class: MutationStructural
+  class: MutationNodal
 
 store:
   class: Store
