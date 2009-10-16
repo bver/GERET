@@ -3,8 +3,6 @@ include Math
 
 module ToyRegression
 
-  @@engine = Evaluator.new
-
   Samples = 20
   Inf = (1.0/0.0) 
   def ToyRegression.f index
