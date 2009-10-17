@@ -13,6 +13,7 @@ class MuLambda < AlgorithmBase
   def setup config
     super
     raise "MuLambda: lambda_size < population_size" if @comma_or_plus == 'comma' and @lambda_size < @population_size
+    @population = load_or_init( @store, @population_size )   
     init_elitism @population_size
     @report.next    
     return @report    
@@ -30,11 +31,6 @@ class MuLambda < AlgorithmBase
 
     @population = @selection.select( @population_size - elite_population.size, lambda_population )
     @population.concat elite_population
-
-    @report['numof_crossovers'] << @cross   
-    @report['numof_injections'] << @injections
-    @report['numof_copies'] << @copies
-    @report['numof_mutations'] << @mutate
 
     return @report
   end

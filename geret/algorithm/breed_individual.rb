@@ -3,24 +3,6 @@ module BreedIndividual
   
   attr_accessor :inject
 
-  def setup config
-    super
-
-    unless @cfg['selection'].nil?
-      @selection = @cfg['selection_rank'].nil? ? 
-                   @cfg.factory('selection') : 
-                   @cfg.factory('selection', @cfg.factory('selection_rank') ) 
-    end
-
-    @population = @store.load
-    @population = [] if @population.nil?
-    @report << "loaded #{@population.size} individuals"   
-    @report << "creating #{@population_size - @population.size} individuals"
-    init_population( @population, @population_size )
-
-    return @report 
-  end
-
   protected
 
   def breed_individual selector
@@ -85,6 +67,10 @@ module BreedIndividual
 
     @evaluator.run children if defined? @evaluator
  
+    @report['numof_crossovers'] << @cross   
+    @report['numof_injections'] << @injections
+    @report['numof_mutations'] << @mutate
+   
     children
   end
 

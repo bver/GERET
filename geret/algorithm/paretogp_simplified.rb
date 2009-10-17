@@ -10,17 +10,13 @@ class ParetoGPSimplified < AlgorithmBase
   def setup config
     super
 
-    @archive = @store.load
-    @archive = [] if @archive.nil?
-    @population = []
-    
-    @report << "loaded #{@archive.size} archive individuals"
-    @report << "creating #{@archive_size - @archive.size} archive individuals"
-    init_population( @archive, @archive_size ) 
-
     @population_tourney = ParetoTourney.new 
     @population_tourney.tournament_size = @tournament_size
 
+    @population = []
+
+    @archive = load_or_init( @store, @archive_size )
+   
     @steps = 0
     @generation = 0
     return @report       

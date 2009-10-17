@@ -10,6 +10,7 @@ class Generational < AlgorithmBase
 
   def setup config
     super
+    @population = load_or_init( @store, @population_size )   
     init_elitism @population_size
     @report.next    
     return @report    
@@ -23,11 +24,6 @@ class Generational < AlgorithmBase
     parent_population = @selection.select( @population_size - @elite_size, @population )
     new_population = breed_population( parent_population, @population_size - @elite_size )
     new_population.concat elite( @population )
-
-    @report['numof_crossovers'] << @cross   
-    @report['numof_injections'] << @injections
-    @report['numof_copies'] << @copies
-    @report['numof_mutations'] << @mutate
 
     @population = new_population
 

@@ -13,6 +13,8 @@ class SteadyState < AlgorithmBase
                  @cfg.factory('replacement') : 
                  @cfg.factory('replacement', @cfg.factory('replacement_rank') ) 
 
+    @population = load_or_init( @store, @population_size )  
+
     @report.next   
     return @report    
   end

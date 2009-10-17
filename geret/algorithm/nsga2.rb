@@ -1,6 +1,8 @@
 
 require 'algorithm/algorithm_base'
 require 'algorithm/breed_individual'
+require 'algorithm/phenotypic_truncation'
+
 
 class Nsga2Individual < Struct.new( :orig, :depth, :crowding, :uniq )
   @@uniq = {}
@@ -62,21 +64,18 @@ end
 class Nsga2 < AlgorithmBase
   
   include BreedIndividual
+  include PhenotypicTruncation
 
   def setup config
     super
 
     @selection = Nsga2BinaryTournament.new
 
-    @population = @store.load
-    @population = [] if @population.nil?
-    @report << "loaded #{@population.size} individuals"   
-    @report << "creating #{@population_size - @population.size} individuals"
-    init_population( @population, @population_size )
-
     @dom_sort = Dominance.new
     @dom_sort.at_least = @population_size
-  
+
+    @population = load_or_init( @store, @population_size )
+
     @report.next    
     return @report 
   end
@@ -116,20 +115,10 @@ class Nsga2 < AlgorithmBase
     
     @selection.population = parent_population
 
-#    @cross = @injections = @copies = @mutate = 0
-#    while @population.size < @population_size * 2
-#      individual = breed_individual @selection
-#      @population << individual if individual.valid?
-#    end
-#
-#    @evaluator.run @population if defined? @evaluator   
-
     new_populaton = breed_by_selector( @selection, @population_size )
     @population.concat new_populaton
 
-    @report['numof_crossovers'] << @cross   
-    @report['numof_injections'] << @injections
-    @report['numof_mutations'] << @mutate
+    phenotypic_truncation( @population, 0 )
 
     return @report
   end

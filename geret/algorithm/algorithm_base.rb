@@ -19,6 +19,13 @@ class AlgorithmBase
     @crossover = @cfg.factory('crossover')
     @mutation = @cfg.factory('mutation', @grammar)   
 
+    unless @cfg['selection'].nil?
+      @selection = @cfg['selection_rank'].nil? ? 
+                   @cfg.factory('selection') : 
+                   @cfg.factory('selection', @cfg.factory('selection_rank') ) 
+    end
+
+   
     @evaluator = @cfg.factory('evaluator') unless @cfg['evaluator'].nil? 
 
     @steps = 0
@@ -47,6 +54,14 @@ class AlgorithmBase
 
   protected
 
+  def load_or_init( store, population_size )
+    population = store.load
+    population = [] if population.nil?
+    @report << "loaded #{population.size} individuals"   
+    @report << "creating #{population_size - population.size} individuals"
+    return init_population( population, population_size )
+  end
+
   def init_population( population, population_size ) 
     if @init['method'] == 'ramped'
 
@@ -72,7 +87,7 @@ class AlgorithmBase
     end
 
     @evaluator.run population if defined? @evaluator
-  
+    population
   end
 
   def init_chromozome hash

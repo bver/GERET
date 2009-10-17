@@ -1,7 +1,6 @@
 
 require 'algorithm/algorithm_base'
 require 'algorithm/breed_individual'
-require 'algorithm/population_archive'
 require 'algorithm/phenotypic_truncation'
 
 class Spea2Ranking < Ranking 
@@ -33,7 +32,6 @@ end
 
 class Spea2 < AlgorithmBase
   include BreedIndividual
-  include PopulationArchiveSupport
   
   attr_accessor :max_archive_size, :shorten_archive_individual 
 
@@ -43,10 +41,23 @@ class Spea2 < AlgorithmBase
     @ranker = @selection.ranker
     @ranker.shorten_individual = @shorten_archive_individual 
     
-    prepare_archive_and_population
+    @archive, @population = @store.load
+    @archive = [] if @archive.nil?
+    @population = [] if @population.nil?
+
+    @report << "loaded #{@population.size} population individuals"   
+    @report << "creating #{@population_size - @population.size} population individuals"
+    init_population( @population, @population_size )
+    @report << "loaded #{@archive.size} archive individuals"
     
     @report.next    
     return @report 
+  end
+
+  def teardown
+    @report << "--------- finished:"
+    @store.save [@archive, @population]
+    return @report   
   end
  
   def step
@@ -62,10 +73,6 @@ class Spea2 < AlgorithmBase
     @selection.population = @archive
    
     @population = breed_by_selector( @selection, @population_size )
- 
-    @report['numof_crossovers'] << @cross   
-    @report['numof_injections'] << @injections
-    @report['numof_mutations'] << @mutate
   
     @report.report @archive
     return @report
