@@ -30,10 +30,7 @@ grammar:
 mapper:
   class: BreadthFirst
   track_support_on: true
-
-selection:
-  class: Nsga2BinaryTournament
-         
+     
 crossover:
   class: CrossoverLHS
  

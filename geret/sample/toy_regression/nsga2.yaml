@@ -29,10 +29,7 @@ grammar:
 
 mapper:
   class: DepthLocus
-
-selection:
-  class: Nsga2BinaryTournament
-         
+        
 crossover:
   class: CrossoverRipple
   margin: 2 #1

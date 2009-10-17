@@ -5,9 +5,12 @@ module BreedIndividual
 
   def setup config
     super
-    @selection = @cfg['selection_rank'].nil? ? 
-                 @cfg.factory('selection') : 
-                 @cfg.factory('selection', @cfg.factory('selection_rank') ) 
+
+    unless @cfg['selection'].nil?
+      @selection = @cfg['selection_rank'].nil? ? 
+                   @cfg.factory('selection') : 
+                   @cfg.factory('selection', @cfg.factory('selection_rank') ) 
+    end
 
     @population = @store.load
     @population = [] if @population.nil?

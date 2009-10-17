@@ -66,6 +66,8 @@ class Nsga2 < AlgorithmBase
   def setup config
     super
 
+    @selection = Nsga2BinaryTournament.new
+
     @population = @store.load
     @population = [] if @population.nil?
     @report << "loaded #{@population.size} individuals"   
