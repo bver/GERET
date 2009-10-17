@@ -25,9 +25,6 @@ grammar:
 mapper:
   class: DepthLocus
 
-population_tourney:
-  class: ParetoTourney # cannot be changed
- 
 crossover:
   class: CrossoverRipple
   margin: 2 #1
