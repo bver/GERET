@@ -118,7 +118,8 @@ class Nsga2 < AlgorithmBase
     new_populaton = breed_by_selector( @selection, @population_size )
     @population.concat new_populaton
 
-    phenotypic_truncation( @population, 0 )
+    @population = phenotypic_truncation( @population, 0 )
+    @report['phenotypic_truncation'] << @population.size
 
     return @report
   end
