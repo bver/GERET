@@ -3,10 +3,10 @@ class ToyReport < ReportText
 
   def report population
     diversity = Util.diversity( population ) { |individual| individual.genotype }
-    self['diversity_genotypic'] << diversity[0...10].inspect   
+    self['diversity_genotypic'] << "#{diversity[0...10].inspect}..."   
     
-#    diversity =  Util.diversity( population ) { |individual| individual.phenotype }
-#    self['diversity_phenotypic'] << diversity[0...10].inspect
+    diversity =  Util.diversity( population ) { |individual| individual.phenotype }
+    self['diversity_phenotypic'] << "#{diversity[0...10].inspect}..."
 
     errors = population.map { |individual| individual.error }   
     min, max, avg, n = Util.statistics( errors.find_all { |e| e.infinite?.nil? } )
@@ -43,10 +43,14 @@ class ToyReport < ReportText
       uniq[individual.phenotype] = individual 
       count[individual.phenotype] += 1
     end
+    
     sorted = uniq.values.sort { |a,b| a.error <=> b.error }
     text = "\n"
     sorted[0...10].each { |i| text += "#{count[i.phenotype]}*[#{i.error}, (#{i.used_length}) #{i.complexity}] #{i.phenotype}\n" }
-    text += "..." if sorted.size > 10
+    if sorted.size > 10
+      text += "...\n"       
+      sorted[-10,10].each { |i| text += "#{count[i.phenotype]}*[#{i.error}, (#{i.used_length}) #{i.complexity}] #{i.phenotype}\n" } 
+    end
     self['phenotypes'] << text
    
   end

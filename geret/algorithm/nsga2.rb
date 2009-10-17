@@ -12,11 +12,11 @@ class Nsga2Individual < Struct.new( :orig, :depth, :crowding, :uniq )
 
   def initialize( orig, depth, crowding ) 
     super
-    @@uniq[orig.phenotype] += 1
+    @@uniq[orig.genotype] += 1
   end
 
   def cache_uniq
-    self.uniq = @@uniq[orig.phenotype]
+    self.uniq = @@uniq[orig.genotype]
   end
 
   def dominates? other
@@ -122,7 +122,8 @@ class Nsga2 < AlgorithmBase
 #
 #    @evaluator.run @population if defined? @evaluator   
 
-    @population.concat breed_by_selector( @selection, @population_size )
+    new_populaton = breed_by_selector( @selection, @population_size )
+    @population.concat new_populaton
 
     @report['numof_crossovers'] << @cross   
     @report['numof_injections'] << @injections

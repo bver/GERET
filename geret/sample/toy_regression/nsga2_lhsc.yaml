@@ -17,7 +17,7 @@ algorithm:
 
   inject:
     method: grow # grow or full or random
-    sensible_depth: 7   
+    sensible_depth: 4   
  
   termination:
     max_steps: 1000
@@ -38,7 +38,7 @@ crossover:
   class: CrossoverLHS
  
 mutation:
-  class: MutationNodal
+  class: MutationStructural
 
 store:
   class: Store

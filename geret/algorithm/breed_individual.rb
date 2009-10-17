@@ -24,9 +24,10 @@ module BreedIndividual
     children = []
     breed_few( selector, children ) while children.empty?
  
-    @evaluator.run children[0..0] if defined? @evaluator
+    individual = children[ rand( children.size ) ]
+    @evaluator.run [individual] if defined? @evaluator
 
-    return children.first
+    individual
   end
 
   def breed_few( selector, children )
