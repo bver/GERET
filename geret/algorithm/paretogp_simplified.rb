@@ -5,7 +5,7 @@ require 'algorithm/phenotypic_truncation'
 class ParetoGPSimplified < AlgorithmBase
   include PhenotypicTruncation
 
-  attr_accessor :archive_size, :generations_per_cascade, :mutation_probability 
+  attr_accessor :archive_size, :generations_per_cascade, :mutation_probability, :tournament_size 
 
   def setup config
     super
@@ -18,7 +18,8 @@ class ParetoGPSimplified < AlgorithmBase
     @report << "creating #{@archive_size - @archive.size} archive individuals"
     init_population( @archive, @archive_size ) 
 
-    @population_tourney = @cfg.factory( 'population_tourney' )
+    @population_tourney = ParetoTourney.new 
+    @population_tourney.tournament_size = @tournament_size
 
     @steps = 0
     @generation = 0

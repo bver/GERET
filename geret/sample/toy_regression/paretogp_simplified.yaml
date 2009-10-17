@@ -8,7 +8,8 @@ algorithm:
   generations_per_cascade: 10
   mutation_probability: 0.00
   shorten_individual: true
-
+  tournament_size: 10
+ 
   init:
     method: ramped # grow or full or ramped
     sensible_depth: 7   
@@ -26,8 +27,7 @@ mapper:
 
 population_tourney:
   class: ParetoTourney # cannot be changed
-  tournament_size: 10
-
+ 
 crossover:
   class: CrossoverRipple
   margin: 2 #1
