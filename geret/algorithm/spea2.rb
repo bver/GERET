@@ -1,7 +1,7 @@
 
-require 'algorithm/algorithm_base'
-require 'algorithm/breed_individual'
-require 'algorithm/phenotypic_truncation'
+require 'algorithm/support/algorithm_base'
+require 'algorithm/support/breed'
+require 'algorithm/support/phenotypic_truncation'
 
 class Spea2Ranking < Ranking 
   include PhenotypicTruncation
@@ -31,7 +31,7 @@ class Spea2Ranking < Ranking
 end
 
 class Spea2 < AlgorithmBase
-  include BreedIndividual
+  include Breed
   
   attr_accessor :max_archive_size, :shorten_archive_individual 
 

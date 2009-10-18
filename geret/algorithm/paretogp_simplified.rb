@@ -1,6 +1,6 @@
 
-require 'algorithm/algorithm_base'
-require 'algorithm/phenotypic_truncation'
+require 'algorithm/support/algorithm_base'
+require 'algorithm/support/phenotypic_truncation'
 
 class ParetoGPSimplified < AlgorithmBase
   include PhenotypicTruncation

@@ -1,12 +1,12 @@
 
-require 'algorithm/algorithm_base'
-require 'algorithm/elitism'
-require 'algorithm/breed_individual'
+require 'algorithm/support/algorithm_base'
+require 'algorithm/support/elitism'
+require 'algorithm/support/breed'
 
 class MuLambda < AlgorithmBase
 
   include Elitism
-  include BreedIndividual
+  include Breed
   
   attr_accessor :comma_or_plus, :lambda_size
 

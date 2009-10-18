@@ -1,10 +1,10 @@
 
-require 'algorithm/algorithm_base'
-require 'algorithm/breed_individual'
+require 'algorithm/support/algorithm_base'
+require 'algorithm/support/breed'
 
 class SteadyState < AlgorithmBase
 
-  include BreedIndividual 
+  include Breed
  
   def setup config
     super

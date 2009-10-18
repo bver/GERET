@@ -1,5 +1,5 @@
 
-module BreedIndividual 
+module Breed
   
   attr_accessor :inject
 

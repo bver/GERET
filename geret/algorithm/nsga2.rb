@@ -1,7 +1,7 @@
 
-require 'algorithm/algorithm_base'
-require 'algorithm/breed_individual'
-require 'algorithm/phenotypic_truncation'
+require 'algorithm/support/algorithm_base'
+require 'algorithm/support/phenotypic_truncation'
+require 'algorithm/support/breed'
 
 
 class Nsga2Individual < Struct.new( :orig, :depth, :crowding, :uniq )
@@ -63,7 +63,7 @@ end
 
 class Nsga2 < AlgorithmBase
   
-  include BreedIndividual
+  include Breed
   include PhenotypicTruncation
 
   def setup config
