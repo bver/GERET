@@ -5,9 +5,11 @@ module Util
   class PipedIndividual < Individual
 
     PipedIndSchema = Struct.new( 'PipedIndSchema', :symb, :conversion )
-    @@schema = []
 
     def PipedIndividual.pipe_output outputs
+      
+      @@schema = []     
+
       outputs.each do |item|
         item.each_pair do |sym,conv|
 
@@ -16,6 +18,7 @@ module Util
           @@schema << PipedIndSchema.new( sym, conv )
         end
       end
+
     end
 
     def PipedIndividual.pareto par
@@ -27,7 +30,10 @@ module Util
     end
    
     def parse= row
-      row.split(/\s+/).each_with_index do |item,index|
+      items = row.split( /\s+/ )
+      raise "PipedIndividual: parse= expecting #{@@schema.size} items, got #{items.size}" unless @@schema.size == items.size
+
+      items.each_with_index do |item,index|
         value = item.send( @@schema[index].conversion )
         send( "#{@@schema[index].symb}=", value )
       end
@@ -53,10 +59,9 @@ module Util
         end
       end
     end
-   
 
-  end
+  end # class
 
-end
+end # module
 
 

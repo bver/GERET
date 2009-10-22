@@ -85,6 +85,12 @@ class TC_PipedIndividual < Test::Unit::TestCase
   end
 
   def test_parse_pipe_wrong_size
+    outputs = [ {:fitness=>'to_f'}, {:consumption=>'to_i'} ] 
+    PipedIndividual.pipe_output( outputs )
+    pi = PipedIndividual.new( @mapper, [ 42, 43 ] )
+
+    exception = assert_raise( RuntimeError ) { pi.parse = "3.43  50 3" }
+    assert_equal( "PipedIndividual: parse= expecting 2 items, got 3", exception.message )
   end
 
   def test_mark_phenotype
