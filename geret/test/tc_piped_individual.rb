@@ -61,6 +61,9 @@ class TC_PipedIndividual < Test::Unit::TestCase
   end
  
   def test_wrong_direction
+    par = [ {:some=>'minimize'}, {:used_length=>'UNKNOWN'}, {:fitness=>'maximize'} ]    
+    exception = assert_raise( RuntimeError ) {  PipedIndividual.pareto( par ) }
+    assert_equal( "PipedIndividual:wrong objective direction 'UNKNOWN' for objective 'used_length'", exception.message )
   end
 
   def test_weak_pareto

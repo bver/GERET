@@ -31,6 +31,8 @@ module Util
             Pareto.maximize( PipedIndividual, sym )
           when 'minimize'
             Pareto.minimize( PipedIndividual, sym )
+          else
+            raise "PipedIndividual:wrong objective direction '#{dir}' for objective '#{sym}'" 
           end
 
         end
