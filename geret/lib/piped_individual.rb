@@ -8,6 +8,26 @@ module Util
     @@phenotype_mark = ''
     @@batch_mark = ''
 
+    def initialize( mapper, genotype )
+      super
+      @phenotype += @@phenotype_mark unless @phenotype.nil?
+    end
+
+    def parse= row
+      items = row.split( /\s+/ )
+      raise "PipedIndividual: parse= expecting #{@@schema.size} items, got #{items.size}" unless @@schema.size == items.size
+
+      items.each_with_index do |item,index|
+        value = item.send( @@schema[index].conversion )
+        send( "#{@@schema[index].symb}=", value )
+      end
+    end
+
+    def batch_mark
+      @@batch_mark
+    end
+
+   
     def PipedIndividual.pipe_output outputs
       
       @@schema = []     
@@ -31,33 +51,6 @@ module Util
       PipedIndividual.pareto_core( WeakPareto, par )
     end
 
-    def PipedIndividual.mark_phenotype mark
-      @@phenotype_mark = mark
-    end
-
-    def PipedIndividual.mark_batch mark
-      @@batch_mark = mark
-    end
-   
-    def initialize( mapper, genotype )
-      super
-      @phenotype += @@phenotype_mark unless @phenotype.nil?
-    end
-
-    def parse= row
-      items = row.split( /\s+/ )
-      raise "PipedIndividual: parse= expecting #{@@schema.size} items, got #{items.size}" unless @@schema.size == items.size
-
-      items.each_with_index do |item,index|
-        value = item.send( @@schema[index].conversion )
-        send( "#{@@schema[index].symb}=", value )
-      end
-    end
-
-    def batch_mark
-      @@batch_mark
-    end
-
     def PipedIndividual.pareto_core( klass, par )
       include klass     
       Pareto.clear_objectives PipedIndividual
@@ -79,6 +72,14 @@ module Util
       end
     end
 
+    def PipedIndividual.mark_phenotype mark
+      @@phenotype_mark = mark
+    end
+
+    def PipedIndividual.mark_batch mark
+      @@batch_mark = mark
+    end
+    
   end # class
 
 end # module
