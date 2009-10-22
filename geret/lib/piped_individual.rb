@@ -19,7 +19,22 @@ module Util
     end
 
     def PipedIndividual.pareto par
-      include Pareto     
+      PipedIndividual.pareto_core( Pareto, par )
+    end
+
+    def PipedIndividual.weak_pareto par
+      PipedIndividual.pareto_core( WeakPareto, par )
+    end
+   
+    def parse= row
+      row.split(/\s+/).each_with_index do |item,index|
+        value = item.send( @@schema[index].conversion )
+        send( "#{@@schema[index].symb}=", value )
+      end
+    end
+
+    def PipedIndividual.pareto_core( klass, par )
+      include klass     
       Pareto.clear_objectives PipedIndividual
 
       par.each do |item|
@@ -38,13 +53,7 @@ module Util
         end
       end
     end
-
-    def parse= row
-      row.split(/\s+/).each_with_index do |item,index|
-        value = item.send( @@schema[index].conversion )
-        send( "#{@@schema[index].symb}=", value )
-      end
-    end
+   
 
   end
 

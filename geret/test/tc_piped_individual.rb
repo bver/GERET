@@ -66,10 +66,22 @@ class TC_PipedIndividual < Test::Unit::TestCase
     assert_equal( "PipedIndividual:wrong objective direction 'UNKNOWN' for objective 'used_length'", exception.message )
   end
 
-  def test_weak_pareto
-  end
-
   def test_both_weak_and_strong
+    par = [ {:x=>:minimize} ]
+    PipedIndividual.pareto( par )
+    first = PipedIndividual.new( @mapper, [] )
+    first.x = 42
+    second = PipedIndividual.new( @mapper, [] )
+    second.x = 42
+    assert_equal( false, first.dominates?( second ) )
+
+    par = [ {:x=>:minimize} ]
+    PipedIndividual.weak_pareto( par )
+    first = PipedIndividual.new( @mapper, [] ) 
+    first.x = 42
+    second = PipedIndividual.new( @mapper, [] ) 
+    second.x = 42
+    assert_equal( true, first.dominates?( second ) )
   end
 
   def test_parse_pipe_wrong_size
