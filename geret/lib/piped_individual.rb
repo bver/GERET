@@ -1,4 +1,6 @@
-require 'lib/shorten'
+
+require 'lib/individual'
+require 'lib/pareto'
 
 module Util
 
@@ -29,7 +31,10 @@ module Util
 
     def stopping_condition
       @@thresh_values.each_pair do |symb,value|
-        return false if @@thresh_over[symb] ? ( send(symb) <= value ) : ( send(symb) >= value )
+        max = @@thresh_over.fetch( symb, nil )
+
+        raise "PipedIndividual: optimisation direction not known for the objective '#{symb}'" if max.nil?
+        return false if max ? ( send(symb) <= value ) : ( send(symb) >= value )
       end
 
       true
@@ -51,16 +56,16 @@ module Util
     end
 
     def PipedIndividual.pareto par
-      PipedIndividual.pareto_core( Pareto, par )
+      PipedIndividual.pareto_core( Moea::Pareto, par )
     end
 
     def PipedIndividual.weak_pareto par
-      PipedIndividual.pareto_core( WeakPareto, par )
+      PipedIndividual.pareto_core( Moea::WeakPareto, par )
     end
 
     def PipedIndividual.pareto_core( klass, par )
       include klass     
-      Pareto.clear_objectives PipedIndividual
+      Moea::Pareto.clear_objectives PipedIndividual
       @@thresh_over = {}
 
       par.each do |item|
@@ -69,10 +74,10 @@ module Util
 
           case dir.to_s
           when 'maximize'
-            Pareto.maximize( PipedIndividual, sym )
+            Moea::Pareto.maximize( PipedIndividual, sym )
             @@thresh_over[ sym ] = true
           when 'minimize'
-            Pareto.minimize( PipedIndividual, sym )
+            Moea::Pareto.minimize( PipedIndividual, sym )
             @@thresh_over[ sym ] = false
           else
             raise "PipedIndividual:wrong objective direction '#{dir}' for objective '#{sym}'" 
