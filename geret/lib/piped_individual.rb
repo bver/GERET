@@ -6,6 +6,7 @@ module Util
 
     PipedIndSchema = Struct.new( 'PipedIndSchema', :symb, :conversion )
     @@phenotype_mark = ''
+    @@batch_mark = ''
 
     def PipedIndividual.pipe_output outputs
       
@@ -33,6 +34,10 @@ module Util
     def PipedIndividual.mark_phenotype mark
       @@phenotype_mark = mark
     end
+
+    def PipedIndividual.mark_batch mark
+      @@batch_mark = mark
+    end
    
     def initialize( mapper, genotype )
       super
@@ -47,6 +52,10 @@ module Util
         value = item.send( @@schema[index].conversion )
         send( "#{@@schema[index].symb}=", value )
       end
+    end
+
+    def batch_mark
+      @@batch_mark
     end
 
     def PipedIndividual.pareto_core( klass, par )
