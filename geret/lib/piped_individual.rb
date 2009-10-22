@@ -14,7 +14,7 @@ module Util
     end
 
     def parse= row
-      items = row.split( /\s+/ )
+      items = row.gsub(/^\s+/,'').gsub(/\s+$/,'').split( /\s+/ )
       raise "PipedIndividual: parse= expecting #{@@schema.size} items, got #{items.size}" unless @@schema.size == items.size
 
       items.each_with_index do |item,index|
@@ -27,6 +27,13 @@ module Util
       @@batch_mark
     end
 
+    def stopping_condition
+      @@thresh_values.each_pair do |symb,value|
+        return false if @@thresh_over[symb] ? ( send(symb) <= value ) : ( send(symb) >= value )
+      end
+
+      true
+    end
    
     def PipedIndividual.pipe_output outputs
       
@@ -54,6 +61,7 @@ module Util
     def PipedIndividual.pareto_core( klass, par )
       include klass     
       Pareto.clear_objectives PipedIndividual
+      @@thresh_over = {}
 
       par.each do |item|
         item.each_pair do |sym,dir|
@@ -62,8 +70,10 @@ module Util
           case dir.to_s
           when 'maximize'
             Pareto.maximize( PipedIndividual, sym )
+            @@thresh_over[ sym ] = true
           when 'minimize'
             Pareto.minimize( PipedIndividual, sym )
+            @@thresh_over[ sym ] = false
           else
             raise "PipedIndividual:wrong objective direction '#{dir}' for objective '#{sym}'" 
           end
@@ -78,6 +88,10 @@ module Util
 
     def PipedIndividual.mark_batch mark
       @@batch_mark = mark
+    end
+    
+    def PipedIndividual.thresholds thresh
+      @@thresh_values = thresh
     end
     
   end # class

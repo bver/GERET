@@ -36,7 +36,7 @@ class TC_PipedIndividual < Test::Unit::TestCase
     PipedIndividual.pareto( par )
 
     pi = PipedIndividual.new( @mapper, [ 42, 43 ] )
-    pi.parse = "3.43  50"
+    pi.parse = " 3.43  50"
     assert_equal( 3.43, pi.fitness )
     assert_equal( 50, pi.consumption )
     assert_equal( 5, pi.used_length )   
@@ -52,7 +52,7 @@ class TC_PipedIndividual < Test::Unit::TestCase
     PipedIndividual.pipe_output( outputs )
 
     pi = PipedIndividual.new( @mapper, [ 42, 43 ] )
-    pi.parse = "3.43  50"
+    pi.parse = "3.43  50  "
     assert_equal( 3.43, pi.fitness )
     assert_equal( 50, pi.consumption )
     assert_equal( 5, pi.used_length )   
@@ -112,6 +112,24 @@ class TC_PipedIndividual < Test::Unit::TestCase
   end
 
   def test_thresholds
+    thresh = { :fitness=>35.0, :consumption=>8 }
+    PipedIndividual.thresholds thresh
+
+    outputs = [ {:fitness=>'to_f'}, {:consumption=>'to_i'} ] 
+    PipedIndividual.pipe_output( outputs )
+
+    par = [ {:consumption=>:minimize}, {:fitness=>'maximize'} ]    
+    PipedIndividual.pareto( par )
+
+    pi = PipedIndividual.new( @mapper, [] )
+    pi.parse = "34.0  10"
+    assert_equal( false, pi.stopping_condition )
+    pi.parse = "35.5  10"
+    assert_equal( false, pi.stopping_condition )
+    pi.parse = "34.0 5"
+    assert_equal( false, pi.stopping_condition )
+    pi.parse = "35.5 5"
+    assert_equal( true, pi.stopping_condition )
   end
   
 end
