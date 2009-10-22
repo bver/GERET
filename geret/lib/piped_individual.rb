@@ -5,6 +5,7 @@ module Util
   class PipedIndividual < Individual
 
     PipedIndSchema = Struct.new( 'PipedIndSchema', :symb, :conversion )
+    @@phenotype_mark = ''
 
     def PipedIndividual.pipe_output outputs
       
@@ -28,7 +29,16 @@ module Util
     def PipedIndividual.weak_pareto par
       PipedIndividual.pareto_core( WeakPareto, par )
     end
+
+    def PipedIndividual.mark_phenotype mark
+      @@phenotype_mark = mark
+    end
    
+    def initialize( mapper, genotype )
+      super
+      @phenotype += @@phenotype_mark unless @phenotype.nil?
+    end
+
     def parse= row
       items = row.split( /\s+/ )
       raise "PipedIndividual: parse= expecting #{@@schema.size} items, got #{items.size}" unless @@schema.size == items.size

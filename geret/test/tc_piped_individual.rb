@@ -87,13 +87,19 @@ class TC_PipedIndividual < Test::Unit::TestCase
   def test_parse_pipe_wrong_size
     outputs = [ {:fitness=>'to_f'}, {:consumption=>'to_i'} ] 
     PipedIndividual.pipe_output( outputs )
-    pi = PipedIndividual.new( @mapper, [ 42, 43 ] )
+    pi = PipedIndividual.new( @mapper, [] )
 
     exception = assert_raise( RuntimeError ) { pi.parse = "3.43  50 3" }
     assert_equal( "PipedIndividual: parse= expecting 2 items, got 3", exception.message )
   end
 
   def test_mark_phenotype
+    pi = PipedIndividual.new( @mapper, [] )
+    assert_equal( "some creative phenotype", pi.phenotype )
+
+    PipedIndividual.mark_phenotype(' FOO')
+    pi = PipedIndividual.new( @mapper, [] )
+    assert_equal( "some creative phenotype FOO", pi.phenotype )
   end
 
   def test_mark_batch
