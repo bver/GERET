@@ -34,6 +34,12 @@ class BasicPair < Struct.new( :up, :down )
   Pareto.objective BasicPair, :up, :maximize 
 end
 
+class ClearPair < Struct.new( :up, :down )
+  include Pareto
+  minimize :down
+  maximize :up 
+end
+
 class BasicPairWeak < Struct.new( :up, :down )
   include WeakPareto
   minimize :down
@@ -181,6 +187,16 @@ class TC_Pareto < Test::Unit::TestCase
     assert_equal( [:down, :up], Pareto.objective_symbols( BasicPair ) )
     assert_equal( [:down, :up], BasicPair.new.objective_symbols )
     assert_equal( [:data], SingleProcMin.new.objective_symbols )
+  end
+
+  def test_clear_objectives
+    assert_equal( [:down, :up], Pareto.objective_symbols( ClearPair ) )
+    Pareto.objective ClearPair, :newone, :maximize
+    assert_equal( [:down, :up, :newone], Pareto.objective_symbols( ClearPair ) )
+    Pareto.clear_objectives ClearPair   
+    assert_equal( [], Pareto.objective_symbols( ClearPair ) )  
+    Pareto.objective ClearPair, :newone, :maximize   
+    assert_equal( [:newone], Pareto.objective_symbols( ClearPair ) ) 
   end
  
   def test_objective_sorting

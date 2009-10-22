@@ -20,6 +20,7 @@ module Util
 
     def PipedIndividual.pareto par
       include Pareto     
+      Pareto.clear_objectives PipedIndividual
 
       par.each do |item|
         item.each_pair do |sym,dir|

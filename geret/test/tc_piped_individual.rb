@@ -44,6 +44,22 @@ class TC_PipedIndividual < Test::Unit::TestCase
     assert_equal( [:some, :used_length, :fitness], pi.objective_symbols )
   end
 
+  def test_attributes_2
+    par = [ {:some=>'minimize'}, {:used_length=>:minimize}, {:fitness=>'maximize'} ]    
+    PipedIndividual.pareto( par )
+
+    outputs = [ {:fitness=>'to_f'}, {:consumption=>'to_i'} ] 
+    PipedIndividual.pipe_output( outputs )
+
+    pi = PipedIndividual.new( @mapper, [ 42, 43 ] )
+    pi.parse = "3.43  50"
+    assert_equal( 3.43, pi.fitness )
+    assert_equal( 50, pi.consumption )
+    assert_equal( 5, pi.used_length )   
+    assert_equal( nil, pi.some )
+    assert_equal( [:some, :used_length, :fitness], pi.objective_symbols )
+  end
+ 
   def test_wrong_direction
   end
 

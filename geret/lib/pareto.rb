@@ -77,6 +77,11 @@ module Pareto
     @@objectives[user.to_s] = objs
   end
 
+  # Clear all objectives for a given user class
+  def Pareto.clear_objectives user
+    @@objectives.delete( user.to_s )
+  end
+
   # Given that a and b are individuals of the same class, a.dominates?(b) returns true if:
   # 1. there is no such objective in which the b is better than a, and
   # 2. there is at least one objective in which the a is better than b.
@@ -109,7 +114,7 @@ module Pareto
  
   # Return the array of all objective symbols declared by the Pareto.objective for the class user.
   def Pareto.objective_symbols user
-    @@objectives.fetch( user.to_s ).map { |obj| obj.symb }
+    @@objectives.fetch( user.to_s, [] ).map { |obj| obj.symb }
   end
 
   # Shorthand for 
