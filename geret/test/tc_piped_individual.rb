@@ -32,7 +32,7 @@ class TC_PipedIndividual < Test::Unit::TestCase
     outputs = [ {:fitness=>'to_f'}, {:consumption=>'to_i'} ] 
     PipedIndividual.pipe_output( outputs )
 
-    par = [ {:some=>'minimize'}, {:used_length=>:minimize}, {:fitness=>'maximize'} ]    
+    par = {:some=>'minimize', :used_length=>:minimize, :fitness=>'maximize'}    
     PipedIndividual.pareto( par )
 
     pi = PipedIndividual.new( @mapper, [ 42, 43 ] )
@@ -45,7 +45,7 @@ class TC_PipedIndividual < Test::Unit::TestCase
   end
 
   def test_attributes_2
-    par = [ {:some=>'minimize'}, {:used_length=>:minimize}, {:fitness=>'maximize'} ]    
+    par = {:some=>'minimize', :used_length=>:minimize, :fitness=>'maximize'}    
     PipedIndividual.pareto( par )
 
     outputs = [ {:fitness=>'to_f'}, {:consumption=>'to_i'} ] 
@@ -61,13 +61,13 @@ class TC_PipedIndividual < Test::Unit::TestCase
   end
  
   def test_wrong_direction
-    par = [ {:some=>'minimize'}, {:used_length=>'UNKNOWN'}, {:fitness=>'maximize'} ]    
+    par =  {:some=>'minimize', :used_length=>'UNKNOWN', :fitness=>'maximize'}     
     exception = assert_raise( RuntimeError ) {  PipedIndividual.pareto( par ) }
     assert_equal( "PipedIndividual:wrong objective direction 'UNKNOWN' for objective 'used_length'", exception.message )
   end
 
   def test_both_weak_and_strong
-    par = [ {:x=>:minimize} ]
+    par =  {:x=>:minimize} 
     PipedIndividual.pareto( par )
     first = PipedIndividual.new( @mapper, [] )
     first.x = 42
@@ -75,7 +75,7 @@ class TC_PipedIndividual < Test::Unit::TestCase
     second.x = 42
     assert_equal( false, first.dominates?( second ) )
 
-    par = [ {:x=>:minimize} ]
+    par =  {:x=>:minimize} 
     PipedIndividual.weak_pareto( par )
     first = PipedIndividual.new( @mapper, [] ) 
     first.x = 42
@@ -118,7 +118,7 @@ class TC_PipedIndividual < Test::Unit::TestCase
     outputs = [ {:fitness=>'to_f'}, {:consumption=>'to_i'} ] 
     PipedIndividual.pipe_output( outputs )
 
-    par = [ {:consumption=>:minimize}, {:fitness=>'maximize'} ]    
+    par =  {:consumption=>:minimize, :fitness=>'maximize'}    
     PipedIndividual.pareto( par )
 
     pi = PipedIndividual.new( @mapper, [] )
@@ -139,7 +139,7 @@ class TC_PipedIndividual < Test::Unit::TestCase
     outputs = [ {:fitness=>'to_f'}, {:consumption=>'to_i'} ] 
     PipedIndividual.pipe_output( outputs )
 
-    par = [ {:fitness=>'maximize'} ]    
+    par =  {:fitness=>'maximize'}     
     PipedIndividual.pareto( par )
 
     pi = PipedIndividual.new( @mapper, [] )

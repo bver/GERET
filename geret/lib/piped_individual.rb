@@ -100,14 +100,14 @@ module Util
     end
 
     # Describe the optimisation objectives for the Pareto module (see).
-    # The outputs argument is to be the array of hashes describing each objective, in the correct order. 
-    # Each hash contains only one key-value pair. The hash key represents the name (symbol) of the objective, 
+    # The outputs argument is to be the hash describing each objective. 
+    # Each key-value pair represents one objective. The hash key is the name (symbol) of the objective, 
     # the value is the 'direction' of the optimisation, ie. either 'minimize' or 'maximize'
     # The klass is either Moea::Pareto or Moea::WeakPareto, specifying the strong or weak pareto definition.
     #
-    #   objectives = []
-    #   objectives << {:amount => 'minimize'}
-    #   objectives << {:score => 'maximize'}
+    #   objectives = {} 
+    #   objectives[ :amount ] = 'minimize'
+    #   objectives[ :score ] = 'maximize'
     #   PipedIndividual.pareto objectives
     # 
     def PipedIndividual.pareto_core( klass, par )
@@ -115,11 +115,10 @@ module Util
       Moea::Pareto.clear_objectives PipedIndividual
       @@thresh_over = {}
 
-      par.each do |item|
-        item.each_pair do |sym,dir|
-          attr_accessor sym unless method_defined? sym
+      par.each_pair do |sym,dir|
+        attr_accessor sym unless method_defined? sym
 
-          case dir.to_s
+        case dir.to_s
           when 'maximize'
             Moea::Pareto.maximize( PipedIndividual, sym )
             @@thresh_over[ sym ] = true
@@ -128,9 +127,8 @@ module Util
             @@thresh_over[ sym ] = false
           else
             raise "PipedIndividual:wrong objective direction '#{dir}' for objective '#{sym}'" 
-          end
-
         end
+
       end
     end
 
@@ -152,9 +150,9 @@ module Util
     # Note the 'direction' of the optimisation has to be set by the PipedIndividual.pareto_core static method. 
     # 
     # For example:
-    #   objectives = []
-    #   objectives << {:amount => 'minimize'}
-    #   objectives << {:score => 'maximize'}
+    #   objectives = {} 
+    #   objectives[ :amount ] = 'minimize'
+    #   objectives[ :score ] = 'maximize'
     #   PipedIndividual.pareto objectives
     # 
     #   condition = {}
