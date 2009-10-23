@@ -49,6 +49,7 @@ individual:
 
 evaluator:
   class: WorkPipes
+  destination: 'fitness='        
   commands: 
 #    - 'sample/ant_trail_tcc/ant_pipe.rb ONE'
 #    - 'sample/ant_trail_tcc/ant_pipe.rb TWO'

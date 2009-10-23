@@ -6,7 +6,7 @@ require 'lib/work_pipes'
 
 include Util
 
-WPop = Struct.new( 'WPop', :phenotype, :fitness )
+WPop = Struct.new( 'WPop', :phenotype, :parse )
 WPopFT = Struct.new( 'WPopFT', :from, :to, :to2 )
 
 class TC_WorkPipes  < Test::Unit::TestCase
@@ -27,9 +27,9 @@ class TC_WorkPipes  < Test::Unit::TestCase
     assert_equal( 7, jobs.size )
     worker = {}
     jobs.each do |j|
-      assert_equal( 2,  j.fitness.split(' ').size )
-      assert_equal( j.phenotype, j.fitness.split(' ').last )
-      worker[ j.fitness.split(' ').first ] = nil
+      assert_equal( 2,  j.parse.split(' ').size )
+      assert_equal( j.phenotype, j.parse.split(' ').last )
+      worker[ j.parse.split(' ').first ] = nil
     end
     assert_equal( ['ONE', 'THREE', 'TWO'], worker.keys.sort )
 
@@ -40,9 +40,9 @@ class TC_WorkPipes  < Test::Unit::TestCase
     assert_equal( 8, jobs2.size )
     worker = {}
     jobs.each do |j|
-      assert_equal( 2,  j.fitness.split(' ').size )
-      assert_equal( j.phenotype, j.fitness.split(' ').last )
-      worker[ j.fitness.split(' ').first ] = nil
+      assert_equal( 2,  j.parse.split(' ').size )
+      assert_equal( j.phenotype, j.parse.split(' ').last )
+      worker[ j.parse.split(' ').first ] = nil
     end
     assert_equal( ['ONE', 'THREE', 'TWO'], worker.keys.sort )
 
@@ -56,9 +56,9 @@ class TC_WorkPipes  < Test::Unit::TestCase
     assert_equal( 7, jobs.size )
     worker = {}
     jobs.each do |j|
-      assert_equal( 2,  j.fitness.split(' ').size )
-      assert_equal( j.phenotype, j.fitness.split(' ').last )
-      worker[ j.fitness.split(' ').first ] = nil
+      assert_equal( 2,  j.parse.split(' ').size )
+      assert_equal( j.phenotype, j.parse.split(' ').last )
+      worker[ j.parse.split(' ').first ] = nil
     end
     assert_equal( ['first', 'second'], worker.keys.sort )
 
@@ -79,9 +79,9 @@ class TC_WorkPipes  < Test::Unit::TestCase
     assert_equal( 7, jobs.size )
     worker = {}
     jobs.each do |j|
-      assert_equal( 2,  j.fitness.split(' ').size )
-      assert_equal( j.phenotype, j.fitness.split(' ').last )
-      worker[ j.fitness.split(' ').first ] = nil
+      assert_equal( 2,  j.parse.split(' ').size )
+      assert_equal( j.phenotype, j.parse.split(' ').last )
+      worker[ j.parse.split(' ').first ] = nil
     end
     assert_equal( ['1st', '2nd'], worker.keys.sort )
   end

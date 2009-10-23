@@ -32,7 +32,7 @@ module Util
 
     # Set up the worker script by the commands in cmds, use the dest and src for specifying attributes.
     # See WorkPipes#commands=, WorkPipes#destination and WorkPipes#source for details.
-    def initialize cmds=nil, dest='fitness=', src='phenotype'
+    def initialize cmds=nil, dest='parse=', src='phenotype'
       @pipes = []
       @commands = {}
       @destination = dest
@@ -42,7 +42,7 @@ module Util
     end
 
     # The method name for storing the worker script's output into the jobs object.
-    # WorkPipes#run uses object.send( @destination, output ) The default is 'fitness='. 
+    # WorkPipes#run uses object.send( @destination, output ) The default is 'parse='. 
     attr_accessor :destination
 
     # The method for retrieving worker script's input from the jobs object.
@@ -75,7 +75,7 @@ module Util
     # The jobs argument have to be the Enumerable collection of the work objects, typically the Array of 
     # Util::Individual subclasses. The work object has to provide the input (eg. the 'phenotype' attribute) 
     # for the work script using WorkPipes#source and has to be able to store the work script's output 
-    # using the WorkPipes#destination method (eg. the 'fitness=' method).
+    # using the WorkPipes#destination method (eg. the 'PipedIndividual#parse=' method).
     # The WorkPipes#run can be called more times (eg. once per population's generation).
     def run jobs
       if /win/ =~ Config::CONFIG['host_os']
