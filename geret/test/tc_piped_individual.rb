@@ -111,7 +111,7 @@ class TC_PipedIndividual < Test::Unit::TestCase
     assert_equal( 'RUN_NOW', pi.batch_mark )
   end
 
-  def Xtest_thresholds
+  def test_thresholds
     thresh = { :fitness=>35.0, :consumption=>8 }
     PipedIndividual.thresholds thresh
 
