@@ -63,17 +63,8 @@ evaluator:
   class: WorkPipes
   destination: 'fitness='        
   commands: 
-#    - 'sample/ant_trail_tcc/ant_pipe.rb ONE'
-#    - 'sample/ant_trail_tcc/ant_pipe.rb TWO'
-    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb ONE"'
-    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb TWO"'
-    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb THREE"'
-    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb FOUR"'
-    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb ONE2"'
-    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb TWO2"'
-    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb THREE2"'
-    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb FOUR2"'
-
+    - 'sample/ant_trail_tcc/ant_pipe.rb ONE'
+    - 'sample/ant_trail_tcc/ant_pipe.rb TWO'
 
 # for the remote pipe configuration, use:
 #

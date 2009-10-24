@@ -72,8 +72,7 @@ evaluator:
   class: WorkPipes
   destination: 'fitness='        
   commands: 
-#    - 'sample/ant_trail_tcc/ant_pipe.rb SINGLE'
-    - 'ssh swirl "~/g/geret/sample/ant_trail_tcc/ant_pipe.rb SINGLE"'
+    - 'sample/ant_trail_tcc/ant_pipe.rb SINGLE'
 
 # no need for establishing more than one pipe
 

@@ -26,4 +26,16 @@ abort "santa_fe_ant_trail/spea2 failed" unless system Command+" sample/santa_fe_
 abort "santa_fe_ant_trail/steady_state failed" unless system Command+" sample/santa_fe_ant_trail/steady_state.yaml"
 abort "santa_fe_ant_trail/steady_state_lhsc failed" unless system Command+" sample/santa_fe_ant_trail/steady_state_lhsc.yaml"
 
+abort "sample/ant_trail_tcc/generational failed" unless system Command+" sample/ant_trail_tcc/generational.yaml"
+abort "sample/ant_trail_tcc/mu_plus_lambda failed" unless system Command+" sample/ant_trail_tcc/mu_plus_lambda.yaml"
+abort "sample/ant_trail_tcc/nsga2 failed" unless system Command+" sample/ant_trail_tcc/nsga2.yaml"
+abort "sample/ant_trail_tcc/paretogp_simplified failed" unless system Command+" sample/ant_trail_tcc/paretogp_simplified.yaml"
+abort "sample/ant_trail_tcc/spea2 failed" unless system Command+" sample/ant_trail_tcc/spea2.yaml"
+abort "sample/ant_trail_tcc/steady_state failed" unless system Command+" sample/ant_trail_tcc/steady_state.yaml"
+
+abort "sample/fcl_synthesis/generational failed" unless system Command+" sample/fcl_synthesis/generational.yaml"
+abort "sample/fcl_synthesis/spea2_lhsc failed" unless system Command+" sample/fcl_synthesis/spea2_lhsc.yaml"
+
+abort "sample/vhdl_design/spea2_lhsc.yaml failed" unless system Command+" sample/vhdl_design/spea2_lhsc.yaml"
+
 puts "integration tests 'runnable'."
