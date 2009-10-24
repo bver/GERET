@@ -6,6 +6,7 @@ require 'lib/config'
 include Util
 
 class FactoryArtifact
+
   def initialize arg1='def1', arg2='def2', arg3='def3'
     @arg1 = arg1
     @arg2 = arg2
@@ -17,6 +18,14 @@ class FactoryArtifact
 
   attr_reader :arg1, :arg2
   attr_accessor :arg3, :attr1, :attr2, :attr3
+
+  def FactoryArtifact.class_method content
+    @@cmember = content
+  end
+
+  def FactoryArtifact.class_member
+    @@cmember
+  end
 end
 
 ArgStruct = Struct.new( 'ArgStruct', :value )
@@ -76,6 +85,26 @@ class TC_Config < Test::Unit::TestCase
     assert_equal( '1st argument', instance.arg1.value ) 
   end
 
+  def test_static_calls
+    cfg = ConfigYaml.new
+    cfg['artifact'] = {'class'=>'FactoryArtifact', '_class_method'=>[ {:a=>1}, {:b=>2} ] }
+    
+    FactoryArtifact.class_method 'not initialized'
+    instance1 = cfg.factory('artifact')
+    assert_equal( [ {:a=>1}, {:b=>2} ],  FactoryArtifact.class_member )
+
+    FactoryArtifact.class_method( ['new', 'array content'] )
+    instance2 = cfg.factory('artifact')
+    assert_equal( [ {:a=>1}, {:b=>2} ],  FactoryArtifact.class_member )
+  end
+
+  def test_static_missing_method
+    cfg = ConfigYaml.new
+    cfg['artifact'] = {'class'=>'FactoryArtifact', '_missing_method'=>[ {:a=>1}, {:b=>2} ] }
+    
+    assert_raise( NoMethodError ) { cfg.factory('artifact') }
+  end
+ 
   def test_missing_key
     cfg = ConfigYaml.new
 

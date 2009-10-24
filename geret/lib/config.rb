@@ -35,6 +35,7 @@ class ConfigYaml < Hash
   #   { 'level1' => {'level2'=>'foo'} }
   #   
   def initialize file=nil
+
     super()
     return if file.nil?
 
@@ -46,6 +47,7 @@ class ConfigYaml < Hash
       requirement = details.fetch( 'require', nil )
       require requirement unless requirement.nil?
     end
+
   end
 
   # Create the instance of the class which is dynamically specified by the YAML file.
@@ -92,6 +94,13 @@ class ConfigYaml < Hash
       text = text[ 0...text.size-1 ] + ' )'
     end
 
+    static_keys = details.keys.find_all { |k| k[0] == '_' } 
+    static_keys.each do |k|
+      method = k.sub( /^_/, '' )
+      text = "#{klass}.#{method}( #{ details[k].inspect } )"
+      eval text 
+    end
+
     begin
       instance = eval text
     rescue => details
@@ -100,6 +109,7 @@ class ConfigYaml < Hash
 
     details.each_pair do |k,value|
       next if ['class','initialize', 'require'].include? k
+      next if k[0] == '_' # no class methods, please
       eval "instance.#{k} = #{value.inspect}"
     end
 
