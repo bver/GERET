@@ -95,7 +95,7 @@ class TC_Config < Test::Unit::TestCase
 
     FactoryArtifact.class_method( ['new', 'array content'] )
     instance2 = cfg.factory('artifact')
-    assert_equal( [ {:a=>1}, {:b=>2} ],  FactoryArtifact.class_member )
+    assert_equal( ['new', 'array content'],  FactoryArtifact.class_member ) # not called twice
   end
 
   def test_static_missing_method

@@ -1,5 +1,6 @@
 
 require 'yaml'
+require 'set'
 
 module Util
 
@@ -37,6 +38,8 @@ class ConfigYaml < Hash
   def initialize file=nil
 
     super()
+    @class_methods = Set.new
+   
     return if file.nil?
 
     obj = YAML::load( File.open( file ) )   
@@ -51,11 +54,16 @@ class ConfigYaml < Hash
   end
 
   # Create the instance of the class which is dynamically specified by the YAML file.
-  # The _key_ section has to be present in the configuration, the _class_ subsection contains the name of the class.
+  # The _key_ (the first argument) has to be present as the section in the configuration, the _class_ 
+  # subsection contains the name of the class.
   # All remaining _args_ of the factory method are then passed as the constructor arguments.
-  # The optional _require_ subsection the file with the class implementation (all GERET's own classes are automatically 
-  # present via require 'lib/geret'). 
-  # Remaining subsections are considered as attributes and their values are assigned to the newly created instance.
+  # The optional _require_ subsection the file with the class implementation (all GERET's own classes 
+  # are automatically present via require 'lib/geret'). 
+  # Subsections with leading underscores are interpreted as names of class methods. The underscores are
+  # removed from the methods' names and methods are called once, just before the creation of the first 
+  # instance.
+  # Remaining keys are considered as attribute names and their values are always assigned to the newly
+  # created instance.
   # 
   # For example, if the file.yaml contains this text:
   #
@@ -64,16 +72,22 @@ class ConfigYaml < Hash
   #     require: myselector_class.rb
   #     attribute1: 3
   #     attr2: something 
+  #     _prepare_context: 42
   #
   # then the code: 
   # 
   #   cfg = ConfigYaml.new('file.yaml') 
   #   sel = cfg.factory( 'selector', 'my_1st_arg', '2nd_one' )
+  #   sel = cfg.factory( 'selector', 'another', 'instance' )
   #   
   # is equivalent to:
   # 
   #   require 'myselector_class.rb'
+  #   MySelector.prepare_context( 42 )
   #   sel = MySelector.new( 'my_1st_arg', '2nd_one' )
+  #   sel.attribute1 = 3
+  #   sel.attr2 = 'something'
+  #   sel = MySelector.new( 'another', 'instance' )
   #   sel.attribute1 = 3
   #   sel.attr2 = 'something'
   #
@@ -94,11 +108,14 @@ class ConfigYaml < Hash
       text = text[ 0...text.size-1 ] + ' )'
     end
 
-    static_keys = details.keys.find_all { |k| k[0] == '_' } 
-    static_keys.each do |k|
-      method = k.sub( /^_/, '' )
-      text = "#{klass}.#{method}( #{ details[k].inspect } )"
-      eval text 
+    unless @class_methods.include? klass
+      @class_methods.add klass
+      static_keys = details.keys.find_all { |k| k[0] == '_' } 
+      static_keys.each do |k|
+        method = k.sub( /^_/, '' )
+        text = "#{klass}.#{method}( #{ details[k].inspect } )"
+        eval text 
+      end
     end
 
     begin
