@@ -64,4 +64,5 @@ evaluator:
   destination: 'fitness='
   commands: 
     - 'sample/vhdl_design/adder_pipe.rb 1'
- 
+    - 'sample/vhdl_design/adder_pipe.rb 2'
+

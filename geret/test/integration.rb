@@ -36,6 +36,7 @@ abort "sample/ant_trail_tcc/steady_state failed" unless system Command+" sample/
 abort "sample/fcl_synthesis/generational failed" unless system Command+" sample/fcl_synthesis/generational.yaml"
 abort "sample/fcl_synthesis/spea2_lhsc failed" unless system Command+" sample/fcl_synthesis/spea2_lhsc.yaml"
 
+system 'rm -rf /tmp/adder_*'
 abort "sample/vhdl_design/spea2_lhsc.yaml failed" unless system Command+" sample/vhdl_design/spea2_lhsc.yaml"
 
 puts "integration tests 'runnable'."

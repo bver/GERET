@@ -63,7 +63,5 @@ evaluator:
   class: WorkPipes
   destination: 'error='
   commands: 
-    - ssh swirl 'cd /home/pavel/numergence/g/geret/sample/fcl_synthesis && CLASSPATH=".:./jFuzzyLogic_2.0.6.jar" java Evaluator'
-    - ssh swirl 'cd /home/pavel/numergence/g/geret/sample/fcl_synthesis && CLASSPATH=".:./jFuzzyLogic_2.0.6.jar" java Evaluator'
-#    - 'cd sample/fcl_synthesis/ && CLASSPATH=".:./jFuzzyLogic_2.0.6.jar" java Evaluator'
- 
+    - 'cd sample/fcl_synthesis/ && CLASSPATH=".:./jFuzzyLogic_2.0.6.jar" java Evaluator'
+    - 'cd sample/fcl_synthesis/ && CLASSPATH=".:./jFuzzyLogic_2.0.6.jar" java Evaluator'
