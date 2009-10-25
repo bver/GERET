@@ -89,6 +89,7 @@ module Util
 
     end
 
+    # Report symbols (meaning of the output items), previously entered by PipedIndividual.pipe_output call.
     def PipedIndividual.pipe_schema
       @@schema.map { |item| item.symb }
     end
@@ -134,6 +135,13 @@ module Util
         end
 
       end
+    end
+
+    # Return true if the symbol would be Pareto-maximized
+    def PipedIndividual.symbol_maximized? symbol
+      result = @@thresh_over.fetch( symbol, nil )
+      raise "PipedIndividual: symbol '#{symbol}' not known" if result.nil?
+      result
     end
 
     # Set the optional text separating each phenotype in the pipe's input, if needed by the pipe process. 

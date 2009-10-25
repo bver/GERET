@@ -153,7 +153,17 @@ class TC_PipedIndividual < Test::Unit::TestCase
     outputs = [ {:fitness=>'to_f'}, {:consumption=>'to_i'} ] 
     PipedIndividual.pipe_output( outputs )
 
-    assert( [:fitness, :consumption], PipedIndividual.pipe_schema )
+    assert_equal( [:fitness, :consumption], PipedIndividual.pipe_schema )
+
+    par = {:consumption=>'minimize', :used_length=>:minimize, :fitness=>'maximize'}    
+    PipedIndividual.pareto( par )
+
+    assert_equal( false, PipedIndividual.symbol_maximized?( :used_length ) )
+    assert_equal( true, PipedIndividual.symbol_maximized?( :fitness ) )
+    assert_equal( false, PipedIndividual.symbol_maximized?( :consumption ) )
+
+    exception = assert_raise( RuntimeError ) { PipedIndividual.symbol_maximized?( :unknown )  }
+    assert_equal( "PipedIndividual: symbol 'unknown' not known", exception.message )
   end
  
 end
