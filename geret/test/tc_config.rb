@@ -87,11 +87,14 @@ class TC_Config < Test::Unit::TestCase
 
   def test_static_calls
     cfg = ConfigYaml.new
-    cfg['artifact'] = {'class'=>'FactoryArtifact', '_class_method'=>[ {:a=>1}, {:b=>2} ] }
+    cfg['artifact'] = {'class'=>'FactoryArtifact', '_class_method'=>[ {:a=>1}, {:b=>22} ] }
     
     FactoryArtifact.class_method 'not initialized'
+    assert_equal( 'not initialized',  FactoryArtifact.class_member )
+   
     instance1 = cfg.factory('artifact')
-    assert_equal( [ {:a=>1}, {:b=>2} ],  FactoryArtifact.class_member )
+    assert_equal( FactoryArtifact, instance1.class )
+    assert_equal( [ {:a=>1}, {:b=>22} ],  FactoryArtifact.class_member )
 
     FactoryArtifact.class_method( ['new', 'array content'] )
     instance2 = cfg.factory('artifact')

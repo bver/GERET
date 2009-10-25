@@ -99,14 +99,6 @@ class ConfigYaml < Hash
 
     requirement = details.fetch( 'require', nil )
     require requirement unless requirement.nil?
-   
-    if args.empty?
-      text = "#{klass}.new( #{ details.fetch( 'initialize', '' ) } )" 
-    else
-      text = "#{klass}.new( "
-      args.each_index { |index| text += "args[#{index}]," }
-      text = text[ 0...text.size-1 ] + ' )'
-    end
 
     unless @class_methods.include? klass
       @class_methods.add klass
@@ -116,6 +108,14 @@ class ConfigYaml < Hash
         text = "#{klass}.#{method}( #{ details[k].inspect } )"
         eval text 
       end
+    end
+   
+    if args.empty?
+      text = "#{klass}.new( #{ details.fetch( 'initialize', '' ) } )" 
+    else
+      text = "#{klass}.new( "
+      args.each_index { |index| text += "args[#{index}]," }
+      text = text[ 0...text.size-1 ] + ' )'
     end
 
     begin
