@@ -58,13 +58,18 @@ report:
   require: sample/ant_trail_tcc/ant_report.rb
 
 individual:
-  class: AntIndividualSingleObjectiveTcc
-  require: sample/ant_trail_tcc/ant_individual.rb
+  class: PipedIndividual
   shorten_chromozome: true 
-         
+  _pareto:
+    :fitness: maximize
+  _pipe_output:
+    - :fitness: to_i
+  _thresholds:
+    :fitness: 89
+  _mark_phenotype: "\nMARKER\n"
+        
 evaluator:
   class: WorkPipes
-  destination: 'fitness='        
   commands: 
     - 'sample/ant_trail_tcc/ant_pipe.rb ONE'
     - 'sample/ant_trail_tcc/ant_pipe.rb TWO'
