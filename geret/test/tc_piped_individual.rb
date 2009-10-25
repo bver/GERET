@@ -149,5 +149,12 @@ class TC_PipedIndividual < Test::Unit::TestCase
     assert_equal( "PipedIndividual: optimisation direction not known for the objective 'consumption'", exception.message )
   end
  
+  def test_schema
+    outputs = [ {:fitness=>'to_f'}, {:consumption=>'to_i'} ] 
+    PipedIndividual.pipe_output( outputs )
+
+    assert( [:fitness, :consumption], PipedIndividual.pipe_schema )
+  end
+ 
 end
 

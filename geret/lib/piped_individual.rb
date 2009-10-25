@@ -89,6 +89,10 @@ module Util
 
     end
 
+    def PipedIndividual.pipe_schema
+      @@schema.map { |item| item.symb }
+    end
+
     # Shorthand for the PipedIndividual.pareto_core( Moea::Pareto, par )
     def PipedIndividual.pareto par
       PipedIndividual.pareto_core( Moea::Pareto, par )
