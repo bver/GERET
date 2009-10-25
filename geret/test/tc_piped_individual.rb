@@ -130,6 +130,11 @@ class TC_PipedIndividual < Test::Unit::TestCase
     assert_equal( false, pi.stopping_condition )
     pi.parse = "35.5 5"
     assert_equal( true, pi.stopping_condition )
+    pi.parse = "35.0 5"
+    assert_equal( true, pi.stopping_condition )
+    pi.parse = "35.0 8"
+    assert_equal( true, pi.stopping_condition )
+   
   end
 
   def test_thresholds_dir_not_known

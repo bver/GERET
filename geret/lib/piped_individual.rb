@@ -53,7 +53,7 @@ module Util
         max = @@thresh_over.fetch( symb, nil )
 
         raise "PipedIndividual: optimisation direction not known for the objective '#{symb}'" if max.nil?
-        return false if max ? ( send(symb) <= value ) : ( send(symb) >= value )
+        return false if max ? ( send(symb) < value ) : ( send(symb) > value )
       end
 
       true
