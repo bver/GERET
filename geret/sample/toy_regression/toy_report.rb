@@ -9,7 +9,7 @@ class ToyReport < ReportText
     self['diversity_phenotypic'] << "#{diversity[0...10].inspect}..."
 
     errors = population.map { |individual| individual.error }   
-    min, max, avg, n = Util.statistics( errors.find_all { |e| e.infinite?.nil? } )
+    min, max, avg, n = Util.statistics( errors ) #.find_all { |e| e.infinite?.nil? } )
     self['error_min'] << min
     self['error_max'] << max
     self['error_avg'] << avg
