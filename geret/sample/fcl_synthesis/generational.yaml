@@ -53,18 +53,31 @@ store:
   class: Store
   filename: ./fcl_generational.store
  
+#report:
+#  class: FclReport
+#  require: sample/fcl_synthesis/fcl_report.rb
+
 report:
-  class: FclReport
-  require: sample/fcl_synthesis/fcl_report.rb
+   class: PopulationReport
+
+#individual:
+#  class: FclIndividualSingleObjective
+#  require: sample/fcl_synthesis/fcl_individual.rb
+#  shorten_chromozome: true 
 
 individual:
-  class: FclIndividualSingleObjective
-  require: sample/fcl_synthesis/fcl_individual.rb
+  class: PipedIndividual
   shorten_chromozome: true 
+  _pareto:
+    :error: minimize
+  _pipe_output:
+    - :error: to_f
+  _thresholds:
+    :error: 0.009
  
 evaluator:
   class: WorkPipes
-  destination: 'error='
+#  destination: 'error='
   commands: 
 #    - ssh swirl 'cd /home/pavel/numergence/g/geret/sample/fcl_synthesis && CLASSPATH=".:./jFuzzyLogic_2.0.6.jar" java Evaluator'
 #    - ssh swirl 'cd /home/pavel/numergence/g/geret/sample/fcl_synthesis && CLASSPATH=".:./jFuzzyLogic_2.0.6.jar" java Evaluator'
