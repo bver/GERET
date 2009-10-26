@@ -50,18 +50,9 @@ store:
   class: Store
   filename: ./fcl_spea2_lhsc.store
 
-#report:
-#  class: FclReport
-#  require: sample/fcl_synthesis/fcl_report.rb
-
 report:
    class: PopulationReport
 
-#individual:
-#  class: FclIndividualMOWeak
-#  require: sample/fcl_synthesis/fcl_individual.rb
-#  shorten_chromozome: false 
- 
 individual:
   class: PipedIndividual
   shorten_chromozome: false 
@@ -75,7 +66,6 @@ individual:
 
 evaluator:
   class: WorkPipes
-#  destination: 'error='
   commands: 
     - 'cd sample/fcl_synthesis/ && CLASSPATH=".:./jFuzzyLogic_2.0.6.jar" java Evaluator'
     - 'cd sample/fcl_synthesis/ && CLASSPATH=".:./jFuzzyLogic_2.0.6.jar" java Evaluator'

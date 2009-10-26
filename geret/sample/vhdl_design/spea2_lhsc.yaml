@@ -50,17 +50,8 @@ store:
   class: Store
   filename: ./vhdl_spea2_lhsc.store
 
-#report:
-#  class: VhdlReport
-#  require: sample/vhdl_design/vhdl_report.rb
-
 report:
    class: PopulationReport
-
-#individual:
-#  class: VhdlIndividualMOWeak
-#  require: sample/vhdl_design/vhdl_individual.rb
-#  shorten_chromozome: false 
 
 individual:
   class: PipedIndividual
@@ -76,7 +67,6 @@ individual:
  
 evaluator:
   class: WorkPipes
-#  destination: 'fitness='
   commands: 
     - 'sample/vhdl_design/adder_pipe.rb 1'
     - 'sample/vhdl_design/adder_pipe.rb 2'
