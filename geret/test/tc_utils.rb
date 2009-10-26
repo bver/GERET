@@ -15,6 +15,12 @@ class TC_Utils < Test::Unit::TestCase
 
     a = ['3', '4', '2']
     assert_equal( [2, 4, 3.0, 3], Util.statistics(a) { |item| item.to_i } )   
+
+    a = [3, 4, 3.3/0.0, 2]
+    assert_equal( [2, 1/0.0, 3.0, 3], Util.statistics(a) )
+
+    a = [3, 3, 3.3/0.0, 4, nil, 4, 2]
+    assert_equal( [2, 1/0.0, 16.0/5, 5], Util.statistics(a) )
   end
   
   def test_diversity

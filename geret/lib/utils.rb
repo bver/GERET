@@ -9,6 +9,10 @@ module Util
 
     arr.each do |i|
       next if i.nil?
+      if i.to_f.infinite?
+        max = i
+        next
+      end
       value = block_given? ? yield(i) : i
       max = (max.nil? || value>max) ? value : max
       min = (min.nil? || value<min) ? value : min
