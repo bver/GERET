@@ -44,8 +44,7 @@ store:
   filename: ./ant_nsga2_tcc.store
  
 report:
-  class: AntReport
-  require: sample/ant_trail_tcc/ant_report.rb
+   class: PopulationReport
 
 individual:
   class: PipedIndividual
