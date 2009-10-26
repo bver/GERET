@@ -20,6 +20,7 @@ class Individual
 
     @used_length = mapper.used_length
     @track_support = mapper.track_support 
+    @complexity = mapper.complexity   
   end
 
   # Genotype vector (array of codons) as provided by the constructor.
@@ -31,6 +32,9 @@ class Individual
 
   # The number of codons used in the mapping process (see Mapper::Base#used_length).
   attr_reader :used_length   
+
+  # The complexity of the expression. See Mapper::Base#complexity
+  attr_reader :complexity
 
   # The LHS crossover support from the Mapper::Base (see Operator::CrossoverLHS) 
   attr_reader :track_support

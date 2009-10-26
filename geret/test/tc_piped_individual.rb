@@ -19,7 +19,7 @@ class MockMapper2
     ['track']
   end
   
-  attr_reader :used_length
+  attr_reader :used_length, :complexity
 end
 
 class TC_PipedIndividual < Test::Unit::TestCase

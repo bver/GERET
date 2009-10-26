@@ -40,7 +40,6 @@ class ToyIndividualSingleObjective < Individual
 
   def initialize( mapper, genotype )
     super
-    @complexity = mapper.complexity
     evaluate
   end
 

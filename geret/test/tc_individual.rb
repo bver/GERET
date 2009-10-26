@@ -8,6 +8,7 @@ include Util
 class MockMapper
   def initialize
     @used_length = 5
+    @complexity = 9
   end
 
   def phenotype genotype 
@@ -18,7 +19,7 @@ class MockMapper
     ['track']
   end
   
-  attr_reader :used_length
+  attr_reader :used_length, :complexity
 end
 
 class TC_Individual < Test::Unit::TestCase
@@ -32,6 +33,7 @@ class TC_Individual < Test::Unit::TestCase
     assert_equal( [1, 2, 3, 4, 5, 6, 7], individual.genotype )
     assert_equal( "some creative phenotype", individual.phenotype )
     assert_equal( 5, individual.used_length )
+    assert_equal( 9, individual.complexity )
     assert_equal( true, individual.valid? )
 
     individual.shorten_chromozome = false
