@@ -35,3 +35,5 @@ require 'algorithm/paretogp_simplified'
 require 'algorithm/nsga2'
 require 'algorithm/spea2'
 
+require 'algorithm/support/population_report'
+
