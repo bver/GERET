@@ -120,6 +120,13 @@ module Util
     end
 
     def run_select_works jobs
+      return if jobs.empty?
+
+      batch = []
+      if jobs.first.class.respond_to? :batch_mark
+        marker = jobs.first.class.batch_mark
+        batch = @pipes.clone
+      end
 
       assigned = {}
       index = 0
@@ -145,7 +152,15 @@ module Util
 
         # write end
         ready[1].each do |pipe|
-          break if index >= jobs.size         
+          
+          if index >= jobs.size 
+            if batch.include? pipe
+              batch.delete pipe
+              pipe.puts marker
+            end
+            break
+          end
+
           input = jobs[index].send( @source )
           tasks = assigned.fetch( pipe, [] )
           tasks.push index

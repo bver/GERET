@@ -8,6 +8,11 @@ include Util
 
 WPop = Struct.new( 'WPop', :phenotype, :parse )
 WPopFT = Struct.new( 'WPopFT', :from, :to, :to2 )
+class WPopBatch < WPop
+  def WPopBatch.batch_mark
+    'BATCH'
+  end
+end
 
 class TC_WorkPipes  < Test::Unit::TestCase
  
@@ -157,4 +162,26 @@ class TC_WorkPipes  < Test::Unit::TestCase
     end
   end
 
+  def test_empty_new
+    pipes = WorkPipes.new
+    pipes.timeout = 2
+
+    cmds = [ "#{@ruby} #{@dir}/pipe_mark.rb 1st", "#{@ruby} #{@dir}/pipe_mark.rb 2nd" ]
+    pipes.commands = cmds
+    assert_equal( cmds, pipes.commands )
+
+    jobs = [ "10", "20", "30", "foo", "5", "6", "7" ].map { |v| WPopBatch.new v }
+    pipes.run jobs
+
+    assert_equal( 7, jobs.size )
+    worker = {}
+    jobs.each do |j|
+      out = j.parse.split(' ')
+      assert_equal( 2,  out.size )
+      assert_equal( j.phenotype, out.last )
+      worker[ out.first ] = nil
+    end
+    assert_equal( ['1st', '2nd'], worker.keys.sort )
+  end
+ 
 end

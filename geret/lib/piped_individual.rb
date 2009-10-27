@@ -39,12 +39,6 @@ module Util
       end
     end
 
-    # Return the text separating the batch of pipe inputs for one WorkPipes#run call. This text is set by the
-    # PipedIndividual.mark_batch static method.
-    def batch_mark
-      @@batch_mark
-    end
-
     # This method tests the individual for the meeting of stopping condition. If all conditions are met (ie. 
     # in the case of the 'winner' individual), the stopping_condition returns true.
     # Conditions have to be set by the PipedIndividual.thresholds static method.
@@ -155,7 +149,13 @@ module Util
     def PipedIndividual.mark_batch mark
       @@batch_mark = mark
     end
-    
+
+    # Return the text separating the batch of pipe inputs for one WorkPipes#run call. This text is set by the
+    # PipedIndividual.mark_batch static method.
+    def PipedIndividual.batch_mark
+      @@batch_mark
+    end
+   
     # Specify the components of the stopping_condition method (see). The thresh argument is the hash describing 
     # each attribute of the stopping expression. The hash key represents the name (symbol) of the objective, 
     # the value is the threshold value used for comparision.
