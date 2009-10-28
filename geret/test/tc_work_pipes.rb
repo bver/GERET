@@ -183,5 +183,31 @@ class TC_WorkPipes  < Test::Unit::TestCase
     end
     assert_equal( ['1st', '2nd'], worker.keys.sort )
   end
+
+  def test_batch_marker_more
+    pipes = WorkPipes.new
+    pipes.timeout = 2
+
+    cmds = [ "#{@ruby} #{@dir}/pipe_mark.rb 1st",
+             "#{@ruby} #{@dir}/pipe_mark.rb 2nd",
+             "#{@ruby} #{@dir}/pipe_mark.rb 2nd" ]
+    pipes.commands = cmds
+    assert_equal( cmds, pipes.commands )
+
+    tasks = []
+    (1..(cmds.size*8+1)).each { |i| tasks << i.to_s }
+    jobs = tasks.map { |v| WPopBatch.new v }
+
+    pipes.run jobs
+
+    worker = {}
+    jobs.each do |j|
+      out = j.parse.split(' ')
+      assert_equal( 2,  out.size )
+      assert_equal( j.phenotype, out.last )
+      worker[ out.first ] = nil
+    end
+    assert_equal( ['1st', '2nd'], worker.keys.sort )
+  end
  
 end
