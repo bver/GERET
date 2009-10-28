@@ -97,25 +97,28 @@ module Util
     def run_select_broken jobs
       raise "WorkPipes: no pipes available" if @pipes.empty?
 
-      index = 0
-      while index < jobs.size
-        
+      jobs.each_with_index do |job,index|
         # feed
-        @pipes.each_with_index do |pipe, pind|
-          break if index+pind >= jobs.size
-          input = jobs[index+pind].send( @source )
-          pipe.puts input
-        end
+        pind = index.divmod( @pipes.size ).last
+        pipe = @pipes[pind]
 
+        input = job.send( @source )
+        pipe.puts input
+      end
+
+      if jobs.first.class.respond_to? :batch_mark
+        marker = jobs.first.class.batch_mark
+        @pipes.each { |pipe| pipe.puts marker }
+      end
+      
+      jobs.each_with_index do |job,index|
         # harvest
-        @pipes.each_with_index do |pipe, pind|
-          break if index+pind >= jobs.size
-          output = pipe.gets
-          raise "WorkPipes: pipe '#{@commands[pipe]}' ended" if output.nil?
-          jobs[ index+pind ].send( @destination, output )
-        end
+        pind = index.divmod( @pipes.size ).last
+        pipe = @pipes[pind]
 
-        index += @pipes.size
+        output = pipe.gets
+        raise "WorkPipes: pipe '#{@commands[pipe]}' ended" if output.nil?
+        job.send( @destination, output )
       end
     end
 

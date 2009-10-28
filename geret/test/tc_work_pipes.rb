@@ -162,7 +162,7 @@ class TC_WorkPipes  < Test::Unit::TestCase
     end
   end
 
-  def test_empty_new
+  def test_batch_marker
     pipes = WorkPipes.new
     pipes.timeout = 2
 

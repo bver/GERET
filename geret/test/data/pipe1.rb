@@ -1,10 +1,15 @@
 #!/usr/bin/ruby
 
-id = ARGV.first
+begin
+  
+  id = ARGV.first
 
-$stdin.each_line do |line|
-  puts id + ' ' + line.strip
-  $stdout.flush
-#  sleep 0.1
+  $stdin.each_line do |line|
+    puts id + ' ' + line.strip
+    $stdout.flush
+  #  sleep 0.1
+  end
+
+rescue
 end
 
