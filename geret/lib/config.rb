@@ -102,7 +102,7 @@ class ConfigYaml < Hash
 
     unless @class_methods.include? klass
       @class_methods.add klass
-      static_keys = details.keys.find_all { |k| k[0] == '_' } 
+      static_keys = details.keys.find_all { |k| k[0].chr == '_' } 
       static_keys.each do |k|
         method = k.sub( /^_/, '' )
         text = "#{klass}.#{method}( #{ details[k].inspect } )"
@@ -126,7 +126,7 @@ class ConfigYaml < Hash
 
     details.each_pair do |k,value|
       next if ['class','initialize', 'require'].include? k
-      next if k[0] == '_' # no class methods, please
+      next if k[0].chr == '_' # no class methods, please
       eval "instance.#{k} = #{value.inspect}"
     end
 

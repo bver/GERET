@@ -41,7 +41,10 @@ class TC_PipedIndividual < Test::Unit::TestCase
     assert_equal( 50, pi.consumption )
     assert_equal( 5, pi.used_length )   
     assert_equal( nil, pi.some )
-    assert_equal( [:some, :used_length, :fitness], pi.objective_symbols )
+    assert_equal( 3,  pi.objective_symbols.size )
+    assert( pi.objective_symbols.include?( :fitness ) )
+    assert( pi.objective_symbols.include?( :some ) ) 
+    assert( pi.objective_symbols.include?( :used_length ) ) 
   end
 
   def test_attributes_2
@@ -57,7 +60,10 @@ class TC_PipedIndividual < Test::Unit::TestCase
     assert_equal( 50, pi.consumption )
     assert_equal( 5, pi.used_length )   
     assert_equal( nil, pi.some )
-    assert_equal( [:some, :used_length, :fitness], pi.objective_symbols )
+    assert_equal( 3,  pi.objective_symbols.size )
+    assert( pi.objective_symbols.include?( :fitness ) )
+    assert( pi.objective_symbols.include?( :some ) ) 
+    assert( pi.objective_symbols.include?( :used_length ) ) 
   end
  
   def test_wrong_direction
