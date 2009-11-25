@@ -2,7 +2,7 @@ This demo requires TCC (Tiny C Compiler, see http://bellard.org/tcc/) installed.
 
 Visit http://bellard.org/tcc/ or install TCC by another way.
 
-Do not forget to add path to "tcc" tool to your PATH environment directory.
+Do not forget to add path to "tcc" tool to your PATH environment variable.
 
 This is the classic AI benchmark problem. See sample/santa_fe_ant_trial/README for details.
 
