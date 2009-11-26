@@ -33,10 +33,11 @@ int main( int argc, char *argv[] )
   size_t r, c;
   for( r=0; r<rows; r++ ) {
     for( c=0; c<cols; c++ ) {   
-      printf( "%lf ", data[r*rows+c] );
+      printf( "%lf ", data[r*cols+c] );
     }
     printf("\n");
   }
 
+  free(data);
 }
 
