@@ -17,8 +17,9 @@ all.each do |line|
   raise "number of values on row is not constant across the data file" if dim != 0 and dim != row.size
   dim = row.size
 end
-File.open( datafile, "w" ) { |f| f.puts data } #todo use IO.pipe
-abort "stop"
+File.open( datafile, "w" ) { |f| f.puts data }
+
+#abort "stop"
 
 phenotype = IO.read SRPhen
 main = IO.read SRMain 
@@ -28,15 +29,15 @@ $stdin.each do |line|
  
   if /MARKER/ =~ line
 
-    source = phenotype.gsub( /PHENOTYPES/, code ) 
+    source = main.gsub( /PHENOTYPES/, code ) 
     File.open( program, "w" ) { |f| f.puts source }
 
-    puts %x"tcc -run #{program} #{datafile} #{all.size} #{dim}" #todo use IO.pipe for data
+    puts %x"tcc -run #{program} #{datafile} #{all.size} #{dim}" 
     $stdout.flush
 
     code = ''
   else
-    code += phenotype.gsub( /PHENOTYPE/, line )
+    code += phenotype.gsub( /PHENOTYPE/, line.strip )
   end
 
 end
