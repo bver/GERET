@@ -190,7 +190,7 @@ class TC_WorkPipes  < Test::Unit::TestCase
 
     cmds = [ "#{@ruby} #{@dir}/pipe_mark.rb 1st",
              "#{@ruby} #{@dir}/pipe_mark.rb 2nd",
-             "#{@ruby} #{@dir}/pipe_mark.rb 2nd" ]
+             "#{@ruby} #{@dir}/pipe_mark.rb 3rd" ]
     pipes.commands = cmds
     assert_equal( cmds, pipes.commands )
 
@@ -207,7 +207,7 @@ class TC_WorkPipes  < Test::Unit::TestCase
       assert_equal( j.phenotype, out.last )
       worker[ out.first ] = nil
     end
-    assert_equal( ['1st', '2nd'], worker.keys.sort )
+    assert_equal( ['1st', '2nd', '3rd'], worker.keys.sort )
   end
  
 end

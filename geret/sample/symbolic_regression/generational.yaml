@@ -1,0 +1,82 @@
+---
+algorithm:
+  class: Generational
+
+  population_size: 2000
+  elite_size: 50
+
+  probabilities:
+    crossover: 0.9
+    mutation: 0.01
+    injection: 0.9
+
+  termination:
+    max_steps: 2000
+    on_individual: :stopping_condition
+
+  init:
+    method: grow # grow or full or random or ramped
+    random_magnitude: 16 #same as mutation.magnitude
+    random_length: 8
+    sensible_depth: 6   
+
+  inject: # alternative to a crossover or copy
+    method: grow # grow or full or random
+    random_magnitude: 16 #same as mutation.magnitude
+    random_length: 8
+    sensible_depth: 6   
+   
+grammar:
+  class: Abnf::File
+  filename: sample/symbolic_regression/grammar.abnf
+
+mapper:
+  class: DepthFirst
+  wraps_to_fail: 3
+  track_support_on: true        
+
+elite_rank:
+  class: Ranking
+  order_by: :error  #optional
+  direction: :minimize #optional 
+
+selection:
+  class: Tournament # RankRoulette
+  tournament_size: 3
+selection_rank: #optional
+  class: Ranking
+        
+crossover:
+  class: CrossoverLHS
+
+mutation:
+  class: MutationNodal
+  magnitude: 16 
+
+store:
+  class: Store
+  filename: ./sr_generational.store
+
+report:
+   class: PopulationReport
+
+individual:
+  class: PipedIndividual
+  shorten_chromozome: true 
+  _pareto:
+    :error: minimize
+  _pipe_output:
+    - :error: to_f
+  _thresholds:
+    :error: 0.009
+  _mark_batch: "MARKER\n"
+  _mark_phenotype: "\n"
+
+evaluator:
+  class: WorkPipes
+  commands: 
+    - 'sample/symbolic_regression/pipe.rb ONE sample/symbolic_regression/NO2.dat'
+#    - 'sample/symbolic_regression/pipe.rb TWO sample/symbolic_regression/NO2.dat'
+#     - 'tee logg.txt'
+
+        

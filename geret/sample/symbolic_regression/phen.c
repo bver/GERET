@@ -8,8 +8,8 @@
     
     double y = PHENOTYPE;
     
-    if( isnan(y) || isinf(y) ) {
-      printf( "%lg\n", 1.79769e+308 );
+    if( ! isfinite(y) || y>1e100 || y<-1e100 ) {
+      printf( "%lg\n", 1e100 ); //1.79769e+308 );
       break;
     }
 
@@ -19,4 +19,6 @@
   if( r == rows )
     printf( "%lg\n", sqrt(e) );
 }
+
+fflush(stdout);
 

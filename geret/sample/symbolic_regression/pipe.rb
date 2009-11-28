@@ -12,7 +12,7 @@ data = ''
 dim = 0
 all = IO.readlines( csv ) 
 all.each do |line|
-  row = line.split /\s+/ 
+  row = line.split /[,;\s]+/ 
   row.each { |value| data += [value.to_f].pack('d') }
   raise "number of values on row is not constant across the data file" if dim != 0 and dim != row.size
   dim = row.size
