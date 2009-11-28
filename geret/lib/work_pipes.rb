@@ -161,7 +161,7 @@ module Util
               batch.delete pipe
               pipe.puts marker
             end
-            break
+            next 
           end
 
           input = jobs[index].send( @source )

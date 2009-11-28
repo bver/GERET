@@ -76,7 +76,5 @@ evaluator:
   class: WorkPipes
   commands: 
     - 'sample/symbolic_regression/pipe.rb ONE sample/symbolic_regression/NO2.dat'
-#    - 'sample/symbolic_regression/pipe.rb TWO sample/symbolic_regression/NO2.dat'
-#     - 'tee logg.txt'
-
+    - 'sample/symbolic_regression/pipe.rb TWO sample/symbolic_regression/NO2.dat'
         
