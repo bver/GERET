@@ -37,11 +37,6 @@ mapper:
   wraps_to_fail: 3
   track_support_on: true        
 
-elite_rank:
-  class: Ranking
-  order_by: :error  #optional
-  direction: :minimize #optional 
-
 selection:
   class: Tournament
   tournament_size: 2
