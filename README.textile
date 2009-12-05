@@ -7,8 +7,8 @@ GERET is the toolkit & library designed for exploring the potential of the Gramm
 Grammatical Evolution is the approach to the genetic programming which can be used to automatically generate programs or solutions in any language.
 
 Please see the inventors' pages:
-* "Michael O'Neill":http://www.grammatical-evolution.org/ 
-* "University of Limerick, Ireland":http://grammaticalevolution.org/
+* "Michael O'Neill ":http://www.grammatical-evolution.org/ 
+* "Conor Ryan, University of Limerick, Ireland":http://grammaticalevolution.org/
 
 or read the general introduction:
 * "Wiki on GE":http://en.wikipedia.org/wiki/Grammatical_evolution 
@@ -49,13 +49,13 @@ There are no special installation steps at this moment. Please clone the git rep
 (To be changed in the future.)
 
 cd GERET
-test/ts_all.rb # check library
-test/integration.rb # check tools & sample runs -- SLOW
+test/ts_all.rb                # check library
+test/integration.rb           # check tools & sample runs -- SLOW
 
 
 h1. Play Now
 
-Run "tools/evolve.rb sample/_task_/_algorithm_.yaml" for evolution. 
+Run "tools/evolve.rb sample/_task/algorithm_.yaml" for evolution. 
 Interrupt the run by ^C. Repeated evolve.rb invocation loads <algorithm>.store and continues evolving.
 rm _algorithm_.store if you want to start population(s) from the scratch.
 Tune _algorithm_.yaml files to see some experiments failing. :-)
