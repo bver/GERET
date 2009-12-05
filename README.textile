@@ -2,10 +2,9 @@ h1. Grammatical Evolution Exploratory Ruby Toolkit (GERET)
 
 Copyright (c) 2009 Pavel Suchmann, please see the LICENSE file.
 
-GERET is the toolkit & library designed for exploring the potential of the Grammatical Evolution.
+GERET is the toolkit & library designed to explore the potential of the Grammatical Evolution.
 
 Grammatical Evolution is the approach to the genetic programming which can be used to automatically generate programs or solutions in any language.
-
 Please see the inventors' pages:
 * "Michael O'Neill":http://www.grammatical-evolution.org/ 
 * "Conor Ryan, University of Limerick, Ireland":http://grammaticalevolution.org/
@@ -68,9 +67,12 @@ h1. More Advanced Games
 
 Try various tools/*
 For instance:
-tools/sensible_init.rb sample/santa_fe_ant_trail/generational.yaml > genotype.txt # generate the genotype
-cat genotype.txt # see the genotype
-tools/gpmap.rb sample/santa_fe_ant_trail/generational.yaml < genotype.txt # see the phenotype
+# generate the genotype:
+tools/sensible_init.rb sample/santa_fe_ant_trail/generational.yaml > genotype.txt 
+# see the genotype:
+cat genotype.txt 
+# see the phenotype:
+tools/gpmap.rb sample/santa_fe_ant_trail/generational.yaml < genotype.txt 
 
 See algorithm/* for various search algorithms.
 
