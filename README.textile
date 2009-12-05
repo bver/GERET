@@ -7,30 +7,33 @@ GERET is the toolkit & library designed for exploring the potential of the Gramm
 Grammatical Evolution is the approach to the genetic programming which can be used to automatically generate programs or solutions in any language.
 
 Please see the inventors' pages:
-* http://www.grammatical-evolution.org/ 
-* http://grammaticalevolution.org/
+* "Michael O'Neill":http://www.grammatical-evolution.org/ 
+* "University of Limerick, Ireland":http://grammaticalevolution.org/
 
 or read the general introduction:
-* http://en.wikipedia.org/wiki/Grammatical_evolution 
+* "Wiki on GE":http://en.wikipedia.org/wiki/Grammatical_evolution 
 
 or purchase the book written by GE creators: 
-* http://www.springer.com/computer/artificial/book/978-1-4020-7444-8 
+* "Grammatical Evolution: Evolutionary Automatic Programming in an Arbitrary Language":http://www.springer.com/computer/artificial/book/978-1-4020-7444-8 
+
 
 h1. Other implementations of GE
 
-* http://bds.ul.ie/libGE/ : C++
-* http://ncra.ucd.ie/Site/GEVA.html  : Java
-* http://rubyforge.org/projects/drp/ : Ruby
+* "libGE":http://bds.ul.ie/libGE/ : C++
+* "GEVA":http://ncra.ucd.ie/Site/GEVA.html  : Java
+* "DRP":http://rubyforge.org/projects/drp/ : Ruby
+
 
 h1. Features
 
 * multiple objectives optimisation
 * human-readable yaml-based configuration
-* ABNF conformance http://en.wikipedia.org/wiki/Augmented_Backus%E2%80%93Naur_Form 
+* "ABNF":http://en.wikipedia.org/wiki/Augmented_Backus%E2%80%93Naur_Form conformance 
 * various GE mappers (bucket rule, positional independence, several node expansion strategies, wrapping...)
 * various genetic operators (ripple & LHS crossover, nodal/structural mutations)
 * various search algorithms (easily extensible by new ones)
 * simple & efficient interface to the domain-specific task
+
 
 h1. Requirements
 
@@ -38,6 +41,7 @@ The library itself is written in pure Ruby (version 1.8 works but 1.9 is substan
 However, samples require various software (tcc compiler, Java VM, GHDL simulator). 
 
 Please read a particular sample/*/README before running the sample.
+
 
 h1. Installation
 
@@ -48,15 +52,17 @@ cd GERET
 test/ts_all.rb # check library
 test/integration.rb # check tools & sample runs -- SLOW
 
+
 h1. Play Now
 
-Run "tools/evolve.rb sample/<task>/<algorithm>.yaml" for evolution. 
+Run "tools/evolve.rb sample/_task_/_algorithm_.yaml" for evolution. 
 Interrupt the run by ^C. Repeated evolve.rb invocation loads <algorithm>.store and continues evolving.
-rm <algorithm>.store if you want to start population(s) from the scratch.
-Tune <algorithm_config>.yaml files to see some experiments failing. :-)
+rm _algorithm_.store if you want to start population(s) from the scratch.
+Tune _algorithm_.yaml files to see some experiments failing. :-)
 
 For example:
 tools/evolve.rb sample/santa_fe_ant_trail/generational.yaml
+
 
 h1. More Advanced Games
 
