@@ -1,0 +1,84 @@
+h1. Grammatical Evolution Exploratory Ruby Toolkit (GERET)
+
+Copyright (c) 2009 Pavel Suchmann, please see the LICENSE file.
+
+GERET is the toolkit & library designed for exploring the potential of the Grammatical Evolution.
+
+Grammatical Evolution is the approach to the genetic programming which can be used to automatically generate programs or solutions in any language.
+
+Please see the inventors' pages:
+* http://www.grammatical-evolution.org/ 
+* http://grammaticalevolution.org/
+
+or read the general introduction:
+* http://en.wikipedia.org/wiki/Grammatical_evolution 
+
+or purchase the book written by GE creators: 
+* http://www.springer.com/computer/artificial/book/978-1-4020-7444-8 
+
+h1. Other implementations of GE
+
+* http://bds.ul.ie/libGE/ : C++
+* http://ncra.ucd.ie/Site/GEVA.html  : Java
+* http://rubyforge.org/projects/drp/ : Ruby
+
+h1. Features
+
+* multiple objectives optimisation
+* human-readable yaml-based configuration
+* ABNF conformance http://en.wikipedia.org/wiki/Augmented_Backus%E2%80%93Naur_Form 
+* various GE mappers (bucket rule, positional independence, several node expansion strategies, wrapping...)
+* various genetic operators (ripple & LHS crossover, nodal/structural mutations)
+* various search algorithms (easily extensible by new ones)
+* simple & efficient interface to the domain-specific task
+
+h1. Requirements
+
+The library itself is written in pure Ruby (version 1.8 works but 1.9 is substantially faster), no gem dependencies needed.
+However, samples require various software (tcc compiler, Java VM, GHDL simulator). 
+
+Please read a particular sample/*/README before running the sample.
+
+h1. Installation
+
+There are no special installation steps at this moment. Please clone the git repo and play around. 
+(To be changed in the future.)
+
+cd GERET
+test/ts_all.rb # check library
+test/integration.rb # check tools & sample runs -- SLOW
+
+h1. Play Now
+
+Run "tools/evolve.rb sample/<task>/<algorithm>.yaml" for evolution. 
+Interrupt the run by ^C. Repeated evolve.rb invocation loads <algorithm>.store and continues evolving.
+rm <algorithm>.store if you want to start population(s) from the scratch.
+Tune <algorithm_config>.yaml files to see some experiments failing. :-)
+
+For example:
+tools/evolve.rb sample/santa_fe_ant_trail/generational.yaml
+
+h1. More Advanced Games
+
+Try various tools/*
+For instance:
+tools/sensible_init.rb sample/santa_fe_ant_trail/generational.yaml > genotype.txt # generate the genotype
+cat genotype.txt # see the genotype
+tools/gpmap.rb sample/santa_fe_ant_trail/generational.yaml < genotype.txt # see the phenotype
+
+See algorithm/* for various search algorithms.
+
+Look at lib/* for reusable classes.
+
+Generate the class documentation:
+cd lib/
+rdoc
+<your-favourite-browser> doc/index.html &
+
+Hack your own grammar.abnf files.
+Try to write your own pipe.rb tasks (or pipe.py, pipe.java, /usr/local/bin/pipe... ) 
+...
+Give me know. ;-)
+
+
+
