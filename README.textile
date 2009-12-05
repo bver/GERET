@@ -56,7 +56,7 @@ test/integration.rb           # check tools & sample runs -- SLOW
 h1. Play Now
 
 Run "tools/evolve.rb sample/_task/algorithm_.yaml" for evolution. 
-Interrupt the run by ^C. Repeated evolve.rb invocation loads <algorithm>.store and continues evolving.
+Interrupt the run by ^C. Repeated evolve.rb invocation loads _algorithm_.store and continues evolving.
 rm _algorithm_.store if you want to start population(s) from the scratch.
 Tune _algorithm_.yaml files to see some experiments failing. :-)
 
