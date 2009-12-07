@@ -81,7 +81,7 @@ Look at lib/* for reusable classes.
 Generate the class documentation:
 cd lib/
 rdoc
-<your-favourite-browser> doc/index.html &
+_your-favourite-browser_ doc/index.html &
 
 Hack your own grammar.abnf files.
 Try to write your own pipe.rb tasks (or pipe.py, pipe.java, /usr/local/bin/pipe... ) 
