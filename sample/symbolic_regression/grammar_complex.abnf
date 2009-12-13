@@ -1,11 +1,14 @@
 
 expr = expr op expr / 
        "(" expr op expr ")" /
+       func "(" expr ")" /
        var
 
 op = "+" / "-" / "/" / "*"
 
-var = constant / "x[1]" / "x[2]"
+func = "sin" / "cos" / "tan" / "exp" / "log" / "sqrt" / "sinh" / "cosh" / "tanh"
+
+var = constant / "x[1]" / "x[2]" / "x[3]" /  "x[4]" /  "x[5]" /  "x[6]" / "x[7]"
  
 constant = decimal / scientific / neg-decimal / neg-scientific
 
