@@ -67,6 +67,7 @@ module Mapper
     # 
     def Validator.analyze_recursivity grammar                      
       gram = grammar.deep_copy
+      raise 'Validator: cannot analyze_recursivity of undefined symbols' unless Validator.check_undefined( gram ).empty?     
 
       gram.each_value do |rule|
         rule.recursivity = :infinite

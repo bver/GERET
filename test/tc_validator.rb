@@ -19,6 +19,25 @@ class TC_Validator < Test::Unit::TestCase
                 ] )
     }, 'expr' )
 
+    @grammar2 = Grammar.new( { 
+      'foo' => Rule.new( [ 
+                 RuleAlt.new( [ 
+                    Token.new( :symbol, '_foo_opt1' ),
+                    Token.new( :symbol, 'unknown1' ) 
+                 ] )
+               ] ),
+
+      '_foo_opt1' => Rule.new( [ 
+                      RuleAlt.new( [ 
+                        Token.new( :literal, 'bar' ) 
+                      ] ),                            
+                      RuleAlt.new( [ 
+                        Token.new( :symbol, 'unk2' ),
+                        Token.new( :literal, 'xyz' ) 
+                      ] )
+                    ] )
+    }, 'foo' )
+    
     @gram_sn_a = Grammar.new( { 
       'start' => Rule.new( [   # nodal
                    RuleAlt.new( [ 
@@ -91,31 +110,18 @@ class TC_Validator < Test::Unit::TestCase
 
     assert_equal( [], Validator.check_undefined( @grammar1 ) )
 
-    grammar2 = Grammar.new( { 
-      'foo' => Rule.new( [ 
-                 RuleAlt.new( [ 
-                    Token.new( :symbol, '_foo_opt1' ),
-                    Token.new( :symbol, 'unknown1' ) 
-                 ] )
-               ] ),
-
-      '_foo_opt1' => Rule.new( [ 
-                      RuleAlt.new( [ 
-                        Token.new( :literal, 'bar' ) 
-                      ] ),                            
-                      RuleAlt.new( [ 
-                        Token.new( :symbol, 'unk2' ),
-                        Token.new( :literal, 'xyz' ) 
-                      ] )
-                    ] )
-    }, 'foo' )
-   
-    undefineds = Validator.check_undefined( grammar2 )
+  
+    undefineds = Validator.check_undefined @grammar2
  
     assert_equal( 2, undefineds.size )
     assert( undefineds.include?( 'unknown1' ) )
     assert( undefineds.include?( 'unk2'  ) )
 
+  end
+
+  def test_recursivity_over_undefined
+    exception = assert_raise( RuntimeError ) { Validator.analyze_recursivity @grammar2 }
+    assert_equal( "Validator: cannot analyze_recursivity of undefined symbols", exception.message )
   end
 
   def test_unused_symbol
