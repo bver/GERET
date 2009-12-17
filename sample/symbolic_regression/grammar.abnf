@@ -1,10 +1,10 @@
 
-program = " v1 = " expr ";" 
-          " v2 = " expr ";" 
-          " v3 = " expr ";"         
-          " v4 = " expr ";"         
-          " v5 = " expr ";"
-          "  y = " expr ";"          
+program = [ " v1 = " expr ";" ]
+          [ " v2 = " expr ";" ]
+          [ " v3 = " expr ";" ]        
+          [ " v4 = " expr ";" ]
+          [ " v5 = " expr ";" ]
+          "  y = " expr ";"
 
 expr = expr op expr / 
        "(" expr op expr ")" /
@@ -14,13 +14,10 @@ op = "+" / "-" / "/" / "*"
 
 var = constant / "x[1]" / "x[2]" / "v1" / "v2" / "v3" / "v4" / "v5"
  
-constant = decimal / scientific / neg-decimal / neg-scientific
+constant = decimal / neg-decimal
 
-decimal = 1*3DIGIT "." 1*3DIGIT
-
-scientific = DIGIT "." 1*3DIGIT "e" [ "-" ] 1*2DIGIT
+decimal = DIGIT "." 1*2DIGIT
 
 neg-decimal = "(-" decimal ")"
 
-neg-scientific = "(-" scientific ")"
 

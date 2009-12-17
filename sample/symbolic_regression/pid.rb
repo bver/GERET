@@ -11,25 +11,26 @@ x = []
 
 Kp = 1.0
 Ki = 0.1
-Kd = 4.0
+Kd = 0.5
 Dt = 1.0
 Response = 0.1
 
 previous_error = 0.0
 integral = 0.0 
 actual_position = 0.0
+output = 0.0
 
 x.each do |setpoint|
 
+  # "environment"
+  actual_position += output * Response
+ 
   # PID controller
   error = setpoint - actual_position
   integral = integral + error*Dt
   derivative = (error - previous_error) / Dt
   output = (Kp*error) + (Ki*integral) + (Kd*derivative)
   previous_error = error
-
-  # "environment"
-  actual_position += output * Response
 
   puts "#{output},#{setpoint},#{actual_position}"
 end

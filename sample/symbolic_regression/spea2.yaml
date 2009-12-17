@@ -2,7 +2,7 @@
 algorithm:
   class: Spea2
 
-  population_size: 800
+  population_size: 1000
   max_archive_size: 600
 
   shorten_archive_individual: true 
