@@ -56,9 +56,11 @@ test/integration.rb           # check tools & sample runs -- (slow!)
 h1. Play Now
 
 Run
+
 <pre>
 tools/evolve.rb sample/task/algorithm.yaml
 </pre>
+
 for evolution of a _task_ sample using an _algorithm_. 
 
 See the yaml files and tune parameters.
@@ -90,6 +92,7 @@ See algorithm/* for various search algorithms.
 Look at lib/* for reusable classes.
 
 Generate the class documentation:
+
 <pre>
 cd lib/
 rdoc
