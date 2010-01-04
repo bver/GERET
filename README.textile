@@ -47,14 +47,22 @@ h1. Installation
 There are no special installation steps at this moment. Please clone the git repo and play around. 
 (To be changed in the future.)
 
+<pre>
 cd GERET
-test/ts_all.rb                # check library
-test/integration.rb           # check tools & sample runs -- SLOW
-
+test/ts_all.rb                # check the library
+test/integration.rb           # check tools & sample runs -- (slow!)
+</pre>
 
 h1. Play Now
 
-Run "tools/evolve.rb sample/_task/algorithm_.yaml" for evolution. 
+Run
+<pre>
+tools/evolve.rb sample/task/algorithm.yaml
+</pre>
+for evolution of a _task_ sample using an _algorithm_. 
+
+See the yaml files and tune parameters.
+
 Interrupt the run by ^C. Repeated evolve.rb invocation loads _algorithm_.store and continues evolving.
 rm _algorithm_.store if you want to start population(s) from the scratch.
 Tune _algorithm_.yaml files to see some experiments failing. :-)
@@ -67,26 +75,33 @@ h1. More Advanced Games
 
 Try various tools/*
 For instance:
+
+<pre>
 # generate the genotype:
 tools/sensible_init.rb sample/santa_fe_ant_trail/generational.yaml > genotype.txt 
 # see the genotype:
 cat genotype.txt 
 # see the phenotype:
 tools/gpmap.rb sample/santa_fe_ant_trail/generational.yaml < genotype.txt 
+</pre>
 
 See algorithm/* for various search algorithms.
 
 Look at lib/* for reusable classes.
 
 Generate the class documentation:
+<pre>
 cd lib/
 rdoc
-_your-favourite-browser_ doc/index.html &
+your-favourite-browser doc/index.html &
+</pre>
 
 Hack your own grammar.abnf files.
 Try to write your own pipe.rb tasks (or pipe.py, pipe.java, /usr/local/bin/pipe... ) 
 ...
-Give me know. ;-)
+
+Give me know: 
+pavel.suchmann at gmail.com
 
 
 
