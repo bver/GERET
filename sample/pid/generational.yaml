@@ -1,11 +1,9 @@
 ---
 algorithm:
-  class: Spea2
+  class: Generational
 
-  population_size: 1000
-  max_archive_size: 600
-
-  shorten_archive_individual: true 
+  population_size: 2000
+  elite_size: 50
 
   probabilities:
     crossover: 0.9
@@ -30,18 +28,23 @@ algorithm:
    
 grammar:
   class: Abnf::File
-  filename: sample/symbolic_regression/grammar.abnf
+  filename: sample/pid/grammar.abnf
 
 mapper:
   class: DepthFirst
   wraps_to_fail: 3
   track_support_on: true        
 
+elite_rank:
+  class: Ranking
+  order_by: :error  #optional
+  direction: :minimize #optional 
+
 selection:
-  class: Tournament
-  tournament_size: 2
-selection_rank: # do not change
-  class: Spea2Ranking
+  class: Tournament # RankRoulette
+  tournament_size: 3
+selection_rank: #optional
+  class: Ranking
         
 crossover:
   class: CrossoverLHS
@@ -52,7 +55,7 @@ mutation:
 
 store:
   class: Store
-  filename: ./sr_spea2.store
+  filename: ./pid_generational.store
 
 report:
    class: PopulationReport
@@ -60,9 +63,8 @@ report:
 individual:
   class: PipedIndividual
   shorten_chromozome: true 
-  _weak_pareto:
+  _pareto:
     :error: minimize
-    :complexity: minimize
   _pipe_output:
     - :error: to_f
   _thresholds:
@@ -73,6 +75,6 @@ individual:
 evaluator:
   class: WorkPipes
   commands: 
-    - 'sample/symbolic_regression/pipe.rb ONE sample/symbolic_regression/data.csv'
-    - 'sample/symbolic_regression/pipe.rb TWO sample/symbolic_regression/data.csv'
+    - 'sample/pid/pipe.rb ONE sample/pid/data.csv'
+    - 'sample/pid/pipe.rb TWO sample/pid/data.csv'
         
