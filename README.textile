@@ -108,9 +108,12 @@ Hack your own grammar.abnf files.
 Try to write your own pipe.rb tasks (or pipe.py, pipe.java, /usr/local/bin/pipe... ) 
 ...
 
-h2. Give me know
+h2. No expectations, please
 
-pavel.suchmann at gmail.com
+GERET is the _exploratory_ software. 
+The functionality of the package or the stability of interfaces is not guaranteed at this stage of development.
+
+If you have an interesting idea for GERET usage give me know: pavel.suchmann at gmail.com
 
 
 
