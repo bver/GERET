@@ -1,14 +1,20 @@
 
 #
-# Namespaces of GERET:
+# = Modules (namespaces) of GERET
+# 
+# Abnf - Augmented Backus-Naur From support (mainly parsing *.abnf files to grammar instances)
 #
-# * Abnf::      - Augmented Backus-Naur From support (mainly parsing *.abnf files to grammar instances)
-# * Mapper::    - GE core classes (grammar, genotype->phenotype mapping, genotype initialization...)
-# * Moea::      - Multiple Optimisation Evolutionary Algorithms support (pareto, dominance metrics...)
-# * Operator::  - genetic operators (various crossover and mutations...)
-# * Selection:: - selection operators (tournament, SUS, roulete, etc. population operators)
-# * Util::      - auxilary classes (configuration, pipe interface, serialisation, etc. classes)
+# Mapper - GE core classes (grammar, genotype->phenotype mapping, genotype initialization...)
 #
+# Moea - Multiple Optimisation Evolutionary Algorithms support (pareto, dominance metrics...)
+# 
+# Operator - genetic operators (various crossover and mutations...)
+# 
+# Selection - selection operators (tournament, SUS, roulete, etc. population operators)
+# 
+# Util - auxilary classes (configuration, pipe interface, serialisation, etc. classes)
+#
+# = Requires
 # This is the common "require proxy" for GERET library.
 # When extending the library, please add require statement for every new dependency which should be considered 
 # as a part of lib/* or algorithm/*

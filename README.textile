@@ -44,14 +44,17 @@ Please read a particular sample/*/README before running the sample.
 
 h2. Installation
 
-There are no special installation steps at this moment. Please clone the git repo and play around. 
-(To be changed in the future.)
+There are no special installation steps at this moment. Please clone the git repo:
 
 <pre>
+git clone git://github.com/bver/GERET.git
 cd GERET
 test/ts_all.rb                # check the library
 test/integration.rb           # check tools & sample runs -- (slow!)
 </pre>
+
+(To be changed in the future.)
+
 
 h2. Play Now
 
@@ -75,6 +78,7 @@ Tune _algorithm_.yaml files to see some experiments failing. :-)
 
 For example:
 tools/evolve.rb sample/santa_fe_ant_trail/generational.yaml
+
 
 h2. More Advanced Games
 
@@ -107,6 +111,7 @@ your-favourite-browser doc/index.html &
 Hack your own grammar.abnf files.
 Try to write your own pipe.rb tasks (or pipe.py, pipe.java, /usr/local/bin/pipe... ) 
 ...
+
 
 h2. No expectations, please
 
