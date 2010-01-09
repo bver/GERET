@@ -1,4 +1,4 @@
-h1. Grammatical Evolution Exploratory Ruby Toolkit (GERET)
+h1. Grammatical Evolution Ruby Exploratory Toolkit (GERET)
 
 Copyright (c) 2009 Pavel Suchmann, please see the LICENSE file.
 
@@ -16,14 +16,14 @@ or purchase the book written by GE creators:
 * "Grammatical Evolution: Evolutionary Automatic Programming in an Arbitrary Language":http://www.springer.com/computer/artificial/book/978-1-4020-7444-8 
 
 
-h1. Other implementations of GE
+h2. Other implementations of GE
 
 * "libGE":http://bds.ul.ie/libGE/ : C++
 * "GEVA":http://ncra.ucd.ie/Site/GEVA.html  : Java
 * "DRP":http://rubyforge.org/projects/drp/ : Ruby
+* ... see the "list":http://www.grammatical-evolution.org/software.html
 
-
-h1. Features
+h2. Features
 
 * multiple objectives optimisation
 * human-readable yaml-based configuration
@@ -34,7 +34,7 @@ h1. Features
 * simple & efficient interface to the domain-specific task
 
 
-h1. Requirements
+h2. Requirements
 
 The library itself is written in pure Ruby (version 1.8 works but 1.9 is substantially faster), no gem dependencies needed.
 However, samples require various software (tcc compiler, Java VM, GHDL simulator). 
@@ -42,7 +42,7 @@ However, samples require various software (tcc compiler, Java VM, GHDL simulator
 Please read a particular sample/*/README before running the sample.
 
 
-h1. Installation
+h2. Installation
 
 There are no special installation steps at this moment. Please clone the git repo and play around. 
 (To be changed in the future.)
@@ -53,19 +53,21 @@ test/ts_all.rb                # check the library
 test/integration.rb           # check tools & sample runs -- (slow!)
 </pre>
 
-h1. Play Now
+h2. Play Now
 
-Run
+Run:
 
 <pre>
 tools/evolve.rb sample/task/algorithm.yaml
 </pre>
 
-for evolution of a _task_ sample using an _algorithm_:
+for evolution of a _task_ sample using a search _algorithm_.
 
-"ls sample/" shows all existing sample tasks.
-"ls sample/task/*.yaml" lists all algorithms within the specific _task_.
-"ls sample/*/*.yaml" gives all possible task/algorithm combinations.
+<pre>
+ls sample/               # shows all existing sample tasks.
+ls sample/task/*.yaml    # lists all algorithms available for the specific _task_.
+ls sample/*/*.yaml       # gives all possible task/algorithm combinations.
+</pre>
 
 Interrupt the run by ^C. Repeated evolve.rb invocation loads _algorithm_.store and continues evolving.
 Remove _algorithm.store_ if you want to start population(s) from scratch.
@@ -74,19 +76,20 @@ Tune _algorithm_.yaml files to see some experiments failing. :-)
 For example:
 tools/evolve.rb sample/santa_fe_ant_trail/generational.yaml
 
-
-h1. More Advanced Games
+h2. More Advanced Games
 
 Try various tools/*
 For instance:
 
 <pre>
 # generate the genotype:
-tools/sensible_init.rb sample/santa_fe_ant_trail/generational.yaml > genotype.txt 
+tools/sensible_init.rb sample/santa_fe_ant_trail/generational.yaml > genotype.txt
+
 # see the genotype:
-cat genotype.txt 
+cat genotype.txt
+
 # see the phenotype:
-tools/gpmap.rb sample/santa_fe_ant_trail/generational.yaml < genotype.txt 
+tools/gpmap.rb sample/santa_fe_ant_trail/generational.yaml < genotype.txt
 </pre>
 
 See algorithm/* for various search algorithms.
@@ -105,7 +108,8 @@ Hack your own grammar.abnf files.
 Try to write your own pipe.rb tasks (or pipe.py, pipe.java, /usr/local/bin/pipe... ) 
 ...
 
-Give me know: 
+h2. Give me know
+
 pavel.suchmann at gmail.com
 
 
