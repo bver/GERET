@@ -1,6 +1,18 @@
 
-# The common "require proxy" for GERET library.
-# Please add require statement for every new dependency which should be considered as a part of lib/* or algorithm/*
+#
+# Namespaces of GERET:
+#
+# * Abnf::      - Augmented Backus-Naur From support (mainly parsing *.abnf files to grammar instances)
+# * Mapper::    - GE core classes (grammar, genotype->phenotype mapping, genotype initialization...)
+# * Moea::      - Multiple Optimisation Evolutionary Algorithms support (pareto, dominance metrics...)
+# * Operator::  - genetic operators (various crossover and mutations...)
+# * Selection:: - selection operators (tournament, SUS, roulete, etc. population operators)
+# * Util::      - auxilary classes (configuration, pipe interface, serialisation, etc. classes)
+#
+# This is the common "require proxy" for GERET library.
+# When extending the library, please add require statement for every new dependency which should be considered 
+# as a part of lib/* or algorithm/*
+#
 
 require 'lib/abnf_renderer'
 require 'lib/abnf_file'
@@ -34,6 +46,5 @@ require 'algorithm/mu_lambda'
 require 'algorithm/paretogp_simplified'
 require 'algorithm/nsga2'
 require 'algorithm/spea2'
-
 require 'algorithm/support/population_report'
 
