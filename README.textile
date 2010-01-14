@@ -113,10 +113,10 @@ Try to write your own pipe.rb tasks (or pipe.py, pipe.java, /usr/local/bin/pipe.
 ...
 
 
-h2. No expectations, please
+h2. No Guarantees
 
 GERET is the _exploratory_ software. 
-The functionality of the package or the stability of interfaces is not guaranteed at this stage of development.
+The functionality of the package nor the stability of interfaces is not guaranteed at this stage of development.
 
 If you have an interesting idea for GERET usage give me know: bver at geret.org
 
