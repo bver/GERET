@@ -29,8 +29,8 @@ x.each do |setpoint|
   error = setpoint - actual_position
   integral = integral + error*Dt
   derivative = (error - previous_error) / Dt
-  output = (Kp*error) + (Ki*integral) + (Kd*derivative)
   previous_error = error
+  output = (Kp*error) + (Ki*integral) + (Kd*derivative)
 
   puts "#{output},#{setpoint},#{actual_position}"
 end
