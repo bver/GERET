@@ -1,0 +1,69 @@
+---
+algorithm:
+  class: Nsga2
+
+  population_size: 1000
+
+  probabilities:
+    crossover: 0.9
+    mutation: 0.01
+    injection: 0.9
+
+  shorten_individual: true
+
+  init:
+    method: grow # grow or full or ramped
+    sensible_depth: 6   
+
+  inject:
+    method: grow # grow or full or random
+    sensible_depth: 6   
+ 
+  termination:
+    max_steps: 1000
+    on_individual: stopping_condition
+
+grammar:
+  class: Abnf::File
+  filename: sample/pid/grammar.abnf
+
+mapper:
+  class: DepthFirst
+  wraps_to_fail: 3        
+  track_support_on: true         
+        
+crossover:
+  class: CrossoverLHS
+#  margin: 2
+#  step: 2
+ 
+mutation:
+  class: MutationNodal
+  magnitude: 16
+
+store:
+  class: Store
+  filename: ./pid_nsga2.store
+ 
+report:
+   class: PopulationReport
+
+individual:
+  class: PipedIndividual
+  shorten_chromozome: true 
+  _pareto:
+    :error: minimize
+    :complexity: minimize
+  _pipe_output:
+    - :error: to_f
+  _thresholds:
+    :error: 0.009
+  _mark_batch: "MARKER\n"
+  _mark_phenotype: "\n"
+ 
+evaluator:
+  class: WorkPipes
+  commands: 
+    - 'sample/pid/pipe.rb ONE sample/pid/data.csv'
+    - 'sample/pid/pipe.rb TWO sample/pid/data.csv'
+        
