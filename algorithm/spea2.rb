@@ -32,7 +32,8 @@ end
 
 class Spea2 < AlgorithmBase
   include Breed
-  
+  include PhenotypicTruncation
+
   attr_accessor :max_archive_size, :shorten_archive_individual 
 
   def setup config
@@ -74,6 +75,12 @@ class Spea2 < AlgorithmBase
    
     @population = breed_by_selector( @selection, @population_size )
   
+    if @duplicate_elimination
+       before_size = @population.size
+       @population = eliminate_duplicates @population
+       @report['duplicates_eliminated'] << ( before_size - @population.size )
+    end
+   
     @report.report @archive
     return @report
   end

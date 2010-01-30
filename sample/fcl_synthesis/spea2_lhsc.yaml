@@ -5,6 +5,7 @@ algorithm:
   population_size: 400
   max_archive_size: 300
 
+  duplicate_elimination: false
   shorten_archive_individual: true 
  
   probabilities:

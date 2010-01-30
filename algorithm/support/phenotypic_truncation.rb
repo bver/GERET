@@ -1,7 +1,7 @@
 
 module PhenotypicTruncation
 
-  attr_accessor :shorten_individual
+  attr_accessor :shorten_individual, :duplicate_elimination 
 
   def phenotypic_truncation( population, max_size )
     # prepare phenotypic hash
@@ -22,6 +22,13 @@ module PhenotypicTruncation
       current_size -= 1
     end
     uniq.values.flatten
+  end
+
+  def eliminate_duplicates population
+    uniq = {}
+    population.each { |individual| uniq[individual.phenotype] = individual }
+    population = uniq.values
+    return population
   end
 
 end
