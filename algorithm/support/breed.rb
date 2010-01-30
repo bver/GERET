@@ -57,16 +57,22 @@ module Breed
     breed_by_selector( robin, required_size )
   end
 
-  def breed_by_selector( selector, required_size )
-
+  def breed_by_selector_no_report( selector, required_size )
     children = []
-    @cross, @injections, @mutate = 0, 0, 0, 0
 
     breed_few( selector, children ) while children.size < required_size
     children = children[ 0...required_size ]
 
     @evaluator.run children if defined? @evaluator
- 
+
+    children   
+  end
+
+  def breed_by_selector( selector, required_size )
+    @cross, @injections, @mutate = 0, 0, 0, 0
+
+    children = breed_by_selector_no_report( selector, required_size )
+
     @report['numof_crossovers'] << @cross   
     @report['numof_injections'] << @injections
     @report['numof_mutations'] << @mutate

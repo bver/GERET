@@ -113,14 +113,26 @@ class Nsga2 < AlgorithmBase
     
     @report.report @population # reporting
     
-    @selection.population = parent_population
+    @cross, @injections, @mutate = 0, 0, 0, 0   
+    sizes = []
 
-    new_populaton = breed_by_selector( @selection, @population_size )
-    @population.concat new_populaton
+    while @population.size < 2*@population_size 
 
-    @population = phenotypic_truncation( @population, 0 )
-    @report['phenotypic_truncation'] << @population.size
+      @selection.population = parent_population
 
+      new_populaton = breed_by_selector_no_report( @selection, @population_size )
+      @population.concat new_populaton
+
+      @population = eliminate_duplicates @population
+      sizes << @population.size
+     
+    end 
+ 
+    @report['eliminated_sizes'] << sizes
+    @report['numof_crossovers'] << @cross   
+    @report['numof_injections'] << @injections
+    @report['numof_mutations'] << @mutate
+    
     return @report
   end
 

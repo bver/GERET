@@ -9,7 +9,7 @@ algorithm:
     mutation: 0.01
     injection: 0.9
 
-  shorten_individual: true
+  shorten_individual: true 
 
   init:
     method: grow # grow or full or ramped
