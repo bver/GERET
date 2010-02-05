@@ -49,7 +49,8 @@ module Semantic
     attr_accessor :attributes
 
     def node_expansion( symbol, expansion )
-      node = fetch(symbol.data)
+      node = fetch(symbol.data, nil)
+      return [] if node.nil?
       batch = node.fetch( Functions.match_key(expansion), [] )
       return batch.concat node.fetch( '*', [] ) 
     end

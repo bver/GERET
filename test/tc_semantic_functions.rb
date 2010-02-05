@@ -127,6 +127,11 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     assert_equal( "c0.x + 'x'", batch[0].orig )
     assert_equal( "p.id + c1.text + c0.y", batch[1].orig )   
     assert_equal( "c0.y", batch[2].orig )
+
+    symbol = Token.new( :symbol, 'UNKNOWN' )   
+    batch = sf.node_expansion( symbol, expansion ) 
+    assert_equal( 0, batch.size )
+
   end
 
 end
