@@ -120,7 +120,10 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     batch = sf.node_expansion( symbol, expansion ) 
     assert_equal( 1, batch.size ) # defaulting to *
     assert_equal( "c0.y", batch.first.orig )
- 
+  
+    batch.first.orig = 'shallow copy?'
+    assert_equal( "c0.y", sf['node1']['*'].last.orig )     
+    
     expansion = [ Token.new( :symbol, 'node2' ), Token.new( :literal, 'whatever' ) ]
     batch = sf.node_expansion( symbol, expansion ) 
     assert_equal( 3, batch.size ) # both 'node2 ""' and '*'

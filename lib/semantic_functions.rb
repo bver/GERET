@@ -52,7 +52,8 @@ module Semantic
       node = fetch(symbol.data, nil)
       return [] if node.nil?
       batch = node.fetch( Functions.match_key(expansion), [] )
-      return batch.concat node.fetch( '*', [] ) 
+      batch.concat node.fetch( '*', [] )
+      return batch.map {|f| f.clone } # batch.clone is not sufficient
     end
 
     def Functions.match_key rulealt 
