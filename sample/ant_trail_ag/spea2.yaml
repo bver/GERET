@@ -1,0 +1,62 @@
+---
+algorithm:
+  class: Spea2
+
+  population_size: 300
+  max_archive_size: 200
+
+  duplicate_elimination: false
+  shorten_archive_individual: true 
+ 
+  probabilities:
+    crossover: 0.5
+    mutation: 0.01
+    injection: 0.9
+
+  init:
+    method: ramped # grow or full or ramped
+    sensible_depth: 7   
+
+  inject:
+    method: grow # grow or full or random
+    sensible_depth: 7   
+ 
+  termination:
+    max_steps: 1000
+    on_individual: stopping_condition
+
+grammar:
+  class: Abnf::File
+  filename: sample/ant_trail_ag/grammar.abnf
+
+mapper:
+  class: DepthLocus
+
+selection:
+  class: Tournament
+  tournament_size: 2
+selection_rank: # do not change
+  class: Spea2Ranking
+         
+crossover:
+  class: CrossoverRipple
+  margin: 2 #1
+  step: 2
+ 
+mutation:
+  class: MutationRipple
+  magnitude: 16
+
+store:
+  class: Store
+  filename: ./ant_spea2.store
+
+report:
+  class: AntReport
+  require: sample/ant_trail_ag/ant_report.rb
+
+individual:
+  class: AntIndividualMOWeak
+  require: sample/ant_trail_ag/ant_individual.rb
+  shorten_chromozome: false 
+          

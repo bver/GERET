@@ -1,0 +1,20 @@
+; start symbol is <start>
+
+start = code
+
+code = main / func code
+
+func = "def " identifier LF body "end" LF
+
+main = "def step" LF body "end" LF
+
+identifier = "fn" DIGIT
+
+body = line / body line
+
+line = if-statement LF / op LF / identifier LF
+
+if-statement = "if ant.food_ahead" LF line "else" LF line "end"
+
+op = "ant.left" / "ant.right" / "ant.move"
+

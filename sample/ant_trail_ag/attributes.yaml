@@ -1,0 +1,53 @@
+
+start:
+  *:
+   c0.ids: "[]"
+
+code:
+  main:
+    c0.ids : p.ids
+  func code:
+    c0.ids : p.ids
+    c1.ids : p.ids
+
+func:
+  *:
+    p.valid? : ! p.ids.include? c1.fnid
+    c3.context : c1.fnid
+    c3.ids : p.ids << c1.fnid
+
+main:
+  *:
+    c2.context : "'step'"
+    c2.ids : p.ids
+   
+_digit:
+  *:
+    p.text : c0.text
+
+identifier:
+  *:
+    p.fnid : c0.text + c1.text
+
+body:
+  line:
+    c0.context : p.context
+    c0.ids : p.ids   
+  body line:
+    c0.context : p.context
+    c1.context : p.context
+    c0.ids : p.ids   
+    c1.ids : p.ids      
+
+line:
+  identifier "":
+    p.valid? : c0.fnid != p.context && p.ids.include? c0.fnid 
+   
+if-statement:
+  *:
+    c2.context : p.context
+    c5.context : p.context
+    c2.ids : p.ids
+    c5.ids : p.ids
+  
+   
