@@ -34,4 +34,5 @@ require 'test/tc_crowding'
 require 'test/tc_crossover_lhs'
 require 'test/tc_work_pipes'
 require 'test/tc_piped_individual'
+require 'test/tc_semantic_functions'
 

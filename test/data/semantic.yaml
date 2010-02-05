@@ -1,0 +1,12 @@
+
+start:
+  *:
+    c0.id: "'text'"
+
+node1:
+  node2 "":
+    p.id: c0.x + 'x'
+    c0.x: p.id + c1.text + c0.y
+  fn:
+    p.y : c0.y
+

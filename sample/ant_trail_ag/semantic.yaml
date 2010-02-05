@@ -12,7 +12,7 @@ code:
 
 func:
   *:
-    p.valid? : ! p.ids.include? c1.fnid
+    p.valid : ! p.ids.include? c1.fnid
     c3.context : c1.fnid
     c3.ids : p.ids << c1.fnid
 
@@ -41,7 +41,7 @@ body:
 
 line:
   identifier "":
-    p.valid? : c0.fnid != p.context && p.ids.include? c0.fnid 
+    p.valid : c0.fnid != p.context && p.ids.include?( c0.fnid )
    
 if-statement:
   *:
