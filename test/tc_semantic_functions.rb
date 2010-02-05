@@ -122,8 +122,11 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     assert_equal( "c0.y", batch.first.orig )
   
     batch.first.orig = 'shallow copy?'
-    assert_equal( "c0.y", sf['node1']['*'].last.orig )     
-    
+    assert_equal( "c0.y", sf['node1']['*'].first.orig ) # deep copy 
+    assert_equal( [ AttrRef.new( 1, 3 ) ], sf['node1']['*'].first.args )
+    batch.first.args = [ AttrRef.new( 0, 0 ) ]
+    assert_equal( [ AttrRef.new( 1, 3 ) ], sf['node1']['*'].first.args ) # deep copy
+
     expansion = [ Token.new( :symbol, 'node2' ), Token.new( :literal, 'whatever' ) ]
     batch = sf.node_expansion( symbol, expansion ) 
     assert_equal( 3, batch.size ) # both 'node2 ""' and '*'
@@ -134,7 +137,6 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     symbol = Token.new( :symbol, 'UNKNOWN' )   
     batch = sf.node_expansion( symbol, expansion ) 
     assert_equal( 0, batch.size )
-
   end
 
 end
