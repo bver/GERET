@@ -48,6 +48,12 @@ module Semantic
 
     attr_accessor :attributes
 
+    def node_expansion( symbol, expansion )
+      node = fetch(symbol.data)
+      batch = node.fetch( Functions.match_key(expansion), [] )
+      return batch.concat node.fetch( '*', [] ) 
+    end
+
     def Functions.match_key rulealt 
       result = rulealt.map do |token|
         case token.type

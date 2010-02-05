@@ -75,8 +75,8 @@ class TC_SemanticFunctions < Test::Unit::TestCase
 
     assert_equal( [ 'text', 'id', 'x', 'y' ], sf.attributes )  # text is implicit
 
-    assert_equal( ['*'], sf['start'].keys )
-    rule0 = sf['start']['*']
+    assert_equal( ['fn'], sf['start'].keys )
+    rule0 = sf['start']['fn']
     assert( rule0.kind_of? Array )
     assert_equal( 1, rule0.size )   
     assert_equal( 1, rule0.first.target.node_idx ) # c0=1
@@ -86,7 +86,7 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     assert_equal( 'text', rule0.first.func.call([]) )
     assert_equal( "'text'", rule0.first.orig )
 
-    assert_equal( ['fn', 'node2 ""'], sf['node1'].keys.sort )
+    assert_equal( ['*', 'node2 ""'], sf['node1'].keys.sort )
     rule1 = sf['node1']['node2 ""']
     assert_equal( 2, rule1.size )
     assert_equal( AttrRef.new( 0, 1 ), rule1.first.target ) # p=0, id=1
@@ -102,7 +102,7 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     assert_equal( 'foobarbaz', rule1.last.func.call(['foo','bar','baz']) )   
     assert_equal( "p.id + c1.text + c0.y", rule1.last.orig )   
  
-    rule2 = sf['node1']['fn']
+    rule2 = sf['node1']['*']
     assert_equal( 1, rule2.size )
     assert_equal( AttrRef.new( 0, 3 ), rule2.first.target ) # p.y
     assert_equal( [ AttrRef.new( 1, 3 ) ], rule2.first.args ) # c0.y
@@ -112,6 +112,21 @@ class TC_SemanticFunctions < Test::Unit::TestCase
   end
 
   def test_expansion
+    sf = Functions.new( IO.read('test/data/semantic.yaml') )
+    
+    symbol = Token.new( :symbol, 'node1' )
+
+    expansion = [ Token.new( :symbol, 'UNKNOWN_NODE' ) ]
+    batch = sf.node_expansion( symbol, expansion ) 
+    assert_equal( 1, batch.size ) # defaulting to *
+    assert_equal( "c0.y", batch.first.orig )
+ 
+    expansion = [ Token.new( :symbol, 'node2' ), Token.new( :literal, 'whatever' ) ]
+    batch = sf.node_expansion( symbol, expansion ) 
+    assert_equal( 3, batch.size ) # both 'node2 ""' and '*'
+    assert_equal( "c0.x + 'x'", batch[0].orig )
+    assert_equal( "p.id + c1.text + c0.y", batch[1].orig )   
+    assert_equal( "c0.y", batch[2].orig )
   end
 
 end
