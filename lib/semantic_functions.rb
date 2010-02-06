@@ -1,17 +1,17 @@
 
 require 'yaml'
 require 'lib/grammar'
+require 'lib/semantic_types'
 
 include Mapper
 
 module Semantic
 
-  AttrRef = Struct.new( 'AttrRef', :node_idx, :attr_idx )
-
-  AttrFn = Struct.new( 'AttrFn', :func, :target, :args, :orig )
-
   class Functions < Hash
 
+    # The '_' identifier is reserved and cannot be used as the attribute name or another variable name.
+    # If the attribute's 'nil' value means 'not defined'. Do not use 'nil' as a result of a semantic function.
+    #
     def initialize semantic=nil
 
       super()
