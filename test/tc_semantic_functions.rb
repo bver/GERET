@@ -120,12 +120,13 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     batch = sf.node_expansion( symbol, expansion ) 
     assert_equal( 1, batch.size ) # defaulting to *
     assert_equal( "c0.y", batch.first.orig )
-  
-    batch.first.orig = 'shallow copy?'
-    assert_equal( "c0.y", sf['node1']['*'].first.orig ) # deep copy 
-    assert_equal( [ AttrRef.new( 1, 3 ) ], sf['node1']['*'].first.args )
-    batch.first.args = [ AttrRef.new( 0, 0 ) ]
-    assert_equal( [ AttrRef.new( 1, 3 ) ], sf['node1']['*'].first.args ) # deep copy
+ 
+# there is no need for deep copies (they only slow down the process)    
+#    batch.first.orig = 'shallow copy?'
+#    assert_equal( "c0.y", sf['node1']['*'].first.orig ) # deep copy 
+#    assert_equal( [ AttrRef.new( 1, 3 ) ], sf['node1']['*'].first.args )
+#    batch.first.args = [ AttrRef.new( 0, 0 ) ]
+#    assert_equal( [ AttrRef.new( 1, 3 ) ], sf['node1']['*'].first.args ) # deep copy
 
     expansion = [ Token.new( :symbol, 'node2' ), Token.new( :literal, 'whatever' ) ]
     batch = sf.node_expansion( symbol, expansion ) 
