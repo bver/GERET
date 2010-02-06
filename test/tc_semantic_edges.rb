@@ -74,8 +74,32 @@ class TC_SemanticEdges < Test::Unit::TestCase
   end
 
   def test_reduce_batch 
-    # try execute whole batch, produce results, 
-    # new_results_hash = Edges.reduce_batch( batch, attr_hash )
+    # try execute whole edges enumerable, produce results, 
+  
+    p1 = proc {|_| (_.map {|x| x.to_s }).join ' ' }
+    p2 = proc {|_| (_.map {|x| x.to_s }).join '.' }   
+    edge1 = AttrEdge.new( [ 'a', AttrKey.new(404,3), 'c', 
+                            AttrKey.new(303,3), AttrKey.new( 304, 3 ) ], 
+                            AttrKey.new(300,3), p1 ) # ['a',?,'c','a 0.1 c','e' ]   
+    edge2 = AttrEdge.new( [ 'a', AttrKey.new(301,3), AttrKey.new(302,3) ], AttrKey.new(303,3), p1 ) # 'a 0.1 c'    
+    edge3 = AttrEdge.new( [ '0', '1' ], AttrKey.new(301,3), p2 ) # '0.1'     
+    edges = [ edge1, edge2, edge3 ]
+
+    attr_hash = { 
+      AttrKey.new( 302, 3 ) => Attribute.new( 'c' ), 
+      AttrKey.new( 302, 1 ) => Attribute.new( 'baz' ),
+      AttrKey.new( 304, 3 ) => Attribute.new( 'e' )     
+    }
+ 
+    new_results_hash = Edges.reduce_batch( edges, attr_hash )
+
+    assert_equal( { AttrKey.new(303,3)=>Attribute.new('a 0.1 c'), 
+                    AttrKey.new(301,3)=>Attribute.new('0.1') }, new_results_hash )
+    assert_equal( 1, edges.size )
+    assert_equal( AttrEdge, edges.first.class )
+    assert_equal( ['a',AttrKey.new(404,3),'c','a 0.1 c','e' ], edges.first.dependencies )
+    assert_equal( AttrKey.new(300,3), edges.first.result )
+    assert_equal( p1, edges.first.func )
   end
 
   def test_reduce_pending

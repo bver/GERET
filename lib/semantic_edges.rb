@@ -44,6 +44,32 @@ module Semantic
   end
 
   class Edges < Array
+
+    def Edges.reduce_batch( edges, attr_hash )
+      
+      edges.each { |e| e.substitute_deps( attr_hash ) }    
+
+      new_hash = {}
+      loop do
+
+        removal = []
+        edges.each do |e|
+
+          e.substitute_deps( new_hash )
+          next unless e.is_executable?
+
+          new_hash[ e.result ] = Attribute.new( e.exec_func )
+          removal << e
+        end
+        
+        break if removal.empty?
+        removal.each { |e| edges.delete e }     
+
+      end
+
+      new_hash
+    end
+
   end
 
 end
