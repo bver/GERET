@@ -53,10 +53,24 @@ class TC_SemanticEdges < Test::Unit::TestCase
   end
 
   def test_substitute_dependencies # by real attrs' values
-     
-    #edge = AttrEdge.new( dependencies )
+    
+    dependencies = [ AttrKey.new( 100, 5 ) ]
+    dependencies << AttrKey.new( 300, 3 )
+    dependencies << AttrKey.new( 200, 2 )   
+    dependencies << 'foo'
+    dependencies << AttrKey.new( 200, 1 )
+    dependencies << AttrKey.new( 100, 5 )
 
-    # edge.substitute_deps( attr_hash )
+    edge = AttrEdge.new( dependencies )
+
+    attr_hash = { 
+      AttrKey.new( 100, 5 ) => Attribute.new( 'bar' ), 
+      AttrKey.new( 200, 1 ) => Attribute.new( 'baz' ) 
+    }
+    
+    edge.substitute_deps( attr_hash )
+
+    assert_equal( ['bar', AttrKey.new(300,3), AttrKey.new(200,2), 'foo', 'baz', 'bar' ], edge.dependencies )
   end
 
   def test_reduce_batch 
