@@ -41,8 +41,9 @@ class TC_SemanticEdges < Test::Unit::TestCase
     child1 = Token.new( :literal, 'immediate_text' )
     child2 = Token.new( :symbol, 'x' )
     child_tokens = [ child1, child2 ]
-    
-    edge = AttrEdge.create( parent_token, child_tokens, attr_fn )
+    age = 42
+
+    edge = AttrEdge.create( parent_token, child_tokens, attr_fn, age )
     
     assert( edge.kind_of? AttrEdge )
     assert_equal( 2, edge.dependencies.size )
@@ -50,6 +51,7 @@ class TC_SemanticEdges < Test::Unit::TestCase
     assert_equal( AttrKey.new( parent_token.object_id, 3 ), edge.dependencies.last )   
     assert_equal( AttrKey.new( child2.object_id, 2 ), edge.result )
     assert_equal( function.object_id, edge.func.object_id )
+    assert_equal( age, edge.age )
   end
 
   def test_substitute_dependencies # by real attrs' values
@@ -91,10 +93,10 @@ class TC_SemanticEdges < Test::Unit::TestCase
       AttrKey.new( 304, 3 ) => Attribute.new( 'e' )     
     }
  
-    new_results_hash = Edges.reduce_batch( edges, attr_hash )
+    new_results_hash = Edges.reduce_batch( edges, attr_hash, 444 )
 
-    assert_equal( { AttrKey.new(303,3)=>Attribute.new('a 0.1 c'), 
-                    AttrKey.new(301,3)=>Attribute.new('0.1') }, new_results_hash )
+    assert_equal( { AttrKey.new(303,3)=>Attribute.new('a 0.1 c',444), 
+                    AttrKey.new(301,3)=>Attribute.new('0.1',444) }, new_results_hash )
     assert_equal( 1, edges.size )
     assert_equal( AttrEdge, edges.first.class )
     assert_equal( ['a',AttrKey.new(404,3),'c','a 0.1 c','e' ], edges.first.dependencies )

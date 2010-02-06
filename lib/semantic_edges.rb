@@ -14,7 +14,7 @@ module Semantic
       func.call( dependencies )
     end
 
-    def AttrEdge.create( parent_token, child_tokens, attr_fn )
+    def AttrEdge.create( parent_token, child_tokens, attr_fn, age )
       tokens = [ parent_token ].concat( child_tokens )
 
       dependencies = attr_fn.args.map do |ref|
@@ -27,7 +27,7 @@ module Semantic
 
       result = AttrKey.new( tokens[ attr_fn.target.node_idx ].object_id, attr_fn.target.attr_idx )
 
-      return AttrEdge.new( dependencies, result, attr_fn.func ) 
+      return AttrEdge.new( dependencies, result, attr_fn.func, age ) 
     end
 
     def substitute_deps attr_hash
@@ -45,7 +45,7 @@ module Semantic
 
   class Edges < Array
 
-    def Edges.reduce_batch( edges, attr_hash )
+    def Edges.reduce_batch( edges, attr_hash, age )
       
       edges.each { |e| e.substitute_deps( attr_hash ) }    
 
@@ -58,7 +58,7 @@ module Semantic
           e.substitute_deps( new_hash )
           next unless e.is_executable?
 
-          new_hash[ e.result ] = Attribute.new( e.exec_func )
+          new_hash[ e.result ] = Attribute.new( e.exec_func, age )
           removal << e
         end
         
