@@ -1,26 +1,44 @@
 #!/usr/bin/ruby
 
 require 'test/unit'
-require 'lib/semantic_functions'
+require 'lib/semantic_edges'
 
 include Semantic
 
 class TC_SemanticEdges < Test::Unit::TestCase
 
-  def test_try_execute
-    # edge.is_executable?
+  def test_is_executable
+    edge = AttrEdge.new( [] )
+    assert_equal( true, edge.is_executable? )
+    edge = AttrEdge.new( [ 3, 'rr', 4.5, [] ] )
+    assert_equal( true, edge.is_executable? )
+    edge = AttrEdge.new( [ 3, 'rr', AttrKey.new(0,0), [] ] )
+    assert_equal( false, edge.is_executable? )   
+  end
+
+  def test_exec
     # edge.exec
   end
 
   def test_tokens_to_keys # transform AttrRef->AttrKey using incoming tokens
-    #edge = Edges.create_edge( parent_token, child_tokens, attr_fn )
+    # edge = AttrEdge.create( parent_token, child_tokens, attr_fn )
   end
 
   def test_substitute_dependencies # by real attrs' values
-    #edge.substitute_deps( attr_hash )
+    # edge.substitute_deps( attr_hash )
   end
 
-  def test_process_epoch # gluing together: try execute whole batch, store results, fill pending's deps, store residual edges
+  def test_reduce_batch 
+    # try execute whole batch, produce results, 
+    # new_results_hash = Edges.reduce_batch( batch, attr_hash )
+  end
+
+  def test_reduce_pending
+    # new_results_hash = edges.reduce( attr_hash )
+  end
+
+  def test_prune_by_age
+#    edges.prune_newer( age )
   end
 
 end
