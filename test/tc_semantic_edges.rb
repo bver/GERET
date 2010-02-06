@@ -107,7 +107,16 @@ class TC_SemanticEdges < Test::Unit::TestCase
   end
 
   def test_prune_by_age
-#    edges.prune_newer( age )
+    edge1 = AttrEdge.new(1,nil,nil,3)  
+    edge2 = AttrEdge.new(1,nil,nil,2)   
+    edge3 = AttrEdge.new(1,nil,nil,5)
+    edge4 = AttrEdge.new(1,nil,nil,1)   
+
+    edges = Edges.new
+    edges.concat [ edge1, edge2, edge3, edge4 ]
+
+    edges.prune_newer( 3 )
+    assert_equal( [ edge2, edge4 ], edges )
   end
 
 end

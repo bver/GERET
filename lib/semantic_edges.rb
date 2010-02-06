@@ -74,6 +74,10 @@ module Semantic
       new_hash
     end
 
+    def prune_newer age
+      delete_if { |edge| edge.age >= age }
+    end
+
   end
 
 end
