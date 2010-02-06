@@ -14,6 +14,24 @@ module Semantic
       func.call( dependencies )
     end
 
+    def AttrEdge.create( parent_token, child_tokens, attr_fn )
+
+      tokens = [ parent_token ].concat( child_tokens )
+
+      dependencies = attr_fn.args.map do |ref|
+        if ref.attr_idx == 0 
+          tokens[ ref.node_idx ].data          # attr_idx == 0 means attr.text 
+        else
+          AttrKey.new( tokens[ ref.node_idx ].object_id, ref.attr_idx )
+        end
+      end
+
+      result = AttrKey.new( tokens[ attr_fn.target.node_idx ].object_id, attr_fn.target.attr_idx )
+
+      return AttrEdge.new( dependencies, result, attr_fn.func ) 
+      
+    end
+
   end
 
   class Edges < Array

@@ -1,9 +1,11 @@
 #!/usr/bin/ruby
 
 require 'test/unit'
+require 'lib/grammar'
 require 'lib/semantic_functions'
 
 include Semantic
+include Mapper
 
 class TC_SemanticFunctions < Test::Unit::TestCase
 

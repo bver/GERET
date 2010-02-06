@@ -1,9 +1,6 @@
 
 require 'yaml'
-require 'lib/grammar'
 require 'lib/semantic_types'
-
-include Mapper
 
 module Semantic
 

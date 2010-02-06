@@ -1,9 +1,11 @@
 #!/usr/bin/ruby
 
 require 'test/unit'
+require 'lib/grammar'
 require 'lib/semantic_edges'
 
 include Semantic
+include Mapper
 
 class TC_SemanticEdges < Test::Unit::TestCase
 
@@ -24,17 +26,36 @@ class TC_SemanticEdges < Test::Unit::TestCase
     edge.dependencies = ['foo','bar']
     assert_equal( 'foo bar', edge.exec_func )   
 
-    # check is not necesarry?
+    # check is not needed?
     # edge.dependencies << AttrKey.new(0,0)
     # exception = assert_raise( RuntimeError ) { edge.exec_func }
     # assert_equal( "Semantic::AttrEdge is_executable? check fails", exception.message )
   end
 
   def test_tokens_to_keys # transform AttrRef->AttrKey using incoming tokens
-    # edge = AttrEdge.create( parent_token, child_tokens, attr_fn )
+    target = AttrRef.new( 2, 2 )
+    args = [ AttrRef.new( 1, 0 ), AttrRef.new( 0, 3 ) ]
+    function = proc { |_| _ }
+    attr_fn = AttrFn.new( function, target, args )
+    parent_token = Token.new( :symbol, 'expr' )
+    child1 = Token.new( :literal, 'immediate_text' )
+    child2 = Token.new( :symbol, 'x' )
+    child_tokens = [ child1, child2 ]
+    
+    edge = AttrEdge.create( parent_token, child_tokens, attr_fn )
+    
+    assert( edge.kind_of? AttrEdge )
+    assert_equal( 2, edge.dependencies.size )
+    assert_equal( 'immediate_text', edge.dependencies.first ) # attr_idx = 0 is implicitly 'text'
+    assert_equal( AttrKey.new( parent_token.object_id, 3 ), edge.dependencies.last )   
+    assert_equal( AttrKey.new( child2.object_id, 2 ), edge.result )
+    assert_equal( function.object_id, edge.func.object_id )
   end
 
   def test_substitute_dependencies # by real attrs' values
+     
+    #edge = AttrEdge.new( dependencies )
+
     # edge.substitute_deps( attr_hash )
   end
 
