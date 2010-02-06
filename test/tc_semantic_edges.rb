@@ -84,8 +84,10 @@ class TC_SemanticEdges < Test::Unit::TestCase
                             AttrKey.new(303,3), AttrKey.new( 304, 3 ) ], 
                             AttrKey.new(300,3), p1 ) # ['a',?,'c','a 0.1 c','e' ]   
     edge2 = AttrEdge.new( [ 'a', AttrKey.new(301,3), AttrKey.new(302,3) ], AttrKey.new(303,3), p1 ) # 'a 0.1 c'    
-    edge3 = AttrEdge.new( [ '0', '1' ], AttrKey.new(301,3), p2 ) # '0.1'     
-    edges = [ edge1, edge2, edge3 ]
+    edge3 = AttrEdge.new( [ '0', '1' ], AttrKey.new(301,3), p2 ) # '0.1'   
+
+    edges = Edges.new
+    edges.concat [ edge1, edge2, edge3 ]
 
     attr_hash = { 
       AttrKey.new( 302, 3 ) => Attribute.new( 'c' ), 
@@ -93,7 +95,7 @@ class TC_SemanticEdges < Test::Unit::TestCase
       AttrKey.new( 304, 3 ) => Attribute.new( 'e' )     
     }
  
-    new_results_hash = Edges.reduce_batch( edges, attr_hash, 444 )
+    new_results_hash = edges.reduce_batch( attr_hash, 444 )
 
     assert_equal( { AttrKey.new(303,3)=>Attribute.new('a 0.1 c',444), 
                     AttrKey.new(301,3)=>Attribute.new('0.1',444) }, new_results_hash )
@@ -102,10 +104,6 @@ class TC_SemanticEdges < Test::Unit::TestCase
     assert_equal( ['a',AttrKey.new(404,3),'c','a 0.1 c','e' ], edges.first.dependencies )
     assert_equal( AttrKey.new(300,3), edges.first.result )
     assert_equal( p1, edges.first.func )
-  end
-
-  def test_reduce_pending
-    # new_results_hash = edges.reduce( attr_hash )
   end
 
   def test_prune_by_age

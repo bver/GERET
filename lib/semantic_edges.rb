@@ -45,6 +45,10 @@ module Semantic
 
   class Edges < Array
 
+    def reduce_batch( attr_hash, age )
+      Edges.reduce_batch( self, attr_hash, age )
+    end
+
     def Edges.reduce_batch( edges, attr_hash, age )
       
       edges.each { |e| e.substitute_deps( attr_hash ) }    
