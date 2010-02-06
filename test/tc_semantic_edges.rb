@@ -17,7 +17,17 @@ class TC_SemanticEdges < Test::Unit::TestCase
   end
 
   def test_exec
-    # edge.exec
+    p = proc {|_| (_.map {|x| x.to_s }).join ' ' }
+    edge = AttrEdge.new( [ 3, 'rr', 4.5 ], nil, p )   
+    assert_equal( '3 rr 4.5', edge.exec_func )
+     
+    edge.dependencies = ['foo','bar']
+    assert_equal( 'foo bar', edge.exec_func )   
+
+    # check is not necesarry?
+    # edge.dependencies << AttrKey.new(0,0)
+    # exception = assert_raise( RuntimeError ) { edge.exec_func }
+    # assert_equal( "Semantic::AttrEdge is_executable? check fails", exception.message )
   end
 
   def test_tokens_to_keys # transform AttrRef->AttrKey using incoming tokens
