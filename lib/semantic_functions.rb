@@ -43,7 +43,7 @@ module Semantic
 
     end
 
-    attr_accessor :attributes
+    attr_reader :attributes
 
     def node_expansion( symbol, expansion )
       node = fetch(symbol.data, nil)
@@ -96,6 +96,10 @@ module Semantic
 
       raise "Semantic::Functions wrong node '#{text}'" unless node.size > 1 and node[0] == 'c'  
       return AttrRef.new( node[1,node.size-1].to_i+1, idx ) 
+    end
+
+    def render_attr ref
+      "#{ ref.node_idx==0 ? 'p' : 'c'+(ref.node_idx-1).to_s }.#{ @attributes[ ref.attr_idx ] }"
     end
 
   end

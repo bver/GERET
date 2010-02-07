@@ -31,12 +31,20 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     assert_equal( ['text'], sf.attributes ) 
     assert_equal( AttrRef.new( 2, 1 ), sf.new_attr_ref( 'c1.ids' ) )
     assert_equal( ['text', 'ids'], sf.attributes )                 
+
     assert_equal( AttrRef.new( 2, 0 ), sf.new_attr_ref( 'c1.text' ) )  
     assert_equal( ['text', 'ids'], sf.attributes )                                 
+
     assert_equal( AttrRef.new( 0, 2 ), sf.new_attr_ref( 'p.fn' ) )
     assert_equal( ['text', 'ids', 'fn'], sf.attributes )                           
+
     assert_equal( AttrRef.new( 1, 1 ), sf.new_attr_ref( 'c0.ids' ) )   
     assert_equal( ['text', 'ids', 'fn'], sf.attributes )                              
+
+    assert_equal( 'c1.ids', sf.render_attr( AttrRef.new( 2, 1 ) ) )   
+    assert_equal( 'p.fn', sf.render_attr( AttrRef.new( 0, 2 ) ) )   
+    assert_equal( 'c0.text', sf.render_attr( AttrRef.new( 1, 0 ) ) )   
+    assert_equal( 'c5.ids', sf.render_attr( AttrRef.new( 6, 1 ) ) )       
   end
 
   def test_wrong_attr
