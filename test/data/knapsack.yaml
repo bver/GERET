@@ -1,0 +1,16 @@
+
+S:
+  K:
+    c0.items : "[]"
+
+K:
+  I K:
+    c1.items : p.items << c0.item
+  *:
+    c0.items : p.items
+        
+I:
+  '""':
+    p.item : c0.text
+    p.valid : not p.items.include? p.item
+
