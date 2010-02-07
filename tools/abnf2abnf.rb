@@ -12,6 +12,6 @@ begin
   puts output
 
 rescue => msg
-  abort msg
+  abort msg.to_s
 end
 
