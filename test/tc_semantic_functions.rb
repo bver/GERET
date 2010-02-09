@@ -17,7 +17,7 @@ class TC_SemanticFunctions < Test::Unit::TestCase
                     Token.new( :symbol, 'expr' ),                   
                     Token.new( :literal, ')' ) 
                   ] )
-    assert_equal( '"" expr op expr ""', Functions.match_key( rulealt ) )
+    assert_equal( '$ expr op expr $', Functions.match_key( rulealt ) )
   end
 
   def test_wrong_type
@@ -96,8 +96,8 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     assert_equal( 'text', rule0.first.func.call([]) )
     assert_equal( "'text'", rule0.first.orig )
 
-    assert_equal( ['*', 'node2 ""'], sf['node1'].keys.sort )
-    rule1 = sf['node1']['node2 ""']
+    assert_equal( ['*', 'node2 $'], sf['node1'].keys.sort )
+    rule1 = sf['node1']['node2 $']
     assert_equal( 2, rule1.size )
     assert_equal( AttrRef.new( 0, 1 ), rule1.first.target ) # p=0, id=1
     assert_equal( [ AttrRef.new( 1, 2 ) ], rule1.first.args ) # c0=1, x=2
@@ -140,7 +140,7 @@ class TC_SemanticFunctions < Test::Unit::TestCase
 
     expansion = [ Token.new( :symbol, 'node2' ), Token.new( :literal, 'whatever' ) ]
     batch = sf.node_expansion( symbol, expansion ) 
-    assert_equal( 3, batch.size ) # both 'node2 ""' and '*'
+    assert_equal( 3, batch.size ) # both 'node2 $' and '*'
     assert_equal( "c0.x + 'x'", batch[0].orig )
     assert_equal( "p.id + c1.text + c0.y", batch[1].orig )   
     assert_equal( "c0.y", batch[2].orig )

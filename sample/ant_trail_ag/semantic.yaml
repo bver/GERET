@@ -40,11 +40,11 @@ body:
     c1.ids : p.ids      
 
 line:
-  identifier "":
+  identifier $:
     p.valid : c0.fnid != p.context && p.ids.include?( c0.fnid )
-  if-statement "":
+  if-statement $:
     p.valid : "true"  # not necessary
-  op "":
+  op $:
     p.valid : "true"  # not necessary 
    
 if-statement:

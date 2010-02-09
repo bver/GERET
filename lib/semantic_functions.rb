@@ -57,7 +57,7 @@ module Semantic
       result = rulealt.map do |token|
         case token.type
         when :literal
-          '""'
+          '$'
         when :symbol
           token.data
         else

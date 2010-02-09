@@ -10,7 +10,7 @@ K:
     c0.items : p.items
         
 I:
-  '""':
+  $:
     p.item : c0.text
     p.valid : not p.items.include? p.item
 
