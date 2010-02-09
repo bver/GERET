@@ -17,65 +17,43 @@ module Semantic
 
     def pick_rule( parent_token, genome )
       loop do
-        
         extension = super( parent_token, genome )
-        
-        edges = @functions.node_expansion( parent_token, extension ).map do |attr_fn|
-          AttrEdge.create( parent_token, extension, attr_fn, @used_length )
-        end
-
-        # process the current edges first
-        new_attrs1 = Edges.reduce_batch( edges, @attributes, @used_length )
-        next if found_invalid? new_attrs1
-        @edges.concat edges
-        @attributes.update new_attrs1
-
-        # process older edges with joined_attributes       
-        new_attrs2 = @edges.reduce_batch( @attributes, @used_length )
-        if found_invalid? new_attrs2
-          @edges.prune_newer @used_length
-          @attributes.delete_if {|key, attr| attr.age >= @used_length}
-          next
-        end
-        
-        # ok, no invalidating attribute found
-        @attributes.update new_attrs2
-        return extension 
-
+        return extension if semantic_core( parent_token, extension, @used_length  )
       end
     end
 
     def generate_rule( recurs, parent_token, genome )
       loop do
-        
         extension = super( recurs, parent_token, genome )
-        
-        edges = @functions.node_expansion( parent_token, extension ).map do |attr_fn|
-          AttrEdge.create( parent_token, extension, attr_fn, @used_length )
-        end
-
-        # process the current edges first
-        new_attrs1 = Edges.reduce_batch( edges, @attributes, @used_length )
-        next if found_invalid? new_attrs1
-        @edges.concat edges
-        @attributes.update new_attrs1
-
-        # process older edges with joined_attributes       
-        new_attrs2 = @edges.reduce_batch( @attributes, @used_length )
-        if found_invalid? new_attrs2
-          @edges.prune_newer @used_length
-          @attributes.delete_if {|key, attr| attr.age >= @used_length}
-          next
-        end
-        
-        # ok, no invalidating attribute found
-        @attributes.update new_attrs2
-        return extension 
-
+        return extension if semantic_core( parent_token, extension, genome.size )
       end   
     end 
 
     protected
+
+    def semantic_core( parent_token, extension, age )
+      edges = @functions.node_expansion( parent_token, extension ).map do |attr_fn|
+        AttrEdge.create( parent_token, extension, attr_fn, age )
+      end
+
+      # process the current edges first
+      new_attrs1 = Edges.reduce_batch( edges, @attributes, age )
+      return false if found_invalid? new_attrs1
+      @edges.concat edges
+      @attributes.update new_attrs1
+
+      # process older edges with joined_attributes       
+      new_attrs2 = @edges.reduce_batch( @attributes, age )
+      if found_invalid? new_attrs2
+        @edges.prune_newer age
+        @attributes.delete_if { |key, attr| attr.age >= age }
+        return false
+      end
+        
+      # ok, no invalidating attribute found
+      @attributes.update new_attrs2
+      true
+    end
 
     def found_invalid? attrs
       attrs.each_pair do |key,attr|
