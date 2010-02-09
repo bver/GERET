@@ -56,7 +56,7 @@ begin
     end
   end
 
-#rescue => msg
-#  abort msg.to_s
+rescue => msg
+  abort msg.to_s
 end
 
