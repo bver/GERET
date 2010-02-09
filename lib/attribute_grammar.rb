@@ -1,16 +1,25 @@
 
 require 'lib/mapper'
+require 'lib/abnf_file'
 require 'lib/semantic_functions'
 require 'lib/semantic_edges'
 
 module Semantic
 
+  class AttributeGrammar < Abnf::File 
+    def semantic= filename
+      @semantic_functions = Functions.new( IO.read( filename ) )
+    end
+
+    attr_reader :semantic_functions
+  end
+
   class AttrGrDepthFirst < Mapper::DepthFirst
 
-    def initialize( grammar, semantic )
+    def initialize( grammar )
       super grammar
 
-      @functions = Functions.new semantic
+      @functions = grammar.semantic_functions
       @edges = Edges.new
       @attributes = {}
     end

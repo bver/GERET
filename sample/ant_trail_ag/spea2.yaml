@@ -26,11 +26,12 @@ algorithm:
     on_individual: stopping_condition
 
 grammar:
-  class: Abnf::File
+  class: AttributeGrammar
   filename: sample/ant_trail_ag/grammar.abnf
+  semantic: sample/ant_trail_ag/semantic.yaml 
 
 mapper:
-  class: DepthLocus
+  class: AttrGrDepthFirst
 
 selection:
   class: Tournament
