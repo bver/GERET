@@ -28,21 +28,18 @@ module Semantic
         new_attrs1 = Edges.reduce_batch( edges, @attributes, @used_length )
         next if found_invalid? new_attrs1
         @edges.concat edges
-
-        # try to apply new attributes
-        joined_attributes = @attributes
-        joined_attributes.update new_attrs1
+        @attributes.update new_attrs1
 
         # process older edges with joined_attributes       
-        new_attrs2 = @edges.reduce_batch( joined_attributes, @used_length )
+        new_attrs2 = @edges.reduce_batch( @attributes, @used_length )
         if found_invalid? new_attrs2
           @edges.prune_newer @used_length
+          @attributes.delete_if {|key, attr| attr.age >= @used_length}
           next
         end
         
         # ok, no invalidating attribute found
-        joined_attributes.update new_attrs2
-        @attributes = joined_attributes
+        @attributes.update new_attrs2
         return extension 
 
       end
