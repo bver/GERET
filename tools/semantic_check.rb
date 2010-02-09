@@ -15,7 +15,11 @@ begin
 
   grammar.each_pair do |symbol,rule|
     snode = semantic.fetch( symbol, nil )
-    raise "ERROR: symbol '#{symbol}' not found in the semantic file." if snode.nil?
+
+    if snode.nil?
+      $stderr.puts "WARNING: symbol '#{symbol}' not found in the semantic file."
+      next
+    end
 
     rule.each do |alt|
       skey = Semantic::Functions.match_key( alt )
@@ -26,7 +30,10 @@ begin
       srule = snode.fetch( skey, nil )
       if srule.nil?
         srule = snode.fetch( '*', nil ) 
-        raise "ERROR: rule '#{exprule}' not described by the semantic file." if srule.nil?
+        if srule.nil?       
+          $stderr.puts "WARNING: rule '#{exprule}' not described by the semantic file." 
+          next
+        end
         exprule = "#{symbol} -> *" 
       end
 
@@ -45,11 +52,11 @@ begin
     rules.keys.each do |key|
       exprule = "#{symbol} -> #{key}"
       next if usage[ exprule ] > 0
-      puts "WARNING: semantic functions under '#{exprule}' not used by the grammar."
+      $stderr.puts "WARNING: semantic functions under '#{exprule}' not used by the grammar."
     end
   end
 
-rescue => msg
-  abort msg.to_s
+#rescue => msg
+#  abort msg.to_s
 end
 

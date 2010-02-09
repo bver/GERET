@@ -42,10 +42,6 @@ body:
 line:
   identifier $:
     p.valid : c0.fnid != p.context && p.ids.include?( c0.fnid )
-  if-statement $:
-    p.valid : "true"  # not necessary
-  op $:
-    p.valid : "true"  # not necessary 
    
 if-statement:
   *:
@@ -54,7 +50,4 @@ if-statement:
     c2.ids : p.ids
     c5.ids : p.ids
   
-op:
-  *:
-    p.valid : "true"  # not necessary 
 
