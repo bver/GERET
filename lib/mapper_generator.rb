@@ -55,7 +55,7 @@ module Mapper
         return genome if @grammar[selected_symbol].recursivity == :infinite # emergency fallback     
 
         rec = (selected_token.depth < required_depth) ? recursivity : [:terminating]
-        expansion = generate_rule( rec, selected_symbol, genome )
+        expansion = generate_rule( rec, selected_token, genome )
         expansion.each { |t| t.depth = selected_token.depth+1 }
 
         tokens[selected_index,1] = expansion
@@ -66,13 +66,13 @@ module Mapper
    
   protected
 
-    def generate_rule( recurs, symbol, genome )
-      rule = @grammar.fetch( symbol )
+    def generate_rule( recurs, symbol_token, genome )
+      rule = @grammar.fetch( symbol_token.data )
       alts = rule.find_all { |alt| recurs.include? alt.recursivity }
       alts = rule if alts.empty? # desperate case, cannot obey recurs
       if @consume_trivial_codons or rule.size > 1
         alt = alts.at @random.rand( alts.size )
-        genome.push unmod( rule.index(alt), rule.size, symbol )
+        genome.push unmod( rule.index(alt), rule.size, symbol_token.data )
       else
         alt = rule.first 
       end
