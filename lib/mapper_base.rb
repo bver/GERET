@@ -92,7 +92,7 @@ module Mapper
         selected_token = tokens[selected_index]
 
         return nil if @used_length > length_limit
-        expansion = pick_rule( selected_token.data, genome )
+        expansion = pick_rule( selected_token, genome )
         expansion.each { |t| t.depth = selected_token.depth+1 }
 
         @complexity += selected_token.depth * expansion.arity + 1
@@ -125,8 +125,8 @@ module Mapper
       genome.at( index )
     end
    
-    def pick_rule( symbol, genome )
-      rule = @grammar.fetch( symbol )
+    def pick_rule( symbol_token, genome )
+      rule = @grammar.fetch( symbol_token.data )
 
       # respect fading strategy:
       if not @wraps_to_fading.nil? and @used_length > @wraps_to_fading*genome.size     
@@ -138,7 +138,7 @@ module Mapper
         faded_index = read_genome( genome, rule.size )
       end
 
-      alt_index = polymorphism( symbol, faded_index )
+      alt_index = polymorphism( symbol_token.data, faded_index )
       alt_index = alt_index.divmod( rule.size ).last 
       alt = rule.at alt_index
       return alt.deep_copy
