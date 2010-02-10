@@ -23,11 +23,11 @@ main:
    
 _digit:
   *:
-    p.text : c0.text
+    p.fnid : c0.text
 
 identifier:
   *:
-    p.fnid : c0.text + c1.text
+    p.fnid : c0.text + c1.fnid
 
 body:
   line:
