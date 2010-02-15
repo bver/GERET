@@ -94,7 +94,7 @@ module Semantic
 
       return AttrRef.new( 0, idx ) if node == 'p' 
 
-      raise "Semantic::Functions wrong node '#{text}'" unless node.size > 1 and node[0] == 'c'  
+      raise "Semantic::Functions wrong node '#{text}'" unless node.size > 1 and /^c/ =~ node  
       return AttrRef.new( node[1,node.size-1].to_i+1, idx ) 
     end
 

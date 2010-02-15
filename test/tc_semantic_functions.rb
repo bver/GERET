@@ -79,15 +79,15 @@ class TC_SemanticFunctions < Test::Unit::TestCase
   def test_parse
     sf = Functions.new( IO.read('test/data/semantic.yaml') )
 
-    assert( sf.kind_of? Hash )
+    assert( sf.kind_of?( Hash ) )
     assert_equal( [ 'node1', 'start' ], sf.keys.sort )
-    assert( sf['node1'].kind_of? Hash )
+    assert( sf['node1'].kind_of?( Hash ))
 
     assert_equal( [ 'text', 'id', 'x', 'y' ], sf.attributes )  # text is implicit
 
     assert_equal( ['fn'], sf['start'].keys )
     rule0 = sf['start']['fn']
-    assert( rule0.kind_of? Array )
+    assert( rule0.kind_of?( Array ))
     assert_equal( 1, rule0.size )   
     assert_equal( 1, rule0.first.target.node_idx ) # c0=1
     assert_equal( 1, rule0.first.target.attr_idx ) # id=1
@@ -99,6 +99,7 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     assert_equal( ['*', 'node2 $'], sf['node1'].keys.sort )
     rule1 = sf['node1']['node2 $']
     assert_equal( 2, rule1.size )
+    rule1.reverse! if AttrRef.new( 0, 1 ) != rule1.first.target # due to the fact ruby 1.9 does not sort hash.keys
     assert_equal( AttrRef.new( 0, 1 ), rule1.first.target ) # p=0, id=1
     assert_equal( [ AttrRef.new( 1, 2 ) ], rule1.first.args ) # c0=1, x=2
     assert_equal( 1, rule1.first.func.arity )
@@ -141,6 +142,7 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     expansion = [ Token.new( :symbol, 'node2' ), Token.new( :literal, 'whatever' ) ]
     batch = sf.node_expansion( symbol, expansion ) 
     assert_equal( 3, batch.size ) # both 'node2 $' and '*'
+    batch = [ batch[1], batch[0], batch[2] ] if  batch[0].orig != "c0.x + 'x'"
     assert_equal( "c0.x + 'x'", batch[0].orig )
     assert_equal( "p.id + c1.text + c0.y", batch[1].orig )   
     assert_equal( "c0.y", batch[2].orig )
