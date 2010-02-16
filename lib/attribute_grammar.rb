@@ -24,53 +24,89 @@ module Semantic
       @attributes = {}
     end
 
-    def pick_rule( parent_token, genome )
-      loop do
-        extension = super( parent_token, genome )
-        return extension if semantic_core( parent_token, extension, @used_length  )
-      end
-    end
-
-    def generate_rule( recurs, parent_token, genome )
-      loop do
-        extension = super( recurs, parent_token, genome )
-        return extension if semantic_core( parent_token, extension, genome.size )
-      end   
-    end 
-
     protected
 
-    def semantic_core( parent_token, extension, age )
-      edges = @functions.node_expansion( parent_token, extension ).map do |attr_fn|
-        AttrEdge.create( parent_token, extension, attr_fn, age )
+    def pick_expansions( parent_token, genome )
+      rules = super( parent_token, genome )
+
+      allowed = []
+      rules.each do |expansion|
+#TODO: puts "checking #{parent_token.data} -> #{(expansion.map {|t| t.data}).join(' ')}"
+        edges = @functions.node_expansion( parent_token, expansion ).map do |attr_fn|
+          AttrEdge.create( parent_token, expansion, attr_fn, 0 )
+        end
+
+        # process all edges for the _valid attribute
+        edges.concat( @edges.map {|e| AttrEdge.new( e.dependencies.clone, e.result.clone, e.func.clone, e.age )} ) #TODO: cleaner!
+        new_attrs = Edges.reduce_batch( edges, @attributes, 0 )
+
+        next if found_invalid? new_attrs 
+        allowed << expansion
+#TODO: puts "allowed."	
+      end
+      raise "AttrGrDepthFirst: all possible expansions semanantically restricted" if allowed.empty?
+      
+      allowed
+    end
+
+    def use_expansion( parent_token, alt )
+      expansion = super( parent_token, alt )
+      edges = @functions.node_expansion( parent_token, expansion ).map do |attr_fn|
+        AttrEdge.create( parent_token, expansion, attr_fn, 0 )
       end
 
       # process the current edges first
-      new_attrs1 = Edges.reduce_batch( edges, @attributes, age )
-      return false if found_invalid? new_attrs1
+      new_attrs1 = Edges.reduce_batch( edges, @attributes, 0 )
+     
       @edges.concat edges
       @attributes.update new_attrs1
 
       # process older edges with joined_attributes       
-      new_attrs2 = @edges.reduce_batch( @attributes, age )
-      if found_invalid? new_attrs2
-        @edges.prune_newer age
-        @attributes.delete_if { |key, attr| attr.age >= age }
-        return false
-      end
-        
-      # ok, no invalidating attribute found
+      new_attrs2 = @edges.reduce_batch( @attributes, 0 )
+
       @attributes.update new_attrs2
-      true
+     
+#TODO: dump parent_token, expansion
+     
+      expansion 
     end
 
     def found_invalid? attrs
       attrs.each_pair do |key,attr|
-        next unless @functions.attributes[key.attr_idx] == 'valid'
+        next unless @functions.attributes[key.attr_idx] == '_valid'
         return true if attr.value == false
       end
       false
     end
+
+def node_dump node
+ "#{node.token_id}/#{ObjectSpace._id2ref(node.token_id).data}[#{ObjectSpace._id2ref(node.token_id).depth}].#{@functions.attributes[node.attr_idx] }"
+end
+
+def dump( parent_token, extension )
+
+  puts "#{parent_token.data} -> #{(extension.map {|t| t.data}).join(' ')}  // #{@used_length}"      #Functions.match_key(extension) 
+
+  @attributes.each_pair do
+    |k,v| puts "  #{node_dump k} = #{v.value}"
+  end
+
+  @edges.each do |e|
+  
+    print "  @ ["
+
+    e.dependencies.each do|d| 
+      print d.kind_of?( AttrKey ) ? "#{node_dump d}" : d.to_s ; print ',' 
+    end
+
+    puts "] => #{node_dump e.result} "
+
+  end
+
+end
+
+
+
 
   end
 
