@@ -125,8 +125,15 @@ module Mapper
       genome.at( index )
     end
    
-    def pick_expansions symbol_token 
-      @grammar.fetch( symbol_token.data )
+    def pick_expansions( symbol_token, genome )
+      rules = @grammar.fetch( symbol_token.data )
+
+      return rules if @wraps_to_fading.nil? or @used_length <= @wraps_to_fading*genome.size
+      
+      terminals = rules.find_all { |alt| alt.recursivity == :terminating }
+      return rules if terminals.empty? # desperate case (only :cyclic or :infinite nodes found)
+
+      terminals
     end
 
     def use_expansion( symbol_token, alt )
@@ -134,18 +141,10 @@ module Mapper
     end
 
     def pick_rule( symbol_token, genome )
-      rule = pick_expansions symbol_token
+      rule = pick_expansions( symbol_token, genome )
 
-      # respect fading strategy:
-      if not @wraps_to_fading.nil? and @used_length > @wraps_to_fading*genome.size     
-        @used_length += 1
-        terminal = rule.find {|alt| alt.recursivity == :terminating }
-        faded_index = 0 if terminal.nil? # desperate case (only :cyclic or :infinite alts found)
-        faded_index = rule.index( terminal )
-      else  
-        faded_index = read_genome( genome, rule.size )
-      end
-
+      faded_index = read_genome( genome, rule.size )
+ 
       alt_index = polymorphism( symbol_token.data, faded_index )
       alt_index = alt_index.divmod( rule.size ).last 
       alt = rule.at alt_index

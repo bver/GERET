@@ -67,7 +67,7 @@ module Mapper
   protected
 
     def generate_rule( recurs, symbol_token, genome )
-      rule = pick_expansions symbol_token
+      rule = pick_expansions( symbol_token, genome )
       alts = rule.find_all { |alt| recurs.include? alt.recursivity }
       alts = rule if alts.empty? # desperate case, cannot obey recurs
       if @consume_trivial_codons or rule.size > 1
