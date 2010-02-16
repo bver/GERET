@@ -67,7 +67,7 @@ module Mapper
   protected
 
     def generate_rule( recurs, symbol_token, genome )
-      rule = @grammar.fetch( symbol_token.data )
+      rule = pick_expansions symbol_token
       alts = rule.find_all { |alt| recurs.include? alt.recursivity }
       alts = rule if alts.empty? # desperate case, cannot obey recurs
       if @consume_trivial_codons or rule.size > 1
@@ -76,7 +76,7 @@ module Mapper
       else
         alt = rule.first 
       end
-      alt.deep_copy
+      return use_expansion( symbol_token, alt.deep_copy )
     end
 
   end # Generator

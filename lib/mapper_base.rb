@@ -125,8 +125,16 @@ module Mapper
       genome.at( index )
     end
    
+    def pick_expansions symbol_token 
+      @grammar.fetch( symbol_token.data )
+    end
+
+    def use_expansion( symbol_token, alt )
+      alt
+    end
+
     def pick_rule( symbol_token, genome )
-      rule = @grammar.fetch( symbol_token.data )
+      rule = pick_expansions symbol_token
 
       # respect fading strategy:
       if not @wraps_to_fading.nil? and @used_length > @wraps_to_fading*genome.size     
@@ -141,7 +149,7 @@ module Mapper
       alt_index = polymorphism( symbol_token.data, faded_index )
       alt_index = alt_index.divmod( rule.size ).last 
       alt = rule.at alt_index
-      return alt.deep_copy
+      return use_expansion( symbol_token, alt.deep_copy )
     end
 
     def find_nonterminals_by_depth( tokens, depth )
