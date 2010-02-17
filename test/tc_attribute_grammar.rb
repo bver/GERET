@@ -16,7 +16,7 @@ class TC_AttributeGrammar < Test::Unit::TestCase
 
     m = Semantic::AttrGrDepthFirst.new( @grammar )
 
-    assert_equal( 'i3i1i2', m.phenotype( [0, 1, 2, 1, 0, 0, 1] ) )
+    assert_equal( 'i3i1i2', m.phenotype( [0, 1, 2, 1, 0, 0, 0] ) )
     assert_equal( 7, m.used_length )
 
     assert_equal( 'i3i1i2', m.phenotype( [1, 1, 2, 1, 2, 1, 0] ) )
@@ -24,14 +24,14 @@ class TC_AttributeGrammar < Test::Unit::TestCase
    
   end
 
-  def XXXXXXXXXtest_generate
+  def test_generate
     m = Semantic::AttrGrDepthFirst.new( @grammar )
     m.consume_trivial_codons = true
 
-    r = MockRand.new [{1=>0},0, {2=>1},0, {3=>2},0, {2=>1},0, {3=>2},0, {3=>0},0, {2=>0},0, {3=>0},0, {3=>2},0, {3=>1},0 ]
+    r = MockRand.new [{1=>0},0, {2=>1},0, {3=>2},0, {2=>1},0, {2=>0},0, {1=>0},0, {1=>0},0 ]
     m.random = r   
 
-    gen = [0, 1, 2, 1, 2, 0, 0, 0, 2, 1]
+    gen = [0, 1, 2, 1, 0, 0, 0]
     assert_equal( gen, m.generate_grow( 5 ) )
   end
 
