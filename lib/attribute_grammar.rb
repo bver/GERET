@@ -74,7 +74,7 @@ module Semantic
     def found_invalid? attrs
       attrs.each_pair do |key,attr|
         next unless key.attr_idx == AttrIndexValid
-        return true if attr.value == false
+        return true if attr == false
       end
       false
     end
@@ -88,7 +88,7 @@ def dump( parent_token, extension )
   puts "#{parent_token.data} -> #{(extension.map {|t| t.data}).join(' ')}  // #{@used_length}"      #Functions.match_key(extension) 
 
   @attributes.each_pair do
-    |k,v| puts "  #{node_dump k} = #{v.value}"
+    |k,v| puts "  #{node_dump k} = #{v}"
   end
 
   @edges.each do |e|

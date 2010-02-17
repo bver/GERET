@@ -34,7 +34,7 @@ module Semantic
       dependencies.map! do |arg|
         if arg.class == AttrKey
           attr = attr_hash.fetch( arg, nil )
-          attr.nil? ? arg : attr.value
+          attr.nil? ? arg : attr
         else
           arg
         end
@@ -62,7 +62,7 @@ module Semantic
           e.substitute_deps( new_hash )
           next unless e.is_executable?
 
-          new_hash[ e.result ] = Attribute.new( e.exec_func )
+          new_hash[ e.result ] = e.exec_func 
           removal << e
         end
         

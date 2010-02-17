@@ -64,8 +64,8 @@ class TC_SemanticEdges < Test::Unit::TestCase
     edge = AttrEdge.new( dependencies )
 
     attr_hash = { 
-      AttrKey.new( 100, 5 ) => Attribute.new( 'bar' ), 
-      AttrKey.new( 200, 1 ) => Attribute.new( 'baz' ) 
+      AttrKey.new( 100, 5 ) => 'bar', 
+      AttrKey.new( 200, 1 ) => 'baz' 
     }
     
     edge.substitute_deps( attr_hash )
@@ -88,15 +88,15 @@ class TC_SemanticEdges < Test::Unit::TestCase
     edges.concat [ edge1, edge2, edge3 ]
 
     attr_hash = { 
-      AttrKey.new( 302, 3 ) => Attribute.new( 'c' ), 
-      AttrKey.new( 302, 1 ) => Attribute.new( 'baz' ),
-      AttrKey.new( 304, 3 ) => Attribute.new( 'e' )     
+      AttrKey.new( 302, 3 ) =>  'c', 
+      AttrKey.new( 302, 1 ) =>  'baz',
+      AttrKey.new( 304, 3 ) =>  'e'      
     }
  
     new_results_hash = edges.reduce_batch( attr_hash )
 
-    assert_equal( { AttrKey.new(303,3)=>Attribute.new('a 0.1 c'), 
-                    AttrKey.new(301,3)=>Attribute.new('0.1') }, new_results_hash )
+    assert_equal( { AttrKey.new(303,3)=>'a 0.1 c', 
+                    AttrKey.new(301,3)=>'0.1' }, new_results_hash )
     assert_equal( 1, edges.size )
     assert_equal( AttrEdge, edges.first.class )
     assert_equal( ['a',AttrKey.new(404,3),'c','a 0.1 c','e' ], edges.first.dependencies )
