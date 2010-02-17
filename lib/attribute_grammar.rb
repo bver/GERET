@@ -73,7 +73,7 @@ module Semantic
 
     def found_invalid? attrs
       attrs.each_pair do |key,attr|
-        next unless @functions.attributes[key.attr_idx] == '_valid'
+        next unless key.attr_idx == AttrIndexValid
         return true if attr.value == false
       end
       false

@@ -13,7 +13,7 @@ module Semantic
 
       super()
 
-      @attributes = ['_text']     
+      @attributes = AttrIndices.clone     
 
       # default ctor
       return if semantic.nil?
