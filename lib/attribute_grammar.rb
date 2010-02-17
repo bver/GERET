@@ -33,12 +33,12 @@ module Semantic
       rules.each do |expansion|
 #TODO: puts "checking #{parent_token.data} -> #{(expansion.map {|t| t.data}).join(' ')}"
         edges = @functions.node_expansion( parent_token, expansion ).map do |attr_fn|
-          AttrEdge.create( parent_token, expansion, attr_fn, 0 )
+          AttrEdge.create( parent_token, expansion, attr_fn )
         end
 
         # process all edges for the _valid attribute
-        edges.concat( @edges.map {|e| AttrEdge.new( e.dependencies.clone, e.result.clone, e.func.clone, e.age )} ) #TODO: cleaner!
-        new_attrs = Edges.reduce_batch( edges, @attributes, 0 )
+        edges.concat( @edges.map {|e| AttrEdge.new( e.dependencies.clone, e.result.clone, e.func.clone )} ) #TODO: cleaner!
+        new_attrs = Edges.reduce_batch( edges, @attributes )
 
         next if found_invalid? new_attrs 
         allowed << expansion
@@ -52,17 +52,17 @@ module Semantic
     def use_expansion( parent_token, alt )
       expansion = super( parent_token, alt )
       edges = @functions.node_expansion( parent_token, expansion ).map do |attr_fn|
-        AttrEdge.create( parent_token, expansion, attr_fn, 0 )
+        AttrEdge.create( parent_token, expansion, attr_fn )
       end
 
       # process the current edges first
-      new_attrs1 = Edges.reduce_batch( edges, @attributes, 0 )
+      new_attrs1 = Edges.reduce_batch( edges, @attributes )
      
       @edges.concat edges
       @attributes.update new_attrs1
 
       # process older edges with joined_attributes       
-      new_attrs2 = @edges.reduce_batch( @attributes, 0 )
+      new_attrs2 = @edges.reduce_batch( @attributes )
 
       @attributes.update new_attrs2
      

@@ -3,7 +3,7 @@ require 'lib/semantic_types'
 
 module Semantic
 
-  class AttrEdge < Struct.new( :dependencies, :result, :func, :age )
+  class AttrEdge < Struct.new( :dependencies, :result, :func )
     
     def is_executable? 
       ( dependencies.detect { |d| d.class == AttrKey } ).nil?
@@ -14,7 +14,7 @@ module Semantic
       func.call( dependencies )
     end
 
-    def AttrEdge.create( parent_token, child_tokens, attr_fn, age )
+    def AttrEdge.create( parent_token, child_tokens, attr_fn )
       tokens = [ parent_token ].concat( child_tokens )
 
       dependencies = attr_fn.args.map do |ref|
@@ -27,7 +27,7 @@ module Semantic
 
       result = AttrKey.new( tokens[ attr_fn.target.node_idx ].object_id, attr_fn.target.attr_idx )
 
-      return AttrEdge.new( dependencies, result, attr_fn.func, age ) 
+      return AttrEdge.new( dependencies, result, attr_fn.func ) 
     end
 
     def substitute_deps attr_hash
@@ -45,11 +45,11 @@ module Semantic
 
   class Edges < Array
 
-    def reduce_batch( attr_hash, age )
-      Edges.reduce_batch( self, attr_hash, age )
+    def reduce_batch( attr_hash )
+      Edges.reduce_batch( self, attr_hash )
     end
 
-    def Edges.reduce_batch( edges, attr_hash, age )
+    def Edges.reduce_batch( edges, attr_hash )
       
       edges.each { |e| e.substitute_deps( attr_hash ) }    
 
@@ -62,7 +62,7 @@ module Semantic
           e.substitute_deps( new_hash )
           next unless e.is_executable?
 
-          new_hash[ e.result ] = Attribute.new( e.exec_func, age )
+          new_hash[ e.result ] = Attribute.new( e.exec_func )
           removal << e
         end
         
@@ -72,10 +72,6 @@ module Semantic
       end
 
       new_hash
-    end
-
-    def prune_newer age
-      delete_if { |edge| edge.age >= age }
     end
 
   end
