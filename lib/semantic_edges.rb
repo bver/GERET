@@ -18,7 +18,7 @@ module Semantic
       tokens = [ parent_token ].concat( child_tokens )
 
       dependencies = attr_fn.args.map do |ref|
-        if ref.attr_idx == 0 
+        if ref.attr_idx == AttrIndexText 
           tokens[ ref.node_idx ].data          # attr_idx == 0 means attr.text 
         else
           AttrKey.new( tokens[ ref.node_idx ].object_id, ref.attr_idx )

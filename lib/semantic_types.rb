@@ -9,5 +9,9 @@ module Semantic
 
   Attribute = Struct.new( 'Attribute', :value, :age )
 
+  # reserved Attribute indices:
+  AttrIndexText = 0   # _text
+  #AttrIndexValid = 1  # _valid
+
 end
 

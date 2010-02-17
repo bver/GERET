@@ -44,7 +44,7 @@ module Semantic
         allowed << expansion
 #TODO: puts "allowed."	
       end
-      raise "AttrGrDepthFirst: all possible expansions semanantically restricted" if allowed.empty?
+      raise "AttrGrDepthFirst: all possible expansions semanantically restricted" if allowed.empty? #TODO: test
       
       allowed
     end

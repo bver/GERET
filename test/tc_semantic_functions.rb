@@ -28,22 +28,22 @@ class TC_SemanticFunctions < Test::Unit::TestCase
 
   def test_attref
     sf = Functions.new
-    assert_equal( ['text'], sf.attributes ) 
+    assert_equal( ['_text'], sf.attributes ) 
     assert_equal( AttrRef.new( 2, 1 ), sf.new_attr_ref( 'c1.ids' ) )
-    assert_equal( ['text', 'ids'], sf.attributes )                 
+    assert_equal( ['_text', 'ids'], sf.attributes )                 
 
-    assert_equal( AttrRef.new( 2, 0 ), sf.new_attr_ref( 'c1.text' ) )  
-    assert_equal( ['text', 'ids'], sf.attributes )                                 
+    assert_equal( AttrRef.new( 2, AttrIndexText ), sf.new_attr_ref( 'c1._text' ) )  
+    assert_equal( ['_text', 'ids'], sf.attributes )                                 
 
     assert_equal( AttrRef.new( 0, 2 ), sf.new_attr_ref( 'p.fn' ) )
-    assert_equal( ['text', 'ids', 'fn'], sf.attributes )                           
+    assert_equal( ['_text', 'ids', 'fn'], sf.attributes )                           
 
     assert_equal( AttrRef.new( 1, 1 ), sf.new_attr_ref( 'c0.ids' ) )   
-    assert_equal( ['text', 'ids', 'fn'], sf.attributes )                              
+    assert_equal( ['_text', 'ids', 'fn'], sf.attributes )                              
 
     assert_equal( 'c1.ids', sf.render_attr( AttrRef.new( 2, 1 ) ) )   
     assert_equal( 'p.fn', sf.render_attr( AttrRef.new( 0, 2 ) ) )   
-    assert_equal( 'c0.text', sf.render_attr( AttrRef.new( 1, 0 ) ) )   
+    assert_equal( 'c0._text', sf.render_attr( AttrRef.new( 1, 0 ) ) )   
     assert_equal( 'c5.ids', sf.render_attr( AttrRef.new( 6, 1 ) ) )       
   end
 
@@ -51,10 +51,10 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     sf = Functions.new
     exception = assert_raise( RuntimeError ) { sf.new_attr_ref( 'wr0ng' ) }
     assert_equal( "Semantic::Functions wrong node/attribute 'wr0ng'", exception.message )
-    exception = assert_raise( RuntimeError ) { sf.new_attr_ref( 'x.text' ) }
-    assert_equal( "Semantic::Functions wrong node 'x.text'", exception.message )
-    exception = assert_raise( RuntimeError ) { sf.new_attr_ref( 'c.text' ) }
-    assert_equal( "Semantic::Functions wrong node 'c.text'", exception.message )
+    exception = assert_raise( RuntimeError ) { sf.new_attr_ref( 'x._text' ) }
+    assert_equal( "Semantic::Functions wrong node 'x._text'", exception.message )
+    exception = assert_raise( RuntimeError ) { sf.new_attr_ref( 'c._text' ) }
+    assert_equal( "Semantic::Functions wrong node 'c._text'", exception.message )
   end
 
   def test_xtract_args
@@ -83,7 +83,7 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     assert_equal( [ 'node1', 'start' ], sf.keys.sort )
     assert( sf['node1'].kind_of?( Hash ))
 
-    assert_equal( [ 'text', 'id', 'x', 'y' ], sf.attributes )  # text is implicit
+    assert_equal( [ '_text', 'id', 'x', 'y' ], sf.attributes )  # text is implicit
 
     assert_equal( ['fn'], sf['start'].keys )
     rule0 = sf['start']['fn']
@@ -107,11 +107,11 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     assert_equal( 'foox', rule1.first.func.call(['foo']) )   
     assert_equal( AttrRef.new( 1, 2 ), rule1.last.target ) # c0.x
     assert_equal( AttrRef.new( 0, 1 ), rule1.last.args[0] ) # p.id
-    assert_equal( AttrRef.new( 2, 0 ), rule1.last.args[1] ) # c1.text
+    assert_equal( AttrRef.new( 2, 0 ), rule1.last.args[1] ) # c1._text
     assert_equal( AttrRef.new( 1, 3 ), rule1.last.args[2] ) # c0.y   
     assert_equal( 1, rule1.last.func.arity )
     assert_equal( 'foobarbaz', rule1.last.func.call(['foo','bar','baz']) )   
-    assert_equal( "p.id + c1.text + c0.y", rule1.last.orig )   
+    assert_equal( "p.id + c1._text + c0.y", rule1.last.orig )   
  
     rule2 = sf['node1']['*']
     assert_equal( 1, rule2.size )
@@ -144,7 +144,7 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     assert_equal( 3, batch.size ) # both 'node2 $' and '*'
     batch = [ batch[1], batch[0], batch[2] ] if  batch[0].orig != "c0.x + 'x'"
     assert_equal( "c0.x + 'x'", batch[0].orig )
-    assert_equal( "p.id + c1.text + c0.y", batch[1].orig )   
+    assert_equal( "p.id + c1._text + c0.y", batch[1].orig )   
     assert_equal( "c0.y", batch[2].orig )
 
     symbol = Token.new( :symbol, 'UNKNOWN' )   

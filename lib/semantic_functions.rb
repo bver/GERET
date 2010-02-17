@@ -13,7 +13,7 @@ module Semantic
 
       super()
 
-      @attributes = ['text']     
+      @attributes = ['_text']     
 
       # default ctor
       return if semantic.nil?

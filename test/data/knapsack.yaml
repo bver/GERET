@@ -12,6 +12,6 @@ K:
         
 I:
   $:
-    p.item : c0.text
+    p.item : c0._text
     p._valid : not p.sack.include? p.item
 
