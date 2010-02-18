@@ -16,12 +16,14 @@ class TC_AttributeGrammar < Test::Unit::TestCase
 
     m = Semantic::AttrGrDepthFirst.new( @grammar )
 
+    assert_equal( 0, m.attributes.size )
     assert_equal( 'i3i1i2', m.phenotype( [0, 1, 2, 1, 0, 0, 0] ) )
     assert_equal( 7, m.used_length )
+    assert_equal( 14, m.attributes.size )   
 
     assert_equal( 'i3i1i2', m.phenotype( [1, 1, 2, 1, 2, 1, 0] ) )
     assert_equal( 7, m.used_length )
-   
+    assert_equal( 14, m.attributes.size )   # testing the attributes cleanup
   end
 
   def test_generate
@@ -33,6 +35,12 @@ class TC_AttributeGrammar < Test::Unit::TestCase
 
     gen = [0, 1, 2, 1, 0, 0, 0]
     assert_equal( gen, m.generate_grow( 5 ) )
+    assert_equal( 14, m.attributes.size )
+
+    r = MockRand.new [{1=>0},0, {2=>1},0, {3=>2},0, {2=>1},0, {2=>0},0, {1=>0},0, {1=>0},0 ]
+    m.random = r   
+    assert_equal( gen, m.generate_grow( 5 ) )
+    assert_equal( 14, m.attributes.size )   # testing the attributes cleanup  
   end
 
 

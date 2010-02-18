@@ -20,11 +20,27 @@ module Semantic
       super grammar
 
       @functions = grammar.semantic_functions
-      @edges = Edges.new
-      @attributes = {}
+      clear
+    end
+
+    attr_reader :attributes
+
+    def phenotype genome
+      clear
+      super( genome )
+    end
+
+    def generate( recursivity, required_depth )   
+      clear
+      super( recursivity, required_depth )     
     end
 
     protected
+
+    def clear
+      @edges = Edges.new
+      @attributes = {}
+    end
 
     def pick_expansions( parent_token, genome )
       rules = super( parent_token, genome )
