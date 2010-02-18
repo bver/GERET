@@ -7,50 +7,39 @@ code:
   main:
     c0.ids : p.ids
   func code:
+    p._valid : p.ids.size < 3
     c0.ids : p.ids
-    c1.ids : p.ids
+    c1.ids : p.ids + [ c0.def ]
 
 func:
-  *:
-    p.valid : ! p.ids.include? c1.fnid
-    c3.context : c1.fnid
-    c3.ids : p.ids << c1.fnid
+  $ identifier $ body $ $:
+    p.def : c1.def
+    c3.ids : p.ids
 
 main:
-  *:
-    c2.context : "'step'"
+  $ $ body $ $: 
     c2.ids : p.ids
-   
-_digit:
-  *:
-    p.fnid : c0.text
-
+  
 identifier:
   *:
-    p.fnid : c0.text + c1.fnid
+    p._valid : not p.ids.include? p.def
+    p.def : c0._text
 
 body:
-  line:
-    c0.context : p.context
-    c0.ids : p.ids   
-  body line:
-    c0.context : p.context
-    c1.context : p.context
-    c0.ids : p.ids   
-    c1.ids : p.ids      
+  *:
+    c0.ids : p.ids
+  body line $:
+    c1.ids : p.ids
 
 line:
-  identifier $:
-    p.valid : c0.fnid != p.context && p.ids.include?( c0.fnid )
-  if-statement $:
-    c0.context : p.context
-    c0.ids : p.ids
-   
+  $:
+    p._valid: p.ids.include? c0._text
+  if-statement: 
+    c0.ids: p.ids
+ 
 if-statement:
-  *:
-    c2.context : p.context
-    c5.context : p.context
+  $ $ line $ $ $ line $ $:
     c2.ids : p.ids
-    c5.ids : p.ids
+    c6.ids : p.ids   
   
 

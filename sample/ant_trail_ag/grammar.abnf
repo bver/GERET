@@ -8,13 +8,13 @@ func = "def " identifier LF body "end" LF
 
 main = "def step" LF body "end" LF
 
-identifier = "fn" DIGIT
+identifier = "fn1" / "fn2" / "fn3"
 
-body = line / body line
+body = line LF / body line LF
 
-line = if-statement LF / op LF / identifier LF
+line = if-statement / op / "fn1" / "fn2" / "fn3"
 
-if-statement = "if ant.food_ahead" LF line "else" LF line "end"
+if-statement = "if ant.food_ahead" LF line LF "else" LF line LF "end"
 
 op = "ant.left" / "ant.right" / "ant.move"
 
