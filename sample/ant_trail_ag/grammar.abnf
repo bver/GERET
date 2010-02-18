@@ -4,17 +4,17 @@ start = code
 
 code = main / func code
 
-func = "def " identifier LF body "end" LF
+func = "void " identifier " {" LF body "}" LF
 
-main = "def step" LF body "end" LF
+main = "void step() {" LF body "}" LF
 
-identifier = "fn1" / "fn2" / "fn3"
+identifier = "fn1()" / "fn2()" / "fn3()"
 
 body = line LF / body line LF
 
-line = if-statement / op / "fn1" / "fn2" / "fn3"
+line = if-statement / op / "fn1()" ";" / "fn2()" ";" / "fn3()" ";" 
 
-if-statement = "if ant.food_ahead" LF line LF "else" LF line LF "end"
+if-statement = "if( food_ahead() ) {" LF line LF "} else {" LF line LF "}"
 
-op = "ant.left" / "ant.right" / "ant.move"
+op = "left();" / "right();" / "move();"
 

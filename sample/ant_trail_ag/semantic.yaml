@@ -12,9 +12,10 @@ code:
     c1.ids : p.ids + [ c0.def ]
 
 func:
-  $ identifier $ body $ $:
-    p.def : c1.def
-    c3.ids : p.ids
+  $ identifier $ $ body $ $:
+    c1.ids : p.ids
+    c4.ids : p.ids
+    p.def : c1.def   
 
 main:
   $ $ body $ $: 
@@ -32,7 +33,7 @@ body:
     c1.ids : p.ids
 
 line:
-  $:
+  $ $:
     p._valid: p.ids.include? c0._text
   if-statement: 
     c0.ids: p.ids
