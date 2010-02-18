@@ -7,8 +7,6 @@ module Semantic
 
   AttrFn = Struct.new( 'AttrFn', :func, :target, :args, :orig )
 
-  Attribute = Struct.new( 'Attribute', :value, :age )
-
   # reserved Attribute indices:
   AttrIndices = [ '_text', '_valid' ]
   AttrIndexText =  AttrIndices.index( '_text' )
