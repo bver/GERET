@@ -44,7 +44,7 @@ module Semantic
         allowed << expansion
 #TODO: puts "allowed."	
       end
-      raise "AttrGrDepthFirst: all possible expansions semanantically restricted" if allowed.empty? #TODO: test
+      raise "AttrGrDepthFirst: all possible expansions semantically restricted" if allowed.empty? #TODO: test
       
       allowed
     end
@@ -66,7 +66,8 @@ module Semantic
 
       @attributes.update new_attrs2
      
-#TODO: dump parent_token, expansion
+#TODO: 
+      #dump parent_token, expansion
      
       expansion 
     end
@@ -85,7 +86,7 @@ end
 
 def dump( parent_token, extension )
 
-  puts "#{parent_token.data} -> #{(extension.map {|t| t.data}).join(' ')}  // #{@used_length}"      #Functions.match_key(extension) 
+  puts "#{parent_token.data} -> #{(extension.map {|t| t.data}).join(' ')}"      #Functions.match_key(extension) 
 
   @attributes.each_pair do
     |k,v| puts "  #{node_dump k} = #{v}"
