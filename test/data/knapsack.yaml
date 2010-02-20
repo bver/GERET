@@ -8,7 +8,7 @@ K:
     c1.sack : p.sack + [c0.item]
     p._valid : p.sack.size < 2 
   *:
-    c0.sack : p.sack 
+    c0.sack : p.sack.clone 
         
 I:
   $:
