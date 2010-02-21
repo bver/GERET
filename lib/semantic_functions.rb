@@ -48,9 +48,8 @@ module Semantic
     def node_expansion( symbol, expansion )
       node = fetch(symbol.data, nil)
       return [] if node.nil?
-      batch = node.fetch( Functions.match_key(expansion), [] )
-      return batch.concat node.fetch( '*', [] )
-      # return batch.map {|f| f.clone } 
+      batch = deep_copy( node.fetch( Functions.match_key(expansion), [] ) )
+      return batch.concat deep_copy( node.fetch( '*', [] ) )
     end
 
     def Functions.match_key rulealt 
@@ -102,6 +101,12 @@ module Semantic
       "#{ ref.node_idx==0 ? 'p' : 'c'+(ref.node_idx-1).to_s }.#{ @attributes[ ref.attr_idx ] }"
     end
 
+    protected
+
+    def deep_copy funcs
+      funcs.map { |f| AttrFn.new(f.func, f.target, f.args.clone, f.orig) } 
+    end
+   
   end
 
 end
