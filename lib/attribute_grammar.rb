@@ -6,7 +6,18 @@ require 'lib/semantic_edges'
 
 module Semantic
 
+  # The semantically extended Abnf::File. 
+  #
+  # This class adds the semantic attributes and semantic functions to the syntactic description of the grammar.
+  # The semantic functions for context free grammars are described in:
+  # http://cms.dc.uba.ar/materias/tl/2009/c2/practicas/Knuth-1968-SemanticsCFL.pdf
+  #
+  # Semantic functions are added to the tree (triggered) by the expansion of a nonterminal node.
+  # Attributes and functions are defined in the YAML file (see AttributeGrammar#semantic= ).
+  #
   class AttributeGrammar < Abnf::File 
+
+    # Load the semantic file. For the description see Functions#initialize
     def semantic= filename
       @semantic_functions = Functions.new( IO.read( filename ) )
     end
@@ -14,8 +25,18 @@ module Semantic
     attr_reader :semantic_functions
   end
 
+  # This mapper class implements the modified version of the attribute grammar described in:
+  # http://www.cs.bham.ac.uk/~wbl/biblio/gecco2004/WGEW003.pdf
+  #
+  # If there is the boolean p._valid attribute defined for the nonterminal symbol expansion, 
+  # the expansion is considered only if the value of such attribute is 'true'.
+  #
+  # See the AttributeGrammar class for detailed description of the semantic YAML file.
+  # See the Mapper::DepthFirst class for detailed description of the mapper behavior.
+  #
   class AttrGrDepthFirst < Mapper::DepthFirst
 
+    # See Mapper::DepthFirst#new
     def initialize( grammar )
       super grammar
 
@@ -23,13 +44,17 @@ module Semantic
       clear
     end
 
+    # Semantic attributes hash. It maps AttrKey identification to the attribute values.
+    # Mainly for deugging and logging purposes.
     attr_reader :attributes
 
+    # See Mapper::DepthFirst#phenotype 
     def phenotype genome
       clear
       super( genome )
     end
 
+    # See Mapper::DepthFirst#generate
     def generate( recursivity, required_depth )   
       clear
       super( recursivity, required_depth )     
@@ -53,10 +78,10 @@ module Semantic
         end
 
         # process all edges for the _valid attribute
-        edges.concat( @edges.map {|e| AttrEdge.new( e.dependencies.clone, e.result.clone, e.func.clone )} ) #TODO: cleaner!
+        #edges.concat( @edges.map {|e| AttrEdge.new( e.dependencies.clone, e.result.clone, e.func.clone )} ) #TODO: cleaner!
         new_attrs = Edges.reduce_batch( edges, @attributes )
 
-        next if found_invalid? new_attrs 
+        next if found_invalid?( new_attrs, parent_token.object_id ) 
         allowed << expansion
 #TODO: puts "allowed."	
       end
@@ -88,9 +113,10 @@ module Semantic
       expansion 
     end
 
-    def found_invalid? attrs
+    def found_invalid?( attrs, objid )
       attrs.each_pair do |key,attr|
         next unless key.attr_idx == AttrIndexValid
+        raise "too late _valid evaluation" unless objid == key.token_id 
         return true if attr == false
       end
       false

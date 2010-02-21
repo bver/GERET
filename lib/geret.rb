@@ -11,6 +11,8 @@
 # Operator - genetic operators (various crossover and mutations...)
 # 
 # Selection - selection operators (tournament, SUS, roulete, etc. population operators)
+#
+# Semantic - attribute grammars support (semantic attributes, semantic functions)
 # 
 # Util - auxilary classes (configuration, pipe interface, serialisation, etc. classes)
 #
