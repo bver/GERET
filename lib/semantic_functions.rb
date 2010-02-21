@@ -35,7 +35,7 @@ module Semantic
     #    symbolP:
     #      ...
     #
-    #  where:
+    # where:
     #    - symbol ... a nonterminal symbol defined by the ABNF grammar (see Mapper::Grammar)
     #    - expansion ... the expansion of the symbol defined by the grammar. 
     #                  All terminal symbols are matched by the '$' character. 
@@ -58,7 +58,7 @@ module Semantic
     #               There are reserved attribute identifiers:
     #               _text  .. represents the text of the terminal symbol or the symbol identifier
     #                         of the nonterminal symbol
-    #               _valid .. boolean attribute which restricts the usage of the expansion 
+    #               _valid .. the boolean attribute which restricts the usage of the expansion 
     #                         (see AttrGrDepthFirst class for details)
     #    - function ... the semantic function using node.attribute arguments, using the Ruby syntax.
     #

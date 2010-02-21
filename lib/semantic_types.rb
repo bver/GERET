@@ -6,7 +6,7 @@ module Semantic
   #   :attr_idx .. attribute index in the Functions#attributes 
   AttrKey = Struct.new( 'AttrKey', :token_id, :attr_idx )
 
-  # The attribute reference used in the Functions
+  # The attribute reference used in the Functions.
   #   :node_idx .. index in the [parent, child0, child1 .. childN] array
   #   ;attr_idx .. attribute index in the Functions#attributes,
   # For example, AttrRef.new( 0, 1 ) means p._valid, AttrRef.new( 2, 0 ) means c1._text, etc.
@@ -19,9 +19,13 @@ module Semantic
   #   :orig .. original source of the semantic function (same text as in the YAML file) for debuging purposes
   AttrFn = Struct.new( 'AttrFn', :func, :target, :args, :orig )
 
-  # reserved Attribute indices:
+  # Reserved Attribute indices.
   AttrIndices = [ '_text', '_valid' ]
+
+  # The text of the terminal symbol or the symbol identifier.
   AttrIndexText =  AttrIndices.index( '_text' )
+
+  # The boolean attribute which restricts the usage of the expansion.
   AttrIndexValid = AttrIndices.index( '_valid' )
   
 end

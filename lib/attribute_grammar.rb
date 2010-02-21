@@ -22,14 +22,22 @@ module Semantic
       @semantic_functions = Functions.new( IO.read( filename ) )
     end
 
+    # The instance of the Function class (all parsed semantic functions).
     attr_reader :semantic_functions
   end
 
-  # This mapper class implements the modified version of the attribute grammar described in:
-  # http://www.cs.bham.ac.uk/~wbl/biblio/gecco2004/WGEW003.pdf
+  # This mapper class implements the _modified_ version of the attribute grammar described in:
+  # http://www.cs.bham.ac.uk/~wbl/biblio/gecco2004/WGEW003.pdf and
+  # http://ncra.ucd.ie/downloads/pub/thesisExtGEwithAGs-CRC.pdf 
   #
   # If there is the boolean p._valid attribute defined for the nonterminal symbol expansion, 
   # the expansion is considered only if the value of such attribute is 'true'.
+  # 
+  # The implementation differs from the original thesis in this aspect: 
+  # There is no "rollback phase" of semantic attributes processing when the invalid node 
+  # expansion is reached (ie node._valid==false). Invalid expansions are simply ignored beforehand, 
+  # no codons are wasted (in another words there are no introns due to the semantic restrictions 
+  # present in the genotype string.
   #
   # See the AttributeGrammar class for detailed description of the semantic YAML file.
   # See the Mapper::DepthFirst class for detailed description of the mapper behavior.
