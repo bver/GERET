@@ -80,7 +80,6 @@ module Semantic
 
       allowed = []
       rules.each do |expansion|
-#TODO: puts "checking #{parent_token.data} -> #{(expansion.map {|t| t.data}).join(' ')}"
         edges = @functions.node_expansion( parent_token, expansion ).map do |attr_fn|
           AttrEdge.create( parent_token, expansion, attr_fn )
         end
@@ -88,11 +87,11 @@ module Semantic
         # process all edges for the _valid attribute
         new_attrs = Edges.reduce_batch( edges, @attributes )
 
-        next if found_invalid? new_attrs 
+        next if found_invalid? new_attrs
+
         allowed << expansion
-#TODO: puts "allowed."	
       end
-      raise "AttrGrDepthFirst: all possible expansions semantically restricted" if allowed.empty? #TODO: test
+      raise "AttrGrDepthFirst: all possible expansions semantically restricted" if allowed.empty?
       
       allowed
     end
@@ -114,9 +113,6 @@ module Semantic
 
       @attributes.update new_attrs2
      
-#TODO: 
-      #dump parent_token, expansion
-     
       expansion 
     end
 
@@ -127,35 +123,6 @@ module Semantic
       end
       false
     end
-
-def node_dump node
- "#{node.token_id}/#{ObjectSpace._id2ref(node.token_id).data}[#{ObjectSpace._id2ref(node.token_id).depth}].#{@functions.attributes[node.attr_idx] }"
-end
-
-def dump( parent_token, extension )
-
-  puts "#{parent_token.data} -> #{(extension.map {|t| t.data}).join(' ')}"      #Functions.match_key(extension) 
-
-  @attributes.each_pair do
-    |k,v| puts "  #{node_dump k} = #{v}"
-  end
-
-  @edges.each do |e|
-  
-    print "  @ ["
-
-    e.dependencies.each do|d| 
-      print d.kind_of?( AttrKey ) ? "#{node_dump d}" : d.to_s ; print ',' 
-    end
-
-    puts "] => #{node_dump e.result} "
-
-  end
-
-end
-
-
-
 
   end
 
