@@ -43,6 +43,19 @@ class TC_AttributeGrammar < Test::Unit::TestCase
     assert_equal( 14, m.attributes.size )   # testing the attributes cleanup  
   end
 
+  def test_overrestricted
+    grammar = Semantic::AttributeGrammar.new 'test/data/knapsack.abnf'
+    grammar.semantic = 'test/data/knapsack2.yaml'   
+
+    m = Semantic::AttrGrDepthFirst.new( grammar )
+    m.consume_trivial_codons = true
+
+    r = MockRand.new [{1=>0},0, {2=>1},0, {3=>2},0, {2=>1},0, {2=>0},0, {2=>1},0, {1=>0},0, {2=>1},0 ]
+    m.random = r   
+
+    exception = assert_raise( RuntimeError ) { m.generate_grow( 5 ) }
+    assert_equal( "AttrGrDepthFirst: all possible expansions semantically restricted", exception.message )
+  end
 
 end
 
