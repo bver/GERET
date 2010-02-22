@@ -86,10 +86,9 @@ module Semantic
         end
 
         # process all edges for the _valid attribute
-        #edges.concat( @edges.map {|e| AttrEdge.new( e.dependencies.clone, e.result.clone, e.func.clone )} ) #TODO: cleaner!
         new_attrs = Edges.reduce_batch( edges, @attributes )
 
-        next if found_invalid?( new_attrs, parent_token.object_id ) 
+        next if found_invalid? new_attrs 
         allowed << expansion
 #TODO: puts "allowed."	
       end
@@ -121,10 +120,9 @@ module Semantic
       expansion 
     end
 
-    def found_invalid?( attrs, objid )
+    def found_invalid? attrs 
       attrs.each_pair do |key,attr|
         next unless key.attr_idx == AttrIndexValid
-        raise "too late _valid evaluation" unless objid == key.token_id 
         return true if attr == false
       end
       false

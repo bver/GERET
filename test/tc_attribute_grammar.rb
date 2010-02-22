@@ -56,6 +56,6 @@ class TC_AttributeGrammar < Test::Unit::TestCase
     exception = assert_raise( RuntimeError ) { m.generate_grow( 5 ) }
     assert_equal( "AttrGrDepthFirst: all possible expansions semantically restricted", exception.message )
   end
-
+ 
 end
 
