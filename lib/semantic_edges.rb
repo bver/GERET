@@ -3,12 +3,14 @@ require 'lib/semantic_types'
 
 module Semantic
 
-  # Realization of the particular semantic function.
+  # Base structure of the particular semantic function.
   #   :dependencies .. array of the input arguments (an item is AttrKey OR the actual value of the attribute),
   #   :result .. AttrKey of the output's attribute,
   #   :func .. reference to the compiled proc.
-  class AttrEdge < Struct.new( :dependencies, :result, :func )
-    
+  AttrEdgeStruct = Struct.new( 'AttrEdgeStruct', :dependencies, :result, :func )
+
+  # The instance of the semantic function defining a value of the node.attribute
+  class AttrEdge < AttrEdgeStruct
     # Return true if the AttrEdge is ready for execution (all argument values are available).
     def is_executable? 
       ( dependencies.detect { |d| d.class == AttrKey } ).nil?
