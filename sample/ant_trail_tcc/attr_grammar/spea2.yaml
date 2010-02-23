@@ -71,6 +71,6 @@ individual:
 evaluator:
   class: WorkPipes
   commands: 
-    - 'sample/ant_trail_tcc/ant_pipe.rb ONE sample/ant_trail_tcc/attr_grammar/ant_evaluate.c'
-    - 'sample/ant_trail_tcc/ant_pipe.rb TWO sample/ant_trail_tcc/attr_grammar/ant_evaluate.c'
+    - 'sample/ant_trail_tcc/ant_pipe.rb ONE sample/ant_trail_tcc/attr_grammar/ag_evaluate.c'
+    - 'sample/ant_trail_tcc/ant_pipe.rb TWO sample/ant_trail_tcc/attr_grammar/ag_evaluate.c'
 
