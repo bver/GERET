@@ -1,0 +1,46 @@
+
+start:
+  *:
+   c0.ids: "[]"
+
+code:
+  main:
+    c0.ids : p.ids.clone
+  func code:
+    p._valid : p.ids.size < 3
+    c0.ids : p.ids.clone
+    c1.ids : p.ids + [ c0.def ]
+
+func:
+  $ identifier $ $ body $ $:
+    c1.ids : p.ids.clone
+    c4.ids : p.ids.clone
+    p.def : c1.def   
+
+main:
+  $ $ body $ $: 
+    c2.ids : p.ids.clone
+  
+identifier:
+  *:
+    p._valid : not p.ids.include? p.def
+    p.def : c0._text
+
+body:
+  *:
+    c0.ids : p.ids.clone
+  body line $:
+    c1.ids : p.ids.clone
+
+line:
+  $ $:
+    p._valid: p.ids.include? c0._text
+  if-statement: 
+    c0.ids: p.ids.clone
+ 
+if-statement:
+  $ $ line $ $ $ line $ $:
+    c2.ids : p.ids.clone
+    c6.ids : p.ids.clone   
+  
+

@@ -1,0 +1,17 @@
+
+S:
+  K:
+    c0.sack : "[]"
+
+K:
+  I K:
+    c1.sack : p.sack + [c0.item]
+    p._valid : p.sack.size < 2 
+  *:
+    c0.sack : p.sack.clone 
+        
+I:
+  $:
+    p.item : c0._text
+    p._valid : not p.sack.include? p.item
+

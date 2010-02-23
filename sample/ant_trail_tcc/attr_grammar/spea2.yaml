@@ -15,22 +15,23 @@ algorithm:
 
   init:
     method: ramped # grow or full or ramped
-    sensible_depth: 7   
+    sensible_depth: 9   
 
   inject:
     method: grow # grow or full or random
-    sensible_depth: 7   
+    sensible_depth: 9   
  
   termination:
     max_steps: 1000
     on_individual: stopping_condition
 
 grammar:
-  class: Abnf::File
-  filename: sample/ant_trail_tcc/grammar.abnf
+  class: AttributeGrammar
+  filename: sample/ant_trail_tcc/attr_grammar/grammar.abnf
+  semantic: sample/ant_trail_tcc/attr_grammar/semantic.yaml 
 
 mapper:
-  class: DepthLocus
+  class: AttrGrDepthFirst
 
 selection:
   class: Tournament
@@ -49,7 +50,7 @@ mutation:
 
 store:
   class: Store
-  filename: ./ant_spea2_tcc.store
+  filename: ./ant_ag_spea2.store
 
 report:
    class: PopulationReport
@@ -70,15 +71,6 @@ individual:
 evaluator:
   class: WorkPipes
   commands: 
-    - 'sample/ant_trail_tcc/ant_pipe.rb ONE sample/ant_trail_tcc/ant_evaluate.c'
-    - 'sample/ant_trail_tcc/ant_pipe.rb TWO sample/ant_trail_tcc/ant_evaluate.c'
-
-# for the remote pipe configuration, use:
-#
-#   - 'ssh user@host "/full/path/to/geret/sample/ant_trail_tcc/ant_pipe.rb ID sample/ant_trail_tcc/ant_evaluate.c"'
-#
-# note the ssh connection must use public/private key pair (no password) for authentication. 
-# (see eg. http://www.petefreitag.com/item/532.cfm 
-# or  http://www.debian-administration.org/article/SSH_with_authentication_key_instead_of_password )
-          
+    - 'sample/ant_trail_tcc/ant_pipe.rb ONE sample/ant_trail_tcc/attr_grammar/ag_evaluate.c'
+    - 'sample/ant_trail_tcc/ant_pipe.rb TWO sample/ant_trail_tcc/attr_grammar/ag_evaluate.c'
 

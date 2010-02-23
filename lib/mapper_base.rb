@@ -92,7 +92,7 @@ module Mapper
         selected_token = tokens[selected_index]
 
         return nil if @used_length > length_limit
-        expansion = pick_rule( selected_token.data, genome )
+        expansion = pick_rule( selected_token, genome )
         expansion.each { |t| t.depth = selected_token.depth+1 }
 
         @complexity += selected_token.depth * expansion.arity + 1
@@ -125,23 +125,30 @@ module Mapper
       genome.at( index )
     end
    
-    def pick_rule( symbol, genome )
-      rule = @grammar.fetch( symbol )
+    def pick_expansions( symbol_token, genome )
+      rules = @grammar.fetch( symbol_token.data )
 
-      # respect fading strategy:
-      if not @wraps_to_fading.nil? and @used_length > @wraps_to_fading*genome.size     
-        @used_length += 1
-        terminal = rule.find {|alt| alt.recursivity == :terminating }
-        faded_index = 0 if terminal.nil? # desperate case (only :cyclic or :infinite alts found)
-        faded_index = rule.index( terminal )
-      else  
-        faded_index = read_genome( genome, rule.size )
-      end
+      return rules if @wraps_to_fading.nil? or @used_length <= @wraps_to_fading*genome.size
+      
+      terminals = rules.find_all { |alt| alt.recursivity == :terminating }
+      return rules if terminals.empty? # desperate case (only :cyclic or :infinite nodes found)
 
-      alt_index = polymorphism( symbol, faded_index )
+      terminals
+    end
+
+    def use_expansion( symbol_token, alt )
+      alt
+    end
+
+    def pick_rule( symbol_token, genome )
+      rule = pick_expansions( symbol_token, genome )
+
+      faded_index = read_genome( genome, rule.size )
+ 
+      alt_index = polymorphism( symbol_token.data, faded_index )
       alt_index = alt_index.divmod( rule.size ).last 
       alt = rule.at alt_index
-      return alt.deep_copy
+      return use_expansion( symbol_token, alt.deep_copy )
     end
 
     def find_nonterminals_by_depth( tokens, depth )

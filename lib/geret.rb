@@ -11,11 +11,13 @@
 # Operator - genetic operators (various crossover and mutations...)
 # 
 # Selection - selection operators (tournament, SUS, roulete, etc. population operators)
+#
+# Semantic - attribute grammars support (semantic attributes, semantic functions)
 # 
 # Util - auxilary classes (configuration, pipe interface, serialisation, etc. classes)
 #
 # = Requires
-# This is the common "require proxy" for GERET library.
+# This file is the common "require proxy" for GERET library (require 'lib/geret' uses the library as a whole ).
 # When extending the library, please add require statement for every new dependency which should be considered 
 # as a part of lib/* or algorithm/*
 #
@@ -45,6 +47,7 @@ require 'lib/round_robin'
 require 'lib/pareto_tourney'
 require 'lib/work_pipes'
 require 'lib/piped_individual'
+require 'lib/attribute_grammar'
 
 require 'algorithm/generational'
 require 'algorithm/steady_state'

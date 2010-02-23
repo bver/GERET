@@ -1,0 +1,20 @@
+; start symbol is <start>
+
+start = code
+
+code = main / func code
+
+func = "void " identifier " {" LF body "}" LF
+
+main = "void step() {" LF body "}" LF
+
+identifier = "fn1()" / "fn2()" / "fn3()"
+
+body = line LF / body line LF
+
+line = if-statement / op / "fn1()" ";" / "fn2()" ";" / "fn3()" ";" 
+
+if-statement = "if( food_ahead() ) {" LF line LF "} else {" LF line LF "}"
+
+op = "left();" / "right();" / "move();"
+
