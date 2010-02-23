@@ -27,8 +27,8 @@ algorithm:
 
 grammar:
   class: AttributeGrammar
-  filename: sample/ant_trail_ag/grammar.abnf
-  semantic: sample/ant_trail_ag/semantic.yaml 
+  filename: sample/ant_trail_tcc/attr_grammar/grammar.abnf
+  semantic: sample/ant_trail_tcc/attr_grammar/semantic.yaml 
 
 mapper:
   class: AttrGrDepthFirst
@@ -71,6 +71,6 @@ individual:
 evaluator:
   class: WorkPipes
   commands: 
-    - 'sample/ant_trail_ag/ant_pipe.rb ONE'
-    - 'sample/ant_trail_ag/ant_pipe.rb TWO'
+    - 'sample/ant_trail_tcc/ant_pipe.rb ONE sample/ant_trail_tcc/attr_grammar/ant_evaluate.c'
+    - 'sample/ant_trail_tcc/ant_pipe.rb TWO sample/ant_trail_tcc/attr_grammar/ant_evaluate.c'
 
