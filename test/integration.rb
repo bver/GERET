@@ -15,6 +15,7 @@ system 'rm -rf /tmp/adder_*'
 cmd "tools/abnf2abnf.rb sample/abnf/example.abnf"
 cmd "tools/abnf_analyze.rb sample/abnf/example.abnf" 
 cmd "tools/sensible_init.rb -n 7 -d 7 -m grow sample/toy_regression/generational.yaml |tools/gpmap.rb -u sample/toy_regression/generational.yaml"
+cmd "tools/semantic_check.rb sample/ant_trail_tcc/attr_grammar/grammar.abnf  sample/ant_trail_tcc/attr_grammar/semantic.yaml 2>/dev/null"
 
 run "sample/toy_regression/generational.yaml"
 run "sample/toy_regression/generational_lhsc.yaml"
@@ -41,6 +42,8 @@ run "sample/ant_trail_tcc/nsga2.yaml"
 run "sample/ant_trail_tcc/paretogp_simplified.yaml"
 run "sample/ant_trail_tcc/spea2.yaml"
 run "sample/ant_trail_tcc/steady_state.yaml"
+
+run "sample/ant_trail_tcc/attr_grammar/spea2.yaml"
 
 run "sample/fcl_synthesis/generational.yaml"
 run "sample/fcl_synthesis/spea2_lhsc.yaml"

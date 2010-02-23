@@ -10,3 +10,8 @@ Run
 ./animate_c.rb winner.c ant_animate.c
 to see the animation of the winner.c phenotype.
 
+sample/ant_trail_tcc/attr_grammar/ subdir contains the attribute grammar experiment:
+Restricting node expansion during the genotype-phenotype mapping ensures the functions
+fn1() .. fn3() are properly defined before they are used.
+See semantic.yaml for attributes description.
+

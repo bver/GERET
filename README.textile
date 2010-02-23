@@ -29,6 +29,7 @@ h2. Features
 * human-readable yaml-based configuration
 * "ABNF":http://en.wikipedia.org/wiki/Augmented_Backus%E2%80%93Naur_Form conformance 
 * various GE mappers (bucket rule, positional independence, several node expansion strategies, wrapping...)
+* attribute grammars support (mapping with semantics of context-free grammars)
 * various genetic operators (ripple & LHS crossover, nodal/structural mutations)
 * various search algorithms (easily extensible by new ones)
 * simple & efficient interface to the domain-specific task
@@ -118,7 +119,7 @@ h2. No Guarantees
 GERET is the _exploratory_ software. 
 The functionality of the package nor the stability of interfaces is not guaranteed at this stage of development.
 
-If you have an interesting idea for GERET usage give me know: bver at geret.org
+If you have an interesting idea for "GERET":http://geret.org/ usage give me know: bver at geret.org
 
 
 
