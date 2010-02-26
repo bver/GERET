@@ -71,14 +71,27 @@ class Spea2 < AlgorithmBase
 
     @archive = @ranker.environmental_selection @max_archive_size
 
-    @selection.population = @archive
-   
-    @population = breed_by_selector( @selection, @population_size )
-  
+     
     if @duplicate_elimination
-       before_size = @population.size
-       @population = eliminate_duplicates @population
-       @report['duplicates_eliminated'] << ( before_size - @population.size )
+      @cross, @injections, @mutate = 0, 0, 0, 0   
+      sizes = []
+
+      @population = []
+      while @population.size < @population_size
+        @selection.population = @archive.clone
+        new_populaton = breed_by_selector_no_report( @selection, @population_size )
+        @population.concat new_populaton
+        @population = eliminate_duplicates @population
+        sizes << @population.size
+      end
+
+      @report['eliminated_sizes'] << sizes
+      @report['numof_crossovers'] << @cross   
+      @report['numof_injections'] << @injections
+      @report['numof_mutations'] << @mutate
+    else
+      @selection.population = @archive
+      @population = breed_by_selector( @selection, @population_size )  
     end
    
     @report.report @archive
