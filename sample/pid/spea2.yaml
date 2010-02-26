@@ -14,7 +14,7 @@ algorithm:
     injection: 0.9
 
   termination:
-    max_steps: 2000
+    max_steps: 100
     on_individual: :stopping_condition
 
   init:
