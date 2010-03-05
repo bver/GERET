@@ -18,7 +18,7 @@ or purchase the book written by GE creators:
 
 h2. Other implementations of GE
 
-* "libGE":http://bds.ul.ie/libGE/ : C++
+* "libGE":http://bds.ul.ie/libGE/, "GrEVO":http://amnesia.csisdmz.ul.ie/GE/GrEvo/ : C++
 * "GEVA":http://ncra.ucd.ie/Site/GEVA.html, "XGE":http://xge.epochx.org/  : Java
 * "DRP":http://rubyforge.org/projects/drp/ : Ruby
 * ... see the "list":http://www.grammatical-evolution.org/software.html
