@@ -16,6 +16,16 @@ class TC_Random < Test::Unit::TestCase
     assert_equal( [42, 5555], r.predef )
   end
 
+  def test_no_data
+    r = MockRand.new
+    exception = assert_raise( RuntimeError ) { r.rand } 
+    assert_equal( "MockRand: shortage of values", exception.message )
+
+    r = MockRand.new []
+    exception = assert_raise( RuntimeError ) { r.rand } 
+    assert_equal( "MockRand: shortage of values", exception.message )
+  end
+
   def test_accessor
     r = MockRand.new  
     assert_equal( [], r.predef )

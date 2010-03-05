@@ -6,7 +6,6 @@ class MockRand
    end
 
    def rand max=0
-     raise 'MockRand: set_predef() in :deterministic mode not called' if @predef.nil?
      raise 'MockRand: shortage of values' if @predef.empty?
 
      now = @predef.shift
