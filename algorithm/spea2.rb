@@ -89,6 +89,8 @@ class Spea2 < AlgorithmBase
       @report['numof_crossovers'] << @cross   
       @report['numof_injections'] << @injections
       @report['numof_mutations'] << @mutate
+      @report['time_eval'] << @time_eval        
+
     else
       @selection.population = @archive
       @population = breed_by_selector( @selection, @population_size )  

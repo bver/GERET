@@ -132,6 +132,7 @@ class Nsga2 < AlgorithmBase
     @report['numof_crossovers'] << @cross   
     @report['numof_injections'] << @injections
     @report['numof_mutations'] << @mutate
+    @report['time_eval'] << @time_eval      
     
     return @report
   end

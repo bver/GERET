@@ -29,6 +29,10 @@ class AlgorithmBase
    
     @evaluator = @cfg.factory('evaluator') unless @cfg['evaluator'].nil? 
 
+    @time_total = 0
+    @time_eval = 0 
+    @time_now = Time.now
+
     @steps = 0
 
     return @report    
@@ -41,6 +45,11 @@ class AlgorithmBase
   end
  
   def finished?
+    t1 = Time.now
+    @time_total += (t1 - @time_now)
+    @time_now = t1
+    @report['time_total'] << @time_total 
+
     max_steps = @termination['max_steps'].to_i
     on_individual = @termination['on_individual']
     if ( not max_steps.nil? and @steps >= max_steps ) or

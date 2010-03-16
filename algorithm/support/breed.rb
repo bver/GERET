@@ -63,7 +63,9 @@ module Breed
     breed_few( selector, children ) while children.size < required_size
     children = children[ 0...required_size ]
 
+    t1 = Time.now
     @evaluator.run children if defined? @evaluator
+    @time_eval += (Time.now - t1)   
 
     children   
   end
@@ -77,6 +79,8 @@ module Breed
     @report['numof_injections'] << @injections
     @report['numof_mutations'] << @mutate
    
+    @report['time_eval'] << @time_eval   
+
     children
   end
 
