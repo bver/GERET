@@ -148,7 +148,7 @@ module Semantic
       node = fetch(symbol.data, nil)
       return [] if node.nil?
       batch = deep_copy( node.fetch( Functions.match_key(expansion), [] ) )
-      return batch.concat deep_copy( node.fetch( '*', [] ) )
+      return batch.concat( deep_copy( node.fetch( '*', [] ) ) )
     end
    
     # Convert the textual representation of the attribute to the AttrRef (the inversion is done by the render_attr method). 

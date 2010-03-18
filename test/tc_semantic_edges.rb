@@ -44,7 +44,7 @@ class TC_SemanticEdges < Test::Unit::TestCase
 
     edge = AttrEdge.create( parent_token, child_tokens, attr_fn )
     
-    assert( edge.kind_of? AttrEdge )
+    assert( edge.kind_of?( AttrEdge ) )
     assert_equal( 2, edge.dependencies.size )
     assert_equal( 'immediate_text', edge.dependencies.first ) # attr_idx = 0 is implicitly 'text'
     assert_equal( AttrKey.new( parent_token.object_id, 3 ), edge.dependencies.last )   
