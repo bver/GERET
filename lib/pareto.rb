@@ -4,19 +4,19 @@ module Moea
   # Shorthand for
   # Pareto.objective( MyClassName, symb, dir )
   def objective( symb, dir )
-    Pareto.objective( self.to_s, symb, dir )
+    Pareto.objective( self, symb, dir )
   end
 
   # Shorthand for
   # Pareto.maximize( MyClassName, symb )
   def maximize symb
-    Pareto.maximize( self.to_s, symb )
+    Pareto.maximize( self, symb )
   end
 
   # Shorthand for
   # Pareto.minimize( MyClassName, symb )
   def minimize symb 
-    Pareto.minimize( self.to_s, symb )
+    Pareto.minimize( self, symb )
   end
 
 # The infrastructure for the multiobjective optimisation. 
@@ -40,7 +40,7 @@ module Pareto
   # The possible values of dir are:
   #   :maximize .. the objective should be maximized (the individual with a greater symb value is better),
   #   :minimize .. the objective should be minimized (the individual with a smaller symb value is better), 
-  #   proc { |a,b| ... } .. (procedure returns -1 if a is better than b, returns 1 if b is better than a, returns 0 if a and b cannot be distinguished)
+  #   proc { |a,b| ... } .. (a procedure returns -1 if a is better than b, returns 1 if b is better than a, returns 0 if a and b have equal qualities)
   #   
   # For instance:
   #   class BasicPair < Struct.new( :up, :down )
@@ -65,21 +65,31 @@ module Pareto
     
     how = case dir
     when :maximize
-      proc { |a,b| a<=>b }
+      eval "proc { |a,b| a.#{symb}<=>b.#{symb} }"
     when :minimize
-      proc { |a,b| b<=>a }     
+      eval "proc { |a,b| b.#{symb}<=>a.#{symb} }"   
     else
       dir
     end
 
-    objs = @@objectives.fetch( user.to_s, [] )
-    objs.push Objective.new( symb, how )
-    @@objectives[user.to_s] = objs
+    user.class_eval %Q{
+
+                        @objectives = []
+
+                        class << self
+                          attr_accessor :objectives 
+                        end
+
+                      } unless defined? user.objectives
+
+
+    user.objectives << Objective.new( symb, how )
+   
   end
 
   # Clear all objectives for a given user class
   def Pareto.clear_objectives user
-    @@objectives.delete( user.to_s )
+    user.objectives.clear if defined? user.objectives
   end
 
   # Given that a and b are individuals of the same class, a.dominates?(b) returns true if:
@@ -114,7 +124,7 @@ module Pareto
  
   # Return the array of all objective symbols declared by the Pareto.objective for the class user.
   def Pareto.objective_symbols user
-    @@objectives.fetch( user.to_s, [] ).map { |obj| obj.symb }
+    user.objectives.map { |obj| obj.symb }
   end
 
   # Shorthand for 
@@ -125,14 +135,14 @@ module Pareto
 
   # Return the population sorted by the symb objective of the user class.
   def Pareto.objective_sort( population, user, symb )
-    objective = @@objectives.fetch( user.to_s ).find { |obj| obj.symb == symb }  
-    population.sort { |a,b| objective.how.call( b.send(objective.symb), a.send(objective.symb) ) }
+    objective = user.objectives.find { |obj| obj.symb == symb } 
+    population.sort { |a,b| objective.how.call( b, a ) }   
   end
 
   # Return the best member of the population (by the means of symb objective of the user class). 
   def Pareto.objective_best( population, user, symb )
-    objective = @@objectives.fetch( user.to_s ).find { |obj| obj.symb == symb }  
-    population.min { |a,b| objective.how.call( b.send(objective.symb), a.send(objective.symb) ) }
+    objective = user.objectives.find { |obj| obj.symb == symb }
+    population.min { |a,b| objective.how.call( b, a ) }    
   end
 
   # Return the nondominated subset of the population.
@@ -195,11 +205,8 @@ module Pareto
   protected
 
   def dominates_core( other, domination )
-    @@objectives.fetch(self.class.to_s).each do |obj| 
-      first = send obj.symb
-      second = other.send obj.symb 
-
-      case obj.how.call( first, second )
+    self.class.objectives.each do |obj| 
+      case obj.how.call( self, other )
       when 1
         domination = true
       when -1

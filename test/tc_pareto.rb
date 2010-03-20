@@ -48,7 +48,7 @@ end
 
 class SingleProcMin < Struct.new( :data )
   include Pareto
-  objective :data, proc { |one,two| two.size <=> one.size }
+  objective :data, proc { |one,two| two.data.size <=> one.data.size }
 end
 
 class BasicPairFancy < Struct.new( :up, :down )
