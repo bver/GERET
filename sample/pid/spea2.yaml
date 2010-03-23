@@ -5,7 +5,7 @@ algorithm:
   population_size: 1000
   max_archive_size: 600
 
-  duplicate_elimination: false
+  duplicate_elimination: true
   shorten_archive_individual: true 
 
   probabilities:
@@ -14,7 +14,7 @@ algorithm:
     injection: 0.9
 
   termination:
-    max_steps: 100
+    max_steps: 500
     on_individual: :stopping_condition
 
   init:
@@ -34,7 +34,7 @@ grammar:
   filename: sample/pid/grammar.abnf
 
 mapper:
-  class: DepthFirst
+  class: DepthLocus
   wraps_to_fail: 3
   track_support_on: true        
 
