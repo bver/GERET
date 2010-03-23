@@ -98,7 +98,7 @@ module Mapper
         @complexity += selected_token.depth * expansion.arity + 1
         track_expansion( selected_token, expansion ) if @track_support_on
 
-        tokens[selected_index,1] = expansion
+        tokens = apply_expansion( tokens, expansion, selected_index )
 
       end
 
@@ -106,6 +106,19 @@ module Mapper
     end
   
   protected
+   
+    def apply_expansion( tok, exp, i )
+      if i > 0 and exp.first.type == :literal and tok[i-1].type == :literal 
+        tok[i-1].data += exp.shift.data       
+      end
+
+      if !exp.empty? and i+1 < tok.size and exp.last.type == :literal and tok[i+1].type == :literal
+        tok[i+1].data = exp.pop.data + tok[i+1].data       
+      end
+ 
+      tok[i,1] = exp     
+      tok
+    end
 
     def track_expansion( symbol_token, tokens )
       @track_support = [] if @track_support.nil?
@@ -113,7 +126,7 @@ module Mapper
       ary = symbol_token.track.clone
       ary.each { |i| @track_support[i].to = index }
       ary.push  @track_support.size
-      tokens.each { |t| t.track = ary.clone }
+      tokens.each { |t| t.track = ary.clone if t.type == :symbol }
       @track_support.push TrackNode.new( symbol_token.data, index, index )
     end
    

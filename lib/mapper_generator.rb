@@ -58,7 +58,8 @@ module Mapper
         expansion = generate_rule( rec, selected_token, genome )
         expansion.each { |t| t.depth = selected_token.depth+1 }
 
-        tokens[selected_index,1] = expansion
+        tokens = apply_expansion( tokens, expansion, selected_index )
+       
       end
      
       genome
