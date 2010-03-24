@@ -50,14 +50,14 @@ class AlgorithmBase
     @time_now = t1
     @report['time_total'] << @time_total 
 
-    max_steps = @termination['max_steps'].to_i
+    max_steps = @termination['max_steps']
     on_individual = @termination['on_individual']
-    max_evaluations = @termination['max_evaluations'].to_i
-    
-    if ( not max_steps.nil? and @steps >= max_steps ) or
+    max_evaluations = @termination['max_evaluations']
+
+    if ( not max_steps.nil? and @steps >= max_steps.to_i ) or
        ( not on_individual.nil? and @population.detect { |individual| individual.send on_individual } ) or
-       ( not max_evaluations.nil? and defined?( @evaluator ) and @evaluator.jobs_processed >= max_evaluations )
- 
+       ( not max_evaluations.nil? and defined?( @evaluator ) and @evaluator.jobs_processed >= max_evaluations.to_i )
+
       @report.report @population
 
       return true
