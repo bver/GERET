@@ -133,7 +133,8 @@ class Nsga2 < AlgorithmBase
     @report['numof_injections'] << @injections
     @report['numof_mutations'] << @mutate
     @report['time_eval'] << @time_eval      
-    
+    @report['numof_evaluations'] << @evaluator.jobs_processed if defined? @evaluator
+   
     return @report
   end
 

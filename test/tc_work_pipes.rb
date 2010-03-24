@@ -27,7 +27,9 @@ class TC_WorkPipes  < Test::Unit::TestCase
                             "#{@ruby} #{@dir}/pipe1.rb THREE" ]
     jobs = [ "1", "2", "3", "foo", "5", "6", "7" ].map { |v| WPop.new v } 
 
+    assert_equal( 0, pipes.jobs_processed )   
     pipes.run jobs
+    assert_equal( jobs.size, pipes.jobs_processed )  
 
     assert_equal( 7, jobs.size )
     worker = {}
@@ -41,10 +43,11 @@ class TC_WorkPipes  < Test::Unit::TestCase
     jobs2 = [ "10", "20", "30", "forty", "05", "06", "07", "eighty" ].map { |v| WPop.new v } 
 
     pipes.run jobs2
+    assert_equal( jobs.size+jobs2.size, pipes.jobs_processed ) 
 
     assert_equal( 8, jobs2.size )
     worker = {}
-    jobs.each do |j|
+    jobs2.each do |j|
       assert_equal( 2,  j.parse.split(' ').size )
       assert_equal( j.phenotype, j.parse.split(' ').last )
       worker[ j.parse.split(' ').first ] = nil
@@ -54,13 +57,14 @@ class TC_WorkPipes  < Test::Unit::TestCase
     cmds = [ "#{@ruby} #{@dir}/pipe1.rb first", "#{@ruby} #{@dir}/pipe1.rb second" ]
     pipes.commands = cmds
 
-    jobs = [ "1", "2", "3", "foo", "5", "6", "7" ].map { |v| WPop.new v } 
+    jobs3 = [ "1", "2", "3", "foo", "5", "6", "7" ].map { |v| WPop.new v } 
    
-    result = pipes.run jobs
+    result = pipes.run jobs3
+    assert_equal( jobs.size+jobs2.size+jobs3.size, pipes.jobs_processed )
 
-    assert_equal( 7, jobs.size )
+    assert_equal( 7, jobs3.size )
     worker = {}
-    jobs.each do |j|
+    jobs3.each do |j|
       assert_equal( 2,  j.parse.split(' ').size )
       assert_equal( j.phenotype, j.parse.split(' ').last )
       worker[ j.parse.split(' ').first ] = nil

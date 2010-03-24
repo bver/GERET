@@ -80,6 +80,7 @@ module Breed
     @report['numof_mutations'] << @mutate
    
     @report['time_eval'] << @time_eval   
+    @report['numof_evaluations'] << @evaluator.jobs_processed if defined? @evaluator
 
     children
   end

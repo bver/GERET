@@ -52,8 +52,11 @@ class AlgorithmBase
 
     max_steps = @termination['max_steps'].to_i
     on_individual = @termination['on_individual']
+    max_evaluations = @termination['max_evaluations'].to_i
+    
     if ( not max_steps.nil? and @steps >= max_steps ) or
-       ( not on_individual.nil? and @population.detect { |individual| individual.send on_individual } )
+       ( not on_individual.nil? and @population.detect { |individual| individual.send on_individual } ) or
+       ( not max_evaluations.nil? and defined?( @evaluator ) and @evaluator.jobs_processed >= max_evaluations )
  
       @report.report @population
 

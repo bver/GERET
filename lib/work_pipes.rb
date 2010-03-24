@@ -38,6 +38,7 @@ module Util
       @destination = dest
       @source = src
       @timeout = 120
+      @jobs_processed = 0
       self.commands = cmds unless cmds.nil?
     end
 
@@ -53,6 +54,9 @@ module Util
     # If there is no worker action (reading stdin or writing to stdout) detected 
     # for a given time, the exception is raised.
     attr_accessor :timeout
+
+    # The number of individuals processed from the WorkPipes initialisation.
+    attr_accessor :jobs_processed   
 
     # Command lines of the worker scripts. 
     def commands
@@ -78,6 +82,7 @@ module Util
     # using the WorkPipes#destination method (eg. the 'PipedIndividual#parse=' method).
     # The WorkPipes#run can be called more times (eg. once per population's generation).
     def run jobs
+      @jobs_processed += jobs.size
       if /win/ =~ Config::CONFIG['host_os']
         run_select_broken jobs # IO.select is broken on windows
       else
