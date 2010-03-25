@@ -4,6 +4,7 @@ algorithm:
 
   population_size: 2000
   elite_size: 50
+  duplicate_elimination: false 
 
   probabilities:
     crossover: 0.9
