@@ -5,17 +5,22 @@ module Util
 
     def Alps.age_gap gap
       @@age_gap = gap
+      @@limits = nil
     end
 
     def Alps.aging_scheme scheme
       @@aging_scheme = scheme
+      @@limits = nil     
     end
 
     def Alps.layers layers
+      raise "Alps: not enough layers, needed at least 2" if layers < 2
       @@layers = layers
+      @@limits = nil     
     end
 
     def Alps.max_ages
+      return @@limits unless @@limits.nil?
 
       case @@aging_scheme 
 
@@ -40,7 +45,7 @@ module Util
 
       end
 
-      return s.map { |i| i * @@age_gap }
+      return @@limits = s.map { |i| i * @@age_gap }
     end
 
 
@@ -51,6 +56,13 @@ module Util
     
     def parents( p1, p2=nil )
       @age = 1 + ( ( p2.nil? or p1.age > p2.age ) ? p1.age : p2.age )
+    end
+
+    def layer
+      Alps.max_ages.each_with_index do |max,i|
+        return i if self.age <= max
+      end
+      return @@limits.size-1
     end
 
   end

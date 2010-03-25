@@ -60,5 +60,44 @@ class TC_Utils < Test::Unit::TestCase
     assert_equal( "Alps: a scheme 'unknown' not supported", exception.message )
   end
 
+  def test_not_enough_layers
+    exception = assert_raise( RuntimeError ) { Alps.layers(1) }
+    assert_equal( "Alps: not enough layers, needed at least 2", exception.message )
+  end
+
+  def test_layers
+    Alps.age_gap( 10 )
+    Alps.aging_scheme( :linear )
+    Alps.layers( 3 )
+    assert_equal( [10,20,30], Alps.max_ages )
+
+    i1 = Individ.new
+    assert_equal( 0, i1.age )
+    assert_equal( 0, i1.layer ) 
+
+    10.times { i1.parents( i1 ) }
+    assert_equal( 10, i1.age )
+    assert_equal( 0, i1.layer ) 
+    
+    i1.parents( i1 )
+    assert_equal( 11, i1.age )
+    assert_equal( 1, i1.layer ) 
+
+    9.times { i1.parents( i1 ) }
+    assert_equal( 20, i1.age )
+    assert_equal( 1, i1.layer ) 
+
+    i1.parents( i1 )
+    assert_equal( 21, i1.age )
+    assert_equal( 2, i1.layer ) 
+
+    9.times { i1.parents( i1 ) }
+    assert_equal( 30, i1.age )
+    assert_equal( 2, i1.layer ) 
+
+    42.times { i1.parents( i1 ) }
+    assert_equal( 72, i1.age )
+    assert_equal( 2, i1.layer ) 
+  end
 end
 
