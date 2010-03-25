@@ -37,5 +37,5 @@ require 'test/tc_piped_individual'
 require 'test/tc_semantic_functions'
 require 'test/tc_semantic_edges'
 require 'test/tc_attribute_grammar'
-require 'test/tc_alps.rb'
+require 'test/tc_alps_individual.rb'
 

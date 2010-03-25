@@ -1,25 +1,25 @@
 
 module Util
 
-  module Alps
+  module AlpsIndividual
 
-    def Alps.age_gap gap
+    def AlpsIndividual.age_gap gap
       @@age_gap = gap
       @@limits = nil
     end
 
-    def Alps.aging_scheme scheme
+    def AlpsIndividual.aging_scheme scheme
       @@aging_scheme = scheme
       @@limits = nil     
     end
 
-    def Alps.layers layers
-      raise "Alps: not enough layers, needed at least 2" if layers < 2
+    def AlpsIndividual.layers layers
+      raise "AlpsIndividual: not enough layers, needed at least 2" if layers < 2
       @@layers = layers
       @@limits = nil     
     end
 
-    def Alps.age_limits
+    def AlpsIndividual.age_limits
       return @@limits unless @@limits.nil?
 
       case @@aging_scheme 
@@ -41,7 +41,7 @@ module Util
           (0...@@layers).each { |i| s << 2 ** i }
 
         else 
-          raise "Alps: a scheme '#{@@aging_scheme}' not supported"
+          raise "AlpsIndividual: a scheme '#{@@aging_scheme}' not supported"
 
       end
 
@@ -59,7 +59,7 @@ module Util
     end
 
     def layer
-      Alps.age_limits.each_with_index do |max,i|
+      AlpsIndividual.age_limits.each_with_index do |max,i|
         return i if self.age <= max
       end
       return @@limits.size-1
