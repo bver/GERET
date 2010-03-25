@@ -19,7 +19,7 @@ module Util
       @@limits = nil     
     end
 
-    def Alps.max_ages
+    def Alps.age_limits
       return @@limits unless @@limits.nil?
 
       case @@aging_scheme 
@@ -59,7 +59,7 @@ module Util
     end
 
     def layer
-      Alps.max_ages.each_with_index do |max,i|
+      Alps.age_limits.each_with_index do |max,i|
         return i if self.age <= max
       end
       return @@limits.size-1

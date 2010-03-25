@@ -33,22 +33,22 @@ class TC_Utils < Test::Unit::TestCase
     Alps.age_gap( 10 )
     Alps.aging_scheme( :linear )
     Alps.layers( 5 )
-    assert_equal( [10,20,30,40,50], Alps.max_ages )
+    assert_equal( [10,20,30,40,50], Alps.age_limits )
 
     Alps.age_gap( 1 )
     Alps.aging_scheme( :polynomial )
     Alps.layers( 7 )
-    assert_equal( [1, 4, 9, 16, 25, 36, 49], Alps.max_ages )
+    assert_equal( [1, 4, 9, 16, 25, 36, 49], Alps.age_limits )
 
     Alps.age_gap( 1 )
     Alps.aging_scheme( :fibonacci )
     Alps.layers( 7 )
-    assert_equal( [1,2,3,5,8,13,21], Alps.max_ages )
+    assert_equal( [1,2,3,5,8,13,21], Alps.age_limits )
 
     Alps.age_gap( 10 )
     Alps.aging_scheme( :exponential )
     Alps.layers( 6 )
-    assert_equal( [10,20,40,80,160,320], Alps.max_ages )
+    assert_equal( [10,20,40,80,160,320], Alps.age_limits )
 
   end
 
@@ -56,7 +56,7 @@ class TC_Utils < Test::Unit::TestCase
     Alps.age_gap( 10 )
     Alps.aging_scheme( :unknown )
     Alps.layers( 5 )
-    exception = assert_raise( RuntimeError ) { Alps.max_ages }
+    exception = assert_raise( RuntimeError ) { Alps.age_limits }
     assert_equal( "Alps: a scheme 'unknown' not supported", exception.message )
   end
 
@@ -69,7 +69,7 @@ class TC_Utils < Test::Unit::TestCase
     Alps.age_gap( 10 )
     Alps.aging_scheme( :linear )
     Alps.layers( 3 )
-    assert_equal( [10,20,30], Alps.max_ages )
+    assert_equal( [10,20,30], Alps.age_limits )
 
     i1 = Individ.new
     assert_equal( 0, i1.age )
