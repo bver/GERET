@@ -56,7 +56,10 @@ store:
 
 report:
    class: PopulationReport
-        
+   report_diversity: false
+   report_statistics: true         
+   report_histogram: false          
+       
 individual:
   class: PipedIndividual
   shorten_chromozome: true 
