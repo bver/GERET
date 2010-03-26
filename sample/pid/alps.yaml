@@ -1,0 +1,79 @@
+---
+algorithm:
+  class: Alps
+
+  population_size: 2000
+  elite_size: 5
+
+  max_layers: 8
+  aging_scheme: :fibonacci
+  age_gap: 30
+
+  probabilities:
+    crossover: 0.9
+    mutation: 0.01
+ 
+  init:
+    method: grow # grow or full or random or ramped
+    random_magnitude: 16 #same as mutation.magnitude
+    random_length: 8
+    sensible_depth: 6   
+
+  termination:
+    max_steps: 2000
+    on_individual: :stopping_condition
+   
+grammar:
+  class: Abnf::File
+  filename: sample/pid/grammar.abnf
+
+mapper:
+  class: DepthLocus
+  wraps_to_fail: 3
+  track_support_on: true        
+
+selection:
+  class: Tournament
+  tournament_size: 3
+selection_rank: 
+  class: Ranking
+
+elite_rank:
+  class: Ranking
+  order_by: :error  #optional
+  direction: :minimize #optional 
+       
+crossover:
+  class: CrossoverLHS
+
+mutation:
+  class: MutationNodal
+  magnitude: 16 
+
+store:
+  class: Store
+  filename: ./pid_alps.store
+
+report:
+   class: PopulationReport
+        
+individual:
+  class: PipedIndividual
+  shorten_chromozome: true 
+  _pareto:
+    :error: minimize
+#    :complexity: minimize
+  _pipe_output:
+    - :error: to_f
+  _thresholds:
+    :error: 0.009
+  _mark_batch: "MARKER\n"
+  _mark_phenotype: "\n"
+
+evaluator:
+  class: WorkPipes
+  commands: 
+    - 'sample/pid/pipe.rb ONE sample/pid/data.csv'
+    - 'sample/pid/pipe.rb TWO sample/pid/data.csv'
+       
+ 

@@ -1,6 +1,7 @@
 
 require 'lib/individual'
 require 'lib/pareto'
+require 'lib/alps_individual'
 
 module Util
 
@@ -11,6 +12,7 @@ module Util
   # class for each task. 
   #
   class PipedIndividual < Individual
+    include AlpsIndividual
 
     PipedIndSchema = Struct.new( 'PipedIndSchema', :symb, :conversion )
     @@phenotype_mark = ''
