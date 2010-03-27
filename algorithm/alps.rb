@@ -45,12 +45,15 @@ class Alps < AlgorithmBase
       all_layers[index] << individual 
     end
 
-    if @steps.divmod( @age_gap ).last == 0 and @steps > 1
-      # restart junior population each @age_gap     
+    # restart junior population each @age_gap   
+    if @steps.divmod( @age_gap+2 ).last == 0
       @report << '------ restarting the first layer (age_gap)'
-      all_layers.unshift init_population( [], @max_layer_size ) 
+      all_layers[0] = init_population( [], @max_layer_size ) 
     end
-    
+
+    # discard empty layers
+    all_layers.delete_if { |layer| layer.empty? }
+   
     @report['layer_sizes'] << all_layers.map { |layer| layer.size }
 
     # breed @population from adjacent all_layers
@@ -58,8 +61,8 @@ class Alps < AlgorithmBase
     all_layers.each_with_index do |layer,index|
       parents = layer.clone
       parents.concat all_layers[index-1] if index > 0
-      @population.concat breed( parents ) unless parents.empty?
-      @population.concat cream( layer ) unless layer.empty?
+      @population.concat breed( parents )
+      @population.concat cream( layer )
     end
 
     evaluate_population

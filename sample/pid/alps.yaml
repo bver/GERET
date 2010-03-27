@@ -2,12 +2,12 @@
 algorithm:
   class: Alps
 
-  population_size: 2000
-  elite_size: 5
+  population_size: 3000
+  elite_size: 50
 
   max_layers: 8
   aging_scheme: :fibonacci
-  age_gap: 30
+  age_gap: 20
 
   probabilities:
     crossover: 0.9
@@ -20,7 +20,7 @@ algorithm:
     sensible_depth: 6   
 
   termination:
-    max_steps: 2000
+#    max_steps: 2000
     on_individual: :stopping_condition
    
 grammar:
@@ -65,7 +65,7 @@ individual:
   shorten_chromozome: true 
   _pareto:
     :error: minimize
-#    :complexity: minimize
+    :complexity: minimize
   _pipe_output:
     - :error: to_f
   _thresholds:
