@@ -1,6 +1,7 @@
 
 require 'algorithm/support/algorithm_base'
 require 'algorithm/support/elitism'
+require 'algorithm/support/phenotypic_truncation'
 
 class AlpsInd < PipedIndividual
   include AlpsIndividual
@@ -8,6 +9,7 @@ end
 
 class Alps < AlgorithmBase
   include Elitism
+  include PhenotypicTruncation
 
   attr_accessor :max_layers, :aging_scheme, :age_gap
 
@@ -53,8 +55,13 @@ class Alps < AlgorithmBase
 
     # discard empty layers
     all_layers.delete_if { |layer| layer.empty? }
-   
+
+    # phenotype duplicate elimination
     @report['layer_sizes'] << all_layers.map { |layer| layer.size }
+    if @duplicate_elimination
+      all_layers.map! { |layer| eliminate_duplicates layer }
+      @report['layer_sizes_pde'] << all_layers.map { |layer| layer.size }     
+    end
 
     # breed @population from adjacent all_layers
     @population = [] 
@@ -64,7 +71,7 @@ class Alps < AlgorithmBase
       @population.concat breed( parents )
       @population.concat cream( layer )
     end
-
+   
     evaluate_population
 
     return @report

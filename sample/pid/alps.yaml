@@ -9,6 +9,8 @@ algorithm:
   aging_scheme: :fibonacci
   age_gap: 20
 
+  duplicate_elimination: true 
+
   probabilities:
     crossover: 0.9
     mutation: 0.01
