@@ -11,7 +11,7 @@ class Alps < AlgorithmBase
   include Elitism
   include PhenotypicTruncation
 
-  attr_accessor :max_layers, :aging_scheme, :age_gap
+  attr_accessor :max_layers, :aging_scheme, :age_gap, :layer_diagnostic 
 
   def setup config
     super
@@ -62,6 +62,15 @@ class Alps < AlgorithmBase
       all_layers.map! { |layer| eliminate_duplicates layer }
       @report['layer_sizes_pde'] << all_layers.map { |layer| layer.size }     
     end
+
+    # layer diagnostic
+    all_layers.each_with_index do |layer,index| 
+      layer.first.objective_symbols.each do |objective|     
+        values = layer.map { |individual| individual.send(objective) }   
+        min, max, avg, n = Util.statistics values  
+        @report["layer_#{index}_#{objective}"] << "min: #{min} max: #{max} avg: #{avg} n: #{n}"
+      end
+    end if @layer_diagnostic
 
     # breed @population from adjacent all_layers
     @population = [] 

@@ -10,6 +10,7 @@ algorithm:
   age_gap: 20
 
   duplicate_elimination: true 
+  layer_diagnostic: false
 
   probabilities:
     crossover: 0.9
