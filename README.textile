@@ -31,7 +31,7 @@ h2. Features
 * various GE mappers (bucket rule, positional independence, several node expansion strategies, wrapping...)
 * attribute grammars support (mapping with semantics of context-free grammars)
 * various genetic operators (ripple & LHS crossover, nodal/structural mutations)
-* various search algorithms (easily extensible by new ones)
+* various search algorithms (SPEA2, NSGA2, ALPS... easily extensible by new ones)
 * simple & efficient interface to the domain-specific task
 
 
