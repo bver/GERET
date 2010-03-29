@@ -2,10 +2,10 @@
 algorithm:
   class: Alps
 
-  population_size: 5000
+  population_size: 7000
   elite_size: 50
 
-  max_layers: 10
+  max_layers: 12
   aging_scheme: :fibonacci
   age_gap: 20
 
