@@ -8,7 +8,7 @@ module Mapper
   # :symbol is the rule name used during a single genotype->phenotype mapping step,
   # :from is the index of the first codon 'covered' by the rule,
   # :to is the index of the last codon 'covered' by the rule.
-  TrackNode = Struct.new( 'TrackNode', :symbol, :from, :to )  
+  TrackNode = Struct.new( 'TrackNode', :symbol, :from, :to, :back )  
 
   # The core Grammatical Evolution genotype->phenotype mapper.
   # It generates a program (phenotype) according syntactic rules (Mapper::Grammar).
@@ -79,7 +79,7 @@ module Mapper
       return nil if genome.empty?
 
       tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
-      tokens.first.track = [] if @track_support_on
+#      tokens.first.track = -1 if @track_support_on
       @used_length = 0
       @track_support = nil 
       @complexity = 1 
@@ -123,11 +123,15 @@ module Mapper
     def track_expansion( symbol_token, tokens )
       @track_support = [] if @track_support.nil?
       index = @used_length-1 
-      ary = symbol_token.track.clone
-      ary.each { |i| @track_support[i].to = index }
-      ary.push  @track_support.size
-      tokens.each { |t| t.track = ary.clone if t.type == :symbol }
-      @track_support.push TrackNode.new( symbol_token.data, index, index )
+      back = symbol_token.track
+
+      tokens.each { |t| t.track = @track_support.size if t.type == :symbol }
+      @track_support.push TrackNode.new( symbol_token.data, index, index, back )
+     
+      until back.nil?
+        @track_support[back].to = index
+        back = @track_support[back].back
+      end
     end
    
     def read_genome( genome, choices )

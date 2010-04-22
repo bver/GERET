@@ -306,12 +306,12 @@ class TC_Mappers < Test::Unit::TestCase
     
     track = [
       Mapper::TrackNode.new( 'expr', 0, 6 ),
-      Mapper::TrackNode.new( 'expr', 1, 4 ),
-      Mapper::TrackNode.new( 'expr', 2, 2 ),
-      Mapper::TrackNode.new( 'aop', 3, 3 ),
-      Mapper::TrackNode.new( 'expr', 4, 4 ),
-      Mapper::TrackNode.new( 'aop', 5, 5 ),
-      Mapper::TrackNode.new( 'expr', 6, 6 )
+      Mapper::TrackNode.new( 'expr', 1, 4, 0 ),
+      Mapper::TrackNode.new( 'expr', 2, 2, 1 ),
+      Mapper::TrackNode.new( 'aop', 3, 3, 1 ),
+      Mapper::TrackNode.new( 'expr', 4, 4, 1 ),
+      Mapper::TrackNode.new( 'aop', 5, 5, 0 ),
+      Mapper::TrackNode.new( 'expr', 6, 6, 0 )
     ]
     assert_equal( track, m.track_support )
     
@@ -329,12 +329,12 @@ class TC_Mappers < Test::Unit::TestCase
 
     track = [
       Mapper::TrackNode.new( 'expr', 0, 6 ),
-      Mapper::TrackNode.new( 'expr', 1, 1 ),
-      Mapper::TrackNode.new( 'aop', 2, 2 ),
-      Mapper::TrackNode.new( 'expr', 3, 6 ),
-      Mapper::TrackNode.new( 'expr', 4, 4 ),     
-      Mapper::TrackNode.new( 'aop', 5, 5 ),     
-      Mapper::TrackNode.new( 'expr', 6, 6 ),          
+      Mapper::TrackNode.new( 'expr', 1, 1, 0 ),
+      Mapper::TrackNode.new( 'aop', 2, 2, 0 ),
+      Mapper::TrackNode.new( 'expr', 3, 6, 0 ),
+      Mapper::TrackNode.new( 'expr', 4, 4, 3 ),     
+      Mapper::TrackNode.new( 'aop', 5, 5, 3 ),     
+      Mapper::TrackNode.new( 'expr', 6, 6, 3 ),          
     ]
     assert_equal( track, m.track_support )
   end
