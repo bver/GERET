@@ -76,7 +76,9 @@ module Semantic
       return if semantic.nil?
 
       # parsing ctor
-      YAML::load( semantic ).each_pair do |symbol,rules|
+      yaml = YAML::load( semantic )
+      yaml.keys.sort.each do |symbol|
+        rules = yaml[symbol]
 
         newrules = {}
         rules.each_pair do |expansion,funcs|

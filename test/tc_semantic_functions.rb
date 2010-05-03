@@ -80,13 +80,13 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     sf = Functions.new( IO.read('test/data/semantic.yaml') )
 
     assert( sf.kind_of?( Hash ) )
-    assert_equal( [ 'node1', 'start' ], sf.keys.sort )
+    assert_equal( [ 'a_start', 'node1' ], sf.keys.sort )
     assert( sf['node1'].kind_of?( Hash ))
 
-    assert_equal( [ '_text', '_valid', 'id', 'x', 'y' ], sf.attributes )  # text is implicit
+    assert_equal( [ '_text', '_valid', 'id', 'x', 'y' ], sf.attributes ) 
 
-    assert_equal( ['fn'], sf['start'].keys )
-    rule0 = sf['start']['fn']
+    assert_equal( ['fn'], sf['a_start'].keys )
+    rule0 = sf['a_start']['fn']
     assert( rule0.kind_of?( Array ))
     assert_equal( 1, rule0.size )   
     assert_equal( 1, rule0.first.target.node_idx ) # c0=1
