@@ -10,6 +10,10 @@ module Mapper
   # http://www.springer.com/computer/artificial/book/978-1-4020-7444-8
   # 
   # or:
+  # http://www-dept.cs.ucl.ac.uk/staff/W.Langdon/ftp/papers/azad_thesis.ps.gz 
+  # Chapter 7 Sensible Initialisation
+  #
+  # or:
   # http://www.essex.ac.uk/dces/research/publications/technicalreports/2007/ces475.pdf
   # 
   # Mapper::Generator uses Mapper::Grammar and the source of randomness to create 
