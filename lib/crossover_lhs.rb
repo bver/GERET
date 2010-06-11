@@ -7,7 +7,10 @@ module Operator
   # Two-points LHS  (Left Hand Side) structure-preserving GE crossover operator.
   # It uses track_support information collected during genotype-phenotype mapping.
   #
-  # See http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?arnumber=1555012
+  # See
+  # Harper, R. Blair, A.: A structure preserving crossover in grammatical evolution
+  # http://ieeexplore.ieee.org/search/freesrchabstract.jsp?tp=&arnumber=1555012 
+  #
   class CrossoverLHS
 
     # Create a new crossover facility with the default attribute values.
