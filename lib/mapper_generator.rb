@@ -4,7 +4,13 @@ require 'lib/mapper_base'
 module Mapper
 
   # "Sensible Initialization" of genotypes for Grammatical Evolution.
-  # See http://www.essex.ac.uk/dces/research/publications/technicalreports/2007/ces475.pdf
+  #
+  # See: 
+  # Grammatical Evolution: Evolutionary Automatic Programming in an Arbitrary Language, section 8.8:
+  # http://www.springer.com/computer/artificial/book/978-1-4020-7444-8
+  # 
+  # or:
+  # http://www.essex.ac.uk/dces/research/publications/technicalreports/2007/ces475.pdf
   # 
   # Mapper::Generator uses Mapper::Grammar and the source of randomness to create 
   # "syntactically correct" genotypes with a given depth of a phenotype tree.
