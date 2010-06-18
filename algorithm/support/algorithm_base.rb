@@ -77,16 +77,19 @@ class AlgorithmBase
 
   def init_population( population, population_size ) 
     if @init['method'] == 'ramped'
-
+      
+      min_depth = @mapper.grammar[@mapper.grammar.start_symbol].min_depth
       @init['method'] = 'full'
       depth = @init['sensible_depth']
+      raise "AlgorithmBase#init_population please increase algorithm.init.sensible_depth (more than #{min_depth})" if depth <= min_depth
+
       while population.size < population_size
         individual = @cfg.factory( 'individual', @mapper, init_chromozome(@init) )
         next unless individual.valid? 
         population << individual       
         @init['method'] = ( @init['method'] == 'full' ) ? 'grow' : 'full'     
         if population.size.divmod(2).last == 0
-          @init['sensible_depth'] = ( @init['sensible_depth'] == depth ) ? 2 : @init['sensible_depth']+1
+          @init['sensible_depth'] = ( @init['sensible_depth'] == depth ) ? min_depth : @init['sensible_depth']+1
         end
       end
 
