@@ -52,9 +52,9 @@ module Mapper
     # Compute Rule#recursivity and RuleAlt#recursivity attributes for the Mapper::Grammar syntax tree.
     # 
     # The symbol S may have one of three possible recursivity values:
-    #   grammar[S].recursivity == :terminating ... all possible expansions of S lead to terminal symbols (literals) ( S -> T1 | T2 )
+    #   grammar[S].recursivity == :terminating ... all possible expansions of S lead to terminal symbols (literals) ( S -> "T1" | "T2" )
     #   grammar[S].recursivity == :infinite  ... all possible expansions of S lead to infinite syntax loops ( S -> R, R -> S )
-    #   grammar[S].recursivity == :cyclic ... expansions of S sometimes terminates, but some of them are recursive ( S -> R, R -> S | T ) 
+    #   grammar[S].recursivity == :cyclic ... expansions of S sometimes terminates, but some of them are recursive ( S -> R, R -> S | "T" ) 
     #   
     # This method is utilised in the sensitive initialisation (Mapper::Generator) and for general classification of Grammars:
     #   grammar.start_symbol.recursivity == :terminating ... trivial grammars, producing only phenotypes of intrinsically limited sizes 
@@ -110,7 +110,7 @@ module Mapper
 
     # For all grammar's symbols fill :sn_altering attributes.
     # These attributes (see Grammar#sn_altering) are used by MutationStructural and MutationNodal classes (see).
-    # Note the grammar argument is altered (no grammar.clone is done)
+    # Note the grammar argument is altered (no grammar.clone is done).
     #
     def Validator.analyze_sn_altering grammar  
       
@@ -132,6 +132,7 @@ module Mapper
 
     # Fill the :arity attribute of each RuleAlt in the grammar. It is used later by the Mapping::Base process
     # for the Mapper#complexity calculation.
+    # Note the grammar argument is altered (no grammar.clone is done).
     # 
     def Validator.analyze_arity grammar
       grammar.each_value do |rule|
@@ -139,6 +140,58 @@ module Mapper
           alt.arity = ( alt.find_all { |token| token.type == :symbol } ).size
         end
       end
+
+      grammar
+    end
+
+    # Fill the :min_depth attribute for each Rule and RuleAlt in the grammar. It is used later by 
+    # the Mapping::Base process for selecting RuleAlts with the proper minimal depth.
+    # Note the grammar argument is altered (no grammar.clone is done).  
+    #
+    def Validator.analyze_min_depth grammar
+      raise 'Validator: cannot analyze_min_depth of undefined symbols' unless Validator.check_undefined( grammar ).empty?    
+      
+      grammar.each_value do |rule|
+        rule.min_depth = nil
+        rule.each { |alt| alt.min_depth = nil }
+      end
+
+      changed = true
+      while changed
+        changed = false
+
+        grammar.each_value do |rule|
+
+          symbol_depth = nil         
+          rule.each do |alt| 
+            next unless alt.min_depth.nil?
+            
+            alt_depth = nil
+            alt.each do |token|
+              depth = (token.type == :symbol) ? grammar[token.data].min_depth : 1
+              if depth.nil?
+                alt_depth = nil
+                break
+              end
+              alt_depth = depth if alt_depth.nil? or alt_depth < depth
+            end # token
+
+            next if alt_depth.nil?
+            changed = true if alt.min_depth != alt_depth
+            alt.min_depth = alt_depth
+            symbol_depth = alt_depth if symbol_depth.nil? or symbol_depth > alt_depth
+
+          end # alt
+
+          next if symbol_depth.nil?         
+          next unless rule.min_depth.nil? # do not recompute rule.min_depth
+          rule.min_depth = symbol_depth + 1
+          changed = true 
+
+        end # rule
+      end # changed
+
+      grammar     
     end
 
   protected 

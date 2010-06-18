@@ -24,6 +24,7 @@ module Mapper
     # Initialize the generator with the arguments necessary for Mapper::Base#initialize
     def initialize *args
       super
+      Validator.analyze_min_depth @grammar
       @random = Kernel
     end
  
@@ -65,7 +66,7 @@ module Mapper
         return genome if @grammar[selected_symbol].recursivity == :infinite # emergency fallback     
 
         rec = (selected_token.depth < required_depth) ? recursivity : [:terminating]
-        expansion = generate_rule( rec, selected_token, genome )
+        expansion = generate_rule( rec, selected_token, genome, required_depth-selected_token.depth )
         expansion.each { |t| t.depth = selected_token.depth+1 }
 
         tokens = apply_expansion( tokens, expansion, selected_index )
@@ -77,10 +78,12 @@ module Mapper
    
   protected
 
-    def generate_rule( recurs, symbol_token, genome )
+    def generate_rule( recurs, symbol_token, genome, allowed_depth )
       rule = pick_expansions( symbol_token, genome )
-      alts = rule.find_all { |alt| recurs.include? alt.recursivity }
-      alts = rule if alts.empty? # desperate case, cannot obey recurs
+      allowed = rule.find_all { |alt| not alt.min_depth.nil? and alt.min_depth <= allowed_depth }
+      alts = allowed.find_all { |alt| recurs.include? alt.recursivity }
+      alts = allowed if alts.empty? # deep grammars, cannot prefere recurs
+      raise "Generator: cannot obey allowed_depth, infinite loop" if alts.empty? 
       if @consume_trivial_codons or rule.size > 1
         alt = alts.at @random.rand( alts.size )
         genome.push unmod( rule.index(alt), rule.size, symbol_token.data )

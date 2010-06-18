@@ -31,4 +31,9 @@ puts ''
 Validator.analyze_sn_altering g
 puts "altering :structural symbols: " + format_syms( g.symbols.find_all {|s| g[s].sn_altering == :structural } )
 puts "altering :nodal symbols: " + format_syms( g.symbols.find_all {|s| g[s].sn_altering == :nodal } )
+puts ''
 
+Validator.analyze_min_depth g
+g.symbols.each do |symbol|
+  puts "<#{symbol}>.min_depth=#{g[symbol].min_depth} alts: #{ ( g[symbol].map {|a| a.min_depth} ).join ', ' }"
+end

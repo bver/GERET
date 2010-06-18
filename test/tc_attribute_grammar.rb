@@ -53,7 +53,7 @@ class TC_AttributeGrammar < Test::Unit::TestCase
     r = MockRand.new [{1=>0},0, {2=>1},0, {3=>2},0, {2=>1},0, {2=>0},0, {2=>1},0, {1=>0},0, {2=>1},0 ]
     m.random = r   
 
-    exception = assert_raise( RuntimeError ) { m.generate_grow( 5 ) }
+    exception = assert_raise( RuntimeError ) { m.generate_grow( 7 ) } # 5
     assert_equal( "AttrGrDepthFirst: all possible expansions semantically restricted", exception.message )
   end
  

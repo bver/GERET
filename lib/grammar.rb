@@ -70,16 +70,18 @@ module Mapper
     # The src argument is the instance of an array of Mapper::Token instances. 
     # The recursive argument will be copied into self.recursivity attribute.
     # The arity argument will be copied into self.arity attribute. 
-    def initialize( ary=nil, recursive=nil, arity=nil )
+    # The min_depth will be copied into self.min_depth attribute.
+    def initialize( ary=nil, recursive=nil, arity=nil, min_depth=nil )
       super ary unless ary.nil? 
       @recursivity = recursive
       @arity = arity
+      @min_depth = min_depth
     end 
 
     # Return a deep copy of the instance.   
     def deep_copy
       alt = map {|t| Token.new( t.type, t.data, t.depth ) } 
-      RuleAlt.new( alt, @recursivity, @arity )
+      RuleAlt.new( alt, @recursivity, @arity, @min_depth )
     end
 
     # The RuleAlt recursivity used in Validator.analyze_recursivity process (see), based on nonterminal :symbol-ic Token-s.
@@ -90,9 +92,13 @@ module Mapper
     #   
     attr_accessor :recursivity
 
-    # The RuleAlt arity used id Validator.analyze_arity process (see). 
+    # The RuleAlt arity used in Validator.analyze_arity process (see). 
     # 'arity' is the number of tokens with type == :symbol in the RuleAlt 
     attr_accessor :arity
+
+    #  The RuleAlt min_depth used in Validator.analyze_recursivity process (see).
+    #  This is a minimal number of mapping steps required by the generator to finish the mapping process.
+    attr_accessor :min_depth
 
   end
  
@@ -106,20 +112,21 @@ module Mapper
   # 
   class Rule < Array
     
-    # Initialize the Rule from the ary argument (ie. from the Enumerable of RuleAlts)
-    # The recursive and sn_altering arguments will be copied into self.recursivity and 
-    # self.sn_altering attribute, respectively. 
+    # Initialize the Rule from the ary argument (ie. from the Enumerable of RuleAlts).
+    # The recursive, sn_altering and min_depth arguments will be copied into self.recursivity, 
+    # self.sn_altering and self.min_depth attribute, respectively. 
     #  
-    def initialize( ary=nil, recursive=nil, sn_altering=nil )
+    def initialize( ary=nil, recursive=nil, sn_altering=nil, min_depth=nil )
       super ary unless ary.nil?
       @recursivity = recursive
       @sn_altering = sn_altering
+      @min_depth = min_depth     
     end 
 
     # Return a deep copy of the instance.     
     def deep_copy
       rule = map {|r| r.deep_copy } 
-      Rule.new( rule, @recursivity, @sn_altering )
+      Rule.new( rule, @recursivity, @sn_altering, @min_depth )
     end
 
     # The Rule (symbol) recursivity used in Validator.analyze_recursivity process (see).
@@ -136,6 +143,11 @@ module Mapper
     #   :nodal ... the mutation on this position cannot result in the structural change (the decision tree is unchanged).
     #
     attr_accessor :sn_altering
+
+    #  The min_depth attribute used in Validator.analyze_recursivity process (see).
+    #  This is a minimal number of mapping steps required by the generator to finish the mapping process.
+    attr_accessor :min_depth
+   
   end
 
 end

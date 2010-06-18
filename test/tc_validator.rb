@@ -317,5 +317,180 @@ class TC_Validator < Test::Unit::TestCase
 
   end
 
+  def test_analyze_min_depth_1
+    grammar = Mapper::Grammar.new( { 
+      'expr' => Mapper::Rule.new( [ # min_depth=2
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'x' ) ] ), # min_depth=1 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'y' ) ] ), # min_depth=1 
+                  Mapper::RuleAlt.new( [ # min_depth=2 
+                    Mapper::Token.new( :literal, '(' ), 
+                    Mapper::Token.new( :symbol, 'expr' ), # min_depth=2 
+                    Mapper::Token.new( :literal, ' ' ),                   
+                    Mapper::Token.new( :symbol, 'aop' ),  # min_depth=2                
+                    Mapper::Token.new( :symbol, 'expr' ), # min_depth=2                  
+                    Mapper::Token.new( :literal, ')' ) 
+                  ] )
+                ] ),
+
+       'aop'  => Mapper::Rule.new( [ # min_depth=2 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '+' ) ] ), # min_depth=1
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '*' ) ] ) # min_depth=1 
+                ] )
+    }, 'expr' )
+
+    gram = Validator.analyze_min_depth grammar   
+
+    assert_equal( 2, gram['expr'].min_depth )
+    assert_equal( 3, gram['expr'].size )
+    assert_equal( 1, gram['expr'][0].min_depth )
+    assert_equal( 1, gram['expr'][1].min_depth )
+    assert_equal( 2, gram['expr'][2].min_depth )   
+
+    assert_equal( 2, gram['aop'].min_depth )   
+    assert_equal( 2, gram['aop'].size )   
+    assert_equal( 1, gram['aop'][0].min_depth )
+    assert_equal( 1, gram['aop'][0].min_depth )   
+  end
+
+  def test_analyze_min_depth_2
+    grammar = Grammar.new( { 
+      'start' => Rule.new( [ # min_depth=4
+                   RuleAlt.new( [ # min_depth=3 
+                     Token.new( :literal, 'one' ),
+                     Token.new( :symbol, 'potential' ), 
+                     Token.new( :literal, 'two' ),                   
+                   ] ),
+                   RuleAlt.new( [ # min_depth=6 
+                     Token.new( :symbol, 'loop1' ), 
+                     Token.new( :literal, 'three' ),                   
+                   ] ),
+                 ] ),
+      'potential' => Rule.new( [ # min_depth=3 
+                   RuleAlt.new( [ # min_depth=2 
+                     Token.new( :literal, 'one' ),
+                     Token.new( :symbol, 'term1' ), 
+                   ] ),
+                   RuleAlt.new( [ # min_depth=2 
+                     Token.new( :symbol, 'term2' ), 
+                     Token.new( :symbol, 'term1' ),                   
+                   ] ),
+                 ] ),                
+      'term1' => Rule.new( [  # min_depth=2 
+                   RuleAlt.new( [ # min_depth=1 
+                     Token.new( :literal, 'T1' ),
+                   ] ),
+                 ] ),                
+      'term2' => Rule.new( [ # min_depth=2 
+                   RuleAlt.new( [ # min_depth=1 
+                     Token.new( :literal, 'T2A' ),
+                   ] ),
+                   RuleAlt.new( [ # min_depth=1 
+                     Token.new( :literal, 'T2B' ),
+                   ] ),
+                 ] ),                
+      'loop1' => Rule.new( [ # min_depth=6
+                   RuleAlt.new( [ # min_depth=5 
+                     Token.new( :symbol, 'loop3' ), 
+                     Token.new( :symbol, 'loop2' ),                   
+                   ] ),
+                 ] ),                
+      'loop2' => Rule.new( [ # min_depth=5 
+                   RuleAlt.new( [ # min_depth=4 
+                     Token.new( :symbol, 'loop3' ), 
+                   ] ),
+                   RuleAlt.new( [ # min_depth=6 
+                     Token.new( :symbol, 'loop1' ),                   
+                   ] ),
+                 ] ),                
+      'loop3' => Rule.new( [ # min_depth=4 
+                   RuleAlt.new( [ # min_depth=3 
+                     Token.new( :symbol, 'potential' ), 
+                   ] ),
+                   RuleAlt.new( [ # min_depth=6 
+                     Token.new( :symbol, 'loop1' ), 
+                   ] ),
+                 ] ),                
+     }, 'start' )
+    
+     gram = Validator.analyze_min_depth grammar   
+
+     assert_equal( 4, gram['start'].min_depth )
+     assert_equal( 2, gram['start'].size )
+     assert_equal( 3, gram['start'][0].min_depth )
+     assert_equal( 6, gram['start'][1].min_depth )
+    
+     assert_equal( 3, gram['potential'].min_depth )
+     assert_equal( 2, gram['potential'].size )
+     assert_equal( 2, gram['potential'][0].min_depth )
+     assert_equal( 2, gram['potential'][1].min_depth )
+
+     assert_equal( 2, gram['term1'].min_depth )
+     assert_equal( 1, gram['term1'].size )
+     assert_equal( 1, gram['term1'][0].min_depth )
+
+     assert_equal( 2, gram['term2'].min_depth )
+     assert_equal( 2, gram['term2'].size )
+     assert_equal( 1, gram['term2'][0].min_depth )
+     assert_equal( 1, gram['term2'][1].min_depth )
+
+     assert_equal( 6, gram['loop1'].min_depth )
+     assert_equal( 1, gram['loop1'].size )
+     assert_equal( 5, gram['loop1'][0].min_depth )
+
+     assert_equal( 5, gram['loop2'].min_depth )
+     assert_equal( 2, gram['loop2'].size )
+     assert_equal( 4, gram['loop2'][0].min_depth )
+     assert_equal( 6, gram['loop2'][1].min_depth )
+
+     assert_equal( 4, gram['loop3'].min_depth )
+     assert_equal( 2, gram['loop3'].size )
+     assert_equal( 3, gram['loop3'][0].min_depth )
+     assert_equal( 6, gram['loop3'][1].min_depth )
+  end
+
+  def test_analyze_min_depth_3
+    grammar = Mapper::Grammar.new( {
+      'node1' => Mapper::Rule.new( [
+                   Mapper::RuleAlt.new( [ Mapper::Token.new( :symbol, 'node2' ) ] ),
+                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'terminal' ) ] )                   
+              ] ),
+      'node2' => Mapper::Rule.new( [
+                   Mapper::RuleAlt.new( [ Mapper::Token.new( :symbol, 'node3' ), Mapper::Token.new( :symbol, 'node3' ) ] )
+              ] ),
+      'node3' => Mapper::Rule.new( [
+                   Mapper::RuleAlt.new( [ Mapper::Token.new( :symbol, 'node4' ), Mapper::Token.new( :symbol, 'node4' ) ] )
+              ] ),              
+      'node4' => Mapper::Rule.new( [
+                   Mapper::RuleAlt.new( [ Mapper::Token.new( :symbol, 'node2' ) ] ),
+                   Mapper::RuleAlt.new( [ Mapper::Token.new( :symbol, 'node1' ) ] )                   
+              ] ),
+    }, 'node1' )
+
+    gram = Validator.analyze_min_depth grammar   
+
+    assert_equal( 2, gram['node1'].min_depth )
+    assert_equal( 2, gram['node1'].size )
+    assert_equal( 5, gram['node1'][0].min_depth )
+    assert_equal( 1, gram['node1'][1].min_depth )
+
+    assert_equal( 5, gram['node2'].min_depth )
+    assert_equal( 1, gram['node2'].size )
+    assert_equal( 4, gram['node2'][0].min_depth )
+    
+    assert_equal( 4, gram['node3'].min_depth )
+    assert_equal( 1, gram['node3'].size )
+    assert_equal( 3, gram['node3'][0].min_depth )
+  
+    assert_equal( 3, gram['node4'].min_depth )
+    assert_equal( 2, gram['node4'].size )
+    assert_equal( 5, gram['node4'][0].min_depth )
+    assert_equal( 2, gram['node4'][1].min_depth )   
+  end
+
+  def test_analyze_min_depth_over_undefined
+    exception = assert_raise( RuntimeError ) { Validator.analyze_min_depth @grammar2 }
+    assert_equal( "Validator: cannot analyze_min_depth of undefined symbols", exception.message )
+  end
+ 
 end
 

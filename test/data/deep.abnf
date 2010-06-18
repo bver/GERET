@@ -1,0 +1,14 @@
+
+; this is an example of the grammar which leads to the "unhalting" phenotype generation for required_depth=3 
+; when considering only grammar[symbol].recursivity and ignoring grammar[symbol].min_depth
+
+node1 = node2 / "terminal"
+
+node2 = node3 node3
+
+node3 = node4 node4
+
+node4 = node2 / node1
+
+
+

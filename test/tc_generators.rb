@@ -76,10 +76,10 @@ class TC_Generators < Test::Unit::TestCase
     assert_equal( :infinite, m.grammar['op'].recursivity )
     assert_equal( :cyclic, m.grammar['expr'].recursivity )
 
-    r = MockRand.new [2,0,  0,0,  0,0,  0,0,  0,0]
+    r = MockRand.new [ {2=>1}, {1=>0} ]
     m.random = r
- 
-    assert_equal( [2], m.generate_full( 300 ) )
+
+    assert_equal( [1], m.generate_full( 300 ) )
   end
 
   def test_depth_first_full
@@ -87,7 +87,7 @@ class TC_Generators < Test::Unit::TestCase
     r = MockRand.new [{1=>0},0,  {1=>0},0,  {2=>0},0,  {2=>0},0,  {2=>1},0,  {2=>1},0,  {1=>0},0,  {2=>1},0, {2=>0},0, {2=>0},0 ]
     m.random = r
     gen = [2, 2, 0, 0, 1, 1, 2, 1, 0, 0] 
-    assert_equal( gen, m.generate_full( 2 ) )
+    assert_equal( gen, m.generate_full( 3 ) ) # 2
     assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
     assert_equal( 3, m.max_codon_base ) 
   end
@@ -107,7 +107,7 @@ class TC_Generators < Test::Unit::TestCase
     r = MockRand.new [{1=>0},0, {1=>0},0, {2=>1},0, {1=>0},0, {2=>0},0, {2=>0},0, {2=>1},0, {2=>1},0, {2=>0},0, {2=>0},0]
     m.random = r
     gen = [2, 2, 1, 2, 0, 0, 1, 1, 0, 0] 
-    assert_equal( gen, m.generate_full( 2 ) )
+    assert_equal( gen, m.generate_full( 3 ) ) # 2
     assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
     assert_equal( 3, m.max_codon_base ) 
   end
@@ -118,7 +118,7 @@ class TC_Generators < Test::Unit::TestCase
                       {1=>0},{2=>0},0, {1=>0},{1=>0},0, {3=>2},{2=>0},0, {2=>1},{2=>0},0, {1=>0},{2=>0},0]     
     m.random = r
     gen = [0,2,  1,1,  1,2,  0,1,  1,1,  0,0,  0,2,  2,0,  1,0,  0,0] 
-    assert_equal( gen, m.generate_full( 2 ) )
+    assert_equal( gen, m.generate_full( 3 ) ) # 2
     assert_equal( '((x+x)*(y+y))', m.phenotype(gen) )
     assert_equal( 3, m.max_codon_base ) 
   end 
@@ -128,7 +128,7 @@ class TC_Generators < Test::Unit::TestCase
     r = MockRand.new [{3=>2},0, {3=>1},0, {2=>0},0, {3=>2},0, {3=>2},0, {2=>0},0, {2=>0},0, {2=>0},0, {2=>1},0, {3=>1},0]
     m.random = r   
     gen = [2,1,0,2,2,0,0,0,1,1]
-    assert_equal( gen, m.generate_grow( 3 ) )
+    assert_equal( gen, m.generate_grow( 4 ) ) # 3
     assert_equal( '(y+((x+x)*y))', m.phenotype(gen) )
     assert_equal( 3, m.max_codon_base ) 
   end
@@ -157,7 +157,7 @@ class TC_Generators < Test::Unit::TestCase
     r = MockRand.new [{1=>0}, {1=>0}, {2=>1}, {1=>0}, {2=>0}, {2=>0}, {2=>1}, {2=>1}, {2=>0}, {2=>0}]
     m.random = r
     gen = [2*2, 2*2, 1*1, 2*2, 0*2, 0*1, 1*2, 1*2, 0*1, 0*2] 
-    assert_equal( gen, m.generate_full( 2 ) )
+    assert_equal( gen, m.generate_full( 3 ) ) # 2
     assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
   end
 
@@ -167,7 +167,7 @@ class TC_Generators < Test::Unit::TestCase
 
     m.random = r  
     gen = [2*2, 2*2, 0*2, 0*1, 1*2, 1*1, 2*2, 1*2, 0*1, 0*2]    
-    assert_equal( gen, m.generate_full( 2 ) )
+    assert_equal( gen, m.generate_full( 3 ) ) # 2
     assert_equal( '((x+y)*(y+x))', m.phenotype(gen) )
   end
 
@@ -177,7 +177,7 @@ class TC_Generators < Test::Unit::TestCase
                       {2=>0},{1=>0},0, {4=>0},{2=>1},0, {3=>0},{2=>0},0, {2=>1},{2=>1},0, {1=>0},{2=>0},0, ]
     m.random = r
     gen = [0,2,  2,2,  3,0,  1,1,  1,0,  0,2,  0,1,  0,0,  1,1,  0,0] 
-    assert_equal( gen, m.generate_full( 2 ) )
+    assert_equal( gen, m.generate_full( 3 ) ) # 2
     assert_equal( '((y+x)*(x+y))', m.phenotype(gen) )
     assert_equal( 3, m.max_codon_base ) 
   end
@@ -210,10 +210,9 @@ class TC_Generators < Test::Unit::TestCase
                                 {2=>1},0, {2=>1},0,           {2=>0},0]
     m.random = r
          #[2, 2, 0, 2, 0, 0, 1, 1, 0, 0]   
-#
     gen = [2, 2,    2, 0,    1, 1,    0] 
     assert_equal( '((x+y)+(y+x))', m.phenotype(gen) )
-    assert_equal( gen, m.generate_full( 2 ) )   
+    assert_equal( gen, m.generate_full( 3 ) )  # 2 
     assert_equal( 7, m.used_length )   
 
     m = Mapper::DepthLocus.new grammar
@@ -227,10 +226,41 @@ class TC_Generators < Test::Unit::TestCase
     m.random = r
 
     gen = [  2,  2,2,  1,    0,1,    0,  0,2,  1,    0,0,    1      ] 
-    assert_equal( gen,  m.generate_full( 2 ) )
+    assert_equal( gen,  m.generate_full( 3 ) ) # 2
     assert_equal( '((x+y)+(y+x))',  m.phenotype( gen ) )      
     assert_equal( 13, m.used_length )   
   end
   
+  def test_deep_cyclic_grammar
+    grammar = Mapper::Grammar.new( {
+      'node1' => Mapper::Rule.new( [
+                   Mapper::RuleAlt.new( [ Mapper::Token.new( :symbol, 'node2' ) ] ),
+                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'terminal' ) ] )                   
+              ] ),
+      'node2' => Mapper::Rule.new( [
+                   Mapper::RuleAlt.new( [ Mapper::Token.new( :symbol, 'node3' ), Mapper::Token.new( :symbol, 'node3' ) ] )
+              ] ),
+      'node3' => Mapper::Rule.new( [
+                   Mapper::RuleAlt.new( [ Mapper::Token.new( :symbol, 'node4' ), Mapper::Token.new( :symbol, 'node4' ) ] )
+              ] ),              
+      'node4' => Mapper::Rule.new( [
+                   Mapper::RuleAlt.new( [ Mapper::Token.new( :symbol, 'node2' ) ] ),
+                   Mapper::RuleAlt.new( [ Mapper::Token.new( :symbol, 'node1' ) ] )                   
+              ] ),
+    }, 'node1' )
+
+    m = Mapper::DepthFirst.new grammar 
+    assert_equal( 4, m.grammar.symbols.size )
+    cyclic = m.grammar.symbols.find_all {|s| m.grammar[s].recursivity == :cyclic }
+    assert_equal( 4, cyclic.size )   
+
+    r = MockRand.new [ {1=>0}, {1=>0} ]
+    m.random = r   
+    gen = [1]
+    
+    assert_equal( gen, m.generate( [:cycling], 3 ) )
+    assert_equal( 'terminal', m.phenotype(gen) )
+  end
+
 end
 

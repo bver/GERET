@@ -34,8 +34,8 @@ class TC_Grammar < Test::Unit::TestCase
                 ], :cyclic, :structural ),
 
        'op'  => Rule.new( [ 
-                  RuleAlt.new( [ Token.new( :symbol, 'expr', 42 ) ], :cyclic, 33 )
-                ], :infinite, :nodal )
+                  RuleAlt.new( [ Token.new( :symbol, 'expr', 42 ) ], :cyclic, 33, 88 )
+                ], :infinite, :nodal, 99 )
     }, 'expr' )
 
     grammar2 = grammar1.deep_copy
@@ -49,7 +49,7 @@ class TC_Grammar < Test::Unit::TestCase
 
     grammar1['op'].first.first.depth = 1
     assert_equal( 42, grammar2['op'].first.first.depth )   
-    
+
     grammar1['expr'].first.first.type = :literal
     assert_equal( :symbol, grammar2['expr'].first.first.type )   
 
@@ -64,15 +64,19 @@ class TC_Grammar < Test::Unit::TestCase
     grammar1['expr'].first.arity = 11
     assert_equal( 12, grammar2['expr'].first.arity )   
     grammar1['op'].first.arity = 1
+    grammar1['op'].first.min_depth = 3      
     assert_equal( 33, grammar2['op'].first.arity )   
+    assert_equal( 88, grammar2['op'].first.min_depth )
 
     grammar1['expr'].sn_altering = :nodal
     assert_equal( :nodal, grammar1['expr'].sn_altering )
     assert_equal( :structural, grammar2['expr'].sn_altering )
 
     grammar1['op'].sn_altering = :structural
+    grammar1['op'].min_depth = 23
     assert_equal( :structural, grammar1['op'].sn_altering )
     assert_equal( :nodal, grammar2['op'].sn_altering )
+    assert_equal( 99, grammar2['op'].min_depth )   
   
   end
  
