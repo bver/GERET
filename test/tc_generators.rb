@@ -262,5 +262,79 @@ class TC_Generators < Test::Unit::TestCase
     assert_equal( 'terminal', m.phenotype(gen) )
   end
 
+  def test_insufficient_min_depth
+    grammar = Grammar.new( { 
+      'start' => Rule.new( [ # min_depth=4
+                   RuleAlt.new( [ # min_depth=3 
+                     Token.new( :literal, 'one' ),
+                     Token.new( :symbol, 'potential' ), 
+                     Token.new( :literal, 'two' ),                   
+                   ] ),
+                   RuleAlt.new( [ # min_depth=6 
+                     Token.new( :symbol, 'loop1' ), 
+                     Token.new( :literal, 'three' ),                   
+                   ] ),
+                 ] ),
+      'potential' => Rule.new( [ # min_depth=3 
+                   RuleAlt.new( [ # min_depth=2 
+                     Token.new( :literal, 'one' ),
+                     Token.new( :symbol, 'term1' ), 
+                   ] ),
+                   RuleAlt.new( [ # min_depth=2 
+                     Token.new( :symbol, 'term2' ), 
+                     Token.new( :symbol, 'term1' ),                   
+                   ] ),
+                 ] ),                
+      'term1' => Rule.new( [  # min_depth=2 
+                   RuleAlt.new( [ # min_depth=1 
+                     Token.new( :literal, 'T1' ),
+                   ] ),
+                 ] ),                
+      'term2' => Rule.new( [ # min_depth=2 
+                   RuleAlt.new( [ # min_depth=1 
+                     Token.new( :literal, 'T2A' ),
+                   ] ),
+                   RuleAlt.new( [ # min_depth=1 
+                     Token.new( :literal, 'T2B' ),
+                   ] ),
+                 ] ),                
+      'loop1' => Rule.new( [ # min_depth=6
+                   RuleAlt.new( [ # min_depth=5 
+                     Token.new( :symbol, 'loop3' ), 
+                     Token.new( :symbol, 'loop2' ),                   
+                   ] ),
+                 ] ),                
+      'loop2' => Rule.new( [ # min_depth=5 
+                   RuleAlt.new( [ # min_depth=4 
+                     Token.new( :symbol, 'loop3' ), 
+                   ] ),
+                   RuleAlt.new( [ # min_depth=6 
+                     Token.new( :symbol, 'loop1' ),                   
+                   ] ),
+                 ] ),                
+      'loop3' => Rule.new( [ # min_depth=4 
+                   RuleAlt.new( [ # min_depth=3 
+                     Token.new( :symbol, 'potential' ), 
+                   ] ),
+                   RuleAlt.new( [ # min_depth=6 
+                     Token.new( :symbol, 'loop1' ), 
+                   ] ),
+                 ] ),                
+     }, 'start' )
+   
+     m = Mapper::DepthFirst.new grammar 
+
+     r = MockRand.new []
+     m.random = r   
+   
+     assert_equal( 4, m.grammar['start'].min_depth )
+     assert_equal( 2, m.grammar['start'].size )
+     assert_equal( 3, m.grammar['start'][0].min_depth )
+     assert_equal( 6, m.grammar['start'][1].min_depth )
+ 
+     exception = assert_raise( RuntimeError ) { m.generate_full( 2 ) }
+     assert_equal( "Generator: required_depth<min_depth, please increase sensible_depth", exception.message )
+  end
+
 end
 
