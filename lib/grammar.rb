@@ -96,7 +96,7 @@ module Mapper
     # 'arity' is the number of tokens with type == :symbol in the RuleAlt 
     attr_accessor :arity
 
-    #  The RuleAlt min_depth used in Validator.analyze_recursivity process (see).
+    #  The RuleAlt min_depth used in Validator.analyze_min_depth process (see).
     #  This is a minimal number of mapping steps required by the generator to finish the mapping process.
     attr_accessor :min_depth
 
@@ -129,7 +129,7 @@ module Mapper
       Rule.new( rule, @recursivity, @sn_altering, @min_depth )
     end
 
-    # The Rule (symbol) recursivity used in Validator.analyze_recursivity process (see).
+    # The Rule (symbol) recursivity used in Validator.analyze_min_depth process (see).
     # Allowed values are: 
     #   :infinite ... the Rule contains only :infinite RuleAlts, 
     #   :cyclic ... the Rule contains at least one :cyclic RuleAlt, 
