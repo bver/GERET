@@ -80,8 +80,7 @@ module Mapper
 
     def generate_rule( recurs, symbol_token, genome, allowed_depth )
       rule = pick_expansions( symbol_token, genome )
-      allowed = rule.find_all { |alt| not alt.min_depth.nil? and alt.min_depth <= allowed_depth }
-      raise "Generator: required_depth<min_depth, please increase sensible_depth" if allowed.empty?     
+      allowed = filter_expansions_by_depth( rule, allowed_depth )
       alts = allowed.find_all { |alt| recurs.include? alt.recursivity }
       alts = allowed if alts.empty? # deep grammars, cannot prefere recurs
       if @consume_trivial_codons or rule.size > 1
@@ -91,6 +90,12 @@ module Mapper
         alt = rule.first 
       end
       return use_expansion( symbol_token, alt.deep_copy )
+    end
+
+    def filter_expansions_by_depth( rule, allowed_depth )
+      allowed = rule.find_all { |alt| not alt.min_depth.nil? and alt.min_depth <= allowed_depth }
+      raise "Generator: required_depth<min_depth, please increase sensible_depth" if allowed.empty? 
+      allowed
     end
 
   end # Generator

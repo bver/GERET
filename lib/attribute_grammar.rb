@@ -96,6 +96,10 @@ module Semantic
       allowed
     end
 
+    def filter_expansions_by_depth( rule, allowed_depth )
+      rule     
+    end
+   
     def use_expansion( parent_token, alt )
       expansion = super( parent_token, alt )
       edges = @functions.node_expansion( parent_token, expansion ).map do |attr_fn|
