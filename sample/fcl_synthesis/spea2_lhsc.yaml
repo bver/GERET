@@ -15,11 +15,11 @@ algorithm:
 
   init:
     method: ramped # grow or full or ramped
-    sensible_depth: 7   
+    sensible_depth: 10   
 
   inject:
     method: grow # grow or full or random
-    sensible_depth: 7   
+    sensible_depth: 10   
  
   termination:
     max_steps: 1000
