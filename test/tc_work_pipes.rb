@@ -214,4 +214,12 @@ class TC_WorkPipes  < Test::Unit::TestCase
     assert_equal( ['1st', '2nd', '3rd'], worker.keys.sort )
   end
  
+  def test_doubling
+    pipes = WorkPipes.new [ "#{@ruby} #{@dir}/pipe_doubling.rb ONE", 
+                            "#{@ruby} #{@dir}/pipe_doubling.rb TWO" ]
+    jobs = [ "1", "DOUBLE_LINE", "3", "foo", "5", "6", "7" ].map { |v| WPop.new v } 
+    exception = assert_raise( RuntimeError ) { pipes.run jobs } 
+    assert_equal( "WorkPipes: mismatching inputs and outputs, check markers.", exception.message )   
+  end
+
 end

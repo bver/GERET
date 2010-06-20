@@ -154,7 +154,9 @@ module Util
         ready.first.each do |pipe|
           output = pipe.gets
           raise "WorkPipes: pipe '#{@commands[pipe]}' ended" if output.nil?
-          jobs[ assigned[pipe].shift ].send( @destination, output )
+          jobidx = assigned[pipe].shift 
+          raise "WorkPipes: mismatching inputs and outputs, check markers." if jobidx.nil?
+          jobs[ jobidx ].send( @destination, output )
           restart_watchdog         
         end
 
