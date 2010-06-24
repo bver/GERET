@@ -110,7 +110,7 @@ class TC_PipedIndividual < Test::Unit::TestCase
 
   def test_mark_batch
     pi = PipedIndividual.new( @mapper, [] )
-    assert_equal( '', pi.class.batch_mark )
+    assert_equal( nil, pi.class.batch_mark )
 
     PipedIndividual.mark_batch('RUN_NOW')
     assert_equal( 'RUN_NOW', PipedIndividual.batch_mark )

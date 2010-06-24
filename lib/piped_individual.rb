@@ -16,7 +16,7 @@ module Util
 
     PipedIndSchema = Struct.new( 'PipedIndSchema', :symb, :conversion )
     @@phenotype_mark = ''
-    @@batch_mark = ''
+    @@batch_mark = nil
 
     # Create the new phenotype, based on the genotype, using the mapper.
     def initialize( mapper, genotype )

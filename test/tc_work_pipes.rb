@@ -13,6 +13,11 @@ class WPopBatch < WPop
     'BATCH'
   end
 end
+class WPopBatchNotSet < WPop
+  def WPopBatchNotSet.batch_mark
+    nil 
+  end
+end
 
 class TC_WorkPipes  < Test::Unit::TestCase
  
@@ -222,4 +227,26 @@ class TC_WorkPipes  < Test::Unit::TestCase
     assert_equal( "WorkPipes: mismatching inputs and outputs, check markers.", exception.message )   
   end
 
+  def test_batch_mark_not_set_fix
+    pipes = WorkPipes.new [ "#{@ruby} #{@dir}/pipe1.rb ONE",
+                            "#{@ruby} #{@dir}/pipe1.rb TWO",
+                            "#{@ruby} #{@dir}/pipe1.rb THREE" ]
+    jobs = [ "1", "2", "3", "foo", "5", "6", "7" ].map { |v| WPopBatchNotSet.new v } 
+
+    assert_equal( 0, pipes.jobs_processed )   
+    pipes.run jobs
+    assert_equal( jobs.size, pipes.jobs_processed )  
+
+    assert_equal( 7, jobs.size )
+    worker = {}
+    jobs.each do |j|
+      assert_equal( 2,  j.parse.split(' ').size )
+      assert_equal( j.phenotype, j.parse.split(' ').last )
+      worker[ j.parse.split(' ').first ] = nil
+    end
+    assert_equal( ['ONE', 'THREE', 'TWO'], worker.keys.sort )
+  end
+ 
 end
+
+

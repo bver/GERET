@@ -113,7 +113,7 @@ module Util
 
       if jobs.first.class.respond_to? :batch_mark
         marker = jobs.first.class.batch_mark
-        @pipes.each { |pipe| pipe.puts marker }
+        @pipes.each { |pipe| pipe.puts marker } unless marker.nil?
       end
       
       jobs.each_with_index do |job,index|
@@ -166,7 +166,7 @@ module Util
           if index >= jobs.size 
             if batch.include? pipe
               batch.delete pipe
-              pipe.puts marker
+              pipe.puts marker unless marker.nil? 
             end
             next 
           end
