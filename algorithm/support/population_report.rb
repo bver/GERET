@@ -70,7 +70,8 @@ class PopulationReport < ReportText
   end
  
   def format_individual( count, i )
-    "#{count}*[#{@objective}: #{i.send(@objective)}, complexity: #{i.complexity}]\n"
+    age = ", age: #{i.age}" if i.respond_to? :age
+    "#{count}*[#{@objective}: #{i.send(@objective)}, complexity: #{i.complexity}#{age}]\n"
   end
 
 end

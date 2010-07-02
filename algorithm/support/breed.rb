@@ -23,9 +23,11 @@ module Breed
                                                parent1.track_support, parent2.track_support ) 
 
         individual = @cfg.factory( 'individual', @mapper, child1 )
+        individual.parents( parent1, parent2 ) if individual.respond_to? :parents
         children << individual if individual.valid? 
   
         individual = @cfg.factory( 'individual', @mapper, child2 )
+        individual.parents( parent1, parent2 ) if individual.respond_to? :parents       
         children << individual if individual.valid? 
 
         @cross += 1       
@@ -36,6 +38,7 @@ module Breed
         child = @mutation.mutation( parent.genotype, parent.track_support )
   
         individual = @cfg.factory( 'individual', @mapper, child )
+        individual.parents( parent ) if individual.respond_to? :parents
         children << individual if individual.valid? 
         
         @mutate += 1

@@ -43,6 +43,7 @@ run "sample/ant_trail_tcc/paretogp_simplified.yaml"
 run "sample/ant_trail_tcc/spea2.yaml"
 run "sample/ant_trail_tcc/steady_state.yaml"
 run "sample/ant_trail_tcc/alps.yaml"
+run "sample/ant_trail_tcc/paretoalps.yaml"
 
 run "sample/ant_trail_tcc/attr_grammar/spea2.yaml"
 

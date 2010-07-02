@@ -1,0 +1,86 @@
+---
+algorithm:
+  class: Spea2
+
+  population_size: 300
+  max_archive_size: 200
+
+  duplicate_elimination: false
+  shorten_archive_individual: true 
+ 
+  probabilities:
+    crossover: 0.5
+    mutation: 0.01
+    injection: 0.9
+
+  init:
+    method: ramped # grow or full or ramped
+    sensible_depth: 7   
+
+  inject:
+    method: grow # grow or full or random
+    sensible_depth: 7   
+ 
+  termination:
+    max_steps: 1000
+    on_individual: stopping_condition
+
+grammar:
+  class: Abnf::File
+  filename: sample/ant_trail_tcc/grammar.abnf
+
+mapper:
+  class: DepthLocus
+
+selection:
+  class: Tournament
+  tournament_size: 2
+selection_rank: # do not change
+  class: Spea2Ranking
+         
+crossover:
+  class: CrossoverRipple
+  margin: 2 #1
+  step: 2
+ 
+mutation:
+  class: MutationRipple
+  magnitude: 16
+
+store:
+  class: Store
+  filename: ./ant_pareto_alps_tcc.store
+
+report:
+   class: PopulationReport
+   report_diversity: false
+
+individual:
+  class: PipedIndividual 
+  shorten_chromozome: true 
+  _weak_pareto:
+    :fitness: maximize
+    :complexity: minimize
+    :age: minimize
+  _pipe_output:
+    - :fitness: to_i
+  _thresholds:
+    :fitness: 89
+  _mark_phenotype: "\nMARKER\n"
+
+    
+evaluator:
+  class: WorkPipes
+  commands: 
+    - 'sample/ant_trail_tcc/ant_pipe.rb ONE sample/ant_trail_tcc/ant_evaluate.c'
+    - 'sample/ant_trail_tcc/ant_pipe.rb TWO sample/ant_trail_tcc/ant_evaluate.c'
+
+# for the remote pipe configuration, use:
+#
+#   - 'ssh user@host "/full/path/to/geret/sample/ant_trail_tcc/ant_pipe.rb ID sample/ant_trail_tcc/ant_evaluate.c"'
+#
+# note the ssh connection must use public/private key pair (no password) for authentication. 
+# (see eg. http://www.petefreitag.com/item/532.cfm 
+# or  http://www.debian-administration.org/article/SSH_with_authentication_key_instead_of_password )
+          
+
