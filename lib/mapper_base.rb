@@ -87,6 +87,7 @@ module Mapper
 
       until ( selected_indices = find_nonterminals( tokens ) ).empty?
       
+        tsi1 = @used_length
         return nil if @used_length > length_limit
         selected_index = pick_locus( selected_indices, genome )
         selected_token = tokens[selected_index]
@@ -96,7 +97,7 @@ module Mapper
         expansion.each { |t| t.depth = selected_token.depth+1 }
 
         @complexity += selected_token.depth * expansion.arity + 1
-        track_expansion( selected_token, expansion ) if @track_support_on
+        track_expansion( selected_token, expansion, tsi1 ) if @track_support_on
 
         tokens = apply_expansion( tokens, expansion, selected_index )
 
@@ -120,16 +121,16 @@ module Mapper
       tok
     end
 
-    def track_expansion( symbol_token, tokens )
+    def track_expansion( symbol_token, tokens, tsi1 )
       @track_support = [] if @track_support.nil?
-      index = @used_length-1 
+      tsi2 = @used_length-1 
       back = symbol_token.track
 
       tokens.each { |t| t.track = @track_support.size if t.type == :symbol }
-      @track_support.push TrackNode.new( symbol_token.data, index, index, back )
+      @track_support.push TrackNode.new( symbol_token.data, tsi1, tsi2, back )
      
       until back.nil?
-        @track_support[back].to = index
+        @track_support[back].to = tsi2
         back = @track_support[back].back
       end
     end

@@ -339,6 +339,31 @@ class TC_Mappers < Test::Unit::TestCase
     assert_equal( track, m.track_support )
   end
 
+  def test_depth_locus_track_bugfix
+    m = Mapper::DepthLocus.new @grammar
+    m.track_support_on = true
+
+    assert_equal( '((x +y) *(y +x))', 
+                 m.phenotype( [0,2,  2,2,  1,0,  0,1,  0,0,  0,2,  1,0,  0,0,  0,1,  0,1] ) )   
+    # e = x / y / e o e
+    # o = + / *
+
+    track = [
+      Mapper::TrackNode.new( 'expr', 0, 19, nil ), # 0:[ ,2]      <e>      <o>      <e>
+      Mapper::TrackNode.new( 'expr', 2,  9, 0 ),   # 1:[2,2]      <e>      <o> (<e> <o> <e>)   
+      Mapper::TrackNode.new( 'aop',  4,  5, 1 ),   # 2:[1,0]      <e>      <o> (<e>  +  <e>)   
+      Mapper::TrackNode.new( 'expr', 6,  7, 1 ),   # 3:[0,1]      <e>      <o> ( y   +  <e>)    
+      Mapper::TrackNode.new( 'expr', 8,  9, 1 ),   # 4:[ ,0]      <e>      <o> ( y   +   x ) 
+      Mapper::TrackNode.new( 'expr',10, 17, 0 ),   # 5:[0,2] (<e> <o> <e>) <o> ( y   +   x ) 
+      Mapper::TrackNode.new( 'aop', 12, 13, 5 ),   # 6:[1,0] (<e>  +  <e>) <o> ( y   +   x )      
+      Mapper::TrackNode.new( 'expr',14, 15, 5 ),   # 7:[0,0] ( x   +  <e>) <o> ( y   +   x )           
+      Mapper::TrackNode.new( 'expr',16, 17, 5 ),   # 8:[ ,1] ( x   +   y ) <o> ( y   +   x )          
+      Mapper::TrackNode.new( 'aop', 18, 19, 0 ),   # 9:[ ,1] ( x   +   y )  *  ( y   +   x )               
+    ]
+    assert_equal( track, m.track_support )
+   
+  end
+
 end
 
 
