@@ -73,7 +73,7 @@ class Spea2 < AlgorithmBase
 
      
     if @duplicate_elimination
-      @cross, @injections, @mutate = 0, 0, 0, 0   
+      @cross, @injections, @mutate = 0, 0, 0  
       sizes = []
 
       @population = []
