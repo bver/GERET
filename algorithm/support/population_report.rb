@@ -34,6 +34,8 @@ class PopulationReport < ReportText
       (c == 0)? a.complexity <=> b.complexity  : c 
     end
     self['best_phenotype'] << "\n#{best.phenotype}"
+    self['best_phenotype_complexity'] << best.complexity
+
 
     if not defined? @report_histogram or @report_histogram == true         
       uniq = {}
