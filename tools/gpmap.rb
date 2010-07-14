@@ -77,7 +77,7 @@ begin
     phenotype = mapper.phenotype genotype 
     next if phenotype.nil?
     puts phenotype unless supress
-    mapper.track_support.each { |node| puts "#{node.symbol} #{node.from}..#{node.to}" } if track
+    mapper.track_support.each_with_index { |node,i| puts "#{i}. #{node.symbol} genome:#{node.from}..#{node.to} parent:#{node.back}" } if track
     puts "used_length = #{mapper.used_length}" if used
   end
 
