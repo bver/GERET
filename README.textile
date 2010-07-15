@@ -15,14 +15,6 @@ or read the general introduction:
 or purchase the book written by GE creators: 
 * "Grammatical Evolution: Evolutionary Automatic Programming in an Arbitrary Language":http://www.springer.com/computer/artificial/book/978-1-4020-7444-8 
 
-
-h2. Other implementations of GE
-
-* "libGE":http://bds.ul.ie/libGE/, "GrEVO":http://amnesia.csisdmz.ul.ie/GE/GrEvo/, "AGE":http://nohejl.name/age/ : C++
-* "GEVA":http://ncra.ucd.ie/Site/GEVA.html, "XGE":http://xge.epochx.org/  : Java
-* "DRP":http://rubyforge.org/projects/drp/ : Ruby
-* ... see the "list":http://www.grammatical-evolution.org/software.html
-
 h2. Features
 
 * multiple objectives optimisation
@@ -74,11 +66,21 @@ ls sample/*/*.yaml       # gives all possible task/algorithm combinations.
 </pre>
 
 Interrupt the run by ^C. Repeated evolve.rb invocation loads _algorithm_.store and continues evolving.
-Remove _algorithm.store_ if you want to start population(s) from scratch.
+Remove _algorithm.store_ if you want to start population(s) from scratch. 
+(Note - repeated invocation may not work for WorkPipes evaluator, see configuration). 
+
 Tune _algorithm_.yaml files to see some experiments failing. :-)
 
 For example:
 tools/evolve.rb sample/santa_fe_ant_trail/generational.yaml
+
+
+h2. Other implementations of GE
+
+* "libGE":http://bds.ul.ie/libGE/, "GrEVO":http://amnesia.csisdmz.ul.ie/GE/GrEvo/, "AGE":http://nohejl.name/age/ : C++
+* "GEVA":http://ncra.ucd.ie/Site/GEVA.html, "XGE":http://xge.epochx.org/  : Java
+* "DRP":http://rubyforge.org/projects/drp/ : Ruby
+* ... see the "list":http://www.grammatical-evolution.org/software.html
 
 
 h2. More Advanced Games
