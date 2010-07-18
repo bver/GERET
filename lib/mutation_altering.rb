@@ -6,8 +6,7 @@ module Operator
 
     # Create the mutation operator.
     # grammar is the valid grammar for distinguishing :structural and :nodal symbols
-    # magnitude is the initial value of the MutationAltering#magnitude attribute
-    def initialize( grammar, magnitude=nil )
+    def initialize( grammar )
       @grammar = grammar
       @random = Kernel
       @codon = CodonMod.new # standard 8-bit codons
@@ -27,7 +26,7 @@ module Operator
     end
     
     # Select the random (nodal/structural filtered) position within the orig vector and mutate it.
-    # The resultant value (of a mutated codon) is a random number in the range 0..magnitude.
+    # The resultant value (of a mutated codon) is bit-mutated by self.codon.mutate_bit method.
     # Return the mutated copy of the orig. genotype.
     # track argument is the hint (symbols atteched to positions) obtained from Mapper::Base#track_support 
     #

@@ -27,7 +27,7 @@ class MutationRipple
   end
  
   # Select the random position within the orig vector and mutate it.
-  # The resultant value (of a mutated codon) is a random number in the range 0..magnitude.
+  # The resultant value (of a mutated codon) is bit-mutated by self.codon.mutate_bit method.
   # Return the mutated copy of the orig. genotype.
   def mutation( orig, dummy=nil )
     mutant = orig.clone
