@@ -39,7 +39,6 @@ crossover:
  
 mutation:
   class: MutationNodal
-  magnitude: 16
 
 store:
   class: Store

@@ -109,7 +109,7 @@ class AlgorithmBase
   def init_chromozome hash
     case hash['method']
     when 'random'
-      RandomInit.new( hash['random_magnitude'] ).init( hash['random_length'] )
+      RandomInit.new.init( hash['random_length'] )
     when 'grow'
       @mapper.generate_grow hash['sensible_depth']
     when 'full'

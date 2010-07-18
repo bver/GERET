@@ -45,7 +45,6 @@ crossover:
  
 mutation:
   class: MutationStructural
-  magnitude: 16
 
 store:
   class: Store

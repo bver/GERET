@@ -18,7 +18,6 @@ algorithm:
  
   init:
     method: grow # grow or full or random or ramped
-    random_magnitude: 16 #same as mutation.magnitude
     random_length: 8
     sensible_depth: 6   
 
@@ -51,7 +50,6 @@ crossover:
 
 mutation:
   class: MutationNodal
-  magnitude: 16 
 
 store:
   class: Store

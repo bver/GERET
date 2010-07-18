@@ -32,7 +32,6 @@ crossover:
  
 mutation:
   class: MutationRipple
-  magnitude: 16
 
 store:
   class: Store

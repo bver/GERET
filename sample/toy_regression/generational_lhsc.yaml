@@ -17,13 +17,11 @@ algorithm:
 
   init:
     method: grow # grow or full or random or ramped
-    random_magnitude: 16 #same as mutation.magnitude
     random_length: 8
     sensible_depth: 3   
 
   inject: # alternative to a crossover or copy
     method: full # grow or full or random
-    random_magnitude: 16 #same as mutation.magnitude
     random_length: 8
     sensible_depth: 3   
    
@@ -52,7 +50,6 @@ crossover:
 
 mutation:
   class: MutationRipple
-  magnitude: 16 # same as individual.init_magnitude
 
 store:
   class: Store
