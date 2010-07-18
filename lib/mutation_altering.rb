@@ -10,16 +10,21 @@ module Operator
     def initialize( grammar, magnitude=nil )
       @grammar = grammar
       @random = Kernel
-      @magnitude = magnitude
+      @codon = CodonMod.new # standard 8-bit codons
     end
 
+    # Codon encoding scheme. By default the instance of the CodonMod class is used (ie. standard GE 8-bit codons)
+    # See CodonMod for details.
+    attr_accessor :codon
+    
     # The source of randomness, used for calling "random.rand( limit )", defaulting to 'Kernel' class.
-    attr_accessor :random
+    attr_reader :random
    
-    # The maximal possible value of the mutaton plus 1. If not specified, the maximal value over the original 
-    # genotype values is used.
-    attr_accessor :magnitude
-   
+    # Set the source of randomness (for testing purposes).
+    def random= rnd 
+      @random = rnd
+      @codon.random = rnd
+    end
     
     # Select the random (nodal/structural filtered) position within the orig vector and mutate it.
     # The resultant value (of a mutated codon) is a random number in the range 0..magnitude.
@@ -28,12 +33,11 @@ module Operator
     #
     def mutation( orig, track )
       mutant = orig.clone
-      max = @magnitude.nil? ? mutant.max+1 : @magnitude
       filtered_track = track.find_all { |node| @grammar[ node.symbol ].sn_altering == filter }
       return mutant if filtered_track.empty?
       where = @random.rand( filtered_track.size )
       index = filtered_track[where].from 
-      mutant[ index ] = @random.rand( max )
+      mutant[ index ] = @codon.mutate_bit( mutant.at(index) )
       mutant
     end
    
