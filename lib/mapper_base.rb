@@ -1,6 +1,7 @@
 
 require 'lib/grammar'
 require 'lib/validator'
+require 'lib/codon_mod'
 
 module Mapper
 
@@ -45,6 +46,7 @@ module Mapper
       @wraps_to_fading = wraps_to_fading
       @consume_trivial_codons = consume_trivial_codons 
       @track_support_on = false
+      @codon = CodonMod.new # standard 8-bit codons
     end
   
     # The grammar used.
@@ -164,7 +166,7 @@ module Mapper
       faded_index = read_genome( genome, rule.size )
  
       alt_index = polymorphism( symbol_token.data, faded_index )
-      alt_index = alt_index.divmod( rule.size ).last 
+      alt_index = @codon.interpret( rule.size, alt_index ) 
       alt = rule.at alt_index
       return use_expansion( symbol_token, alt.deep_copy )
     end
@@ -215,7 +217,7 @@ module Mapper
   module LocusGenetic
     protected   
     def pick_locus( selected_indices, genome )
-      index = read_genome( genome, selected_indices.size ).divmod( selected_indices.size ).last    
+      index = @codon.interpret( selected_indices.size, read_genome( genome, selected_indices.size ) )  
       selected_indices[index]     
     end
   end

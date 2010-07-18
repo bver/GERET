@@ -28,8 +28,14 @@ module Mapper
       @random = Kernel
     end
  
+    # Set the source of randomness (for testing purposes).
+    def random= rnd 
+      @random = rnd
+      @codon.random = rnd
+    end
+
     # The source of randomness, used for calling "random.rand( limit )", defaulting to 'Kernel' class.
-    attr_accessor :random 
+    attr_reader :random 
  
     # Generate the genotype using the "full" method:
     # if the depth of the current node is smaller, 
@@ -103,22 +109,15 @@ module Mapper
   module PolyIntrinsic
     protected
     def unmod( index, base, symbol )
-      unless defined? @max_codon_base
-        @max_codon_base = (@grammar.values.max { |rule1,rule2| rule1.size<=>rule2.size } ).size+1
-      end
-      return index if @max_codon_base/base == 0
-      base * @random.rand( @max_codon_base/base ) + index
+      @codon.generate( base, index )
     end
-
-    public
-    attr_accessor :max_codon_base 
   end
 
   module PolyBucket
     protected
     def unmod( index, base, symbol )
       init_bucket unless defined? @bucket
-      index * @bucket[symbol]
+      @codon.generate( base, index * @bucket[symbol] )
     end
   end
  

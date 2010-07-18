@@ -73,7 +73,7 @@ class TC_Random < Test::Unit::TestCase
   def test_unexpected_args
     r = MockRand.new [{3=>2, 2=>0}]
     exception = assert_raise( RuntimeError ) { r.rand(1) } 
-    assert_equal( "MockRand: unexpected argument (1), expected (2, 3)", exception.message )  
+    assert_equal( "MockRand: unexpected argument (1), expected (2, 3) remaining=0", exception.message )  
   end
 
 end
