@@ -110,8 +110,8 @@ class TC_Generators < Test::Unit::TestCase
  
   def test_depth_locus_full
     m = Mapper::DepthLocus.new @grammar
-    r = MockRand.new [{1=>0},{1=>0},0, {3=>1},{2=>1},0, {2=>1},{1=>0},0, {3=>0},{2=>1},0, {2=>1},{2=>1},0, 
-                      {1=>0},{2=>0},0, {1=>0},{1=>0},0, {3=>2},{2=>0},0, {2=>1},{2=>0},0, {1=>0},{2=>0},0]     
+    r = MockRand.new [{1=>0},0,{1=>0},0, {3=>1},0,{2=>1},0, {2=>1},0,{1=>0},0, {3=>0},0,{2=>1},0, {2=>1},0,{2=>1},0, 
+                      {1=>0},0,{2=>0},0, {1=>0},0,{1=>0},0, {3=>2},0,{2=>0},0, {2=>1},0,{2=>0},0, {1=>0},0,{2=>0},0]     
     m.random = r
     gen = [0,2,  1,1,  1,2,  0,1,  1,1,  0,0,  0,2,  2,0,  1,0,  0,0] 
     assert_equal( gen, m.generate_full( 3 ) ) # 2
@@ -129,7 +129,7 @@ class TC_Generators < Test::Unit::TestCase
 
   def test_depth_locus_grow
     m = Mapper::DepthLocus.new @grammar   
-    r = MockRand.new [{1=>0},{3=>2},0, {3=>2},{3=>1},0, {2=>1},{2=>1},0, {1=>0},{3=>0},0]
+    r = MockRand.new [{1=>0},0,{3=>2},0, {3=>2},0,{3=>1},0, {2=>1},0,{2=>1},0, {1=>0},0,{3=>0},0]
     m.random = r   
     gen = [0,2,  2,1,  1,1,  0,0]
     assert_equal( gen, m.generate_grow( 5 ) )
@@ -167,8 +167,8 @@ class TC_Generators < Test::Unit::TestCase
 
   def test_all_locus_grow
     m = Mapper::AllLocus.new @grammar
-    r = MockRand.new [{1=>0},{1=>0},0, {3=>2},{1=>0},0, {5=>3},{2=>0},0, {4=>1},{2=>1},0, {3=>1},{2=>0},0, 
-                      {2=>0},{1=>0},0, {4=>0},{2=>1},0, {3=>0},{2=>0},0, {2=>1},{2=>1},0, {1=>0},{2=>0},0, ]
+    r = MockRand.new [{1=>0},0,{1=>0},0, {3=>2},0,{1=>0},0, {5=>3},0,{2=>0},0, {4=>1},0,{2=>1},0, {3=>1},0,{2=>0},0, 
+                      {2=>0},0,{1=>0},0, {4=>0},0,{2=>1},0, {3=>0},0,{2=>0},0, {2=>1},0,{2=>1},0, {1=>0},0,{2=>0},0 ]
     m.random = r
     gen = [0,2,  2,2,  3,0,  1,1,  1,0,  0,2,  0,1,  0,0,  1,1,  0,0] 
     assert_equal( gen, m.generate_full( 3 ) ) # 2
@@ -213,8 +213,8 @@ class TC_Generators < Test::Unit::TestCase
     m.consume_trivial_codons = false
     assert_equal( false, m.consume_trivial_codons )                             
 
-    r = MockRand.new [       {1=>0},0,  {3=>2},{1=>0},0,  {3=>1},           {2=>0},{2=>1},0,      {2=>0},0, 
-                      {2=>0},{1=>0},0,  {3=>1},           {2=>0},{2=>0},0,         {2=>1},0,              ]     
+    r = MockRand.new [         {1=>0},0,  {3=>2},0,{1=>0},0,  {3=>1},0,           {2=>0},0,{2=>1},0,      {2=>0},0, 
+                      {2=>0},0,{1=>0},0,  {3=>1},0,           {2=>0},0,{2=>0},0,           {2=>1},0,                ]     
          #[0,2,  2,2,  1,0,  0,1,  0,0,  0,2,  1,0,  0,0,  0,1,  0,1]        
     m.random = r
 
@@ -327,6 +327,15 @@ class TC_Generators < Test::Unit::TestCase
  
      exception = assert_raise( RuntimeError ) { m.generate_full( 2 ) }
      assert_equal( "Generator: required_depth<min_depth, please increase sensible_depth", exception.message )
+  end
+
+  def test_codon_interface
+    m = Mapper::DepthBucket.new @grammar
+    assert_equal( 8, m.codon.bit_size )
+    m.codon.bit_size = 5
+    assert_equal( 5, m.codon.bit_size )
+    m.codon = CodonMod.new 7 
+    assert_equal( 7, m.codon.bit_size )
   end
 
 end

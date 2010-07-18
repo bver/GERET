@@ -117,7 +117,7 @@ module Mapper
     protected
     def unmod( index, base, symbol )
       init_bucket unless defined? @bucket
-      @codon.generate( base, index * @bucket[symbol] )
+      @codon.generate( base, index * @bucket[symbol] ) 
     end
   end
  
@@ -133,7 +133,7 @@ module Mapper
     def generate_locus( selected_indices, genome )
       if @consume_trivial_codons or selected_indices.size > 1
         index = @random.rand( selected_indices.size )
-        genome.push index 
+        genome << @codon.generate( selected_indices.size, index )
       else
         index = 0 
       end

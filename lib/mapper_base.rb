@@ -75,6 +75,10 @@ module Mapper
     #
     attr_reader :complexity
     
+    # Codon encoding scheme. By default the instance of the CodonMod class is used (ie. standard GE 8-bit codons)
+    # See CodonMod for details.
+    attr_accessor :codon
+
     # Take the genome (the vector of Fixnums) and use it for the genotype->phenotype mapping.
     # Returns the phenotype string (or nil if the mapping process fails).
     def phenotype genome
