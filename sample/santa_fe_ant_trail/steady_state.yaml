@@ -17,13 +17,13 @@ algorithm:
     method: ramped # grow or full or random or ramped
     random_magnitude: 16 #same as mutation.magnitude
     random_length: 8
-    sensible_depth: 5   
+    sensible_depth: 7   
 
   inject: # alternative to a crossover or copy
     method: grow # grow or full or random
     random_magnitude: 16 #same as mutation.magnitude
     random_length: 8
-    sensible_depth: 5   
+    sensible_depth: 7   
    
 grammar:
   class: Abnf::File
