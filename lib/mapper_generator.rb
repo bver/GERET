@@ -82,7 +82,7 @@ module Mapper
       rule = pick_expansions( symbol_token, genome )
       allowed = filter_expansions_by_depth( rule, allowed_depth )
       alts = allowed.find_all { |alt| recurs.include? alt.recursivity }
-      alts = allowed if alts.empty? # deep grammars, cannot prefere recurs
+      alts = allowed if alts.empty? # deep grammars, cannot prefer recurs
       if @consume_trivial_codons or rule.size > 1
         alt = alts.at @random.rand( alts.size )
         genome.push unmod( rule.index(alt), rule.size, symbol_token.data )
@@ -104,7 +104,7 @@ module Mapper
     protected
     def unmod( index, base, symbol )
       unless defined? @max_codon_base
-        @max_codon_base = (@grammar.max { |rule1,rule2| rule1.size<=>rule2.size } ).size+1
+        @max_codon_base = (@grammar.values.max { |rule1,rule2| rule1.size<=>rule2.size } ).size+1
       end
       return index if @max_codon_base/base == 0
       base * @random.rand( @max_codon_base/base ) + index
