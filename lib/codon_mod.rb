@@ -18,6 +18,8 @@ module Mapper
     end
 
     def generate( numof_choices, index )
+      raise "CodonMod: cannot accomodate #{numof_choices} choices in #{@bit_size}-bit codon" if numof_choices > @card
+      raise "CodonMod: index (#{index}) must be lower than numof choices (#{numof_choices})" if index >= numof_choices
       return index if numof_choices == 0
       index + numof_choices * @random.rand( @card/numof_choices )
     end

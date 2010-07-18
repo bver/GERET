@@ -18,7 +18,6 @@ class TC_CodonMod < Test::Unit::TestCase
 
     assert_equal( 5, c.generate( 3, 2 ) )
     assert_equal( 8, c.generate( 3, 2 ) )   
-    assert_equal( 2, c.generate( 0, 2 ) ) # do not call @random.rand
     assert_equal( 254, c.generate( 3, 2 ) )   
   end
 
@@ -40,6 +39,17 @@ class TC_CodonMod < Test::Unit::TestCase
     assert_equal( 29, c.generate( 3, 2 ) )
 
     assert_equal( 13, c.generate( 28, 13 ) )   
+  end
+
+  def test_exceedings
+    c = Mapper::CodonMod.new
+    assert_equal( 8, c.bit_size ) #default
+
+    exception = assert_raise( RuntimeError ) { c.generate( 300, 2 ) }
+    assert_equal( "CodonMod: cannot accomodate 300 choices in 8-bit codon", exception.message )
+
+    exception = assert_raise( RuntimeError ) { c.generate( 3, 5 ) }
+    assert_equal( "CodonMod: index (5) must be lower than numof choices (3)", exception.message )
   end
 
   def test_mutate

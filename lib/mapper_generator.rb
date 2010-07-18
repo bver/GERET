@@ -117,7 +117,7 @@ module Mapper
     protected
     def unmod( index, base, symbol )
       init_bucket unless defined? @bucket
-      @codon.generate( base, index * @bucket[symbol] ) 
+      @codon.generate( base, index ) * @bucket[symbol] 
     end
   end
  
