@@ -58,5 +58,14 @@ class TC_CodonMod < Test::Unit::TestCase
     assert_equal( 7, c.mutate_bit( 5 ) )
   end
 
+  def test_generate_no_args
+    c = Mapper::CodonMod.new   
+    c.random = MockRand.new [ {256=>3}, {256=>103}, {256=>42} ]   
+
+    assert_equal( 3, c.rand_gen )      
+    assert_equal( 103, c.rand_gen )         
+    assert_equal( 42, c.rand_gen )         
+  end
+
 end
 

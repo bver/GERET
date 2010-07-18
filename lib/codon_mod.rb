@@ -24,6 +24,10 @@ module Mapper
       index + numof_choices * @random.rand( @card/numof_choices )
     end
 
+    def rand_gen
+      @random.rand @card
+    end
+
     def mutate_bit codon
       codon ^ (2 ** @random.rand( @bit_size ))
     end

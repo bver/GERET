@@ -9,21 +9,17 @@ include Operator
 class TC_RandomInit < Test::Unit::TestCase
 
   def test_basic
-    init = RandomInit.new 10
-    assert_equal( [10], init.magnitude )
+    init = RandomInit.new
+    assert_equal( 8, init.codon.bit_size )
 
-    init.random =  MockRand.new [{10=>3}, {10=>0}, {10=>8}, {10=>5}]
-    gen = init.init 4
-    assert_equal( [3, 0, 8, 5], gen )
-  end
+    init.random =  MockRand.new [{256=>3}, {256=>0}, {256=>8}, {256=>5}]
+    assert_equal( [3, 0, 8, 5], init.init(4) )
 
-  def test_triplets
-    init = RandomInit.new [10, 2, 1000]
-    assert_equal( [10, 2, 1000], init.magnitude )
+    init.codon = CodonMod.new 3
+    assert_equal( 3, init.codon.bit_size )
 
-    init.random =  MockRand.new [{10=>8}, {2=>0}, {1000=>892}, {10=>5}, {2=>1}, {1000=>403}, ]
-    gen = init.init 7 # cropped to 6
-    assert_equal( [8, 0, 892,  5, 1, 403], gen )
+    init.random =  MockRand.new [{8=>3}, {8=>0}, {8=>7}, {8=>5}]
+    assert_equal( [3, 0, 7, 5], init.init(4) )
   end
 
 end
