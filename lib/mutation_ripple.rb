@@ -4,7 +4,7 @@ require 'lib/codon_mod'
 module Operator
 
 # Simple bit-level mutation. It assumes the source genotype has the form of the Array of codons
-# with interpretation given by CodonMod.
+# with an interpretation given by CodonMod (see).
 #
 class MutationBitRipple
 
