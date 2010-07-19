@@ -29,6 +29,15 @@ class AlgorithmBase
    
     @evaluator = @cfg.factory('evaluator') unless @cfg['evaluator'].nil? 
 
+    unless @cfg['representation'].nil?
+      codon = @cfg.factory('representation')
+      codon.grammar = @grammar if codon.respond_to? :grammar=
+
+      @mapper.codon = codon if @mapper.respond_to? :codon= 
+      @crossover.codon = codon if @crossover.respond_to? :codon=        
+      @mutation.codon = codon if @mutation.respond_to? :codon= 
+    end
+
     @time_total = 0
     @time_eval = 0 
     @time_now = Time.now
