@@ -16,7 +16,10 @@ module Operator
       mutant[ index ] = get_codon_value( mutant, index )
       mutant
     end
- 
+
+    # Offset which is added to the index of the mutated codon's position.
+    # This is useful for Mapper::*Locus mappers where the odd codons encode a location choices and 
+    # even codons encode rule choices.
     attr_accessor :offset
   end
 
@@ -25,7 +28,7 @@ module Operator
   # Select the random (nodal/structural filtered) position within the orig vector and mutate it.
   # The resultant value (of a mutated codon) is bit-mutated by self.codon.mutate_bit method.
   # Return the mutated copy of the orig. genotype.
-  # track argument is the hint (symbols atteched to positions) obtained from Mapper::Base#track_support 
+  # track argument is the hint (symbols attached to positions) obtained from Mapper::Base#track_support 
   #
   class MutationBitAltering
 
