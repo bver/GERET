@@ -28,6 +28,7 @@ module Operator
     # This is useful for Mapper::*Locus mappers where the odd codons encode a location choices and 
     # even codons encode rule choices.
     attr_accessor :offset
+
   end
 
   # Common functionality for MutationBitNodal and MutationBitStructural classes. 
