@@ -5,10 +5,12 @@ require 'lib/abnf_tokenizer'
 module Abnf
 
 # This subclass of Mapper::Grammar parses the ABNF syntax loaded from the file.
-class File < Mapper::Grammar
+class FileLoader < Mapper::Grammar
 
   # Load the file when creating the instance. If the optional fname argument is ommited, 
   # do nothing.
+  # This class does not validate grammar (see Validator.analyze_all). If you want your grammer validated,
+  # use the subclass Abnf::File.
   def initialize fname=nil
     grammar = load fname
     super( grammar, grammar.start_symbol )
@@ -34,6 +36,17 @@ class File < Mapper::Grammar
     input = IO.read( fname )
     stream = Abnf::Tokenizer.new.tokenize( input )
     return Abnf::Parser.new.parse( stream )
+  end
+
+end
+
+# This helper class parses the ABNF syntax loaded from the file and performs Validator.analyze_all. 
+class File < FileLoader
+
+  protected
+
+  def load fname
+    Validator.analyze_all super(fname)
   end
 
 end

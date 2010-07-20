@@ -11,7 +11,7 @@ end
 
 abort "use:\n #$0 some.abnf\n" unless ARGV.size==1
 
-g = Abnf::File.new ARGV[0]  
+g = Abnf::FileLoader.new ARGV[0]  
 puts "start symbol: <#{g.start_symbol}>"
 undefined = Mapper::Validator.check_undefined g
 puts "undefined symbols: " + format_syms( undefined )

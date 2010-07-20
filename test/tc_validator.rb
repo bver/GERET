@@ -157,10 +157,11 @@ class TC_Validator < Test::Unit::TestCase
   end
 
   def test_trivial_infinite
-    gram = Validator.analyze_recursivity @grammar1
-
+    gram = @grammar1.deep_copy
     assert( gram.object_id != @grammar1.object_id ) #different instances, deep copy
 
+    Validator.analyze_recursivity gram
+   
     assert_equal( :infinite, gram['expr'].recursivity )
     assert_equal( :infinite, gram['op'].recursivity )
     assert_equal( :infinite, gram['expr'].first.recursivity )
@@ -490,6 +491,43 @@ class TC_Validator < Test::Unit::TestCase
   def test_analyze_min_depth_over_undefined
     exception = assert_raise( RuntimeError ) { Validator.analyze_min_depth @grammar2 }
     assert_equal( "Validator: cannot analyze_min_depth of undefined symbols", exception.message )
+  end
+
+  def test_analyze_all
+   
+    grammar = Mapper::Grammar.new( { 
+      'expr' => Mapper::Rule.new( [ 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'x' ) ] ),
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'y' ) ] ),
+                  Mapper::RuleAlt.new( [ 
+                    Mapper::Token.new( :literal, '(' ), 
+                    Mapper::Token.new( :symbol, 'expr' ),
+                    Mapper::Token.new( :literal, ' ' ),                   
+                    Mapper::Token.new( :symbol, 'aop' ),                  
+                    Mapper::Token.new( :symbol, 'expr' ),                   
+                    Mapper::Token.new( :literal, ')' ) 
+                  ] )
+                ] ),
+
+       'aop'  => Mapper::Rule.new( [ 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '+' ) ] ),
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '*' ) ] )
+                ] )
+    }, 'expr' )
+
+    assert_equal( nil, grammar['expr'].recursivity )   
+    assert_equal( nil, grammar['aop'].sn_altering )   
+    assert_equal( nil, grammar['expr'].last.arity )   
+    assert_equal( nil, grammar['expr'].min_depth )   
+  
+    g2 = Validator.analyze_all grammar
+    assert_equal( grammar, g2 )
+
+    assert_equal( :cyclic, grammar['expr'].recursivity )   
+    assert_equal( :nodal, grammar['aop'].sn_altering )      
+    assert_equal( 3, grammar['expr'].last.arity )      
+    assert_equal( 2, grammar['expr'].min_depth )  
+
   end
  
 end

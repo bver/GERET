@@ -39,7 +39,8 @@ module Mapper
     # The number of used codons cannot be asumed even because of skipped codons. See Mapper::DepthBucket.
     # 
     def initialize( grammar, wraps_to_fail=1, wraps_to_fading=nil, consume_trivial_codons=true )
-      @grammar = Validator.analyze_recursivity grammar 
+      @grammar = grammar
+      Validator.analyze_recursivity @grammar 
       Validator.analyze_sn_altering @grammar     
       Validator.analyze_arity @grammar
       @wraps_to_fail = wraps_to_fail

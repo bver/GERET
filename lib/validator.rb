@@ -8,6 +8,15 @@ module Mapper
   # 
   class Validator
 
+    # Perform all analyses needed
+    def Validator.analyze_all grammar 
+      Validator.analyze_recursivity grammar 
+      Validator.analyze_sn_altering grammar 
+      Validator.analyze_arity  grammar 
+      Validator.analyze_min_depth grammar 
+      grammar
+    end
+
     # Check the left hand sides of all rules for the presence of unused symbols.
     # (The symbol is used (referenced) if there is at least one rule using it on 
     # it's right hand side.)
@@ -65,8 +74,7 @@ module Mapper
     #   
     # Note: The termination of mapping with :cyclic grammars is guaranteed by external means (Mapper::Base#wraps_to_fail, Mapper::Base#wraps_to_fading)
     # 
-    def Validator.analyze_recursivity grammar                      
-      gram = grammar.deep_copy
+    def Validator.analyze_recursivity gram                      
       raise 'Validator: cannot analyze_recursivity of undefined symbols' unless Validator.check_undefined( gram ).empty?     
 
       gram.each_value do |rule|

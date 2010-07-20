@@ -47,5 +47,23 @@ class TC_AbnfFile < Test::Unit::TestCase
     assert_equal( nil, grammar_file.start_symbol )
   end
 
+  def test_validating_abnf_file
+
+    grammar = Abnf::FileLoader.new 'test/data/simple_file.abnf' 
+
+    assert_equal( nil, grammar['expr'].recursivity )   
+    assert_equal( nil, grammar['op'].sn_altering )   
+    assert_equal( nil, grammar['expr'].last.arity )   
+    assert_equal( nil, grammar['expr'].min_depth )   
+
+    grammar_analyzed = Abnf::File.new 'test/data/simple_file.abnf'    
+  
+    assert_equal( :cyclic, grammar_analyzed['expr'].recursivity )   
+    assert_equal( :nodal, grammar_analyzed['op'].sn_altering )      
+    assert_equal( 3, grammar_analyzed['expr'].last.arity )      
+    assert_equal( 2, grammar_analyzed['expr'].min_depth )  
+   
+  end
+
 end
 
