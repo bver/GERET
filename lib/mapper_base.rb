@@ -1,6 +1,5 @@
 
 require 'lib/grammar'
-require 'lib/validator'
 require 'lib/codon_mod'
 
 module Mapper
@@ -40,9 +39,6 @@ module Mapper
     # 
     def initialize( grammar, wraps_to_fail=1, wraps_to_fading=nil, consume_trivial_codons=true )
       @grammar = grammar
-      Validator.analyze_recursivity @grammar 
-      Validator.analyze_sn_altering @grammar     
-      Validator.analyze_arity @grammar
       @wraps_to_fail = wraps_to_fail
       @wraps_to_fading = wraps_to_fading
       @consume_trivial_codons = consume_trivial_codons 

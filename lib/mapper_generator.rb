@@ -24,7 +24,6 @@ module Mapper
     # Initialize the generator with the arguments necessary for Mapper::Base#initialize
     def initialize *args
       super
-      Validator.analyze_min_depth @grammar
       @random = Kernel
     end
  

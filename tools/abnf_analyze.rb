@@ -1,7 +1,6 @@
 #!/usr/bin/ruby
 
 require 'lib/abnf_file'
-require 'lib/validator'
 
 def format_syms symbols
   symbols.map{|s| "<#{s}>"}.join(', ')

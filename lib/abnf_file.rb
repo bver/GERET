@@ -1,6 +1,7 @@
 
 require 'lib/abnf_parser'
 require 'lib/abnf_tokenizer'
+require 'lib/validator'
 
 module Abnf
 

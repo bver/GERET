@@ -3,6 +3,8 @@
 require 'test/unit'
 require 'test/mock_rand'
 require 'lib/mapper'
+require 'lib/validator'
+require 'lib/codon_mod'
 
 class TC_Generators < Test::Unit::TestCase
 
@@ -25,6 +27,8 @@ class TC_Generators < Test::Unit::TestCase
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '*' ) ] )
                 ] )
     }, 'expr' )
+   
+    Mapper::Validator.analyze_all @grammar
 
   end
 
@@ -45,6 +49,8 @@ class TC_Generators < Test::Unit::TestCase
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '*' ) ] )
                 ] )
     }, 'expr' )
+
+    Mapper::Validator.analyze_all grammar 
 
     m = Mapper::BreadthFirst.new grammar
     assert_equal( :terminating, m.grammar[m.grammar.start_symbol].recursivity )
@@ -71,6 +77,8 @@ class TC_Generators < Test::Unit::TestCase
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :symbol, 'op' ) ] ),
                 ] )
     }, 'expr' )
+    
+    Mapper::Validator.analyze_all grammar
 
     m = Mapper::BreadthFirst.new grammar
     assert_equal( :infinite, m.grammar['op'].recursivity )
@@ -193,6 +201,8 @@ class TC_Generators < Test::Unit::TestCase
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '+' ) ] ), #trivial rule
                 ] )
     }, 'expr' )
+
+    Mapper::Validator.analyze_all grammar 
  
     m = Mapper::BreadthFirst.new grammar
     assert_equal( true, m.consume_trivial_codons )   
@@ -242,6 +252,8 @@ class TC_Generators < Test::Unit::TestCase
               ] ),
     }, 'node1' )
 
+    Mapper::Validator.analyze_all grammar
+             
     m = Mapper::DepthFirst.new grammar 
     assert_equal( 4, m.grammar.symbols.size )
     cyclic = m.grammar.symbols.find_all {|s| m.grammar[s].recursivity == :cyclic }
@@ -256,65 +268,67 @@ class TC_Generators < Test::Unit::TestCase
   end
 
   def test_insufficient_min_depth
-    grammar = Grammar.new( { 
-      'start' => Rule.new( [ # min_depth=4
-                   RuleAlt.new( [ # min_depth=3 
-                     Token.new( :literal, 'one' ),
-                     Token.new( :symbol, 'potential' ), 
-                     Token.new( :literal, 'two' ),                   
+    grammar = Mapper::Grammar.new( { 
+      'start' => Mapper::Rule.new( [ # min_depth=4
+                   Mapper::RuleAlt.new( [ # min_depth=3 
+                     Mapper::Token.new( :literal, 'one' ),
+                     Mapper::Token.new( :symbol, 'potential' ), 
+                     Mapper::Token.new( :literal, 'two' ),                   
                    ] ),
-                   RuleAlt.new( [ # min_depth=6 
-                     Token.new( :symbol, 'loop1' ), 
-                     Token.new( :literal, 'three' ),                   
+                   Mapper::RuleAlt.new( [ # min_depth=6 
+                     Mapper::Token.new( :symbol, 'loop1' ), 
+                     Mapper::Token.new( :literal, 'three' ),                   
                    ] ),
                  ] ),
-      'potential' => Rule.new( [ # min_depth=3 
-                   RuleAlt.new( [ # min_depth=2 
-                     Token.new( :literal, 'one' ),
-                     Token.new( :symbol, 'term1' ), 
+      'potential' => Mapper::Rule.new( [ # min_depth=3 
+                   Mapper::RuleAlt.new( [ # min_depth=2 
+                     Mapper::Token.new( :literal, 'one' ),
+                     Mapper::Token.new( :symbol, 'term1' ), 
                    ] ),
-                   RuleAlt.new( [ # min_depth=2 
-                     Token.new( :symbol, 'term2' ), 
-                     Token.new( :symbol, 'term1' ),                   
-                   ] ),
-                 ] ),                
-      'term1' => Rule.new( [  # min_depth=2 
-                   RuleAlt.new( [ # min_depth=1 
-                     Token.new( :literal, 'T1' ),
+                   Mapper::RuleAlt.new( [ # min_depth=2 
+                     Mapper::Token.new( :symbol, 'term2' ), 
+                     Mapper::Token.new( :symbol, 'term1' ),                   
                    ] ),
                  ] ),                
-      'term2' => Rule.new( [ # min_depth=2 
-                   RuleAlt.new( [ # min_depth=1 
-                     Token.new( :literal, 'T2A' ),
-                   ] ),
-                   RuleAlt.new( [ # min_depth=1 
-                     Token.new( :literal, 'T2B' ),
+      'term1' => Mapper::Rule.new( [  # min_depth=2 
+                   Mapper::RuleAlt.new( [ # min_depth=1 
+                     Mapper::Token.new( :literal, 'T1' ),
                    ] ),
                  ] ),                
-      'loop1' => Rule.new( [ # min_depth=6
-                   RuleAlt.new( [ # min_depth=5 
-                     Token.new( :symbol, 'loop3' ), 
-                     Token.new( :symbol, 'loop2' ),                   
+      'term2' => Mapper::Rule.new( [ # min_depth=2 
+                   Mapper::RuleAlt.new( [ # min_depth=1 
+                     Mapper::Token.new( :literal, 'T2A' ),
+                   ] ),
+                   Mapper::RuleAlt.new( [ # min_depth=1 
+                     Mapper::Token.new( :literal, 'T2B' ),
                    ] ),
                  ] ),                
-      'loop2' => Rule.new( [ # min_depth=5 
-                   RuleAlt.new( [ # min_depth=4 
-                     Token.new( :symbol, 'loop3' ), 
-                   ] ),
-                   RuleAlt.new( [ # min_depth=6 
-                     Token.new( :symbol, 'loop1' ),                   
+      'loop1' => Mapper::Rule.new( [ # min_depth=6
+                   Mapper::RuleAlt.new( [ # min_depth=5 
+                     Mapper::Token.new( :symbol, 'loop3' ), 
+                     Mapper::Token.new( :symbol, 'loop2' ),                   
                    ] ),
                  ] ),                
-      'loop3' => Rule.new( [ # min_depth=4 
-                   RuleAlt.new( [ # min_depth=3 
-                     Token.new( :symbol, 'potential' ), 
+      'loop2' => Mapper::Rule.new( [ # min_depth=5 
+                   Mapper::RuleAlt.new( [ # min_depth=4 
+                     Mapper::Token.new( :symbol, 'loop3' ), 
                    ] ),
-                   RuleAlt.new( [ # min_depth=6 
-                     Token.new( :symbol, 'loop1' ), 
+                   Mapper::RuleAlt.new( [ # min_depth=6 
+                     Mapper::Token.new( :symbol, 'loop1' ),                   
+                   ] ),
+                 ] ),                
+      'loop3' => Mapper::Rule.new( [ # min_depth=4 
+                   Mapper::RuleAlt.new( [ # min_depth=3 
+                     Mapper::Token.new( :symbol, 'potential' ), 
+                   ] ),
+                   Mapper::RuleAlt.new( [ # min_depth=6 
+                     Mapper::Token.new( :symbol, 'loop1' ), 
                    ] ),
                  ] ),                
      }, 'start' )
-   
+
+     Mapper::Validator.analyze_all grammar 
+
      m = Mapper::DepthFirst.new grammar 
 
      r = MockRand.new []
@@ -334,7 +348,7 @@ class TC_Generators < Test::Unit::TestCase
     assert_equal( 8, m.codon.bit_size )
     m.codon.bit_size = 5
     assert_equal( 5, m.codon.bit_size )
-    m.codon = CodonMod.new 7 
+    m.codon = Mapper::CodonMod.new 7 
     assert_equal( 7, m.codon.bit_size )
   end
 

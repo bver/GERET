@@ -2,6 +2,8 @@
 
 require 'test/unit'
 require 'lib/mapper'
+require 'lib/validator'
+
 
 class TC_Mappers < Test::Unit::TestCase
 
@@ -26,6 +28,7 @@ class TC_Mappers < Test::Unit::TestCase
                 ] )
     }, 'expr' )
 
+    Mapper::Validator.analyze_all @grammar
   end
 
   def test_depth_first
@@ -199,7 +202,7 @@ class TC_Mappers < Test::Unit::TestCase
   end
 
   def test_fading_non_trivial
-    grammar = Mapper::Grammar.new( { 
+    grammar = Mapper::Validator.analyze_all( Mapper::Grammar.new( { 
       'expr' => Mapper::Rule.new( [ 
                   Mapper::RuleAlt.new( [ 
                     Mapper::Token.new( :literal, '(' ), 
@@ -219,8 +222,7 @@ class TC_Mappers < Test::Unit::TestCase
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '+' ) ] ),
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '*' ) ] )
                 ] )
-    }, 'expr' )
-
+    }, 'expr' ))
 
     m = Mapper::BreadthFirst.new grammar
 
@@ -248,7 +250,7 @@ class TC_Mappers < Test::Unit::TestCase
   end
  
   def test_locus_eating
-    grammar = Mapper::Grammar.new( { 
+    grammar = Mapper::Validator.analyze_all( Mapper::Grammar.new( { 
       'expr' => Mapper::Rule.new( [ 
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'x' ) ] ),
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'y' ) ] ),
@@ -265,7 +267,7 @@ class TC_Mappers < Test::Unit::TestCase
        'op'  => Mapper::Rule.new( [ 
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '+' ) ] ), #trivial rule
                 ] )
-    }, 'expr' )
+    }, 'expr' ))
  
     m = Mapper::DepthLocus.new grammar
     m.consume_trivial_codons = false
