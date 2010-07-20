@@ -12,11 +12,12 @@ module Operator
       filtered_track = track.find_all { |node| @grammar[ node.symbol ].sn_altering == filter }
       return mutant if filtered_track.empty?
       where = @random.rand( filtered_track.size )
-      index = filtered_track[where].from 
+      index = ( filtered_track[where].from + @offset ).divmod( mutant.size ).last
       mutant[ index ] = get_codon_value( mutant, index )
       mutant
     end
  
+    attr_accessor :offset
   end
 
   # Common functionality for MutationBitNodal and MutationBitStructural classes. 
@@ -35,6 +36,7 @@ module Operator
     def initialize( grammar )
       @grammar = grammar
       @random = Kernel
+      @offset = 0
       @codon = CodonMod.new # standard 8-bit codons
     end
 
@@ -100,6 +102,7 @@ module Operator
     def initialize( grammar, magnitude=nil )
       @grammar = grammar
       @random = Kernel
+      @offset = 0     
       @magnitude = magnitude
     end
 

@@ -204,6 +204,81 @@ class TC_MutationAltering < Test::Unit::TestCase
    
   end
 
+  def test_wrapping_bugfix
+  
+    m = MutationBitNodal.new @grammar1
+    m.random = MockRand.new [{5=>4}, {8=>0}]
+    parent = [2, 4] 
+    mutant = m.mutation( parent, @track1 )
+    assert_equal( [3, 4], mutant ) # 6 mod 2 = 0
+
+    m = MutationBitStructural.new @grammar1
+    m.random = MockRand.new [{2=>1}, {8=>0}]
+    parent = [2, 4] 
+    mutant = m.mutation( parent, @track1 )
+    assert_equal( [2, 5], mutant ) # 5 mod 2 = 1
+
+    m = MutationNodal.new( @grammar1, 100 )
+    m.random = MockRand.new [{5=>4}, {100=>42}]
+    parent = [2, 4] 
+    mutant = m.mutation( parent, @track1 )
+    assert_equal( [42, 4], mutant ) # 6 mod 2 = 0
+
+    m = MutationStructural.new( @grammar1, 100 )
+    m.random = MockRand.new [{2=>1}, {100=>58}]
+    parent = [2, 4] 
+    mutant = m.mutation( parent, @track1 )
+    assert_equal( [2, 58], mutant ) # 5 mod 2 = 1
+
+  end
+
+  def test_bit_offset
+    m = MutationBitNodal.new @grammar1
+    assert_equal( 0, m.offset )
+    m.offset = 1
+    assert_equal( 1, m.offset )   
+
+    m.random = MockRand.new [{5=>3}, {8=>0}]
+    mutant = m.mutation( @parent1, @track1 )
+
+    assert_equal( [2, 2, 0, 0, 1, 0, 0], mutant )
+    assert_equal( [2, 2, 0, 0, 1, 1, 0], @parent1 ) 
+
+    m = MutationBitStructural.new @grammar1
+    assert_equal( 0, m.offset )
+    m.offset = 3
+    assert_equal( 3, m.offset )   
  
+    m.random = MockRand.new [{2=>1}, {8=>1}]
+    mutant = m.mutation( @parent1, @track1 )
+
+    assert_equal( [2, 0, 0, 0, 1, 1, 0], mutant )
+    assert_equal( [2, 2, 0, 0, 1, 1, 0], @parent1 ) 
+  end
+
+  def test_magnitude_offset
+    m = MutationNodal.new @grammar1
+    assert_equal( 0, m.offset )
+    m.offset = 2
+    assert_equal( 2, m.offset )   
+  
+    m.random = MockRand.new [{5=>3}, {3=>2}]
+    mutant = m.mutation( @parent1, @track1 )
+
+    assert_equal( [2, 2, 0, 0, 1, 1, 2], mutant )
+    assert_equal( [2, 2, 0, 0, 1, 1, 0], @parent1 ) 
+
+    m = MutationStructural.new @grammar1
+    assert_equal( 0, m.offset )
+    m.offset = 5
+    assert_equal( 5, m.offset )   
+  
+    m.random = MockRand.new [{2=>1}, {3=>2}]
+    mutant = m.mutation( @parent1, @track1 )
+
+    assert_equal( [2, 2, 0, 2, 1, 1, 0], mutant )
+    assert_equal( [2, 2, 0, 0, 1, 1, 0], @parent1 ) 
+  end
+  
 end
 
