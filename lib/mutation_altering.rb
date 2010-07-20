@@ -4,9 +4,16 @@ module Operator
   # Common functionality for MutationBitNodal, MutationBitStructural, MutationNodal and 
   # MutationStructural classes.  
   #
-  module MutationAlteringCore
+  class MutationAlteringCore
 
-    # See a class description.
+    # See a subclass description.
+    def initialize( grammar )
+      @grammar = grammar
+      @random = Kernel
+      @offset = 0
+    end
+   
+    # See a subclass description.
     def mutation( orig, track )
       mutant = orig.clone
       filtered_track = track.find_all { |node| @grammar[ node.symbol ].sn_altering == filter }
@@ -30,16 +37,12 @@ module Operator
   # Return the mutated copy of the orig. genotype.
   # track argument is the hint (symbols attached to positions) obtained from Mapper::Base#track_support 
   #
-  class MutationBitAltering
-
-    include MutationAlteringCore 
+  class MutationBitAltering < MutationAlteringCore 
 
     # Create the mutation operator.
     # grammar is the valid grammar for distinguishing :structural and :nodal symbols
     def initialize( grammar )
-      @grammar = grammar
-      @random = Kernel
-      @offset = 0
+      super
       @codon = CodonMod.new # standard 8-bit codons
     end
 
@@ -95,17 +98,13 @@ module Operator
   # Return the mutated copy of the orig. genotype.
   # track argument is the hint (symbols atteched to positions) obtained from Mapper::Base#track_support 
   #
-  class MutationAltering
-
-    include MutationAlteringCore 
+  class MutationAltering < MutationAlteringCore 
 
     # Create the mutation operator.
     # grammar is the valid grammar for distinguishing :structural and :nodal symbols
     # magnitude is the initial value of the MutationAltering#magnitude attribute
     def initialize( grammar, magnitude=nil )
-      @grammar = grammar
-      @random = Kernel
-      @offset = 0     
+      super(grammar)
       @magnitude = magnitude
     end
 
