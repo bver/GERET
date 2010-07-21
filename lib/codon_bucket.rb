@@ -40,6 +40,11 @@ module Mapper
       codon ^ (2 ** @random.rand( @bit_size + @max_closure.to_s(2).size-1 ))
     end
    
+    def rand_gen
+      return super if @bucket.nil?     
+      @random.rand( @card * @max_closure )
+    end
+   
     def valid_codon? codon
       return super if @bucket.nil?
       codon >= 0 and codon < @card*@max_closure

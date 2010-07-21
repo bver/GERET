@@ -99,7 +99,7 @@ class TC_CodonBucket < Test::Unit::TestCase
   def test_mutate
     c = Mapper::CodonBucket.new   
     c.random = MockRand.new [ {8=>1} ]   
-    assert_equal( 7, c.mutate_bit( 5 ) )
+    assert_equal( 7, c.mutate_bit( 5 ) ) # falling back to superclass
 
     c.grammar = @grammar
     assert_equal( 12, c.max_closure )   
@@ -108,6 +108,23 @@ class TC_CodonBucket < Test::Unit::TestCase
     assert_equal( 1029, c.mutate_bit( 5 ) )   # 00000000101 -> 10000000101
   end
 
- 
+  def test_random_generate
+    c = Mapper::CodonBucket.new   
+    c.random = MockRand.new [ {256=>3}, {256=>103}, {256=>42} ]   
+
+    # falling back to superclass
+    assert_equal( 3, c.rand_gen )      
+    assert_equal( 103, c.rand_gen )         
+    assert_equal( 42, c.rand_gen )         
+
+    c.grammar = @grammar
+    assert_equal( 12, c.max_closure )  
+
+    c.random = MockRand.new [ {256*12=>354}, {256*12=>1030}, {256*12=>3072} ]   
+    assert_equal( 354, c.rand_gen )      
+    assert_equal( 1030, c.rand_gen )         
+    assert_equal( 3072, c.rand_gen )         
+  end
+
 end
 
