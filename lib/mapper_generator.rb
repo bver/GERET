@@ -90,7 +90,8 @@ module Mapper
       alts = allowed if alts.empty? # deep grammars, cannot prefer recurs
       if @consume_trivial_codons or rule.size > 1
         alt = alts.at @random.rand( alts.size )
-        genome.push unmod( rule.index(alt), rule.size, symbol_token.data )
+        genome.push unmod( rule.index(alt), rule.size, symbol_token.data ) #todo: change to:
+        # genome << @codon.generate( rule.size, rule.index(alt), symbol_token.data )
       else
         alt = rule.first 
       end
@@ -105,18 +106,18 @@ module Mapper
 
   end # Generator
   
-  module PolyIntrinsic
+  module PolyIntrinsic #todo: remove 
     protected
-    def unmod( index, base, symbol )
-      @codon.generate( base, index )
+    def unmod( index, base, symbol ) # -> @codon.generate
+      @codon.generate( base, index, symbol )
     end
   end
 
-  module PolyBucket
+  module PolyBucket #todo: remove
     protected
-    def unmod( index, base, symbol )
+    def unmod( index, base, symbol )  # -> @codon.generate
       init_bucket unless defined? @bucket
-      @codon.generate( base, index ) * @bucket[symbol] 
+      @codon.generate( base, index, symbol ) * @bucket[symbol] 
     end
   end
  

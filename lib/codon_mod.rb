@@ -21,7 +21,7 @@ module Mapper
     end
 
     # Interpret the codon given a number of choices ( c mod n )
-    def interpret( numof_choices, codon )
+    def interpret( numof_choices, codon, dummy=nil )
       raise "CodonMod: codon 256 out of range 0..255" unless valid_codon? codon
       codon.divmod(numof_choices).last
     end
@@ -37,7 +37,7 @@ module Mapper
     # http://www-dept.cs.ucl.ac.uk/staff/W.Langdon/ftp/papers/azad_thesis.ps.gz 
     # Chapter 7 Sensible Initialisation, page 132, 'unmod' operation.
     #
-    def generate( numof_choices, index )
+    def generate( numof_choices, index, symbol=nil )
       raise "CodonMod: cannot accomodate #{numof_choices} choices in #{@bit_size}-bit codon" if numof_choices > @card
       raise "CodonMod: index (#{index}) must be lower than numof choices (#{numof_choices})" if index >= numof_choices
       return index if numof_choices == 0

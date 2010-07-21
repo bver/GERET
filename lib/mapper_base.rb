@@ -166,8 +166,8 @@ module Mapper
 
       faded_index = read_genome( genome, rule.size )
  
-      alt_index = polymorphism( symbol_token.data, faded_index )
-      alt_index = @codon.interpret( rule.size, alt_index ) 
+      alt_index = polymorphism( symbol_token.data, faded_index ) # TODO: remove this line
+      alt_index = @codon.interpret( rule.size, alt_index, symbol_token.data ) 
       alt = rule.at alt_index
       return use_expansion( symbol_token, alt.deep_copy )
     end
