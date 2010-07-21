@@ -18,7 +18,7 @@ module Mapper
   class DepthFirst < Generator
     include LocusFirst
     include ExtendAll #behavior same as ExtendDepth, but simpler
-    include PolyIntrinsic 
+#    include PolyIntrinsic 
   end
 
   # Mapper class employing the breath-first node expansion strategy:
@@ -32,7 +32,7 @@ module Mapper
   class BreadthFirst < Generator
     include LocusFirst
     include ExtendBreadth
-    include PolyIntrinsic 
+#    include PolyIntrinsic 
   end
 
 ###
@@ -52,7 +52,7 @@ module Mapper
   class DepthLocus < Generator
     include LocusGenetic
     include ExtendDepth
-    include PolyIntrinsic 
+#    include PolyIntrinsic 
   end
 
   # Mapper class employing the depth-locus node expansion strategy:
@@ -70,7 +70,7 @@ module Mapper
   class BreadthLocus < Generator
     include LocusGenetic
     include ExtendBreadth
-    include PolyIntrinsic 
+#    include PolyIntrinsic 
   end
 
   # Mapper class employing the all-locus node expansion strategy:
@@ -84,7 +84,7 @@ module Mapper
   class AllLocus < Generator
     include LocusGenetic
     include ExtendAll
-    include PolyIntrinsic 
+#    include PolyIntrinsic 
   end
  
 ###
@@ -100,11 +100,11 @@ module Mapper
   #   
   # See http://books.google.com/books?hl=en&lr=&id=eCbu4GwRLusC&oi=fnd&pg=PA123&ots=hUc3zvqYIh&sig=xKuVudQQ8GIolgdPzcoyOWRpdn8 
   # 
-  class DepthBucket < Generator
-    include LocusFirst
-    include ExtendAll #behavior same as ExtendDepth, but simpler
-    include PolyBucket 
-  end
+#  class DepthBucket < Generator
+#    include LocusFirst
+#    include ExtendAll #behavior same as ExtendDepth, but simpler
+#    include PolyBucket 
+#  end
 
   # Mapper class employing the breath-bucket node expansion strategy:
   #   1. Create the list L of the all unresolved nodes (nonterminal symbols ready for the expansion).
@@ -117,10 +117,10 @@ module Mapper
   #   
   # See http://books.google.com/books?hl=en&lr=&id=eCbu4GwRLusC&oi=fnd&pg=PA123&ots=hUc3zvqYIh&sig=xKuVudQQ8GIolgdPzcoyOWRpdn8 
   #   
-  class BreadthBucket < Generator
-    include LocusFirst
-    include ExtendBreadth
-    include PolyBucket 
-  end
+#  class BreadthBucket < Generator
+#    include LocusFirst
+#    include ExtendBreadth
+#    include PolyBucket 
+#  end
  
 end # Mapper

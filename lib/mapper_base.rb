@@ -166,8 +166,7 @@ module Mapper
 
       faded_index = read_genome( genome, rule.size )
  
-      alt_index = polymorphism( symbol_token.data, faded_index ) # TODO: remove this line
-      alt_index = @codon.interpret( rule.size, alt_index, symbol_token.data ) 
+      alt_index = @codon.interpret( rule.size, faded_index, symbol_token.data ) 
       alt = rule.at alt_index
       return use_expansion( symbol_token, alt.deep_copy )
     end
@@ -182,32 +181,6 @@ module Mapper
    
   end # Base
 
-  module PolyIntrinsic
-    protected
-    def polymorphism( symbol, value )
-      value
-    end
-  end
-
-  module PolyBucket
-    protected 
-    def init_bucket
-      @bucket = {}
-      @maxAllele = 1
-      @grammar.symbols.each do |sym|
-        alts = @grammar[sym] 
-        @bucket[sym] = @maxAllele
-        @maxAllele *= alts.size
-
-      end
-    end
-
-    def polymorphism( symbol, value )
-      init_bucket unless defined? @bucket
-      value.divmod( @bucket[symbol] ).first
-    end
-  end
- 
   module LocusFirst
     protected   
     def pick_locus( selected_indices, genome )
