@@ -5,6 +5,7 @@ require 'test/mock_rand'
 require 'lib/mapper'
 require 'lib/validator'
 require 'lib/codon_mod'
+require 'lib/codon_bucket'
 
 class TC_Generators < Test::Unit::TestCase
 
@@ -154,7 +155,10 @@ class TC_Generators < Test::Unit::TestCase
   end
 
   def test_breath_bucket_full
-    m = Mapper::BreadthBucket.new @grammar 
+    m = Mapper::BreadthFirst.new @grammar 
+    m.codon = Mapper::CodonBucket.new
+    m.codon.grammar = @grammar
+   
     r = MockRand.new [{1=>0}, {85=>0}, {1=>0}, {85=>0}, {2=>1}, {128=>0}, {1=>0}, {85=>0}, {2=>0}, {85=>0}, {2=>0}, {128=>0}, {2=>1}, {85=>0}, {2=>1}, {85=>0}, {2=>0}, {128=>0}, {2=>0}, {85=>0}]   
     m.random = r
     gen = [2*2, 2*2, 1*1, 2*2, 0*2, 0*1, 1*2, 1*2, 0*1, 0*2] 
@@ -163,7 +167,10 @@ class TC_Generators < Test::Unit::TestCase
   end
 
   def test_depth_bucket_full
-    m = Mapper::DepthBucket.new @grammar   
+    m = Mapper::DepthFirst.new @grammar   
+    m.codon = Mapper::CodonBucket.new
+    m.codon.grammar = @grammar
+   
     r = MockRand.new [{1=>0}, {85=>0}, {1=>0}, {85=>0}, {2=>0}, {85=>0}, {2=>0}, {128=>0}, {2=>1}, {85=>0}, {2=>1}, {128=>0}, {1=>0}, {85=>0}, {2=>1}, {85=>0}, {2=>0}, {128=>0}, {2=>0}, {85=>0}]
  
 
@@ -344,7 +351,7 @@ class TC_Generators < Test::Unit::TestCase
   end
 
   def test_codon_interface
-    m = Mapper::DepthBucket.new @grammar
+    m = Mapper::DepthFirst.new @grammar
     assert_equal( 8, m.codon.bit_size )
     m.codon.bit_size = 5
     assert_equal( 5, m.codon.bit_size )

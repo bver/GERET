@@ -3,7 +3,7 @@
 require 'test/unit'
 require 'lib/mapper'
 require 'lib/validator'
-
+require 'lib/codon_bucket'
 
 class TC_Mappers < Test::Unit::TestCase
 
@@ -107,7 +107,9 @@ class TC_Mappers < Test::Unit::TestCase
   end
 
   def test_depth_bucket
-    m = Mapper::DepthBucket.new @grammar
+    m = Mapper::DepthFirst.new @grammar
+    m.codon = Mapper::CodonBucket.new
+    m.codon.grammar = @grammar
 
     assert_equal( @grammar, m.grammar )
 
@@ -123,7 +125,9 @@ class TC_Mappers < Test::Unit::TestCase
   end
 
   def test_breath_bucket
-    m = Mapper::BreadthBucket.new @grammar
+    m = Mapper::BreadthFirst.new @grammar
+    m.codon = Mapper::CodonBucket.new
+    m.codon.grammar = @grammar
 
     assert_equal( @grammar, m.grammar )
 
