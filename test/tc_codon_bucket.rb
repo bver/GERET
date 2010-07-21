@@ -1,0 +1,94 @@
+#!/usr/bin/ruby
+
+require 'test/unit'
+require 'test/mock_rand'
+require 'lib/grammar'
+require 'lib/codon_bucket'
+
+class TC_CodonBucket < Test::Unit::TestCase
+
+  def setup
+    @grammar = Mapper::Grammar.new( {
+      'alpha' => Mapper::Rule.new( [ 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'A' ) ] ),
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'B' ) ] )
+                ] ),
+
+      'expr' => Mapper::Rule.new( [ 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'x' ) ] ),
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'y' ) ] ),
+                  Mapper::RuleAlt.new( [ 
+                    Mapper::Token.new( :literal, '(' ), 
+                    Mapper::Token.new( :symbol, 'expr' ),
+                    Mapper::Token.new( :literal, ' ' ),                   
+                    Mapper::Token.new( :symbol, 'op' ),                  
+                    Mapper::Token.new( :symbol, 'expr' ),                   
+                    Mapper::Token.new( :literal, ')' ) 
+                  ] )
+                ] ),
+
+       'op'  => Mapper::Rule.new( [ 
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '+' ) ] ),
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '*' ) ] )
+                ] )
+    }, 'expr' )
+   
+  end
+
+  def test_basic_no_grammar_provided
+    
+    # fall back to the superclass CodonMod
+    
+    c = Mapper::CodonBucket.new
+    assert_equal( 8, c.bit_size ) #default
+
+    assert_equal( 2, c.interpret( 3, 5 ) )
+    assert_equal( 1, c.interpret( 2, 7 ) )
+
+    assert( c.random.kind_of? Kernel ) #default is Kernel.rand
+    c.random = MockRand.new [ {85=>1}, {85=>2}, {85=>84} ]
+
+    assert_equal( 5, c.generate( 3, 2 ) )
+    assert_equal( 8, c.generate( 3, 2 ) )   
+    assert_equal( 254, c.generate( 3, 2 ) )   
+  end
+
+  def test_basic_with_grammar
+    assert_equal( 2, @grammar['alpha'].size )  # @bucket['alpha'] == 1
+    assert_equal( 3, @grammar['expr'].size )  # @bucket['expr'] == 1*2
+    assert_equal( 2, @grammar['op'].size )   # @bucket['op'] == 1*2*3
+ 
+    c = Mapper::CodonBucket.new
+    assert_equal( nil, c.bucket )
+    
+    c.grammar = @grammar
+    assert_equal( 3, c.bucket.size )
+    assert_equal( 1, c.bucket['alpha'] )
+    assert_equal( 2, c.bucket['expr'] )
+    assert_equal( 6, c.bucket['op'] )
+
+    assert_equal( 1, c.interpret( 2*1, 5, 'alpha' ) )      
+    assert_equal( 2, c.interpret( 3*2, 5, 'expr' ) )
+    assert_equal( 1, c.interpret( 2*6, 7, 'op' ) )
+
+    assert( c.random.kind_of? Kernel ) #default is Kernel.rand
+    c.random = MockRand.new [ {85=>1}, {85=>2}, {85=>84} ]
+
+    assert_equal( 5*1, c.generate( 3, 2, 'alpha' ) )
+    assert_equal( 8*2, c.generate( 3, 2, 'expr' ) )   
+    assert_equal( 254*6, c.generate( 3, 2, 'op' ) )   
+
+    # fallback with a grammar, without symbol argument:
+    assert_equal( 2, c.interpret( 3, 5 ) )
+    assert_equal( 1, c.interpret( 2, 7 ) )
+
+    assert( c.random.kind_of? Kernel ) #default is Kernel.rand
+    c.random = MockRand.new [ {85=>1}, {85=>2}, {85=>84} ]
+
+    assert_equal( 5, c.generate( 3, 2 ) )
+    assert_equal( 8, c.generate( 3, 2 ) )   
+    assert_equal( 254, c.generate( 3, 2 ) )   
+  end
+  
+end
+
