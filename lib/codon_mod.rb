@@ -22,6 +22,7 @@ module Mapper
 
     # Interpret the codon given a number of choices ( c mod n )
     def interpret( numof_choices, codon )
+      raise "CodonMod: codon 256 out of range 0..255" unless valid_codon? codon
       codon.divmod(numof_choices).last
     end
 
