@@ -53,7 +53,7 @@ module Semantic
     end
 
     # Semantic attributes hash. It maps AttrKey identification to the attribute values.
-    # Mainly for deugging and logging purposes.
+    # Mainly for debugging and logging purposes.
     attr_reader :attributes
 
     # See Mapper::DepthFirst#phenotype 
