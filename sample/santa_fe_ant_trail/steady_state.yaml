@@ -27,8 +27,12 @@ grammar:
   class: Abnf::File
   filename: sample/santa_fe_ant_trail/grammar.abnf
 
+codon:
+  class: CodonBucket
+  bit_size: 6
+        
 mapper:
-  class: DepthBucket
+  class: DepthFirst
   consume_trivial_codons: false
 
 selection:
