@@ -57,15 +57,21 @@ class TC_CodonBucket < Test::Unit::TestCase
     assert_equal( 2, @grammar['alpha'].size )  # @bucket['alpha'] == 1
     assert_equal( 3, @grammar['expr'].size )  # @bucket['expr'] == 1*2
     assert_equal( 2, @grammar['op'].size )   # @bucket['op'] == 1*2*3
- 
+                                            # @max_closure  == 1*2*3*2
     c = Mapper::CodonBucket.new
     assert_equal( nil, c.bucket )
-    
+    assert_equal( nil, c.max_closure ) 
+    assert_equal( false, c.valid_codon?( 12*256-1 ) ) 
+
     c.grammar = @grammar
     assert_equal( 3, c.bucket.size )
     assert_equal( 1, c.bucket['alpha'] )
     assert_equal( 2, c.bucket['expr'] )
     assert_equal( 6, c.bucket['op'] )
+    assert_equal( 12, c.max_closure )   
+
+    assert_equal( true, c.valid_codon?( 12*256-1 ) )   
+    assert_equal( false, c.valid_codon?( 12*256 ) )      
 
     assert_equal( 1, c.interpret( 2*1, 5, 'alpha' ) )      
     assert_equal( 2, c.interpret( 3*2, 5, 'expr' ) )
@@ -89,6 +95,19 @@ class TC_CodonBucket < Test::Unit::TestCase
     assert_equal( 8, c.generate( 3, 2 ) )   
     assert_equal( 254, c.generate( 3, 2 ) )   
   end
-  
+
+  def test_mutate
+    c = Mapper::CodonBucket.new   
+    c.random = MockRand.new [ {8=>1} ]   
+    assert_equal( 7, c.mutate_bit( 5 ) )
+
+    c.grammar = @grammar
+    assert_equal( 12, c.max_closure )   
+
+    c.random = MockRand.new [ {3+8=>10} ]  # 3+8=11 possible bit positions:
+    assert_equal( 1029, c.mutate_bit( 5 ) )   # 00000000101 -> 10000000101
+  end
+
+ 
 end
 
