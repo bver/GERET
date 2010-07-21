@@ -29,8 +29,8 @@ class AlgorithmBase
    
     @evaluator = @cfg.factory('evaluator') unless @cfg['evaluator'].nil? 
 
-    unless @cfg['representation'].nil?
-      codon = @cfg.factory('representation')
+    unless @cfg['codon'].nil?
+      codon = @cfg.factory('codon')
       codon.grammar = @grammar if codon.respond_to? :grammar=
 
       @mapper.codon = codon if @mapper.respond_to? :codon= 
