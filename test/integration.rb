@@ -6,7 +6,7 @@ def cmd command
 end
 
 def run yaml
-  cmd 'tools/evolve.rb --algorithm-termination-max_steps=2 ' + yaml
+  cmd 'tools/evolve.rb --algorithm-termination-max_steps=3 ' + yaml
 end
 
 system "rm -rf *.store"

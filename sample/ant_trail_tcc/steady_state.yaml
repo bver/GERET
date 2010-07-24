@@ -5,9 +5,9 @@ algorithm:
   population_size: 800
 
   probabilities:
-    crossover: 0.5
-    mutation: 0.01
-    injection: 0.9
+    crossover: 0.9
+    mutation: 0.1
+    injection: 0.1
 
   termination:
     max_steps: 2000
@@ -21,7 +21,7 @@ algorithm:
   inject: # alternative to a crossover or copy
     method: grow # grow or full or random
     random_length: 8
-    sensible_depth: 5   
+    sensible_depth: 7   
    
 codon:
   class: CodonGray
