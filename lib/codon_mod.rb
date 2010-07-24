@@ -14,6 +14,12 @@ module Mapper
       @random = Kernel
     end
 
+    # The source of randomness, used for calling "random.rand( limit )", defaulting to 'Kernel' class.
+    attr_accessor :random    
+  
+    # The number of bits per codon. 
+    attr_reader :bit_size
+   
     # Set the number of bits per codon.
     def bit_size= bit_size
       @bit_size = bit_size
@@ -59,11 +65,6 @@ module Mapper
       codon >= 0 and codon < @card
     end
 
-    # The source of randomness, used for calling "random.rand( limit )", defaulting to 'Kernel' class.
-    attr_accessor :random    
-  
-    # The number of bits per codon. 
-    attr_reader :bit_size
   end
 
 end

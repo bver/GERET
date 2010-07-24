@@ -90,7 +90,6 @@ module Mapper
       alts = allowed if alts.empty? # deep grammars, cannot prefer recurs
       if @consume_trivial_codons or rule.size > 1
         alt = alts.at @random.rand( alts.size )
-        #genome.push unmod( rule.index(alt), rule.size, symbol_token.data ) #todo: change to:
         genome << @codon.generate( rule.size, rule.index(alt), symbol_token.data )
       else
         alt = rule.first 

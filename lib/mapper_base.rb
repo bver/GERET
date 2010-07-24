@@ -32,10 +32,10 @@ module Mapper
     # See also Validator.analyze_recursivity.
     # 
     # If the optional consume_trivial_codons argument is set to true (default), the allele codons are used 
-    # even if the number of rule alternations for selecting from is 1. Set to false if the codons should 
+    # even if the number of rule alternations for selecting from is 1. Set it to false if the codons should 
     # not be "wasted" during such trivial decision cases.
-    # Note that setting consume_trivial_codons=false can have undesirable effect when used alongside the "bucket-rule": 
-    # The number of used codons cannot be asumed even because of skipped codons. See Mapper::DepthBucket.
+    # Note that setting consume_trivial_codons=false may affect the functionality of genetic operators, due
+    # to the number of used codons which is not always an even number.
     # 
     def initialize( grammar, wraps_to_fail=1, wraps_to_fading=nil, consume_trivial_codons=true )
       @grammar = grammar
@@ -82,7 +82,6 @@ module Mapper
       return nil if genome.empty?
 
       tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
-#      tokens.first.track = -1 if @track_support_on
       @used_length = 0
       @track_support = nil 
       @complexity = 1 
