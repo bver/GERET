@@ -23,6 +23,10 @@ algorithm:
     random_length: 8
     sensible_depth: 5   
    
+codon:
+  class: CodonGray
+  bit_size: 5
+    
 grammar:
   class: Abnf::File
   filename: sample/ant_trail_tcc/grammar.abnf
@@ -50,7 +54,7 @@ crossover:
   class: CrossoverLHS
 
 mutation:
-  class: MutationRipple
+  class: MutationBitStructural
 
 store:
   class: Store

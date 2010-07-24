@@ -29,13 +29,13 @@ module Mapper
     # Interpret the codon given a number of choices.
     # See CodonMod#interpret. 
     def interpret( numof_choices, codon, dummy=nil )
-      @gray[super]
+      super( numof_choices, @reverse[codon] )
     end
 
     # Create the codon from the index of the choice and number of choices.
     # See CodonMod#generate.
     def generate( numof_choices, index, dummy=nil )
-      @reverse[super]
+      @gray[super]
     end
 
   end
