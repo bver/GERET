@@ -1,0 +1,34 @@
+
+require 'lib/codon_mod'
+
+module Mapper
+
+  class CodonGray < CodonMod
+
+    def initialize( bit_size=8 )
+      super
+
+      x = ['0','1'] 
+      (bit_size-1).times do
+        y = (x.map { |i| '0'+i }).concat( x.reverse.map { |i| '1'+i } )
+        x=y 
+      end
+
+      @gray = x.map { |i| i.to_i(2) }
+      @reverse = []
+      @gray.each_with_index { |g,i| @reverse[g] = i } 
+    end
+
+    def interpret( numof_choices, codon, dummy=nil )
+      @gray[super]
+    end
+
+    def generate( numof_choices, index, dummy=nil )
+      @reverse[super]
+    end
+
+  end
+
+end
+
+

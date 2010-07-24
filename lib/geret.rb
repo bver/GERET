@@ -49,6 +49,7 @@ require 'lib/work_pipes'
 require 'lib/piped_individual'
 require 'lib/attribute_grammar'
 require 'lib/codon_bucket'
+require 'lib/codon_gray'
 
 require 'algorithm/generational'
 require 'algorithm/steady_state'
