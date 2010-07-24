@@ -26,6 +26,7 @@ h2. Features
 * various search algorithms (SPEA2, NSGA2, ALPS... easily extensible by new ones)
 * simple & efficient interface to the domain-specific task
 
+See the library "documentation.":http://geret.org/doc.html
 
 h2. Requirements
 

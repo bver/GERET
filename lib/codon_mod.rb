@@ -1,9 +1,7 @@
 
 module Mapper
 
-  # Standard codon representation in GE:
-  #
-  #   index_of_choice = codon mod num_of_choices
+  # The standard codon representation in GE.
   #
   class CodonMod
 
@@ -26,18 +24,21 @@ module Mapper
       @card = 2**bit_size
     end
 
-    # Interpret the codon given a number of choices ( c mod n )
+    # Interpret the codon given a number of choices, returning the index:
+    #
+    #   index = codon mod numof_choices
+    #
     def interpret( numof_choices, codon, dummy=nil )
       raise "CodonMod: codon #{codon} out of range 0..#{@card-1}" unless valid_codon? codon
       codon.divmod(numof_choices).last
     end
 
-    # Create the codon from the index of the choice and number of choices
-    # index has to be the number from the interval 0 .. numof_choices-1 
-    # Resultant codon is stochastically produced number which,
-    # when subjected to the modulo operation, produces index, ie:
+    # Create the codon from the index of the choice and a number of choices.
+    # The index has to be the number from the interval 0 .. numof_choices-1 
+    # Resultant codon is a stochastically produced number which,
+    # when subjected to the modulo operation, produces an index, ie:
     #
-    #   index = codon mod numof_choices 
+    #   codon = index unmod numof_choices 
     # 
     # See:
     # http://www-dept.cs.ucl.ac.uk/staff/W.Langdon/ftp/papers/azad_thesis.ps.gz 
