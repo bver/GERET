@@ -3,8 +3,15 @@ require 'lib/codon_mod'
 
 module Mapper
 
+  # Gray-coded representation. This representation modifies the standard GE mapping with
+  # the Gray transcription.
+  # 
+  # See http://wwwilson.wordpress.com/files/2009/01/search-neutral-evol-and-mapping.pdf 
+  #
   class CodonGray < CodonMod
 
+    # Initialise a codon representation.
+    # bit_size is the number of bits per one codon.
     def initialize( bit_size=8 )
       super
 
@@ -19,10 +26,14 @@ module Mapper
       @gray.each_with_index { |g,i| @reverse[g] = i } 
     end
 
+    # Interpret the codon given a number of choices.
+    # See CodonMod#interpret. 
     def interpret( numof_choices, codon, dummy=nil )
       @gray[super]
     end
 
+    # Create the codon from the index of the choice and number of choices.
+    # See CodonMod#generate.
     def generate( numof_choices, index, dummy=nil )
       @reverse[super]
     end
@@ -30,5 +41,4 @@ module Mapper
   end
 
 end
-
 
