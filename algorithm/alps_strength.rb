@@ -34,7 +34,7 @@ class AlpsStrength < AlgorithmBase
     @report << "--------- step #{@steps += 1}"
     @report.report @population
 
-    # PDE, then clasify individuals into layers
+    # then clasify individuals into layers
     all_layers = []
     @population.each do |individual|
       index = individual.layer
@@ -73,6 +73,7 @@ class AlpsStrength < AlgorithmBase
     # construct new population
     @population = []
     all_layers.each_with_index do |layer1,index|
+      
       layer2 = index > 0 ? all_layers[index-1] : layer1
 
       if index == 0 and @steps.divmod( @age_gap+2 ).last == 0
@@ -82,7 +83,11 @@ class AlpsStrength < AlgorithmBase
         @population.concat breed( layer1, layer2 )
       end
 
-      @population.concat layer1.slice( 0 ... @elite_size ) # elitism, sort of
+      # elitism, sort of     
+      elite = layer1.slice( 0 ... @elite_size ) 
+      elite.each { |individual| individual.parents individual } # increment age
+      @population.concat elite
+
     end
 
     @report['numof_evaluations'] << @evaluator.jobs_processed if defined? @evaluator   
