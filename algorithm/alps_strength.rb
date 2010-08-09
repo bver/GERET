@@ -109,7 +109,8 @@ class AlpsStrength < AlgorithmBase
     children = []
 
     while children.size < @layer_size
-      parent1 = tournament( rand < 0.5 ? layer1 : layer2 )
+      #parent1 = tournament( rand < 0.5 ? layer1 : layer2 )
+      parent1 = tournament(layer1)
 
       if rand < @probabilities['crossover']
 
