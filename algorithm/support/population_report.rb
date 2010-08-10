@@ -35,7 +35,8 @@ class PopulationReport < ReportText
     end
     self['best_phenotype'] << "\n#{best.phenotype}"
     self['best_phenotype_complexity'] << best.complexity
-
+    self['best_phenotype_layer'] << best.layer
+    self['best_phenotype_age'] << best.age  
 
     if not defined? @report_histogram or @report_histogram == true         
       uniq = {}
