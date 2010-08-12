@@ -1,4 +1,5 @@
 
+require 'set'
 require 'algorithm/support/algorithm_base'
 require 'algorithm/support/phenotypic_truncation'
 
@@ -33,13 +34,8 @@ class AlpsStrict < AlgorithmBase
     
     if @steps.divmod(@age_gap).last == 0
 
-      if AlpsIndividual.age_limits.include? @steps
-        @report << "--------- opening a new layer, layer[0] unshift"              
-        @layers.unshift init_population( [], @layer_size ) 
-      else
-        @report << "--------- (re)starting population layer[0]"       
-        @layers[0] = init_population( [], @layer_size ) 
-      end
+      @report << "--------- opening a new layer, layer[0] unshift"              
+      @layers.unshift init_population( [], @layer_size ) 
 
       @steps += 1   
       @report.next 
@@ -47,72 +43,35 @@ class AlpsStrict < AlgorithmBase
      
     end
 
+    # reporting
     @population = @layers.flatten
     @report.report @population
 
+    # main breed
     new_layers = []
-    mig_counts = []
-    nonpde_counts = []
-    @layers.each_with_index do |unsorted,index|
-
-      # migrations
-      migrations = []
-      prev_layer = []
-      if index > 0
-        @layers[index-1].each do |individual|
-          if individual.layer < index
-            prev_layer << individual
-          else
-            migrations << individual
-          end
-        end
-        @layers[index-1] = prev_layer # set back, still sorted (hopefully)
-      end
-      mig_counts << migrations.size
-      
-      # sort the layer by pareto strength     
-      layer1 = @dominance.rank_count( unsorted+migrations ).sort {|a,b| a.spea <=> b.spea }
-
-      # extract individuals from dominance's shell     
-      layer1.map! { |fields| fields.original } 
-      
-      # truncate the size, drop loosers
-      layer1 = layer1.slice( 0 ... @layer_size )
-      
-      # elitism
-      new_layer = layer1.slice( 0 ... @elite_size ).map do |individual|
-        copy = individual.clone
-        copy.parents individual   # increment age
-        copy
-      end
-          
-      # breed
-      layer2 = (index > 0) ? @layers[index-1] : layer1               
-      layer2 = layer1 if layer2.empty?
-      addon = breed( layer1, layer2, @layer_size-new_layer.size )
-      new_layer.concat addon
-      
-      # eliminate phenotypic duplicities
-      pde = eliminate_duplicates new_layer 
-      
-      # add the rest
-      new_layer = breed( layer1, layer2, @layer_size-pde.size )
-      nonpde_counts << new_layer.size     
-      new_layer.concat pde
-
-      # result
-      new_layers << new_layer
-
-      # set back sorted
-      @layers[index] = layer1
+    parents_counts = []
+    @layers.each_with_index do |unsorted, index|
+      parents = index > 0 ? unsorted+@layers[index-1] : unsorted 
+      new_layers << breed( parents )
+      parents_counts << parents.size
     end
 
-    @layers = new_layers
+    # resort according layer index
+    @layers = []
+    new_layers.flatten.each do |individual|
+      index = individual.layer
+      @layers << [] while index >= @layers.size
+      @layers[index] << individual 
+    end
+ 
+    # discard empty layers
+    @layers.delete_if { |layer| layer.empty? }
+  
 
     # layer diagnostic
+    @report['new_layers_sizes'] << new_layers.map { |layer| layer.size }
     @report['layer_sizes'] << @layers.map { |layer| layer.size }
-    @report['migration_sizes'] << mig_counts
-    @report['nonpde_counts'] << nonpde_counts   
+    @report['parents_sizes'] << parents_counts
     @layers.each_with_index do |layer,index| 
       layer.first.objective_symbols.each do |objective|     
         values = layer.map { |individual| individual.send(objective) }   
@@ -137,18 +96,37 @@ class AlpsStrict < AlgorithmBase
     layer[ i1 < i2 ? i1 : i2 ]
   end
 
-  def breed( layer1, layer2, children_size ) 
+  def breed( unsorted ) 
 
-    children = []
-    
-    while children.size < children_size
+    # sort each layer by pareto strength        
+    layer = @dominance.rank_count( unsorted ).sort {|a,b| a.spea <=> b.spea }
+      
+    # extract individuals from dominance's shell     
+    layer.map! { |fields| fields.original } 
+
+    # PDE
+    uniq = Set.new
+
+    # elitism
+    elite = []
+    layer.slice( 0 ... @elite_size ).each do |individual|
+      #uniq.add( individual.phenotype )
+      next if uniq.add?( individual.phenotype ).nil?
+      
+      copy = individual.clone
+      copy.parents individual   # increment age
+      elite << copy
+    end
+
+    # xover, mutations
+    children = []   
+    while children.size + elite.size < @layer_size 
      
-      parent1 = tournament( rand < 0.5 ? layer1 : layer2 )
-      #parent1 = tournament(layer1)
+      parent1 = tournament(layer)
 
       if rand < @probabilities['crossover']
 
-        parent2 = tournament( rand < 0.5 ? layer1 : layer2 )
+        parent2 = tournament(layer)
 
         child1, child2 = @crossover.crossover( 
                               parent1.genotype, parent2.genotype, 
@@ -156,12 +134,12 @@ class AlpsStrict < AlgorithmBase
 
         individual = @cfg.factory( 'individual', @mapper, child1 ) 
         individual.parents( parent1, parent2 )
-        children << individual if individual.valid?
+        children << individual if individual.valid? and not uniq.add?( individual.phenotype ).nil? 
        
 
         individual = @cfg.factory( 'individual', @mapper, child2 ) 
         individual.parents( parent1, parent2 )       
-        children << individual if individual.valid?       
+        children << individual if individual.valid? and not uniq.add?( individual.phenotype ).nil?        
  
       end
 
@@ -171,14 +149,14 @@ class AlpsStrict < AlgorithmBase
   
         individual = @cfg.factory( 'individual', @mapper, child ) 
         individual.parents( parent1 )         
-        children << individual if individual.valid?       
+        children << individual if individual.valid? and not uniq.add?( individual.phenotype ).nil?       
         
       end
 
     end
 
     @evaluator.run children if defined? @evaluator 
-    children
+    elite + children
   end 
 end
 
