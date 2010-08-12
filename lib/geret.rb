@@ -58,7 +58,6 @@ require 'algorithm/paretogp_simplified'
 require 'algorithm/nsga2'
 require 'algorithm/spea2'
 require 'algorithm/alps'
-require 'algorithm/alps_strength'
 require 'algorithm/alps_strict'
 require 'algorithm/support/population_report'
 
