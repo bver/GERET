@@ -148,7 +148,7 @@ module Mapper
     def pick_expansions( symbol_token, genome )
       rules = @grammar.fetch( symbol_token.data )
 
-      return rules if @wraps_to_fading.nil? or @used_length <= @wraps_to_fading*genome.size
+      return rules if @wraps_to_fading.nil? or not defined? @used_length or @used_length <= @wraps_to_fading*genome.size
       
       terminals = rules.find_all { |alt| alt.recursivity == :terminating }
       return rules if terminals.empty? # desperate case (only :cyclic or :infinite nodes found)

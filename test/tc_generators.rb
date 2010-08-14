@@ -127,6 +127,17 @@ class TC_Generators < Test::Unit::TestCase
     assert_equal( '((x+x)*(y+y))', m.phenotype(gen) )
   end 
 
+  def test_depth_locus_fading_bugfix
+    m = Mapper::DepthLocus.new @grammar
+    m.wraps_to_fading = 2
+    r = MockRand.new [{1=>0},0,{1=>0},0, {3=>1},0,{2=>1},0, {2=>1},0,{1=>0},0, {3=>0},0,{2=>1},0, {2=>1},0,{2=>1},0, 
+                      {1=>0},0,{2=>0},0, {1=>0},0,{1=>0},0, {3=>2},0,{2=>0},0, {2=>1},0,{2=>0},0, {1=>0},0,{2=>0},0]     
+    m.random = r
+    gen = [0,2,  1,1,  1,2,  0,1,  1,1,  0,0,  0,2,  2,0,  1,0,  0,0] 
+    assert_equal( gen, m.generate_full( 3 ) ) # 2
+  end 
+
+ 
   def test_depth_first_grow
     m = Mapper::DepthFirst.new @grammar   
     r = MockRand.new [{3=>2},0, {3=>1},0, {2=>0},0, {3=>2},0, {3=>2},0, {2=>0},0, {2=>0},0, {2=>0},0, {2=>1},0, {3=>1},0]
