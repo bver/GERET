@@ -43,7 +43,8 @@ class AlgorithmBase
     @time_now = Time.now
 
     @steps = 0
-
+    @invalid_individuals = 0
+    
     return @report    
   end
 
@@ -94,6 +95,7 @@ class AlgorithmBase
 
       while population.size < population_size
         individual = @cfg.factory( 'individual', @mapper, init_chromozome(@init) )
+        @invalid_individuals += 1 unless individual.valid?              
         next unless individual.valid? 
         population << individual       
         @init['method'] = ( @init['method'] == 'full' ) ? 'grow' : 'full'     
@@ -106,6 +108,7 @@ class AlgorithmBase
 
       while population.size < population_size
         individual = @cfg.factory( 'individual', @mapper, init_chromozome(@init) )
+        @invalid_individuals += 1 unless individual.valid?              
         population << individual if individual.valid? 
       end
 
