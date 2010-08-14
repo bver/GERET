@@ -84,6 +84,8 @@ module Mapper
     # Returns the phenotype string (or nil if the mapping process fails).
     def phenotype genome
       @mapped_count += 1
+      @fading = @wraps_to_fading 
+
       return nil if genome.empty?
 
       tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
@@ -153,7 +155,7 @@ module Mapper
     def pick_expansions( symbol_token, genome )
       rules = @grammar.fetch( symbol_token.data )
 
-      return rules if @wraps_to_fading.nil? or not defined? @used_length or @used_length <= @wraps_to_fading*genome.size
+      return rules if @fading.nil? or @used_length <= @fading*genome.size
       
       terminals = rules.find_all { |alt| alt.recursivity == :terminating }
       return rules if terminals.empty? # desperate case (only :cyclic or :infinite nodes found)

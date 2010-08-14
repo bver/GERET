@@ -65,6 +65,8 @@ module Mapper
     # Mapper::Generator#generate_full uses [:cyclic], Mapper::Generator#generate_grow uses [:cyclic, :terminating].
     def generate( recursivity, required_depth )
       @generated_count += 1
+      @fading = nil
+
       genome = []
       tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
 

@@ -134,7 +134,13 @@ class TC_Generators < Test::Unit::TestCase
                       {1=>0},0,{2=>0},0, {1=>0},0,{1=>0},0, {3=>2},0,{2=>0},0, {2=>1},0,{2=>0},0, {1=>0},0,{2=>0},0]     
     m.random = r
     gen = [0,2,  1,1,  1,2,  0,1,  1,1,  0,0,  0,2,  2,0,  1,0,  0,0] 
-    assert_equal( gen, m.generate_full( 3 ) ) # 2
+    assert_equal( gen, m.generate_full( 3 ) )
+    assert_equal( '((x+x)*(y+y))', m.phenotype(gen) ) 
+    
+    m.random = MockRand.new [{1=>0},0,{1=>0},0, {3=>1},0,{2=>1},0, {2=>1},0,{1=>0},0, {3=>0},0,{2=>1},0, {2=>1},0,{2=>1},0, 
+                             {1=>0},0,{2=>0},0, {1=>0},0,{1=>0},0, {3=>2},0,{2=>0},0, {2=>1},0,{2=>0},0, {1=>0},0,{2=>0},0]
+    assert_equal( gen, m.generate_full( 3 ) )
+    assert_equal( '((x+x)*(y+y))', m.phenotype(gen) ) 
   end 
 
  
