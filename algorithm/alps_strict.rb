@@ -7,7 +7,7 @@ require 'algorithm/support/phenotypic_truncation'
 class AlpsStrict < AlgorithmBase
   include PhenotypicTruncation
   
-  attr_accessor :max_layers, :elite_size, :aging_scheme, :age_gap, :layer_diagnostic
+  attr_accessor :max_layers, :elite_size, :join_size, :aging_scheme, :age_gap, :layer_diagnostic
 
   def setup config
     super
@@ -18,11 +18,14 @@ class AlpsStrict < AlgorithmBase
     AlpsIndividual.aging_scheme @aging_scheme
     AlpsIndividual.layers @max_layers
     @report['age_limits'] << AlpsIndividual.age_limits
+    @report['target_layer_size'] << @layer_size
+   
 
     @layers = []
     
     @dominance = Dominance.new
     @population = []
+    @parents_stats = []
 
     @report.next    
     return @report    
@@ -55,6 +58,11 @@ class AlpsStrict < AlgorithmBase
       new_layers << breed( parents )
       parents_counts << parents.size
     end
+    @report['0_parents_sizes'] << parents_counts   
+    @parents_stats.concat parents_counts
+    min, max, avg, n =  Util.statistics @parents_stats 
+    @report['parents_stats'] << "min: #{min} max: #{max} avg: #{avg} n: #{n}"
+    @report['1_new_layers_sizes'] << new_layers.map { |layer| layer.size }  
 
     # resort according layer index
     @layers = []
@@ -63,15 +71,25 @@ class AlpsStrict < AlgorithmBase
       @layers << [] while index >= @layers.size
       @layers[index] << individual 
     end
- 
-    # discard empty layers
-    @layers.delete_if { |layer| layer.empty? }
+    @report['2_layers_separated_sizes'] << @layers.map { |layer| layer.size }   
+
+    # join almost-empty layers
+    joinings = []
+    layers = @layers
+    @layers = []
+    layers.each do |layer|
+      if not @layers.empty? and @layers.last.size < @join_size
+        joinings << "#{layer.size} -> #{@layers.last.size}"       
+        @layers.last.concat layer
+      else
+        @layers << layer
+      end
+    end
+    @report['3_joinings'] << joinings
   
 
     # layer diagnostic
-    @report['new_layers_sizes'] << new_layers.map { |layer| layer.size }
-    @report['layer_sizes'] << @layers.map { |layer| layer.size }
-    @report['parents_sizes'] << parents_counts
+    @report['4_layer_sizes'] << @layers.map { |layer| layer.size }
     @layers.each_with_index do |layer,index| 
       layer.first.objective_symbols.each do |objective|     
         values = layer.map { |individual| individual.send(objective) }   
