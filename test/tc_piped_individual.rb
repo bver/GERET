@@ -175,6 +175,13 @@ class TC_PipedIndividual < Test::Unit::TestCase
     exception = assert_raise( RuntimeError ) { PipedIndividual.symbol_maximized?( :unknown )  }
     assert_equal( "PipedIndividual: symbol 'unknown' not known", exception.message )
   end
+
+  def test_call_without_init
+    individual = PipedIndividual.new( @mapper, [1, 2]  )
+    # no AlpsIndividual.age_gap, AlpsIndividual.age_limits initialisation
+    assert_equal( nil, individual.layer )
+    assert_equal( 0, individual.age )   
+  end
  
 end
 

@@ -83,6 +83,7 @@ module Util
     # The result depends on AlpsIndividual.age_limits and AlpsIndividual#age.
     #
     def layer
+      return nil unless defined? @@limits
       AlpsIndividual.age_limits.each_with_index do |max,i|
         return i if self.age <= max
       end
