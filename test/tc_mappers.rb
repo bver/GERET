@@ -35,22 +35,27 @@ class TC_Mappers < Test::Unit::TestCase
     m = Mapper::DepthFirst.new @grammar
 
     assert_equal( @grammar, m.grammar )
+    assert_equal( 0, m.mapped_count )
 
     assert_equal( '((x +y) *x)', m.phenotype( [2, 2, 0, 0, 1, 1, 0] ) )
     assert_equal( 7, m.used_length )
     assert_equal( 11, m.complexity )
+    assert_equal( 1, m.mapped_count )
    
     assert_equal( '((x +y) *x)', m.phenotype( [5, 8, 3, 4, 1, 3, 6, 5, 3] ) )
     assert_equal( 7, m.used_length )
     assert_equal( 11, m.complexity )
+    assert_equal( 2, m.mapped_count )
 
     assert_equal( '(y *(x +y))', m.phenotype( [2, 1, 1, 2, 0, 0, 1] ) )   
     assert_equal( 7, m.used_length )   
     assert_equal( 11, m.complexity )   
+    assert_equal( 3, m.mapped_count )
 
     assert_equal( '(y *(x +y))', m.phenotype( [2, 4, 3, 5, 0, 6, 1, 3, 5] ) )      
     assert_equal( 7, m.used_length )   
     assert_equal( 11, m.complexity )   
+    assert_equal( 4, m.mapped_count )   
   end
 
   def test_breadth_first

@@ -44,6 +44,7 @@ module Mapper
       @consume_trivial_codons = consume_trivial_codons 
       @track_support_on = false
       @codon = CodonMod.new # standard 8-bit codons
+      @mapped_count = 0
     end
   
     # The grammar used.
@@ -76,9 +77,13 @@ module Mapper
     # See CodonMod for details.
     attr_accessor :codon
 
+    # Total number of phenotypes mapped, from the initialisation (for diagnostic purposes).
+    attr_reader :mapped_count
+    
     # Take the genome (the vector of Fixnums) and use it for the genotype->phenotype mapping.
     # Returns the phenotype string (or nil if the mapping process fails).
     def phenotype genome
+      @mapped_count += 1
       return nil if genome.empty?
 
       tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]

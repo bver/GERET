@@ -226,6 +226,7 @@ class TC_Generators < Test::Unit::TestCase
     assert_equal( true, m.consume_trivial_codons )   
     m.consume_trivial_codons = false
     assert_equal( false, m.consume_trivial_codons )                             
+    assert_equal( 0, m.generated_count )   
 
     r = MockRand.new [{1=>0},0, {1=>0},0,           {1=>0},0, {2=>0},0, 
                                 {2=>1},0, {2=>1},0,           {2=>0},0]
@@ -235,6 +236,11 @@ class TC_Generators < Test::Unit::TestCase
     assert_equal( '((x+y)+(y+x))', m.phenotype(gen) )
     assert_equal( gen, m.generate_full( 3 ) )  # 2 
     assert_equal( 7, m.used_length )   
+    assert_equal( 1, m.generated_count )  
+
+    m.random = MockRand.new [{1=>0},0, {1=>0},0, {1=>0},0, {2=>0},0, {2=>1},0, {2=>1},0, {2=>0},0]
+    m.generate_full( 3 )
+    assert_equal( 2, m.generated_count )  
 
     m = Mapper::DepthLocus.new grammar
     assert_equal( true, m.consume_trivial_codons )   

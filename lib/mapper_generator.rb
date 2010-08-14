@@ -25,6 +25,7 @@ module Mapper
     def initialize *args
       super
       @random = Kernel
+      @generated_count = 0
     end
  
     # Set the source of randomness (for testing purposes).
@@ -36,6 +37,9 @@ module Mapper
     # The source of randomness, used for calling "random.rand( limit )", defaulting to 'Kernel' class.
     attr_reader :random 
  
+    # Total number of genotypes generated, from the initialisation (for diagnostic purposes).
+    attr_reader :generated_count
+
     # Generate the genotype using the "full" method:
     # if the depth of the current node is smaller, 
     # then select only :cyclic nodes for a deeper level,
@@ -60,6 +64,7 @@ module Mapper
     # The recursivity argument is the array of allowed node recursivity types (before the required_depth is reached).
     # Mapper::Generator#generate_full uses [:cyclic], Mapper::Generator#generate_grow uses [:cyclic, :terminating].
     def generate( recursivity, required_depth )
+      @generated_count += 1
       genome = []
       tokens = [ Token.new( :symbol, @grammar.start_symbol, 0 ) ]
 
