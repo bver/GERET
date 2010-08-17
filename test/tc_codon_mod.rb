@@ -13,7 +13,7 @@ class TC_CodonMod < Test::Unit::TestCase
     assert_equal( 2, c.interpret( 3, 5 ) )
     assert_equal( 1, c.interpret( 2, 7 ) )
 
-    assert( c.random.kind_of? Kernel ) #default is Kernel.rand
+    assert( c.random.kind_of?( Kernel ) ) #default is Kernel.rand
     c.random = MockRand.new [ {85=>1}, {85=>2}, {85=>84} ]
 
     assert_equal( 5, c.generate( 3, 2 ) )
