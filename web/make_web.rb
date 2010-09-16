@@ -4,6 +4,7 @@
 # gem install RedCloth
 # emerge graphviz
 
+require 'auto_gem'
 require 'redcloth'
 Geret = '../'
 
@@ -18,7 +19,7 @@ File.open( 'web/index.html', 'w' ) { |f| f.puts template.gsub(/#CONTENT#/, index
 system "cp -p -r #{Geret}/lib ."
 system "cd lib/ && rdoc --diagram --inline-source --main geret.rb"
 system "mv lib/doc/ web/"
-system "rm web/doc/files/*~.html"
+system "rm -f web/doc/files/*~.html"
 system "rm -rf lib/"
 system "cp doc.html web/"
 
