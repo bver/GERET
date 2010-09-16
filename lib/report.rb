@@ -82,24 +82,42 @@ class ReportText < Report
 
 end
 
+# Reporting helper class. The Report instance provides the simple interface for reporting 
+# the internal values and progression during the evolutionary algorithm's run.
+# The output is sent to the stream
+#
 class ReportStream
 
+  # Attach the reporter to the specific stream.
+  # Default stream is STDOUT.
   def initialize stream=$stdout
     @stream = stream
   end
 
+  # Report the status (mostly textual) info for the current step. For example:
+  #   r = ReportStream.new 
+  #   r << "this line is displayed"
   def << line
     @stream.puts line
   end
   
+  # Access the label. For instance:
+  #   r['maxfitness'] << 42
+  #   r['diversity'] << 12
+  # prints:
+  #   maxfitness: 42
+  #   diversity: 12
+  # into the stream.
   def [] label 
     @stream.print "#{label}: "
     self
   end
 
+  # Do nothing (compatible with ReportText).
   def next
   end
 
+  # Produce an empty string (compatible with ReportText). 
   def output
     ''
   end
