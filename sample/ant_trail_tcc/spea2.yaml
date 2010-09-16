@@ -51,7 +51,7 @@ store:
   filename: ./ant_spea2_tcc.store
 
 report:
-   class: PopulationReport
+   class: PopulationReportStream
 
 individual:
   class: PipedIndividual

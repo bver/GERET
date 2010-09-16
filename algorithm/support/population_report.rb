@@ -1,5 +1,5 @@
 
-class PopulationReport < ReportText 
+module PopulationStatistics 
 
   attr_accessor :report_diversity, :report_statistics, :report_histogram
 
@@ -77,5 +77,14 @@ class PopulationReport < ReportText
     "#{count}*[#{@objective}: #{i.send(@objective)}, complexity: #{i.complexity}#{age}]\n"
   end
 
+end
+
+
+class PopulationReport < ReportText
+  include PopulationStatistics
+end
+
+class PopulationReportStream < ReportStream
+  include PopulationStatistics
 end
 

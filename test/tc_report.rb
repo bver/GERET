@@ -5,6 +5,22 @@ require 'lib/report'
 
 include Util
 
+class FileMock
+  attr_reader :content
+  
+  def initialize
+    @content = ''
+  end
+
+  def puts text
+    @content += "#{text}\n"
+  end
+
+  def print text
+    @content += text.to_s
+  end
+end
+
 class TC_Report < Test::Unit::TestCase
 
   def test_basic
@@ -88,5 +104,34 @@ OUTPUT
     assert_equal( out, r.output )
   end
  
+  def test_stream_report
+    fm = FileMock.new    
+    r = ReportStream.new fm
+
+    r << 'line1'
+    r[:maxfitness] << 42
+    r[:diversity] << 12
+    r[:coolness] << 'ok'
+    r.next
+
+    r << 'line2'   
+    r[:maxfitness] << 34
+    r[:coolness] << 'nope'
+    r.next
+
+    out = <<OUTPUT2
+line1
+maxfitness: 42
+diversity: 12
+coolness: ok
+line2
+maxfitness: 34
+coolness: nope
+OUTPUT2
+   
+    assert_equal( out, fm.content )
+    assert_equal( '', r.output )   
+  end
+
 end
 

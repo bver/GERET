@@ -82,5 +82,29 @@ class ReportText < Report
 
 end
 
+class ReportStream
+
+  def initialize stream=$stdout
+    @stream = stream
+  end
+
+  def << line
+    @stream.puts line
+  end
+  
+  def [] label 
+    @stream.print "#{label}: "
+    self
+  end
+
+  def next
+  end
+
+  def output
+    ''
+  end
+  
+end
+
 end # Util
 
