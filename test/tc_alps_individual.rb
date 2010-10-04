@@ -97,7 +97,7 @@ class TC_Utils < Test::Unit::TestCase
 
     42.times { i1.parents( i1 ) }
     assert_equal( 72, i1.age )
-    assert_equal( 2, i1.layer ) 
+    assert_equal( 3, i1.layer ) 
   end
 end
 

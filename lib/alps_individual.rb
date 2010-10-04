@@ -87,7 +87,7 @@ module Util
       AlpsIndividual.age_limits.each_with_index do |max,i|
         return i if self.age <= max
       end
-      return @@limits.size-1
+      return @@limits.size
     end
 
   end
