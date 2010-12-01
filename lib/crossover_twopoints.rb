@@ -37,19 +37,14 @@ module Operator
     #    
     def crossover( parent1, parent2, dummy1=nil, dummy2=nil )
 
-      pts1 = []
-      0.step( parent1.size, 1 ) { |i| pts1.push i }
-      pts2 = []
-      0.step( parent2.size, 1 ) { |i| pts2.push i }
-
-      return parent1.clone, parent2.clone if pts1.size < 2 or pts2.size < 2
+      return parent1.clone, parent2.clone if parent1.empty? or parent2.empty?
         
-      pt11 = pts1.at @random.rand(pts1.size)
-      pt12 = pts1.at @random.rand(pts1.size)     
+      pt11 = @random.rand(parent1.size+1)
+      pt12 = @random.rand(parent1.size+1)     
       pt11,pt12 = [pt12,pt11] if pt11 > pt12
 
-      pt21 = pts2.at @random.rand(pts2.size)
-      pt22 = pts2.at @random.rand(pts2.size)     
+      pt21 = @random.rand(parent2.size+1)
+      pt22 = @random.rand(parent2.size+1)     
       pt21,pt22 = [pt22,pt21] if pt21 > pt22   
 
       offs1 = parent1[0...pt11].clone
