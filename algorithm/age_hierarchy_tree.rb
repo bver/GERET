@@ -7,16 +7,14 @@ class Deme
   attr_accessor :current, :pending, :level
   attr_reader :parent, :name
 
-  @@name = 'A'
-
   def Deme.set_algo algo
     @@algo = algo
   end
 
+  @@left_right = 0
   def initialize( parent=nil )
     @parent = parent
-    @name = @@name.clone   
-    @@name.succ!
+    @name = parent.nil? ? 'R' : "#{parent.name}#{@@left_right=1-@@left_right}"       
     restart
     @@algo.report << "#{@name}.initialize"
   end
