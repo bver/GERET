@@ -17,7 +17,7 @@ class AlpsStrict < AlgorithmBase
     AlpsIndividual.age_gap @age_gap
     AlpsIndividual.aging_scheme @aging_scheme
     AlpsIndividual.layers @max_layers
-    @report['age_limits'] << AlpsIndividual.age_limits
+    @report['age_limits'] << AlpsIndividual.age_limits.inspect
     @report['target_layer_size'] << @layer_size
    
 
@@ -58,11 +58,11 @@ class AlpsStrict < AlgorithmBase
       new_layers << breed( parents )
       parents_counts << parents.size
     end
-    @report['0_parents_sizes'] << parents_counts   
+    @report['0_parents_sizes'] << parents_counts.inspect   
     @parents_stats.concat parents_counts
     min, max, avg, n =  Util.statistics @parents_stats 
     @report['parents_stats'] << "min: #{min} max: #{max} avg: #{avg} n: #{n}"
-    @report['1_new_layers_sizes'] << new_layers.map { |layer| layer.size }  
+    @report['1_new_layers_sizes'] << ( new_layers.map { |layer| layer.size } ).inspect
 
     # resort according layer index
     @layers = []
@@ -71,7 +71,7 @@ class AlpsStrict < AlgorithmBase
       @layers << [] while index >= @layers.size
       @layers[index] << individual 
     end
-    @report['2_layers_separated_sizes'] << @layers.map { |layer| layer.size }   
+    @report['2_layers_separated_sizes'] << ( @layers.map { |layer| layer.size } ).inspect 
 
     # join almost-empty layers
     joinings = []
@@ -85,11 +85,11 @@ class AlpsStrict < AlgorithmBase
         @layers << layer
       end
     end
-    @report['3_joinings'] << joinings
+    @report['3_joinings'] << joinings.inspect
   
 
     # layer diagnostic
-    @report['4_layer_sizes'] << @layers.map { |layer| layer.size }
+    @report['4_layer_sizes'] << (@layers.map { |layer| layer.size }).inspect
     @layers.each_with_index do |layer,index| 
       layer.first.objective_symbols.each do |objective|     
         values = layer.map { |individual| individual.send(objective) }   

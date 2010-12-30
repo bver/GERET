@@ -21,7 +21,7 @@ class Alps < AlgorithmBase
     AlpsIndividual.age_gap @age_gap
     AlpsIndividual.aging_scheme @aging_scheme
     AlpsIndividual.layers @max_layers
-    @report['age_limits'] << AlpsIndividual.age_limits
+    @report['age_limits'] << AlpsIndividual.age_limits.inspect
 
     @population = load_or_init( @store, @max_layer_size )
 
@@ -57,10 +57,10 @@ class Alps < AlgorithmBase
     all_layers.delete_if { |layer| layer.empty? }
 
     # phenotype duplicate elimination
-    @report['layer_sizes'] << all_layers.map { |layer| layer.size }
+    @report['layer_sizes'] << (all_layers.map { |layer| layer.size }).inspect
     if @duplicate_elimination
       all_layers.map! { |layer| eliminate_duplicates layer }
-      @report['layer_sizes_pde'] << all_layers.map { |layer| layer.size }     
+      @report['layer_sizes_pde'] << (all_layers.map { |layer| layer.size }).inspect    
     end
 
     # layer diagnostic
