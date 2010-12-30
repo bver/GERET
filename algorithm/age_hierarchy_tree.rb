@@ -3,15 +3,16 @@ require 'set'
 require 'algorithm/support/algorithm_base'
 
 
-class Deme
+class SubPopulation
   attr_accessor :current, :pending, :level
   attr_reader :parent, :name
 
-  def Deme.set_algo algo
+  def SubPopulation.set_algo algo
     @@algo = algo
   end
 
   @@left_right = 0
+
   def initialize( parent=nil )
     @parent = parent
     @name = parent.nil? ? 'R' : "#{parent.name}#{@@left_right=1-@@left_right}"       
@@ -97,13 +98,13 @@ class AgeHierarchyTree < AlgorithmBase
     AlpsIndividual.layers @max_layers
     @report['age_limits'] << AlpsIndividual.age_limits.inspect
 
-    Deme.set_algo self
+    SubPopulation.set_algo self
 
     @dominance = Dominance.new
     @population = []
     @parents_stats = []
 
-    @layers = [[ Deme.new ]]
+    @layers = [[ SubPopulation.new ]]
 
     @report.next    
     return @report    
@@ -119,8 +120,8 @@ class AgeHierarchyTree < AlgorithmBase
         @layers.flatten.each { |deme| deme.level += 1 }
         new_layer = []
         @layers.first.each do |parent|
-           new_layer << Deme.new(parent)
-           new_layer << Deme.new(parent)
+           new_layer << SubPopulation.new(parent)
+           new_layer << SubPopulation.new(parent)
         end
         @layers.unshift new_layer
 

@@ -61,4 +61,5 @@ require 'algorithm/spea2'
 require 'algorithm/alps'
 require 'algorithm/alps_strict'
 require 'algorithm/support/population_report'
+require 'algorithm/age_hierarchy_tree'
 
