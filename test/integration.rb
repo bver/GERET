@@ -51,6 +51,8 @@ run "sample/ant_trail_tcc/alps.yaml"
 run "sample/ant_trail_tcc/alps_strict.yaml"
 run "sample/ant_trail_tcc/paretoalps.yaml"
 
+run "sample/pid/aht.yaml"
+
 run "sample/ant_trail_tcc/attr_grammar/spea2.yaml"
 
 puts "integration tests 'runnable'."
