@@ -4,7 +4,7 @@ require 'algorithm/support/algorithm_base'
 
 
 class SubPopulation
-  attr_accessor :current, :pending, :level
+  attr_accessor :current, :children, :level
   attr_reader :parent, :name
 
   def SubPopulation.set_algo algo
@@ -25,14 +25,14 @@ class SubPopulation
       @current.slice( 0 ... @@algo.elite_size ).each do |individual|
         copy = individual.clone
         copy.parents individual   # increment age
-        @parent.pending << copy
+        @parent.children << copy
       end
 
-      @@algo.report << "#{@name}.restart saved elite to #{@parent.name}.pending"
+      @@algo.report << "#{@name}.restart saved elite to #{@parent.name}.children"
     end
 
     @current = @@algo.sort_spea2( @@algo.init_deme )
-    @pending = []
+    @children = []
     @level = 0
     @@algo.report << "#{@name}.restart @current.size=#{@current.size}"   
   end
@@ -43,44 +43,46 @@ class SubPopulation
     
     parent_inc = 0
     @@algo.breed( parents ).each do |offspring|
-      if offspring.layer == @level 
-        @pending << offspring
+      if offspring.layer == @level or @parent.nil?
+        @children << offspring
       else
-        abort "#{@name} losing individuals" if @parent.nil?      
-        @parent.pending << offspring
+        # abort "#{@name} losing individuals" if @parent.nil?      
+        @parent.children << offspring
         parent_inc += 1
       end
     end
-    @@algo.report << "#{@name}.breed up=#{@parent.nil? ? '': @parent.name} withparent=#{withparent} parents.size=#{parents.size} self.pending.size=#{@pending.size} @parent.pending.size_inc=#{parent_inc}"      
+    @@algo.report << "#{@name}.breed parents=#{parents.size} -> self.children=#{@children.size} +@parent.children=#{parent_inc}"      
   end
     
-  def pde_elitism_eval_trunc
+  def environmental
 
     uniq = Set.new
-    elite = []
+    elite = [] 
 
-    copy_size = @@algo.deme_size - @pending.size
-    copy_size = @@algo.elite_size if copy_size < @@algo.elite_size
-
-    @current.slice( 0 ... copy_size ).each do |individual|
+    # elitism   
+    copy_size = @@algo.deme_size - @children.size # copy the best of @current if there is not enough children
+    copy_size = @@algo.elite_size if copy_size < @@algo.elite_size # but at least elite_size of them
+    @current.slice( 0 ... copy_size ).each do |individual| # assuming @current is sorted
       copy = individual.clone
       copy.parents individual   # increment age
       elite << copy
       uniq << copy.phenotype unless uniq.include? copy.phenotype 
     end
 
+    # phenotype duplicate elimination
     offspring = []
-    @pending.each do |i| 
+    @children.each do |i| 
       next if uniq.include? i.phenotype 
       offspring << i
       uniq << i.phenotype
     end
 
-    @current = @@algo.sort_spea2( elite + offspring ).slice( 0 ... @@algo.deme_size ) #trunc
+    # truncation
+    @current = @@algo.sort_spea2( elite + offspring ).slice( 0 ... @@algo.deme_size )
 
-    @@algo.report << "#{@name}.pde_elitism_eval @pending.size=#{@pending.size} -> offspring.size=#{offspring.size} + copy_size=#{copy_size} = @current.size=#{elite.size + offspring.size} -> #{@current.size}"        
+    @@algo.report << "#{@name}.environmental pde: #{@children.size} -> #{offspring.size} + copied: #{elite.size} => #{elite.size + offspring.size} truncated: #{@current.size}"        
 
-    @pending = []   
+    @children = []   
   
   end
 
@@ -143,14 +145,14 @@ class AgeHierarchyTree < AlgorithmBase
    
     # breeding
     if @layers.size > 1
-      @layers.first.each  { |deme| deme.breed false }    
-      @layers.flatten.each { |deme| deme.breed unless deme.parent.nil? }
+#      @layers.first.each  { |deme| deme.breed false }    
+      @layers.flatten.each { |deme| deme.breed } # unless deme.parent.nil? }
     else
       @layers.first.first.breed
     end
 
     # pde, copying...
-    @layers.flatten.each { |deme| deme.pde_elitism_eval_trunc }   
+    @layers.flatten.each { |deme| deme.environmental }   
 
     # layer diagnostic
     @report['deme_sizes'] << (@layers.flatten.map { |layer| layer.current.size }).inspect
@@ -175,15 +177,15 @@ class AgeHierarchyTree < AlgorithmBase
     init_population( [], @deme_size ) 
   end
 
-  def breed( unsorted ) 
+  def breed( layer ) 
 
-    layer = sort_spea2 unsorted
+#    layer = sort_spea2 unsorted
 
     # xover, mutations
     children = []   
     while children.size + @elite_size  < @deme_size
      
-      parent1 = tournament(layer)
+      parent1 = tournament(layer)  # assuming @current is sorted 
 
       if rand < @probabilities['crossover']
 
