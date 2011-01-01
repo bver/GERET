@@ -52,7 +52,7 @@ store:
 
 report:
    class: PopulationReportStream
-   report_diversity: true
+   report_diversity: false
    report_statistics: true         
    report_histogram: true          
        
