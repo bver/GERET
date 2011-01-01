@@ -37,16 +37,15 @@ class SubPopulation
     @@algo.report << "#{@name}.restart @current.size=#{@current.size}"   
   end
 
-  def breed( withparent=true )
+  def breed
     parents = @current.clone
-    parents.concat @parent.current if withparent and not @parent.nil?
+    parents.concat @parent.current unless @parent.nil?
     
     parent_inc = 0
-    @@algo.breed( parents ).each do |offspring|
+    @@algo.breeding( parents ).each do |offspring|
       if offspring.layer == @level or @parent.nil?
         @children << offspring
       else
-        # abort "#{@name} losing individuals" if @parent.nil?      
         @parent.children << offspring
         parent_inc += 1
       end
@@ -77,7 +76,7 @@ class SubPopulation
       uniq << i.phenotype
     end
 
-    # truncation
+    # concat, sort, truncate
     @current = @@algo.sort_spea2( elite + offspring ).slice( 0 ... @@algo.deme_size )
 
     @@algo.report << "#{@name}.environmental pde: #{@children.size} -> #{offspring.size} + copied: #{elite.size} => #{elite.size + offspring.size} truncated: #{@current.size}"        
@@ -117,7 +116,7 @@ class AgeHierarchyTree < AlgorithmBase
     
     if AlpsIndividual.age_limits.include? @steps
 
-        @report << "--------- opening a new layer by unshift"       
+        @report << "--------- opening a new layer"       
 
         @layers.flatten.each { |deme| deme.level += 1 }
         new_layer = []
@@ -144,12 +143,7 @@ class AgeHierarchyTree < AlgorithmBase
     @report.report @population
    
     # breeding
-    if @layers.size > 1
-#      @layers.first.each  { |deme| deme.breed false }    
-      @layers.flatten.each { |deme| deme.breed } # unless deme.parent.nil? }
-    else
-      @layers.first.first.breed
-    end
+    @layers.flatten.each { |deme| deme.breed }
 
     # pde, copying...
     @layers.flatten.each { |deme| deme.environmental }   
@@ -177,15 +171,13 @@ class AgeHierarchyTree < AlgorithmBase
     init_population( [], @deme_size ) 
   end
 
-  def breed( layer ) 
-
-#    layer = sort_spea2 unsorted
+  def breeding( layer ) 
 
     # xover, mutations
     children = []   
     while children.size + @elite_size  < @deme_size
      
-      parent1 = tournament(layer)  # assuming @current is sorted 
+      parent1 = tournament(layer)  # assuming the layer is sorted 
 
       if rand < @probabilities['crossover']
 
@@ -226,7 +218,7 @@ class AgeHierarchyTree < AlgorithmBase
   end 
   
   def sort_spea2 unsorted
-    # sort each layer by pareto strength        
+    # sort a layer by pareto strength        
     layer = @dominance.rank_count( unsorted ).sort {|a,b| a.spea <=> b.spea }
       
     # extract individuals from dominance's shell     
