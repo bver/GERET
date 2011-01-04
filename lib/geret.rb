@@ -2,7 +2,7 @@
 #
 # = Modules (namespaces) of GERET
 # 
-# Abnf - Augmented Backus-Naur From support (mainly parsing *.abnf files to grammar instances)
+# Abnf - Augmented Backus-Naur Form support (mainly parsing *.abnf files to grammar instances)
 #
 # Mapper - GE core classes (grammar, genotype->phenotype mapping, genotype initialization...)
 #
