@@ -69,7 +69,7 @@ module Mapper
     #    node_count(i) = 1 + sum_over_all_subnodes_of_i( node_count(subnode) )
     #
     # See:
-    # http://www.evolved-analytics.com/selected_publications/legacy_publications/gptp-04_pareto-front_exploi.html   
+    # http://scholar.google.cz/scholar?cluster=18084534358495618318&hl=en&as_sdt=0,5
     #
     attr_reader :complexity
     
