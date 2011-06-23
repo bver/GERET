@@ -52,7 +52,7 @@ module Mapper
     include ExtendDepth
   end
 
-  # Mapper class employing the depth-locus node expansion strategy:
+  # Mapper class employing the breadth-locus node expansion strategy:
   #   1. Create the list L of the all unresolved nodes (nonterminal symbols ready for the expansion).
   #   2. Select only the nodes with the minimal depth from the list L and name it M.
   #   3. Take the locus codon and use it as the index i on the list M.
