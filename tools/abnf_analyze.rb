@@ -34,5 +34,24 @@ puts ''
 
 Validator.analyze_min_depth g
 g.symbols.each do |symbol|
-  puts "<#{symbol}>.min_depth=#{g[symbol].min_depth} alts: #{ ( g[symbol].map {|a| a.min_depth} ).join ', ' }"
+  rule = g[symbol] 
+  puts "Rule: <#{symbol}> recursivity: :#{rule.recursivity}; min_depth=#{rule.min_depth}" 
+
+  rule.each do |alt|
+    print "  RuleAlt: recursivity: :#{alt.recursivity}; min_depth: #{alt.min_depth}\n    "
+    alt.each do |token|
+      case token.type
+        when :literal
+          print '"' + token.data.gsub(/\n/,'\\n') + '"'
+        when :symbol
+          print '<' + token.data + '>'
+        else
+          raise "unsupported token.type=#{token.type}"
+      end
+      print ' '     
+    end
+    print "\n"
+  end
+  print "\n"
 end
+

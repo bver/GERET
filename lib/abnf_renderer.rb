@@ -20,10 +20,10 @@ module Abnf
           res += ( name + ' =' )
           res += '/' if alt != rule.first
           alt.each do |token|
-            res += ' ';
+            res += ' '
             case token.type
             when :literal
-              res += ('"' + token.data + '"')
+              res += ('"' + token.data.gsub(/\n/,'\\n') + '"')
             when :symbol
               res += token.data
             else
