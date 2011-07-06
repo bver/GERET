@@ -38,7 +38,7 @@ g.symbols.each do |symbol|
   puts "Rule: <#{symbol}> recursivity: :#{rule.recursivity}; min_depth=#{rule.min_depth}" 
 
   rule.each do |alt|
-    print "  RuleAlt: recursivity: :#{alt.recursivity}; min_depth: #{alt.min_depth}\n    "
+    print "  RuleAlt: recursivity: :#{alt.recursivity}; min_depth=#{alt.min_depth}\n    "
     alt.each do |token|
       case token.type
         when :literal
