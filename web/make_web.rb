@@ -3,7 +3,7 @@
 # gem install RedCloth
 # emerge graphviz
 
-require 'auto_gem'
+#require 'auto_gem'
 require 'redcloth'
 Geret = '../'
 
