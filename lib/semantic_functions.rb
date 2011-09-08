@@ -130,7 +130,7 @@ module Semantic
 
     # Extract all arguments from the body of the semantic function.
     def Functions.extract_args text
-      text.scan( /[\w\d]+\.[\w\d]+/ ).uniq
+      text.scan( /[\w]+\.[\w]+/ ).uniq
     end
 
     # Replace argument identifiers in the source of the semantic function by the _[i] notation.
