@@ -65,7 +65,7 @@ class TC_WorkPipes  < Test::Unit::TestCase
 
     jobs3 = [ "1", "2", "3", "foo", "5", "6", "7" ].map { |v| WPop.new v } 
    
-    result = pipes.run jobs3
+    pipes.run jobs3
     assert_equal( jobs.size+jobs2.size+jobs3.size, pipes.jobs_processed )
 
     assert_equal( 7, jobs3.size )

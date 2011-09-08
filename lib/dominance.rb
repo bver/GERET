@@ -77,7 +77,7 @@ class Dominance
   # The block need not to be called for individuals with the higher depth (see the at_least attribute).
   # 
   def depth population
-    dom, front = depth_core population 
+    dom = depth_core( population ).first
     return dom unless block_given?
     dom.each { |fields| yield( fields.original, fields.depth ) }
   end
@@ -97,8 +97,7 @@ class Dominance
   #    layers.flatten.size >= at_least.
   # 
   def layers population
-    dom, front = depth_core population    
-    front.map do |layer|
+    depth_core( population ).last.map do |layer|
       layer.map { |item| item.original }
     end
   end

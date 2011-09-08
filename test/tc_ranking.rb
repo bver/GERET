@@ -120,8 +120,8 @@ class TC_Rank < Test::Unit::TestCase
       assert_equal( population[ individual.index ].object_id, individual.original.object_id )
     end
 
-    plateu1 = (1.075 + 1.05) / 2 # rank 1
-    plateu2 = (1.0 + 0.975 + 0.95) / 3 # rank 3
+    #plateu1 = (1.075 + 1.05) / 2 # rank 1
+    #plateu2 = (1.0 + 0.975 + 0.95) / 3 # rank 3
     # 1.1, p1:1.075, p1:1.05, 1.025, p2:1.0, p2:0.975, p2:0.95, 0.924, 0.899
 
     assert_equal( 1.1, rankedPopulation[0].proportion )      

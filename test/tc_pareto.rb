@@ -256,7 +256,7 @@ class TC_Pareto < Test::Unit::TestCase
 
   def test_dominated_bugfix
     orig_size = @population.size 
-    dominated = Pareto.dominated @population
+    Pareto.dominated @population
     assert_equal( orig_size, @population.size )
   end
 

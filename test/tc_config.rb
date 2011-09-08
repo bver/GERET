@@ -99,6 +99,7 @@ class TC_Config < Test::Unit::TestCase
 
     FactoryArtifact.class_method( ['new', 'array content'] )
     instance2 = cfg.factory('artifact')
+    assert_equal( FactoryArtifact, instance2.class )
     assert_equal( ['new', 'array content'],  FactoryArtifact.class_member ) # not called twice
   end
 
