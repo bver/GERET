@@ -1,4 +1,5 @@
-#!/usr/bin/ruby -w
+
+$LOAD_PATH << '.'
 
 require 'test/tc_mock_rand'
 require 'test/tc_grammar'

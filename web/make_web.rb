@@ -1,4 +1,3 @@
-#!/usr/bin/ruby -w
 
 # gem instal rdoc
 # gem install RedCloth

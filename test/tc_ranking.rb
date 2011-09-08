@@ -1,4 +1,5 @@
-#!/usr/bin/ruby
+
+$LOAD_PATH << '.'
 
 require 'test/unit'
 require 'lib/ranking'
@@ -69,7 +70,7 @@ class TC_Rank < Test::Unit::TestCase
     assert_equal( 1.05, rankedPopulation[1].proportion )
     assert_equal( 1, rankedPopulation[2].proportion ) 
     assert_equal( 0.95, rankedPopulation[3].proportion )  
-    assert_equal( 0.9.to_s, rankedPopulation[4].proportion.to_s ) #rounding kind of 0.900001 
+    assert( (0.9-rankedPopulation[4].proportion).abs < 0.001 ) #rounding kind of 0.900001 or 0.899999
   end
 
   def test_block
@@ -90,7 +91,7 @@ class TC_Rank < Test::Unit::TestCase
     assert_equal( 2, population[4].scalarRank )
 
     assert_equal( 1.05, population[0].scalarProportion )
-    assert_equal( 0.9.to_s, population[1].scalarProportion.to_s ) #rounding kind of 0.900001 
+    assert( (0.9-population[1].scalarProportion).abs < 0.001 ) #rounding kind of 0.900001 or 0.899999   
     assert_equal( 1.1, population[2].scalarProportion )
     assert_equal( 0.95, population[3].scalarProportion )
     assert_equal( 1, population[4].scalarProportion )
@@ -131,7 +132,7 @@ class TC_Rank < Test::Unit::TestCase
     assert_equal( 0.98, rankedPopulation[5].proportion )
     assert_equal( 0.98, rankedPopulation[6].proportion )
     assert_equal( 0.94, rankedPopulation[7].proportion )
-    assert_equal( 0.9.to_s, rankedPopulation[8].proportion.to_s ) 
+    assert( (0.9-rankedPopulation[8].proportion).abs < 0.001 ) #rounding kind of 0.900001 or 0.899999   
   end
 
   def test_heterogenous_population
@@ -197,7 +198,7 @@ class TC_Rank < Test::Unit::TestCase
     assert_equal( 1.05, rankedPopulation[1].proportion ) 
     assert_equal( 1, rankedPopulation[2].proportion ) 
     assert_equal( 0.95, rankedPopulation[3].proportion ) 
-    assert_equal( 0.9.to_s, rankedPopulation[4].proportion.to_s ) #rounding kind of 0.900001 
+    assert( (0.9-rankedPopulation[4].proportion).abs < 0.001 ) #rounding kind of 0.900001 or 0.899999   
   end
 
   def test_maximize_argument

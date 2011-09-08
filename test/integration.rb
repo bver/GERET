@@ -1,5 +1,6 @@
-#!/usr/bin/ruby
- 
+
+$LOAD_PATH << '.'
+
 def cmd command
   puts "running #{command}"
   abort " #{command} failed" unless system( command + ' 1>/dev/null' )

@@ -43,8 +43,8 @@ There are no special installation steps at this moment. Please clone the git rep
 <pre>
 git clone git://github.com/bver/GERET.git
 cd GERET
-test/ts_all.rb                # check the library
-test/integration.rb           # check tools & sample runs -- (slow!)
+ruby test/ts_all.rb                # check the library
+ruby test/integration.rb           # check tools & sample runs -- (a long run)
 </pre>
 
 (To be changed in the future.)
@@ -55,7 +55,7 @@ h2. Play Now
 Run:
 
 <pre>
-tools/evolve.rb sample/task/algorithm.yaml
+ruby tools/evolve.rb sample/task/algorithm.yaml
 </pre>
 
 for evolution of a _task_ sample using a search _algorithm_.
@@ -73,7 +73,7 @@ Remove _algorithm.store_ if you want to start population(s) from scratch.
 Tune _algorithm_.yaml files to see some experiments failing. :-)
 
 For example:
-tools/evolve.rb sample/santa_fe_ant_trail/generational.yaml
+ruby tools/evolve.rb sample/santa_fe_ant_trail/generational.yaml
 
 
 h2. Other implementations of GE
@@ -91,13 +91,13 @@ For instance:
 
 <pre>
 # generate the genotype:
-tools/sensible_init.rb sample/santa_fe_ant_trail/generational.yaml > genotype.txt
+ruby tools/sensible_init.rb sample/santa_fe_ant_trail/generational.yaml > genotype.txt
 
 # see the genotype:
 cat genotype.txt
 
 # see the phenotype:
-tools/gpmap.rb sample/santa_fe_ant_trail/generational.yaml < genotype.txt
+ruby tools/gpmap.rb sample/santa_fe_ant_trail/generational.yaml < genotype.txt
 </pre>
 
 See algorithm/* for various search algorithms.

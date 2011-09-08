@@ -1,4 +1,3 @@
-#!/usr/bin/ruby
 
 # this script generates the data:
 # ./pid.rb > data.csv

@@ -1,4 +1,5 @@
-#!/usr/bin/ruby
+
+$LOAD_PATH << '.'
 
 require 'lib/abnf_file'
 require 'lib/semantic_functions'

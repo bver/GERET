@@ -1,4 +1,5 @@
-#!/usr/bin/ruby
+
+$LOAD_PATH << '.'
 
 require 'lib/alps_individual'
 require 'test/unit'

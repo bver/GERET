@@ -1,4 +1,3 @@
-#!/usr/bin/ruby -w 
 
 #
 # gpmap: map genotype to phenotype
@@ -30,6 +29,8 @@
 # genotype(s) is  written to STDOUT and has the form of ruby array:
 #   eg: [42, 23, 34, 4]
 #
+
+$LOAD_PATH << '.'
 
 require 'getoptlong'
 require 'lib/geret'

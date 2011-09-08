@@ -1,4 +1,3 @@
-#!/usr/bin/ruby
 
 AntLib = "#{File.dirname(__FILE__)}/ant.c"
 

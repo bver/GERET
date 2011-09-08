@@ -1,4 +1,5 @@
-#!/usr/bin/ruby
+
+$LOAD_PATH << '.'
 
 require 'rbconfig'
 require 'test/unit'
@@ -23,7 +24,7 @@ class TC_WorkPipes  < Test::Unit::TestCase
  
   def setup
     @dir = "#{File.dirname(__FILE__)}/data/"
-    @ruby = File.join( Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'] )
+    @ruby = File.join( RbConfig::CONFIG['bindir'], RbConfig::CONFIG['ruby_install_name'] )
   end
 
   def test_basic
@@ -164,7 +165,7 @@ class TC_WorkPipes  < Test::Unit::TestCase
 
     jobs = [ "1", "2", "3", "2", "3", "2", "3" ].map { |v| WPop.new v }
     exception = assert_raise( RuntimeError ) { pipes.run jobs }
-    if /win/ =~ Config::CONFIG['host_os']
+    if /win/ =~ RbConfig::CONFIG['host_os']
       assert( /ended$/ =~ exception.message )
     else
       assert_equal( "WorkPipes: watchdog barked", exception.message )

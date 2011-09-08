@@ -1,4 +1,3 @@
-#!/usr/bin/ruby
 
 AntLib = "#{File.dirname(__FILE__)}/ant.c"
 ProgramSource = '/tmp/tcc_ant_source.c'

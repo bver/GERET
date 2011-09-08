@@ -68,6 +68,6 @@ individual:
 evaluator:
   class: WorkPipes
   commands: 
-    - 'sample/vhdl_design/adder_pipe.rb 1'
-    - 'sample/vhdl_design/adder_pipe.rb 2'
+    - 'ruby sample/vhdl_design/adder_pipe.rb 1'
+    - 'ruby sample/vhdl_design/adder_pipe.rb 2'
 

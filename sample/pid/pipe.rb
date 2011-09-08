@@ -1,4 +1,3 @@
-#!/usr/bin/ruby
 
 abort "use:\n #$0 ID data.csv\n" unless ARGV.size==2
 id, csv = ARGV

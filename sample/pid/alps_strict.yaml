@@ -78,7 +78,7 @@ individual:
 evaluator:
   class: WorkPipes
   commands: 
-    - 'sample/pid/pipe.rb ONE sample/pid/data.csv'
-    - 'sample/pid/pipe.rb TWO sample/pid/data.csv'
+    - 'ruby sample/pid/pipe.rb ONE sample/pid/data.csv'
+    - 'ruby sample/pid/pipe.rb TWO sample/pid/data.csv'
        
  

@@ -83,7 +83,7 @@ module Util
     # The WorkPipes#run can be called more times (eg. once per population's generation).
     def run jobs
       @jobs_processed += jobs.size
-      if /win/ =~ Config::CONFIG['host_os']
+      if /win/ =~ RbConfig::CONFIG['host_os']
         run_select_broken jobs # IO.select is broken on windows
       else
         run_select_works jobs

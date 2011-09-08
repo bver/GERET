@@ -1,4 +1,3 @@
-#!/usr/bin/ruby
 
 # this script checks the produced expressions
 

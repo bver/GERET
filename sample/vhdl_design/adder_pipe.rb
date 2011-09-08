@@ -1,4 +1,3 @@
-#!/usr/bin/ruby
 
 AdderTemplate = "#{File.dirname(__FILE__)}/template.vhdl"
 AdderTestbBench = "#{File.dirname(__FILE__)}/adder_tb.vhdl"

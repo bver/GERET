@@ -1,4 +1,5 @@
-#!/usr/bin/ruby -w 
+
+$LOAD_PATH << '.'
 
 require 'lib/geret'
 

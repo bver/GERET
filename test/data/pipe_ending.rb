@@ -1,4 +1,3 @@
-#!/usr/bin/ruby
 
 id = ARGV.first
 

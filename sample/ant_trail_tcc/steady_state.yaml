@@ -78,13 +78,13 @@ individual:
 evaluator:
   class: WorkPipes
   commands: 
-    - 'sample/ant_trail_tcc/ant_pipe.rb SINGLE sample/ant_trail_tcc/ant_evaluate.c'
+    - 'ruby sample/ant_trail_tcc/ant_pipe.rb SINGLE sample/ant_trail_tcc/ant_evaluate.c'
 
 # no need for establishing more than one pipe
 
 # for the remote pipe configuration, use:
 #
-#   - 'ssh user@host "/full/path/to/geret/sample/ant_trail_tcc/ant_pipe.rb ID sample/ant_trail_tcc/ant_evaluate.c"'
+#   - 'ssh user@host "ruby /full/path/to/geret/sample/ant_trail_tcc/ant_pipe.rb ID sample/ant_trail_tcc/ant_evaluate.c"'
 #
 # note the ssh connection must use public/private key pair (no password) for authentication. 
 # (see eg. http://www.petefreitag.com/item/532.cfm 

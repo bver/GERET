@@ -1,6 +1,6 @@
 
 start:
-  *:
+  "*":
    c0.ids: "[]"
 
 code:
@@ -22,12 +22,12 @@ main:
     c2.ids : p.ids.clone
   
 identifier:
-  *:
+  "*":
     p._valid : not p.ids.include? p.def
     p.def : c0._text
 
 body:
-  *:
+  "*":
     c0.ids : p.ids.clone
   body line $:
     c1.ids : p.ids.clone

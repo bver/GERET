@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+
 $: << 'sample/santa_fe_ant_trail'
 require 'ant'
 

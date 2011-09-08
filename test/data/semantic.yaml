@@ -7,6 +7,6 @@ node1:
   node2 $:
     p.id: c0.x + 'x'
     c0.x: p.id + c1._text + c0.y
-  *:
+  "*":
     p.y : c0.y
 

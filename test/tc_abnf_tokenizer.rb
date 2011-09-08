@@ -1,4 +1,5 @@
-#!/usr/bin/ruby
+
+$LOAD_PATH << '.'
 
 require 'test/unit'
 require 'lib/abnf_tokenizer'
