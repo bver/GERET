@@ -2,8 +2,9 @@
 $LOAD_PATH << '.'
 
 def cmd command
-  puts "running #{command}"
-  abort " #{command} failed" unless system( command + ' 1>/dev/null' )
+  rc = "ruby #{command}"
+  puts "running #{rc}"
+  abort "#{rc} failed" unless system( rc + ' 1>/dev/null' )
 end
 
 def run yaml
@@ -15,7 +16,7 @@ system 'rm -rf /tmp/adder_*'
 
 cmd "tools/abnf2abnf.rb sample/abnf/example.abnf"
 cmd "tools/abnf_analyze.rb sample/abnf/example.abnf" 
-cmd "tools/sensible_init.rb -n 7 -d 7 -m grow sample/toy_regression/generational.yaml |tools/gpmap.rb -u sample/toy_regression/generational.yaml"
+cmd "tools/sensible_init.rb -n 7 -d 7 -m grow sample/toy_regression/generational.yaml |ruby tools/gpmap.rb -u sample/toy_regression/generational.yaml"
 cmd "tools/semantic_check.rb sample/ant_trail_tcc/attr_grammar/grammar.abnf  sample/ant_trail_tcc/attr_grammar/semantic.yaml 2>/dev/null"
 
 run "sample/fcl_synthesis/generational.yaml"
