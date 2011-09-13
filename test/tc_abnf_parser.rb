@@ -1,5 +1,5 @@
 
-$LOAD_PATH << '.'
+$LOAD_PATH << '.' unless $LOAD_PATH.include? '.'
 
 require 'test/unit'
 require 'lib/abnf_parser'
