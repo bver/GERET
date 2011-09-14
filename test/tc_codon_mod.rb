@@ -74,5 +74,13 @@ class TC_CodonMod < Test::Unit::TestCase
     exception = assert_raise( RuntimeError ) { c.interpret( 3, 256 ) }
     assert_equal( "CodonMod: codon 256 out of range 0..255", exception.message )
   end
+
+  def test_raw_read
+    c = Mapper::CodonMod.new
+    assert_equal( 8, c.bit_size ) #default
+
+    assert_equal( 3, c.raw_read( 3 ) )
+    assert_equal( 42, c.raw_read( 42 ) ) 
+  end
 end
 

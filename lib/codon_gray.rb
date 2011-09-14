@@ -38,6 +38,11 @@ module Mapper
       @gray[super]
     end
 
+    # Read a raw codon value
+    def raw_read codon
+      @reverse[codon]
+    end
+
   end
 
 end

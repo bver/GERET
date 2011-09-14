@@ -56,6 +56,11 @@ module Mapper
       @random.rand @card
     end
 
+    # Read a raw codon value
+    def raw_read codon
+      codon
+    end
+
     # Mutate a single bit in the source codon, return the mutated codon.
     def mutate_bit codon
       codon ^ (2 ** @random.rand( @bit_size ))
