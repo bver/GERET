@@ -70,7 +70,7 @@ module Mapper
           index += @codon.raw_read genome.at(position)
         end
 
-        token.data = found.mapping(index)
+        token.data = found.mapping(index).to_s 
       end
     end
 
@@ -89,11 +89,10 @@ module Mapper
           genome.push value
         end
 
-        token.data = found.mapping(index)
+        token.data = found.mapping(index).to_s
       end
     end
 
   end
 
 end # Mapper
-

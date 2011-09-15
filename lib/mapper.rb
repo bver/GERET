@@ -18,6 +18,7 @@ module Mapper
   class DepthFirst < Generator
     include LocusFirst
     include ExtendAll #behavior same as ExtendDepth, but simpler
+    include ConstantsNoSupport
   end
 
   # Mapper class employing the breath-first node expansion strategy:
@@ -31,6 +32,7 @@ module Mapper
   class BreadthFirst < Generator
     include LocusFirst
     include ExtendBreadth
+    include ConstantsNoSupport   
   end
 
 ###
@@ -50,8 +52,21 @@ module Mapper
   class DepthLocus < Generator
     include LocusGenetic
     include ExtendDepth
+    include ConstantsNoSupport   
   end
 
+  # Mapper class employing the depth-locus node expansion strategy with embedded constants support
+  # The expansion strategy is same as in Mapper::DepthLocus.
+  # For embedded constants technique see:
+  # http://dl.acm.org/citation.cfm?id=2001966 
+  #
+  class DepthLocusEmbConsts < Generator
+    include LocusGenetic
+    include ExtendAll #behavior same as ExtendDepth, but simpler
+    include ConstantsInGenotype
+  end
+
+ 
   # Mapper class employing the breadth-locus node expansion strategy:
   #   1. Create the list L of the all unresolved nodes (nonterminal symbols ready for the expansion).
   #   2. Select only the nodes with the minimal depth from the list L and name it M.
@@ -67,6 +82,7 @@ module Mapper
   class BreadthLocus < Generator
     include LocusGenetic
     include ExtendBreadth
+    include ConstantsNoSupport   
   end
 
   # Mapper class employing the all-locus node expansion strategy:
@@ -80,6 +96,7 @@ module Mapper
   class AllLocus < Generator
     include LocusGenetic
     include ExtendAll
+    include ConstantsNoSupport   
   end
  
 end # Mapper

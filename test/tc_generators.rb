@@ -383,5 +383,28 @@ class TC_Generators < Test::Unit::TestCase
     assert_equal( 7, m.codon.bit_size )
   end
 
+  def test_embedded_constants
+    m = Mapper::DepthLocusEmbConsts.new @grammar   
+   
+    r = MockRand.new [{1=>0},0,{3=>2},0, {3=>2},0,{3=>1},0, {2=>1},0,{2=>1},0, {1=>0},0,{3=>0},0]
+    m.random = r   
+    gen = [0,2,  2,1,  1,1,  0,0]
+
+    # inactive mode first
+    assert_equal( gen, m.generate_grow( 5 ) )
+    assert_equal( '(x*y)', m.phenotype(gen) )
+
+    # set replacing of a 'y' literal:
+    m.embedded_constants = {"y"=>{"codons"=>2, "min"=>0, "max"=>42}}
+    assert_equal( 8, m.codon.bit_size )
+    r = MockRand.new [{1=>0},0,{3=>2},0, {3=>2},0,{3=>1},0,    {256=>255}, {256=>255},     {2=>1},0,{2=>1},0, {1=>0},0,{3=>0},0]
+    m.random = r 
+    gen = [0,2,  2,1,  255, 255,  1,1,  0,0]   
+
+    assert_equal( gen, m.generate_grow( 5 ) )
+    assert_equal( '(x*42)', m.phenotype(gen) )
+  end
+ 
+
 end
 

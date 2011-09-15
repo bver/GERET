@@ -101,7 +101,9 @@ module Mapper
       else
         alt = rule.first 
       end
-      return use_expansion( symbol_token, alt.deep_copy )
+      expansion = alt.deep_copy
+      modify_expansion_generate( expansion, genome )
+      return use_expansion( symbol_token, expansion )
     end
 
     def filter_expansions_by_depth( rule, allowed_depth )
@@ -132,5 +134,11 @@ module Mapper
       selected_indices.at index
     end
   end
+
+  module ConstantsNoSupport
+    def modify_expansion_generate( exp, genome )
+      exp
+    end
+  end 
  
 end # Mapper

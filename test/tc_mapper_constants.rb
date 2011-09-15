@@ -75,7 +75,7 @@ class TC_MapperConstants < Test::Unit::TestCase
     assert_equal( 1, mapper.used_length )   
     assert_equal( TestExpansion[0], ext[0] )
     assert_equal( TestExpansion[1], ext[1] )
-    assert_equal( -1.5, ext[2].data )
+    assert_equal( '-1.5', ext[2].data )
     assert_equal( :literal, ext[2].type )   
     assert_equal( TestExpansion[3], ext[3] )
     assert_equal( TestExpansion[4], ext[4] )
@@ -116,12 +116,12 @@ class TC_MapperConstants < Test::Unit::TestCase
   
     mapper.modify_expansion_base( ext, genome )
     assert_equal( TestExpansion[0], ext[0] )
-    assert_equal( 51002, ext[1].data )
-    assert_equal( 0.5, ext[2].data )   
+    assert_equal( '51002', ext[1].data )
+    assert_equal( '0.5', ext[2].data )   
     assert_equal( TestExpansion[3], ext[3] )
     assert_equal( TestExpansion[4], ext[4] )
     assert_equal( TestExpansion[5], ext[5] )
-    assert_equal( 21002, ext[6].data )
+    assert_equal( '21002', ext[6].data )
 
     assert_equal( 5, mapper.used_length )   
   end
@@ -152,12 +152,12 @@ class TC_MapperConstants < Test::Unit::TestCase
   
     mapper.modify_expansion_base( ext, genome )
     assert_equal( TestExpansion[0], ext[0] )
-    assert_equal( 51002, ext[1].data )
-    assert_equal( 0.5, ext[2].data )   
+    assert_equal( '51002', ext[1].data )
+    assert_equal( '0.5', ext[2].data )   
     assert_equal( TestExpansion[3], ext[3] )
     assert_equal( TestExpansion[4], ext[4] )
     assert_equal( TestExpansion[5], ext[5] )
-    assert_equal( 30002, ext[6].data )
+    assert_equal( '30002', ext[6].data )
 
     assert_equal( 5, mapper.used_length )   #wrapped:  5 % genome.size
   end
@@ -187,12 +187,12 @@ class TC_MapperConstants < Test::Unit::TestCase
     mapper.modify_expansion_generate( ext, genome )
 
     assert_equal( TestExpansion[0], ext[0] )
-    assert_equal( 51002, ext[1].data )
-    assert_equal( 0.5, ext[2].data )   
+    assert_equal( '51002', ext[1].data )
+    assert_equal( '0.5', ext[2].data )   
     assert_equal( TestExpansion[3], ext[3] )
     assert_equal( TestExpansion[4], ext[4] )
     assert_equal( TestExpansion[5], ext[5] )
-    assert_equal( 21002, ext[6].data )
+    assert_equal( '21002', ext[6].data )
 
     assert_equal( genome_expect, genome )
     assert_equal( [42,4,2], mapper.codon.seq )   

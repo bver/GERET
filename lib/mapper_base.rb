@@ -1,6 +1,7 @@
 
 require 'lib/grammar'
 require 'lib/codon_mod'
+require 'lib/mapper_constants'
 
 module Mapper
 
@@ -173,8 +174,10 @@ module Mapper
       faded_index = read_genome( genome, rule.size )
  
       alt_index = @codon.interpret( rule.size, faded_index, symbol_token.data ) 
-      alt = rule.at alt_index
-      return use_expansion( symbol_token, alt.deep_copy )
+
+      expansion = rule.at(alt_index).deep_copy
+      modify_expansion_base( expansion, genome )     
+      return use_expansion( symbol_token, expansion )
     end
 
     def find_nonterminals_by_depth( tokens, depth )
@@ -226,6 +229,12 @@ module Mapper
       indices = []
       tokens.each_with_index { |tok,i| indices.push i if tok.type == :symbol }
       indices
+    end
+  end
+
+  module ConstantsNoSupport
+    def modify_expansion_base( exp, genome )
+      exp
     end
   end
 
