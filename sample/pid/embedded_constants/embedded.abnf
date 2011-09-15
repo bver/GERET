@@ -1,0 +1,16 @@
+
+program = [ " v1 = " expr ";" ]
+          [ " v2 = " expr ";" ]
+          [ " v3 = " expr ";" ]        
+          [ " v4 = " expr ";" ]
+          [ " v5 = " expr ";" ]
+          "  y = " expr ";"
+
+expr = expr op expr / 
+       "(" expr op expr ")" /
+       var
+
+op = "+" / "-" / "/" / "*"
+
+var = "constant" / "x[1]" / "x[2]" / "v1" / "v2" / "v3" / "v4" / "v5"
+

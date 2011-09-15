@@ -1,0 +1,85 @@
+---
+algorithm:
+  class: AgeHierarchyTree
+
+  deme_size: 200 
+  elite_size: 5
+
+  max_layers: 5 
+  aging_scheme: :fibonacci
+  age_gap: 13 
+
+  layer_diagnostic: true 
+
+  probabilities:
+    crossover: 0.9
+    mutation: 0.01
+ 
+  init:
+    method: ramped # grow or full or random or ramped
+    sensible_depth: 9   
+
+  termination:
+    on_individual: :stopping_condition
+    #max_evaluations: 4000000
+   
+grammar:
+  class: Abnf::File
+  filename: sample/pid/embedded_constants/embedded.abnf
+
+representation:
+  class: CodonMod
+  bit_size: 8 
+
+mapper:
+  class: DepthLocusEmbConsts # embedded constants mapper
+  wraps_to_fail: 3
+  track_support_on: true       
+  embedded_constants: 
+    constant: 
+      codons: 1
+      min: 0.0
+      max: 1.0
+
+
+# selection: is hardwired (Tournament with size 2)
+       
+crossover:
+  class: CrossoverLHS
+
+mutation:
+  class: MutationNodal
+  offset: 1 # due to DepthLocus       
+  magnitude: 128 
+
+store:
+  class: Store
+  filename: ./pid_embedded.store
+
+report:
+   class: PopulationReportStream
+   report_diversity: false
+   report_statistics: true         
+   report_histogram: true          
+       
+individual:
+  class: PipedIndividual
+  shorten_chromozome: true 
+  _weak_pareto:
+    :error: minimize
+    :complexity: minimize
+  _pipe_output:
+    - :error: to_f
+  _thresholds:
+    :error: 0.009
+#    :complexity: 200
+  _mark_batch: "MARKER\n"
+  _mark_phenotype: "\n"
+
+evaluator:
+  class: WorkPipes
+  commands: 
+    - 'ruby sample/pid/pipe.rb ONE sample/pid/data.csv'
+    - 'ruby sample/pid/pipe.rb TWO sample/pid/data.csv'
+      
+ 
