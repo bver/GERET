@@ -74,6 +74,26 @@ module Mapper
       end
     end
 
+    def modify_expansion_generate( exp, genome )
+      return unless defined? @embedded
+      exp.each do |token|
+        next unless token.type == :literal 
+        found = @embedded.fetch( token.data, nil )
+        next if found.nil?
+
+        index = 0
+        found.codons.times do 
+          index <<= @codon.bit_size
+          value = @codon.rand_gen
+          index += value
+          genome.push value
+        end
+
+        token.data = found.mapping(index)
+      end
+    end
+
   end
 
 end # Mapper
+

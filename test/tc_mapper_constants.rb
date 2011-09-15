@@ -6,7 +6,9 @@ require 'lib/grammar'
 require 'lib/mapper_constants'
 
 class ConstCodonMock
-  def initalize seq
+  attr :seq
+
+  def initialize seq
     @seq = seq
   end
 
@@ -25,11 +27,13 @@ end
 
 class ConstantsTest
   include Mapper::ConstantsInGenotype
-  def initialize
+
+  attr :used_length, :codon 
+
+  def initialize seq=[]
     @used_length = 0
-    @codon = ConstCodonMock.new
+    @codon = ConstCodonMock.new( seq )
   end
-  attr :used_length
 end
 
 class TC_MapperConstants < Test::Unit::TestCase
@@ -156,6 +160,42 @@ class TC_MapperConstants < Test::Unit::TestCase
     assert_equal( 30002, ext[6].data )
 
     assert_equal( 5, mapper.used_length )   #wrapped:  5 % genome.size
+  end
+
+  def test_generating
+                     #_con2  #const1  #_con2 
+    genome_expect = [6,3,   6,       2,5   ]  
+    sequence =  genome_expect.clone + [42,4,2]
+
+    mapper = ConstantsTest.new sequence
+    ext = TestExpansion.map { |t| t.clone }   
+    genome = []
+
+    # inactive mode
+    mapper.modify_expansion_generate( ext, genome )
+
+    assert_equal( [], genome )
+    assert_equal( TestExpansion, ext )
+    assert_equal( genome_expect.size+3, mapper.codon.seq.size )
+
+    # set some constants now
+    mapper.embedded_constants = {
+       "const1"=>{ "min"=>-2.5, "max"=>1 }, 
+       "_con2"=>{"codons"=>2, "min"=>2, "max"=>63002} 
+    } 
+
+    mapper.modify_expansion_generate( ext, genome )
+
+    assert_equal( TestExpansion[0], ext[0] )
+    assert_equal( 51002, ext[1].data )
+    assert_equal( 0.5, ext[2].data )   
+    assert_equal( TestExpansion[3], ext[3] )
+    assert_equal( TestExpansion[4], ext[4] )
+    assert_equal( TestExpansion[5], ext[5] )
+    assert_equal( 21002, ext[6].data )
+
+    assert_equal( genome_expect, genome )
+    assert_equal( [42,4,2], mapper.codon.seq )   
   end
 
 end
