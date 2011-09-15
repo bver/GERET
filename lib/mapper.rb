@@ -55,8 +55,9 @@ module Mapper
     include ConstantsNoSupport   
   end
 
-  # Mapper class employing the depth-locus node expansion strategy with embedded constants support
+  # Mapper class employing the depth-locus node expansion strategy with embedded constants support.
   # The expansion strategy is same as in Mapper::DepthLocus.
+  #
   # For embedded constants technique see:
   # http://dl.acm.org/citation.cfm?id=2001966 
   #
