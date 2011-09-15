@@ -17,7 +17,21 @@ module Mapper
   #
   module ConstantsInGenotype
 
-    EmbeddedConstantData = Struct.new( :mapping, :type, :codons  )
+    class EmbeddedConstantData 
+      attr  :type, :codons, :min, :step
+
+      def initialize( type, codons, min, step )
+         @type = type
+         @codons = codons
+         @min = min
+         @step = step
+      end
+
+      def mapping index
+         value = @min + @step * index
+         (@type == Integer) ? value.round : value
+      end
+    end
 
     attr_reader :embedded
     
@@ -34,14 +48,8 @@ module Mapper
 
         type = (min.integer? and max.integer?) ? Integer : Float
         size = 2 ** (@codon.bit_size * codons)
-        step = (max - min) / (size-1)
-        mapping = []
-        ( 0 ... size ).each do |i| 
-          value = min + step * i
-          mapping.push (type == Integer) ? value.round : value
-        end
-
-        @embedded[name] = EmbeddedConstantData.new( mapping, type, codons )
+        step = (max - min).to_f / (size-1)
+        @embedded[name] = EmbeddedConstantData.new( type, codons, min, step )
       end
     end
 
@@ -62,7 +70,7 @@ module Mapper
           index += @codon.raw_read genome.at(position)
         end
 
-        token.data = found.mapping[index]
+        token.data = found.mapping(index)
       end
     end
 

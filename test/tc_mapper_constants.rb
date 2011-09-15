@@ -57,7 +57,7 @@ class TC_MapperConstants < Test::Unit::TestCase
     assert_equal( TestExpansion, ext )
 
     mapper.embedded_constants = {"const1"=>{"codons"=>1, "min"=>-2.5, "max"=>1.0}}
-    assert_equal( [-2.5, -2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0], mapper.embedded['const1'].mapping ) 
+    assert_equal( [-2.5, -2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0], (0..7).map {|i| mapper.embedded['const1'].mapping(i) } ) 
     # 000 ~ -2.5 
     # 001 ~ -2.0
     # 010 ~ -1.5
@@ -105,13 +105,10 @@ class TC_MapperConstants < Test::Unit::TestCase
     assert_equal( Integer, mapper.embedded['_con2'].type )  
     assert_equal( Float, mapper.embedded['const1'].type )
 
-    assert_equal( [-2.5, -2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0], mapper.embedded['const1'].mapping )    
-
-    assert_equal( 64, mapper.embedded['_con2'].mapping.size )  
-    assert_equal( 2, mapper.embedded['_con2'].mapping[0] )    
-    assert_equal( 63002, mapper.embedded['_con2'].mapping[63] )  
-    assert_equal( 51002, mapper.embedded['_con2'].mapping[51] ) # 51 = 6 << 3 + 3  
-    assert_equal( 21002, mapper.embedded['_con2'].mapping[21] ) # 21 = 2 << 3 + 5  
+    assert_equal( 2, mapper.embedded['_con2'].mapping(0) )    
+    assert_equal( 63002, mapper.embedded['_con2'].mapping(63) )  
+    assert_equal( 51002, mapper.embedded['_con2'].mapping(51) ) # 51 = 6 << 3 + 3  
+    assert_equal( 21002, mapper.embedded['_con2'].mapping(21) ) # 21 = 2 << 3 + 5  
   
     mapper.modify_expansion_base( ext, genome )
     assert_equal( TestExpansion[0], ext[0] )
@@ -146,8 +143,8 @@ class TC_MapperConstants < Test::Unit::TestCase
        "const1"=>{ "min"=>-2.5, "max"=>1 }, 
        "_con2"=>{"codons"=>2, "min"=>2, "max"=>63002} 
     } 
-    assert_equal( 63002, mapper.embedded['_con2'].mapping[63] )  
-    assert_equal( 30002, mapper.embedded['_con2'].mapping[30] ) # 30 = 3 << 3 + 6  
+    assert_equal( 63002, mapper.embedded['_con2'].mapping(63) )  
+    assert_equal( 30002, mapper.embedded['_con2'].mapping(30) ) # 30 = 3 << 3 + 6  
   
     mapper.modify_expansion_base( ext, genome )
     assert_equal( TestExpansion[0], ext[0] )
