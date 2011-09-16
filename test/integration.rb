@@ -55,6 +55,7 @@ run "sample/ant_trail_tcc/alps_strict.yaml"
 run "sample/ant_trail_tcc/paretoalps.yaml"
 
 run "sample/pid/aht.yaml"
+run "sample/pid/embedded_constants/embedded.yaml"
 
 run "sample/ant_trail_tcc/attr_grammar/spea2.yaml"
 
