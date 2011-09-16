@@ -48,6 +48,15 @@ class TC_CodonGray < Test::Unit::TestCase
     assert_equal( 1, c.raw_read( @gray3[1] ) )   
     assert_equal( 4, c.raw_read( @gray3[4] ) ) 
   end
+
+  def test_bit_size_fix
+    c = Mapper::CodonGray.new 2 
+    c.bit_size = 3
+
+    assert_equal( 7, c.raw_read( @gray3[7] ) )        
+    assert_equal( 1, c.raw_read( @gray3[1] ) )   
+    assert_equal( 4, c.raw_read( @gray3[4] ) ) 
+  end
  
 end
 
