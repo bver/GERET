@@ -65,16 +65,16 @@ module Mapper
   # 
   # Example configuration:
   #
-  # mapper:
-  #   class: DepthLocusEmbConsts
-  #   embedded_constants:
-  #     const1:
-  #       min: -2.0
-  #       max: 2.0
-  #     C2:
-  #       codons: 2
-  #       min: 0
-  #       max: 80000
+  #   mapper:
+  #     class: DepthLocusEmbConsts
+  #     embedded_constants:
+  #       const1:
+  #         min: -2.0
+  #         max: 2.0
+  #       C2:
+  #         codons: 2
+  #         min: 0
+  #         max: 80000
   #
   # For instance, given the configuration above, each occurence of the terminal symbol "C2" is replaced by the random integer constant during the phenotype initialization.
   #
