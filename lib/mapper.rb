@@ -55,13 +55,14 @@ module Mapper
     include ConstantsNoSupport   
   end
 
-  # Mapper class employing the depth-locus node expansion strategy with embedded constants support.
+  # Mapper class employing the depth-locus node expansion strategy with an embedded constants support.
   # 
-  # Embedded constants simplify derivation trees during genotype-phenotype mapping phase which may help to a search algorithm by reducing a search space.
-  # Constants' values are stored directly in the genotype in one or mode codons. Their encoding is specified in the configuration of DepthLocusEmbConsts mapper
-  # under the "embedded_constants" section. Identifiers of constants have to _exactly_ match with the literals (placeholder) used the grammar. 
-  # Ranges of constants have to be specified in the configuration, number of codons used for constant encoding need not to be specified (default is 1).
-  # The type of the constant (Float or Integer) is inferred from the types of range limits.
+  # Embedded constants simplify derivation trees during genotype-phenotype mapping phase. They may help to reduce a search space.
+  # Constants' values are stored directly inside a genotype in one or more codons. Encoding parameters are specified in the configuration of 
+  # DepthLocusEmbConsts mapper under the "embedded_constants" section. Constants identifiers have to _exactly_ match literals (placeholders) 
+  # used in the grammar. 
+  # Ranges of constants have to be specified in the configuration, a number of codons used for encoding is optional (default is 1).
+  # The type of the constant (Float or Integer) is inferred from types of range limits.
   # 
   # Example configuration:
   #
@@ -76,7 +77,8 @@ module Mapper
   #         min: 0
   #         max: 80000
   #
-  # For instance, given the configuration above, each occurence of the terminal symbol "C2" is replaced by the random integer constant during the phenotype initialization.
+  # For instance, given the configuration above, each occurence of the terminal symbol "C2" is replaced by the random integer constant during
+  # the phenotype initialization.
   #
   # For details see:
   # http://dl.acm.org/citation.cfm?id=2001966 
