@@ -56,17 +56,38 @@ module Mapper
   end
 
   # Mapper class employing the depth-locus node expansion strategy with embedded constants support.
-  # The expansion strategy is same as in Mapper::DepthLocus.
+  # 
+  # Embedded constants simplify derivation trees during genotype-phenotype mapping phase which may help to a search algorithm by reducing a search space.
+  # Constants' values are stored directly in the genotype in one or mode codons. Their encoding is specified in the configuration of DepthLocusEmbConsts mapper
+  # under the "embedded_constants" section. Identifiers of constants have to _exactly_ match with the literals (placeholder) used the grammar. 
+  # Ranges of constants have to be specified in the configuration, number of codons used for constant encoding need not to be specified (default is 1).
+  # The type of the constant (Float or Integer) is inferred from the types of range limits.
+  # 
+  # Example configuration:
   #
-  # For embedded constants technique see:
+  # mapper:
+  #   class: DepthLocusEmbConsts
+  #   embedded_constants:
+  #     const1:
+  #       min: -2.0
+  #       max: 2.0
+  #     C2:
+  #       codons: 2
+  #       min: 0
+  #       max: 80000
+  #
+  # For instance, given the configuration above, each occurence of the terminal symbol "C2" is replaced by the random integer constant during the phenotype initialization.
+  #
+  # For details see:
   # http://dl.acm.org/citation.cfm?id=2001966 
+  #
+  # The expansion strategy is described in Mapper::DepthLocus.
   #
   class DepthLocusEmbConsts < Generator
     include LocusGenetic
     include ExtendAll #behavior same as ExtendDepth, but simpler
     include ConstantsInGenotype
   end
-
  
   # Mapper class employing the breadth-locus node expansion strategy:
   #   1. Create the list L of the all unresolved nodes (nonterminal symbols ready for the expansion).

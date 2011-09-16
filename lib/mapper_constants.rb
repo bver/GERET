@@ -1,20 +1,7 @@
 
 module Mapper
-
-
-  #
-  # embedded_constants:
-  #    const1:
-  #      codons: 1
-  #      type: Float
-  #      min: -2.0
-  #      max: 2.0
-  #    C2:
-  #      codons: 2
-  #      type: Integer
-  #      min: 0
-  #      max: 80000
-  #
+ 
+  # See Mapper::DepthLocusEmbConsts for details. 
   module ConstantsInGenotype
 
     class EmbeddedConstantData 
