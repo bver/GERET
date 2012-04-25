@@ -1,6 +1,6 @@
 
 #
-# gpmap: map genotype to phenotype
+# sensible_init: generate random genotypes according the configuration
 #
 # usage:
 #   tools/sensible_init.rb [OPTIONS] config.yaml > genotype
