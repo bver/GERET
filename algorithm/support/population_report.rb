@@ -1,12 +1,12 @@
 
 module PopulationStatistics 
 
-  attr_accessor :report_diversity, :report_statistics, :report_histogram
+  attr_accessor :report_diversity, :report_statistics, :report_histogram, :report_pareto_front 
 
   def report population
     post_initialize unless defined? @objective
 
-    if not defined? @report_diversity or @report_diversity == true
+    if defined? @report_diversity and @report_diversity == true
       diversity = Util.diversity( population ) { |individual| individual.genotype }
       self['diversity_genotypic'] << "#{diversity[0...10].inspect}#{ diversity.size>10 ? '...' : ''  } #{diversity.size} unique"   
     
@@ -14,7 +14,7 @@ module PopulationStatistics
       self['diversity_phenotypic'] << "#{diversity[0...10].inspect}#{ diversity.size>10 ? '...' : ''  } #{diversity.size} unique"
     end
 
-    if not defined? @report_statistics or @report_statistics == true   
+    if defined? @report_statistics and @report_statistics == true   
       values = population.map { |individual| individual.send(@objective) }   
       min, max, avg, n = Util.statistics values  
       self[@objective.to_s] << "min: #{min} max: #{max} avg: #{avg} n: #{n}"
@@ -38,7 +38,7 @@ module PopulationStatistics
     self['best_phenotype_layer'] << best.layer
     self['best_phenotype_age'] << best.age  
 
-    if not defined? @report_histogram or @report_histogram == true         
+    if defined? @report_histogram and @report_histogram == true         
       uniq = {}
       count = {}
       count.default = 0
@@ -49,12 +49,25 @@ module PopulationStatistics
     
       sorted = uniq.values.sort { |a,b| @sort_proc.call(a,b) }
       text = "\n"
-      sorted[0...10].each { |i| text += format_individual( count[i.phenotype], i ) }
+      sorted[0...10].each { |i| text += format_individual( count[i.phenotype], i ) + "\n" }
       text += "...\n" if sorted.size > 10
       if sorted.size > 15
-        sorted[-5,5].each { |i| text += format_individual( count[i.phenotype], i ) } 
+        sorted[-5,5].each { |i| text += format_individual( count[i.phenotype], i ) + "\n" } 
       end
       self['z_histogram'] << text
+    end
+
+    if defined? @report_pareto_front and @report_pareto_front == true
+      uniq = {}
+      Pareto.nondominated( population ).each do |individual| 
+        uniq[individual.phenotype] = individual 
+      end
+
+      text = "\n"
+      sorted = uniq.values.sort { |a,b| @sort_proc.call(a,b) }
+      sorted.each { |i| text += format_individual( '', i ) + ': ' + i.phenotype + "\n" }
+      
+      self['pareto_front'] << text
     end
 
   end
@@ -74,7 +87,7 @@ module PopulationStatistics
  
   def format_individual( count, i )
     age = ", age: #{i.age}" if i.respond_to? :age
-    "#{count}*[#{@objective}: #{i.send(@objective)}, complexity: #{i.complexity}#{age}]\n"
+    "#{count}*[#{@objective}: #{i.send(@objective)}, complexity: #{i.complexity}#{age}]"
   end
 
 end
