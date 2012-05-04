@@ -55,7 +55,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'SIN' ) ] ), # 1
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'COS' ) ] ), # 2
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'EXP' ) ] ), # 3
-                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'EXP' ) ] )  # 4               
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, 'LOG' ) ] )  # 4               
                 ] ),
  
       'digit' => Mapper::Rule.new( [ 
@@ -74,19 +74,31 @@ class TC_MutationSimplify < Test::Unit::TestCase
 
     Mapper::Validator.analyze_all @grammar
 
-    match = [
+    match1 = [
       # :symbol, :alt_idx, :parent_idx, :parent_arg 
       MutationSimplify::Pattern.new( 'expr',  5, nil, 0 ), # 0. expr = "(" expr:zero op:er expr:inner ")"
-      MutationSimplify::Pattern.new( 'expr',  2, 0, 0 ), # 1. expr:zero(0) = _digit:Ai "." _digit:Af
-      MutationSimplify::Pattern.new( 'op',    3, 0, 1 ), # 2. op:er(1) = "*"
-      MutationSimplify::Pattern.new( 'digit', 0, 1, 0 ), # 3. digit:Ai(0) = "0"
-      MutationSimplify::Pattern.new( 'digit', 0, 1, 1 )  # 4. digit:Ai(1) = "0"    
+      MutationSimplify::Pattern.new( 'expr',  2, 0, 0 ),   # 1. expr:zero(0) = _digit:Ai "." _digit:Af
+      MutationSimplify::Pattern.new( 'op',    3, 0, 1 ),   # 2. op:er(1) = "*"
+      MutationSimplify::Pattern.new( 'digit', 0, 1, 0 ),   # 3. digit:Ai(0) = "0"
+      MutationSimplify::Pattern.new( 'digit', 0, 1, 1 )    # 4. digit:Ai(1) = "0"    
     ]
-    outcome = [ 
+    outcome1 = [ 
       MutationSimplify::Replacement.new( 0, 0 ) # expr:zero(0) : parent=0, loc=0
     ]  # 0. expr:zero(0)
 
-    @rules = [ [match,outcome] ]
+    match2 = [
+      # :symbol, :alt_idx, :parent_idx, :parent_arg     
+      MutationSimplify::Pattern.new( 'expr',    3, nil, 0 ), # 0. expr = fn1arg:exp "(" expr:log ")" 
+      MutationSimplify::Pattern.new( 'fn1arg',  3, 0, 0 ),   # 1. fn1arg:exp = "EXP"
+      MutationSimplify::Pattern.new( 'expr',    3, 0, 1 ),   # 2. expr:log = fn1arg:log "(" expr:inner ")" 
+      MutationSimplify::Pattern.new( 'fn1arg',  4, 2, 0 )    # 3. fn1arg:log = "LOG"
+    ]
+    outcome2 = [
+      MutationSimplify::Replacement.new( 2, 1 ) # expr:inner(1) : parent=1 loc=0    
+    ]
+
+
+    @rules = [ [match1,outcome1], [match2,outcome2] ]
   end
 
   def test_match
@@ -206,5 +218,22 @@ class TC_MutationSimplify < Test::Unit::TestCase
    
   end
 
+  def test_depth_first_log_exp
+    m = Mapper::DepthFirst.new @grammar
+    m.track_support_on = true
+ 
+    genotype = [3, 3, 3, 4, 0]
+    assert_equal( 'EXP(LOG(x))', m.phenotype( genotype ) ) 
+    track = m.track_support 
+
+    s = MutationSimplify.new
+    s.rules = @rules
+  
+    expected = [0]   
+    assert_equal( 'x', m.phenotype( expected ) ) 
+
+    mutant = s.mutation( genotype, track )
+    assert_equal( expected, mutant ) # simplified
+  end
 end
 
