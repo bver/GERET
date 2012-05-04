@@ -16,6 +16,12 @@ $LOAD_PATH << '.'
 # -u, --used:
 #    print number of codons used for GP mapping
 #
+# -s, --supress:
+#    supress printing of the phenotype
+#
+# -g, --genotype:
+#    copy the genotype from $stdin before another output
+#
 # config.yaml is a configuration file with [grammar] and [mapper] sections.
 # for instance:
 #   grammar:
@@ -41,12 +47,14 @@ begin
     [ "--track", '-t', GetoptLong::NO_ARGUMENT ],
     [ "--used", '-u', GetoptLong::NO_ARGUMENT ],
     [ "--help", '-h', GetoptLong::NO_ARGUMENT ],
-    [ "--supress", '-s', GetoptLong::NO_ARGUMENT ]   
+    [ "--supress", '-s', GetoptLong::NO_ARGUMENT ],
+    [ "--genotype", '-g', GetoptLong::NO_ARGUMENT ]   
   )
  
   used = false
   track = false
   supress = false
+  mirror = false
   opts.each do |opt, arg|
     case opt
       when '--help'
@@ -62,6 +70,8 @@ begin
         track = true
       when '--supress'
         supress = true
+      when '--genotype'
+        mirror = true
     end
   end
   
@@ -73,6 +83,7 @@ begin
   mapper.track_support_on = track
 
   $stdin.each_line do |chromozome|
+    puts chromozome if mirror
     genotype = eval chromozome
     next unless genotype.kind_of? Array
     phenotype = mapper.phenotype genotype 
