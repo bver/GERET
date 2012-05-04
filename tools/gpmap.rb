@@ -78,7 +78,10 @@ begin
     phenotype = mapper.phenotype genotype 
     next if phenotype.nil?
     puts phenotype unless supress
-    mapper.track_support.each_with_index { |node,i| puts "#{i}. #{node.symbol} genome:#{node.from}..#{node.to} parent:#{node.back}" } if track
+    mapper.track_support.each_with_index do |node,i| 
+      text = (grammar[node.symbol][node.alt_idx].map {|token| token.type == :symbol ? %Q[<#{token.data}>] : %Q["#{token.data}"] }).join(' ')
+      puts "#{i}. #{node.symbol} genome:#{node.from}..#{node.to} parent:#{node.back} locus:#{node.loc_idx} expansion:'#{text}'"
+    end if track
     puts "used_length = #{mapper.used_length}" if used
   end
 

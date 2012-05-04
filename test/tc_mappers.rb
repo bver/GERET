@@ -317,13 +317,13 @@ class TC_Mappers < Test::Unit::TestCase
     assert_equal( '((x +y) *x)', m.phenotype( [2, 2, 0, 0, 1, 1, 0] ) )
     
     track = [
-      Mapper::TrackNode.new( 'expr', 0, 6 ),
-      Mapper::TrackNode.new( 'expr', 1, 4, 0 ),
-      Mapper::TrackNode.new( 'expr', 2, 2, 1 ),
-      Mapper::TrackNode.new( 'aop', 3, 3, 1 ),
-      Mapper::TrackNode.new( 'expr', 4, 4, 1 ),
-      Mapper::TrackNode.new( 'aop', 5, 5, 0 ),
-      Mapper::TrackNode.new( 'expr', 6, 6, 0 )
+      Mapper::TrackNode.new( 'expr', 0, 6, nil, 2, 0 ),
+      Mapper::TrackNode.new( 'expr', 1, 4, 0, 2, 0 ),
+      Mapper::TrackNode.new( 'expr', 2, 2, 1, 0, 0 ),
+      Mapper::TrackNode.new( 'aop', 3, 3, 1, 0, 0 ),
+      Mapper::TrackNode.new( 'expr', 4, 4, 1, 1, 0 ),
+      Mapper::TrackNode.new( 'aop', 5, 5, 0, 1, 0 ),
+      Mapper::TrackNode.new( 'expr', 6, 6, 0, 0, 0 )
     ]
     assert_equal( track, m.track_support )
     
@@ -340,13 +340,13 @@ class TC_Mappers < Test::Unit::TestCase
     assert_equal( '(y *(x +y))', m.phenotype( [2, 4, 3, 5, 0, 6, 1, 3, 5] ) )  
 
     track = [
-      Mapper::TrackNode.new( 'expr', 0, 6 ),
-      Mapper::TrackNode.new( 'expr', 1, 1, 0 ),
-      Mapper::TrackNode.new( 'aop', 2, 2, 0 ),
-      Mapper::TrackNode.new( 'expr', 3, 6, 0 ),
-      Mapper::TrackNode.new( 'expr', 4, 4, 3 ),     
-      Mapper::TrackNode.new( 'aop', 5, 5, 3 ),     
-      Mapper::TrackNode.new( 'expr', 6, 6, 3 ),          
+      Mapper::TrackNode.new( 'expr', 0, 6, nil, 2, 0 ),
+      Mapper::TrackNode.new( 'expr', 1, 1, 0, 1, 0 ),
+      Mapper::TrackNode.new( 'aop', 2, 2, 0, 1, 0 ),
+      Mapper::TrackNode.new( 'expr', 3, 6, 0, 2, 0 ),
+      Mapper::TrackNode.new( 'expr', 4, 4, 3, 0, 0 ),     
+      Mapper::TrackNode.new( 'aop', 5, 5, 3, 0, 0 ),     
+      Mapper::TrackNode.new( 'expr', 6, 6, 3, 1, 0 ),          
     ]
     assert_equal( track, m.track_support )
   end
@@ -361,16 +361,16 @@ class TC_Mappers < Test::Unit::TestCase
     # o = + / *
 
     track = [
-      Mapper::TrackNode.new( 'expr', 0, 19, nil ), # 0:[ ,2]      <e>      <o>      <e>
-      Mapper::TrackNode.new( 'expr', 2,  9, 0 ),   # 1:[2,2]      <e>      <o> (<e> <o> <e>)   
-      Mapper::TrackNode.new( 'aop',  4,  5, 1 ),   # 2:[1,0]      <e>      <o> (<e>  +  <e>)   
-      Mapper::TrackNode.new( 'expr', 6,  7, 1 ),   # 3:[0,1]      <e>      <o> ( y   +  <e>)    
-      Mapper::TrackNode.new( 'expr', 8,  9, 1 ),   # 4:[ ,0]      <e>      <o> ( y   +   x ) 
-      Mapper::TrackNode.new( 'expr',10, 17, 0 ),   # 5:[0,2] (<e> <o> <e>) <o> ( y   +   x ) 
-      Mapper::TrackNode.new( 'aop', 12, 13, 5 ),   # 6:[1,0] (<e>  +  <e>) <o> ( y   +   x )      
-      Mapper::TrackNode.new( 'expr',14, 15, 5 ),   # 7:[0,0] ( x   +  <e>) <o> ( y   +   x )           
-      Mapper::TrackNode.new( 'expr',16, 17, 5 ),   # 8:[ ,1] ( x   +   y ) <o> ( y   +   x )          
-      Mapper::TrackNode.new( 'aop', 18, 19, 0 ),   # 9:[ ,1] ( x   +   y )  *  ( y   +   x )               
+      Mapper::TrackNode.new( 'expr', 0, 19, nil, 2, 0 ),   # 0:[ ,2]      <e>      <o>      <e>
+      Mapper::TrackNode.new( 'expr', 2,  9, 0,   2, 2 ),   # 1:[2,2]      <e>      <o> (<e> <o> <e>)   
+      Mapper::TrackNode.new( 'aop',  4,  5, 1,   0, 1 ),   # 2:[1,0]      <e>      <o> (<e>  +  <e>)   
+      Mapper::TrackNode.new( 'expr', 6,  7, 1,   1, 0 ),   # 3:[0,1]      <e>      <o> ( y   +  <e>)    
+      Mapper::TrackNode.new( 'expr', 8,  9, 1,   0, 0 ),   # 4:[ ,0]      <e>      <o> ( y   +   x ) 
+      Mapper::TrackNode.new( 'expr',10, 17, 0,   2, 0 ),   # 5:[0,2] (<e> <o> <e>) <o> ( y   +   x ) 
+      Mapper::TrackNode.new( 'aop', 12, 13, 5,   0, 1 ),   # 6:[1,0] (<e>  +  <e>) <o> ( y   +   x )      
+      Mapper::TrackNode.new( 'expr',14, 15, 5,   0, 0 ),   # 7:[0,0] ( x   +  <e>) <o> ( y   +   x )           
+      Mapper::TrackNode.new( 'expr',16, 17, 5,   1, 0 ),   # 8:[ ,1] ( x   +   y ) <o> ( y   +   x )          
+      Mapper::TrackNode.new( 'aop', 18, 19, 0,   1, 0 ),   # 9:[ ,1] ( x   +   y )  *  ( y   +   x )               
     ]
     assert_equal( track, m.track_support )
    
