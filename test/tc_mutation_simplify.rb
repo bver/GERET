@@ -128,7 +128,8 @@ class TC_MutationSimplify < Test::Unit::TestCase
       Mapper::TrackNode.new( 'expr',  8, 8, 0,   0, 2 )
     ]   
 
-    s = MutationSimplify.new     
+    s = MutationSimplify.new 
+    s.mapper_type = 'DepthFirst'
     assert_equal( track_reloc, s.reloc(track) )
 
     assert_equal( 9, track.size )
@@ -196,6 +197,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
    
     s = MutationSimplify.new
     s.rules = @rules
+    s.mapper_type = 'DepthFirst'      
     assert_equal( @rules, s.rules )
 
     genotype_dest = [5, 0, 1, 2, 0, 0]
@@ -228,12 +230,33 @@ class TC_MutationSimplify < Test::Unit::TestCase
 
     s = MutationSimplify.new
     s.rules = @rules
+    s.mapper_type = 'DepthFirst'      
   
     expected = [0]   
     assert_equal( 'x', m.phenotype( expected ) ) 
 
     mutant = s.mutation( genotype, track )
     assert_equal( expected, mutant ) # simplified
+  end
+
+  def test_mapper_type_wrong
+    s = MutationSimplify.new
+    assert_nil( s.mapper_type )
+
+    exception = assert_raise( RuntimeError ) { s.reloc [] }
+    assert_equal( "MutationSimplify: mapper_type not selected", exception.message )
+   
+    s.mapper_type = 'undefined'
+    exception = assert_raise( RuntimeError ) { s.reloc [] }
+    assert_equal( "MutationSimplify: mapper_type not supported", exception.message )
+  end
+
+  def test_depth_locus
+     m = Mapper::DepthLocus.new @grammar
+     m.track_support_on = true
+   
+     genotype_src1 = [0,5,  1,2,  1,0,  0,5,  2,1,  0,2,  0,0,  0,0,  0,3 ]
+     assert_equal( '((0.0*y)/x)', m.phenotype( genotype_src1 ) )
   end
 end
 

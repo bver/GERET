@@ -7,9 +7,10 @@ module Operator
 
     def initialize
       @rules = []
+      @mapper_type = nil
     end
 
-    attr_accessor :rules
+    attr_accessor :rules, :mapper_type
 
     def mutation( parent, track )
       mutant = parent.clone
@@ -47,7 +48,25 @@ module Operator
     end
    
     def reloc track
-      # TODO: Mapper dependent!
+      case @mapper_type     
+      when 'DepthFirst'
+        reloc_first track
+      when 'DepthLocus'
+        reloc_locus track
+      when nil
+        raise "MutationSimplify: mapper_type not selected"
+      else
+        raise "MutationSimplify: mapper_type not supported"
+      end
+    end
+
+    protected
+
+    def reloc_locus track
+    end
+    
+    def reloc_first track
+      # TODO optimize O(n^2)
       rel = track.clone
       track.each_with_index do |node,index|
         idx = 0 
@@ -61,8 +80,7 @@ module Operator
       rel
     end
 
-    protected
-
+   
     def find_node( pattern, current )
       current.detect do |node| 
         node.symbol == pattern.symbol and 
