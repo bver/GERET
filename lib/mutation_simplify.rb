@@ -22,15 +22,14 @@ module Operator
 
     def match( track, patterns )
       track.each_with_index do |node, index|
-        if match_node?( node, patterns.first )
-          current = []
-          track.each { |n| current.push(n.clone) if node.from<=n.from and n.to<=node.to }
-          current.first.back = nil 
-          current = reloc(current)         
-          current.each { |n| n.back -= index unless n.back.nil? }
-          rejected = patterns.reject { |p| not find_node(p,current).nil? }
-          return current if rejected.empty?
-        end
+        next unless match_node?( node, patterns.first )
+        current = []
+        track.each { |n| current.push(n.clone) if node.from<=n.from and n.to<=node.to }
+        current.first.back = nil 
+        current = reloc(current)         
+        current.each { |n| n.back -= index unless n.back.nil? }
+        rejected = patterns.reject { |p| not find_node(p,current).nil? }
+        return current if rejected.empty?
       end
       []
     end
