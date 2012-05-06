@@ -104,7 +104,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
       MutationSimplify::Expansion.new( 'expr',  5,  -1, 0 ),   # 0. expr = "(" expr:inner op expr:one ")" 
       MutationSimplify::Subtree.new(   'inner',      0, 0 ),   # 1. * inner     
       MutationSimplify::Expansion.new( 'op',    3,   0, 1 ),   # 2. op:er = "*"
-      MutationSimplify::Expansion.new( 'expr',  2,  -1, 2 ),   # 3. expr:zero = _digit:Ai "." _digit:Af     
+      MutationSimplify::Expansion.new( 'expr',  2,  -1, 2 ),   # 3. expr:zero = digit:Ai "." digit:Af     
       MutationSimplify::Expansion.new( 'digit', 1,   0, 0 ),   # 2. digit:Ai = "1"
       MutationSimplify::Expansion.new( 'digit', 0,   2, 1 )    # 3. digit:Af = "0"
     ]
@@ -137,11 +137,27 @@ class TC_MutationSimplify < Test::Unit::TestCase
       [2, 7]
     ]
 
+    match5 = [ # A-A  --> 
+      MutationSimplify::Expansion.new( 'expr',  5,  -1, 0 ),   # 0. expr = "(" expr:same op expr:same ")"
+      MutationSimplify::Subtree.new(   'same',       0, 0 ),   # 1. * expr:same
+      MutationSimplify::Expansion.new( 'op',    1,   0, 1 ),   # 2. op = "-"
+      MutationSimplify::Subtree.new(   'same',       1, 2 ),   # 3. * expr:same     
+    ]
+    outcome5 = [ # --> 0.0
+      MutationSimplify::Expansion.new( 'expr',  2 ),   # 0. expr:zero = digit:Ai "." digit:Af
+      MutationSimplify::Expansion.new( 'digit', 0 ),   # 1. digit:Ai = "0"
+      MutationSimplify::Expansion.new( 'digit', 0 )    # 2. digit:Af = "0"
+    ]
+    equals5 = [
+      [1, 3]
+    ]
+
     @rules = [ 
       MutationSimplify::RuleCase.new(match1,outcome1,[]), 
       MutationSimplify::RuleCase.new(match2,outcome2,[]), 
       MutationSimplify::RuleCase.new(match3,outcome3,[]), 
-      MutationSimplify::RuleCase.new(match4,outcome4,equals4)
+      MutationSimplify::RuleCase.new(match4,outcome4,equals4),
+      MutationSimplify::RuleCase.new(match5,outcome5,equals5)     
     ]
   end
 
@@ -491,6 +507,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
   end
 
   def test_equal_replace_extension_first
+    # A*B + A*C  --> A*(B+C)
     m = Mapper::DepthFirst.new @grammar
     m.track_support_on = true
    
@@ -516,5 +533,46 @@ class TC_MutationSimplify < Test::Unit::TestCase
     assert_equal( genotype_src2, mutant ) # 3.2 != 3.1, not simplified
   end 
   
+  def test_equal_replace_extension_locus
+    # A-A  --> 0.0
+    m = Mapper::DepthLocus.new @grammar
+    m.track_support_on = true
+   
+    genotype_src1 = [0,3, 1,5, 1,3, 0,5, 2,2, 0,2, 0,1, 1,1, 0,2, 1,1, 0,2, 0,0, 0,0] 
+    assert_equal( 'ABS(((2.1-2.1)*x))', m.phenotype( genotype_src1 ) )
+    track_src1 = m.track_support
+    #0. expr genome:0..25 parent: locus:0 expansion:'<fn1arg> "(" <expr> ")"'
+    #1. expr genome:2..23 parent:0 locus:1 expansion:'"(" <expr> <op> <expr> ")"'
+    #2. op genome:4..5 parent:1 locus:1 expansion:'"*"'
+    #3. expr genome:6..21 parent:1 locus:0 expansion:'"(" <expr> <op> <expr> ")"'
+    #4. expr genome:8..13 parent:3 locus:2 expansion:'<digit> "." <digit>'
+    #5. digit genome:10..11 parent:4 locus:0 expansion:'"2"'
+    #6. digit genome:12..13 parent:4 locus:0 expansion:'"1"'
+    #7. op genome:14..15 parent:3 locus:1 expansion:'"-"'
+    #8. expr genome:16..21 parent:3 locus:0 expansion:'<digit> "." <digit>'
+    #9. digit genome:18..19 parent:8 locus:1 expansion:'"1"'
+    #10. digit genome:20..21 parent:8 locus:0 expansion:'"2"'
+    #11. expr genome:22..23 parent:1 locus:0 expansion:'"x"'
+    #12. fn1arg genome:24..25 parent:0 locus:0 expansion:'"ABS"'
+   
+    genotype_dest1 = [0,3, 1,5, 1,3,   0,2, 0,0, 0,0,   0,0, 0,0] 
+    assert_equal( 'ABS((0.0*x))', m.phenotype( genotype_dest1 ) )
+   
+    s = MutationSimplify.new 
+    s.mapper_type = 'DepthLocus'
+    s.rules = @rules   
+   
+    mutant = s.mutation( genotype_src1, track_src1 )
+    assert_equal( genotype_dest1, mutant ) # simplified
+
+    genotype_src2 = [0,3, 1,5, 1,3, 0,5, 2,2, 0,2, 0,1, 1,1, 0,0, 0,0, 0,0] 
+    assert_equal( 'ABS(((x-2.1)*x))', m.phenotype( genotype_src2 ) )
+    track_src2 = m.track_support
+    
+    mutant = s.mutation( genotype_src2, track_src2 )
+    assert_equal( genotype_src2, mutant ) # x != 2.1, not simplified
+   
+  end
+
 end
 
