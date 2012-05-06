@@ -17,8 +17,8 @@ module Operator
       track_reloc = reloc(track)     
       mutant = parent.clone
       @rules.each do |rule|
-        ptm = match( track_reloc, rule.first )
-        return replace( mutant, ptm, rule.first, rule.last, track_reloc ) unless ptm.empty?
+        ptm = match( track_reloc, rule.match )
+        return replace( mutant, ptm, rule.match, rule.outcome, track_reloc ) unless ptm.empty?
       end
       mutant
     end

@@ -113,9 +113,9 @@ class TC_MutationSimplify < Test::Unit::TestCase
     ]
 
     @rules = [ 
-      RuleCase.new(match1,outcome1), 
-      RuleCase.new(match2,outcome2), 
-      RuleCase.new(match3,outcome3) 
+      MutationSimplify::RuleCase.new(match1,outcome1), 
+      MutationSimplify::RuleCase.new(match2,outcome2), 
+      MutationSimplify::RuleCase.new(match3,outcome3) 
     ]
   end
 
