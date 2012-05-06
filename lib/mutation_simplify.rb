@@ -40,9 +40,8 @@ module Operator
         found = track_reloc.find { |n| n.back == stack.last and n.loc_idx == pattern.parent_arg }
         return [] if found.nil?       
 
-        if pattern.kind_of? Pattern
-          return [] unless match_node?( found, pattern )
-        end
+        return [] if pattern.kind_of?(Pattern) and not match_node?( found, pattern )
+        
         node_idx = track_reloc.index( found )
         ptx << node_idx
 
