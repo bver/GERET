@@ -4,6 +4,7 @@ module Operator
   class MutationSimplify
     Expansion = Struct.new( :symbol, :alt_idx, :dir, :parent_arg )
     Subtree = Struct.new( :id, :dir, :parent_arg )
+    RuleCase = Struct.new( :match, :outcome, :equals  )
 
     def initialize
       @rules = []

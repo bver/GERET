@@ -81,7 +81,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
       MutationSimplify::Expansion.new( 'digit', 0, 0, 0 ),   # 2. digit:Ai = "0"
       MutationSimplify::Expansion.new( 'digit', 0, 1, 1 ),   # 3. digit:Af = "0"
       MutationSimplify::Expansion.new( 'op',    3, 0, 1 ),   # 4. op:er = "*"
-      MutationSimplify::Subtree.new( 'omit',     1, 2 )    # 5. * expr:omit    
+      MutationSimplify::Subtree.new(   'omit',     1, 2 )    # 5. * expr:omit    
     ]
     outcome1 = [ # --> '0.0'
       1  # expr:zero
@@ -93,7 +93,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
       MutationSimplify::Expansion.new( 'fn1arg',  3, 0, 0 ),   # 1. fn1arg:exp = "EXP"
       MutationSimplify::Expansion.new( 'expr',    3,-1, 1 ),   # 2. expr:log = fn1arg:log "(" expr:inner ")" 
       MutationSimplify::Expansion.new( 'fn1arg',  4, 0, 0 ),   # 3. fn1arg:log = "LOG"
-      MutationSimplify::Subtree.new( 'inner',      2, 1 )    # 4. * expr:inner     
+      MutationSimplify::Subtree.new(   'inner',      2, 1 )    # 4. * expr:inner     
     ]
     outcome2 = [ # --> 'inner'
       4  # wildcard expr:inner
@@ -102,7 +102,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
     match3 = [ # '(inner*1.0)' -->
       # :symbol, :alt_idx, :dir, :parent_arg     
       MutationSimplify::Expansion.new( 'expr',  5,  -1, 0 ),   # 0. expr = "(" expr:inner op expr:one ")" 
-      MutationSimplify::Subtree.new( 'inner',      0, 0 ),   # 1. * inner     
+      MutationSimplify::Subtree.new(   'inner',      0, 0 ),   # 1. * inner     
       MutationSimplify::Expansion.new( 'op',    3,   0, 1 ),   # 2. op:er = "*"
       MutationSimplify::Expansion.new( 'expr',  2,  -1, 2 ),   # 3. expr:zero = _digit:Ai "." _digit:Af     
       MutationSimplify::Expansion.new( 'digit', 1,   0, 0 ),   # 2. digit:Ai = "1"
@@ -112,7 +112,11 @@ class TC_MutationSimplify < Test::Unit::TestCase
       1 # wildcard expr:inner     
     ]
 
-    @rules = [ [match1,outcome1], [match2,outcome2], [match3,outcome3] ]
+    @rules = [ 
+      RuleCase.new(match1,outcome1), 
+      RuleCase.new(match2,outcome2), 
+      RuleCase.new(match3,outcome3) 
+    ]
   end
 
   def test_match_patterns
@@ -129,12 +133,12 @@ class TC_MutationSimplify < Test::Unit::TestCase
     ]   
 
     s = MutationSimplify.new 
-    ptm = s.match_patterns( track_reloc, @rules.first.first, 1 )
+    ptm = s.match_patterns( track_reloc, @rules.first.match, 1 )
     ptm_expected = [ 1, 2, 3, 4, 5, 6 ]
 
     assert_equal( ptm_expected, ptm ) # matches
 
-    ptm = s.match_patterns( track_reloc, @rules.first.first, 0 )
+    ptm = s.match_patterns( track_reloc, @rules.first.match, 0 )
     assert_equal( [], ptm ) # no match  
   
   end
@@ -171,14 +175,14 @@ class TC_MutationSimplify < Test::Unit::TestCase
     assert_equal( track_reloc, s.reloc(track) )
 
     assert_equal( 9, track.size )
-    ptm = s.match( track_reloc, @rules.first.first ) 
+    ptm = s.match( track_reloc, @rules.first.match ) 
     assert_equal( 9, track.size )
 
     ptm_expected = [ 1, 2, 3, 4, 5, 6 ]
     assert_equal( ptm_expected, ptm ) # matches
 
     track_reloc[4].alt_idx = 4 # disable matching
-    assert_equal( [], s.match( track_reloc, @rules.first.first ) )
+    assert_equal( [], s.match( track_reloc, @rules.first.match ) )
   end
 
   def test_replacement
@@ -205,7 +209,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
       1  # expr:zero -> genome[2..4] -> 2,0,0
     ]    
     expected = [ 5,    0, 2,0,0,    2, 0 ]
-    replaced = s.replace( genome, ptm, @rules.first.first, outcome, track_reloc )
+    replaced = s.replace( genome, ptm, @rules.first.match, outcome, track_reloc )
     assert_equal(expected, replaced)
 
     outcome = [
@@ -213,7 +217,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
       2  # digit:Ai -> genome[3..3] -> 0
     ]    
     expected = [ 5,    1, 0,    2, 0 ]
-    replaced = s.replace( genome, ptm, @rules.first.first, outcome, track_reloc )
+    replaced = s.replace( genome, ptm, @rules.first.match, outcome, track_reloc )
     assert_equal(expected, replaced)
 
   end
@@ -328,11 +332,11 @@ class TC_MutationSimplify < Test::Unit::TestCase
 
     expected_ptm = [3, 5, 6, 7, 8, 4]
 
-    ptm = s.match( track_reloc, @rules.first.first )   
+    ptm = s.match( track_reloc, @rules.first.match )   
     assert_equal( expected_ptm, ptm )
 
     track_reloc[7].alt_idx = 1 # disable matching by 0.0 -> 0.1
-    assert_equal( [], s.match( track_reloc, @rules.first.first ) )
+    assert_equal( [], s.match( track_reloc, @rules.first.match ) )
   end
 
   def test_depth_locus
