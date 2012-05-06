@@ -354,9 +354,42 @@ class TC_MutationSimplify < Test::Unit::TestCase
      assert_equal( genotype_dest1, mutant ) # simplified
   end
 
-  def test_subtree
-    # 'EXP(LOG(x))' and '(SIN(y)*1.0)'
-    #TODO: both  DepthFirst and DepthLocus
+  def test_subtree_depth_locus
+    m = Mapper::DepthLocus.new @grammar
+    m.track_support_on = true
+    
+    genotype_src1 = [0,5, 1,3, 0,3, 1,1, 0,1, 0,2, 1,0, 0,1]
+    assert_equal( '(SIN(y)*1.0)', m.phenotype( genotype_src1 ) )
+    track_src1 = m.track_support
+
+    genotype_dest1 = [0,3, 1,1, 0,1]
+    assert_equal( 'SIN(y)', m.phenotype( genotype_dest1 ) )
+
+    s = MutationSimplify.new
+    s.mapper_type = 'DepthLocus'
+    s.rules = @rules
+
+    mutant = s.mutation( genotype_src1, track_src1 )
+    assert_equal( genotype_dest1, mutant ) # simplified
+  end
+
+  def test_subtree_depth_first
+    m = Mapper::DepthFirst.new @grammar
+    m.track_support_on = true
+
+    genotype_src1 = [3,4,5,3,1,1,3,2,1,0] 
+    assert_equal( 'LOG((SIN(y)*1.0))', m.phenotype( genotype_src1 ) )
+    track_src1 = m.track_support
+
+    genotype_dest1 = [3,4,3,1,1] 
+    assert_equal( 'LOG(SIN(y))', m.phenotype( genotype_dest1 ) )
+
+    s = MutationSimplify.new
+    s.mapper_type = 'DepthFirst'
+    s.rules = @rules
+
+    mutant = s.mutation( genotype_src1, track_src1 )
+    assert_equal( genotype_dest1, mutant ) # simplified
   end
 
 end

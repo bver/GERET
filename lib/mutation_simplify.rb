@@ -132,16 +132,6 @@ module Operator
       rel
     end
 
-   
-#    def find_node( pattern, current )
-#      current.detect do |node| 
-#        node.symbol == pattern.symbol and 
-#        node.alt_idx == pattern.alt_idx and 
-#        node.back == pattern.parent_idx and
-#        node.loc_idx == pattern.parent_arg     
-#      end
-#    end
-
     def match_node?( node, pattern )
       node.symbol == pattern.symbol and node.alt_idx == pattern.alt_idx
     end
