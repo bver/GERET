@@ -42,18 +42,9 @@ module Operator
 
         if pattern.kind_of? Pattern
           return [] unless match_node?( found, pattern )
-          node_idx = track_reloc.index( found )
-          ptx << node_idx
-        else # assuming Subtree
-          children = [ found ]
-          indices = []
-          until children.empty?
-            idx = track_reloc.index( children.pop )
-            children.concat track_reloc.find_all { |n| n.back == idx }
-            indices << idx
-          end
-          ptx << indices
         end
+        node_idx = track_reloc.index( found )
+        ptx << node_idx
 
         case pattern.dir
         when -1
@@ -73,9 +64,7 @@ module Operator
      res = genome[0 ... root_node.from].clone
 
      replacement.each do |idx|
-       replace = ptm[idx]      
-       node_idx = replace.kind_of?(Array) ? replace.first : replace
-       node = track_reloc[ node_idx ]
+       node = track_reloc[ ptm[idx] ]
        res.concat genome[node.from .. node.to]
      end
 

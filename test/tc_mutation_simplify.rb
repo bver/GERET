@@ -130,7 +130,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
 
     s = MutationSimplify.new 
     ptm = s.match_patterns( track_reloc, @rules.first.first, 1 )
-    ptm_expected = [ 1, 2, 3, 4, 5, [6] ]
+    ptm_expected = [ 1, 2, 3, 4, 5, 6 ]
 
     assert_equal( ptm_expected, ptm ) # matches
 
@@ -174,7 +174,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
     ptm = s.match( track_reloc, @rules.first.first ) 
     assert_equal( 9, track.size )
 
-    ptm_expected = [ 1, 2, 3, 4, 5, [6] ]
+    ptm_expected = [ 1, 2, 3, 4, 5, 6 ]
     assert_equal( ptm_expected, ptm ) # matches
 
     track_reloc[4].alt_idx = 4 # disable matching
@@ -184,7 +184,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
   def test_replacement
     genome = [5, 5, 2, 0, 0, 3, 1, 2, 0]
 
-    ptm = [ 1, 2, 3, 4, 5, [6,4,5,6,7] ]
+    ptm = [ 1, 2, 3, 4, 5, 6 ]
 
     track_reloc = [
       Mapper::TrackNode.new( 'expr',  0, 8, nil, 5, 0 ),
@@ -326,7 +326,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
 
     assert_equal( track_reloc, s.reloc(track) )
 
-    expected_ptm = [3, 5, 6, 7, 8, [4]]
+    expected_ptm = [3, 5, 6, 7, 8, 4]
 
     ptm = s.match( track_reloc, @rules.first.first )   
     assert_equal( expected_ptm, ptm )
