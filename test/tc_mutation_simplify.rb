@@ -396,5 +396,36 @@ class TC_MutationSimplify < Test::Unit::TestCase
     assert_equal( genotype_dest1, mutant ) # simplified
   end
 
+  def test_equals
+    m = Mapper::DepthFirst.new @grammar
+    m.track_support_on = true
+   
+    genotype_src1 = [5, 5, 2,3,2, 3, 2,4,2, 0, 5, 2,3,2, 3, 0] 
+    assert_equal( '((3.2*4.2)+(3.2*x))', m.phenotype( genotype_src1 ) )
+    track = m.track_support
+    #0. expr genome:0..15 parent: locus:0 expansion:'"(" <expr> <op> <expr> ")"'
+    #1. expr genome:1..8 parent:0 locus:0 expansion:'"(" <expr> <op> <expr> ")"'
+    #2. expr genome:2..4 parent:1 locus:0 expansion:'<digit> "." <digit>'
+    #3. digit genome:3..3 parent:2 locus:0 expansion:'"3"'
+    #4. digit genome:4..4 parent:2 locus:0 expansion:'"2"'
+    #5. op genome:5..5 parent:1 locus:0 expansion:'"*"'
+    #6. expr genome:6..8 parent:1 locus:0 expansion:'<digit> "." <digit>'
+    #7. digit genome:7..7 parent:6 locus:0 expansion:'"4"'
+    #8. digit genome:8..8 parent:6 locus:0 expansion:'"2"'
+    #9. op genome:9..9 parent:0 locus:0 expansion:'"+"'
+    #10. expr genome:10..15 parent:0 locus:0 expansion:'"(" <expr> <op> <expr> ")"'
+    #11. expr genome:11..13 parent:10 locus:0 expansion:'<digit> "." <digit>'
+    #12. digit genome:12..12 parent:11 locus:0 expansion:'"3"'
+    #13. digit genome:13..13 parent:11 locus:0 expansion:'"2"'
+    #14. op genome:14..14 parent:10 locus:0 expansion:'"*"'
+    #15. expr genome:15..15 parent:10 locus:0 expansion:'"x"'
+
+    s = MutationSimplify.new 
+    s.mapper_type = 'DepthFirst'
+    track_reloc_src1 = s.reloc track
+
+    assert_equal( true, s.nodes_equal( track_reloc_src1, 2, 11 ) ) # 3.2 ~ 3.2
+    assert_equal( false, s.nodes_equal( track_reloc_src1, 2, 6 ) ) # 3.2 ~ 4.2   
+  end
 end
 

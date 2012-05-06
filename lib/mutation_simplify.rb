@@ -84,7 +84,30 @@ module Operator
       end
     end
 
+    def nodes_equal( track_reloc, node1_idx, node2_idx )
+      tree1 = load_tree( track_reloc, node1_idx )
+      tree2 = load_tree( track_reloc, node2_idx )
+      return false if tree1.size != tree2.size
+      tree1.each_with_index do |idx1,i|
+        return false unless match_node?( track_reloc[idx1], track_reloc[tree2[i]] )
+      end
+      true
+    end
+
     protected
+
+    def load_tree( track_reloc, idx )
+      indices = [ idx ]
+      result = []
+      until indices.empty?
+        parent_idx = indices.pop
+        result << parent_idx
+        children = track_reloc.find_all { |n| n.back == parent_idx }
+        children.sort! { |a,b| a.loc_idx <=> b.loc_idx }
+        indices.concat( children.map { |c| track_reloc.index c } )
+      end
+      result
+    end
 
     def reloc_locus track
       rel = track.clone
