@@ -76,11 +76,11 @@ class TC_MutationSimplify < Test::Unit::TestCase
 
     match1 = [ # '(0.0*omit)' -->
       # :symbol, :alt_idx, :dir, :parent_arg 
-      MutationSimplify::Pattern.new( 'expr',  5,-1, 0 ),   # 0. expr = "(" expr:zero op expr:omit ")"
-      MutationSimplify::Pattern.new( 'expr',  2,-1, 0 ),   # 1. expr:zero = _digit:Ai "." _digit:Af
-      MutationSimplify::Pattern.new( 'digit', 0, 0, 0 ),   # 2. digit:Ai = "0"
-      MutationSimplify::Pattern.new( 'digit', 0, 1, 1 ),   # 3. digit:Af = "0"
-      MutationSimplify::Pattern.new( 'op',    3, 0, 1 ),   # 4. op:er = "*"
+      MutationSimplify::Expansion.new( 'expr',  5,-1, 0 ),   # 0. expr = "(" expr:zero op expr:omit ")"
+      MutationSimplify::Expansion.new( 'expr',  2,-1, 0 ),   # 1. expr:zero = _digit:Ai "." _digit:Af
+      MutationSimplify::Expansion.new( 'digit', 0, 0, 0 ),   # 2. digit:Ai = "0"
+      MutationSimplify::Expansion.new( 'digit', 0, 1, 1 ),   # 3. digit:Af = "0"
+      MutationSimplify::Expansion.new( 'op',    3, 0, 1 ),   # 4. op:er = "*"
       MutationSimplify::Subtree.new( 'omit',     1, 2 )    # 5. * expr:omit    
     ]
     outcome1 = [ # --> '0.0'
@@ -89,10 +89,10 @@ class TC_MutationSimplify < Test::Unit::TestCase
 
     match2 = [ # 'EXP(LOG(inner))' -->
       # :symbol, :alt_idx, :dir, :parent_arg     
-      MutationSimplify::Pattern.new( 'expr',    3,-1, 0 ),   # 0. expr = fn1arg:exp "(" expr:log ")" 
-      MutationSimplify::Pattern.new( 'fn1arg',  3, 0, 0 ),   # 1. fn1arg:exp = "EXP"
-      MutationSimplify::Pattern.new( 'expr',    3,-1, 1 ),   # 2. expr:log = fn1arg:log "(" expr:inner ")" 
-      MutationSimplify::Pattern.new( 'fn1arg',  4, 0, 0 ),   # 3. fn1arg:log = "LOG"
+      MutationSimplify::Expansion.new( 'expr',    3,-1, 0 ),   # 0. expr = fn1arg:exp "(" expr:log ")" 
+      MutationSimplify::Expansion.new( 'fn1arg',  3, 0, 0 ),   # 1. fn1arg:exp = "EXP"
+      MutationSimplify::Expansion.new( 'expr',    3,-1, 1 ),   # 2. expr:log = fn1arg:log "(" expr:inner ")" 
+      MutationSimplify::Expansion.new( 'fn1arg',  4, 0, 0 ),   # 3. fn1arg:log = "LOG"
       MutationSimplify::Subtree.new( 'inner',      2, 1 )    # 4. * expr:inner     
     ]
     outcome2 = [ # --> 'inner'
@@ -101,12 +101,12 @@ class TC_MutationSimplify < Test::Unit::TestCase
 
     match3 = [ # '(inner*1.0)' -->
       # :symbol, :alt_idx, :dir, :parent_arg     
-      MutationSimplify::Pattern.new( 'expr',  5,  -1, 0 ),   # 0. expr = "(" expr:inner op expr:one ")" 
+      MutationSimplify::Expansion.new( 'expr',  5,  -1, 0 ),   # 0. expr = "(" expr:inner op expr:one ")" 
       MutationSimplify::Subtree.new( 'inner',      0, 0 ),   # 1. * inner     
-      MutationSimplify::Pattern.new( 'op',    3,   0, 1 ),   # 2. op:er = "*"
-      MutationSimplify::Pattern.new( 'expr',  2,  -1, 2 ),   # 3. expr:zero = _digit:Ai "." _digit:Af     
-      MutationSimplify::Pattern.new( 'digit', 1,   0, 0 ),   # 2. digit:Ai = "1"
-      MutationSimplify::Pattern.new( 'digit', 0,   2, 1 )    # 3. digit:Af = "0"
+      MutationSimplify::Expansion.new( 'op',    3,   0, 1 ),   # 2. op:er = "*"
+      MutationSimplify::Expansion.new( 'expr',  2,  -1, 2 ),   # 3. expr:zero = _digit:Ai "." _digit:Af     
+      MutationSimplify::Expansion.new( 'digit', 1,   0, 0 ),   # 2. digit:Ai = "1"
+      MutationSimplify::Expansion.new( 'digit', 0,   2, 1 )    # 3. digit:Af = "0"
     ]
     outcome3 = [ # --> 'inner'
       1 # wildcard expr:inner     

@@ -2,9 +2,8 @@
 module Operator
 
   class MutationSimplify
-    Pattern = Struct.new( :symbol, :alt_idx, :dir, :parent_arg )
+    Expansion = Struct.new( :symbol, :alt_idx, :dir, :parent_arg )
     Subtree = Struct.new( :id, :dir, :parent_arg )
-    Replacement = Struct.new( :pattern_idx )
 
     def initialize
       @rules = []
@@ -40,7 +39,7 @@ module Operator
         found = track_reloc.find { |n| n.back == stack.last and n.loc_idx == pattern.parent_arg }
         return [] if found.nil?       
 
-        return [] if pattern.kind_of?(Pattern) and not match_node?( found, pattern )
+        return [] if pattern.kind_of?(Expansion) and not match_node?( found, pattern )
         
         node_idx = track_reloc.index( found )
         ptx << node_idx
