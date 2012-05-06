@@ -112,10 +112,36 @@ class TC_MutationSimplify < Test::Unit::TestCase
       1 # wildcard expr:inner     
     ]
 
+    match4 = [ # '((same*term1)+(same*term2))' -->
+      MutationSimplify::Expansion.new( 'expr',  5,  -1, 0 ),   # 0. expr = "(" expr:term1 op expr:term2 ")"
+      MutationSimplify::Expansion.new( 'expr',  5,  -1, 0 ),   # 1. expr:term1 = "(" expr:same op expr:tree1 ")"     
+      MutationSimplify::Subtree.new(   'same',       0, 0 ),   # 2. * expr:same 
+      MutationSimplify::Expansion.new( 'op',    3,   0, 1 ),   # 3. op = "*" 
+      MutationSimplify::Subtree.new(   'tree1',      1, 2 ),   # 4. * expr:tree1     
+      MutationSimplify::Expansion.new( 'op',    3,   0, 1 ),   # 5. op = "+"      
+      MutationSimplify::Expansion.new( 'expr',  5,  -1, 2 ),   # 6. expr:term2 = "(" expr:same op expr:tree2 ")"     
+      MutationSimplify::Subtree.new(   'same',       0, 0 ),   # 7. * expr:same 
+      MutationSimplify::Expansion.new( 'op',    3,   0, 1 ),   # 8. op = "*" 
+      MutationSimplify::Subtree.new(   'tree2',      2, 2 )    # 9. * expr:tree2
+    ]
+    outcome4 = [ # --> '(same*(term1+term2))'
+      MutationSimplify::Expansion.new( 'expr',  5 ),   # expr = "(" expr:same op expr:sum ")"
+      2,                                               # * expr:same
+      3,                                               # op = '*'
+      MutationSimplify::Expansion.new( 'expr',  5 ),   # expr:sum = "(" expr:tree1 op expr:tree2 ")"
+      4,                                               # * expr:tree1  
+      5,                                               # op = '+'
+      9                                                # * expr:tree2
+    ]
+    equals4 = [
+      [2, 7]
+    ]
+
     @rules = [ 
-      MutationSimplify::RuleCase.new(match1,outcome1), 
-      MutationSimplify::RuleCase.new(match2,outcome2), 
-      MutationSimplify::RuleCase.new(match3,outcome3) 
+      MutationSimplify::RuleCase.new(match1,outcome1,[]), 
+      MutationSimplify::RuleCase.new(match2,outcome2,[]), 
+      MutationSimplify::RuleCase.new(match3,outcome3,[]), 
+      MutationSimplify::RuleCase.new(match4,outcome4,equals4)
     ]
   end
 
@@ -427,5 +453,43 @@ class TC_MutationSimplify < Test::Unit::TestCase
     assert_equal( true, s.nodes_equal( track_reloc_src1, 2, 11 ) ) # 3.2 ~ 3.2
     assert_equal( false, s.nodes_equal( track_reloc_src1, 2, 6 ) ) # 3.2 ~ 4.2   
   end
+
+  def test_replacement_expansion
+    genome = [5, 5, 2, 0, 0, 3, 1, 2, 0]
+
+    ptm = [ 1, 2, 3, 4, 5, 6 ]
+
+    track_reloc = [
+      Mapper::TrackNode.new( 'expr',  0, 8, nil, 5, 0 ),
+      Mapper::TrackNode.new( 'expr',  1, 6, 0,   5, 0 ),     
+      Mapper::TrackNode.new( 'expr',  2, 4, 1,   2, 0 ),    
+      Mapper::TrackNode.new( 'digit', 3, 3, 2,   0, 0 ),         
+      Mapper::TrackNode.new( 'digit', 4, 4, 2,   0, 1 ), #4
+      Mapper::TrackNode.new( 'op',    5, 5, 1,   3, 1 ),     
+      Mapper::TrackNode.new( 'expr',  6, 6, 1,   1, 2 ),     
+      Mapper::TrackNode.new( 'op',    7, 7, 0,   2, 1 ),     
+      Mapper::TrackNode.new( 'expr',  8, 8, 0,   0, 2 )
+    ]   
+   
+    s = MutationSimplify.new
+
+    outcome = [ 
+      3, # digit:Af -> genome[4..4] -> 0
+      MutationSimplify::Expansion.new( 'expr',  5 ),
+    ]    
+
+    s.mapper_type = 'DepthFirst'   
+    expected = [ 5,    0, 5,   2, 0 ]
+    replaced = s.replace( genome, ptm, @rules.first.match, outcome, track_reloc )
+    assert_equal(expected, replaced)
+
+    s.mapper_type = 'DepthLocus'   
+    expected = [ 5,    0, 0,5,   2, 0 ]
+    replaced = s.replace( genome, ptm, @rules.first.match, outcome, track_reloc )
+    assert_equal(expected, replaced)
+   
+  end
+
+ 
 end
 

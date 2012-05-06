@@ -63,8 +63,13 @@ module Operator
      res = genome[0 ... root_node.from].clone
 
      replacement.each do |idx|
-       node = track_reloc[ ptm[idx] ]
-       res.concat genome[node.from .. node.to]
+       if idx.kind_of? Expansion
+         res << 0 if @mapper_type == 'DepthLocus' # TODO: different Codon types?
+         res << idx.alt_idx
+       else
+         node = track_reloc[ ptm[idx] ]
+         res.concat genome[node.from .. node.to]
+       end
      end
 
      res.concat genome[(root_node.to+1) ... genome.size] 
