@@ -118,7 +118,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
       MutationSimplify::Subtree.new(   'same',       0, 0 ),   # 2. * expr:same 
       MutationSimplify::Expansion.new( 'op',    3,   0, 1 ),   # 3. op = "*" 
       MutationSimplify::Subtree.new(   'tree1',      1, 2 ),   # 4. * expr:tree1     
-      MutationSimplify::Expansion.new( 'op',    3,   0, 1 ),   # 5. op = "+"      
+      MutationSimplify::Expansion.new( 'op',    0,   0, 1 ),   # 5. op = "+"      
       MutationSimplify::Expansion.new( 'expr',  5,  -1, 2 ),   # 6. expr:term2 = "(" expr:same op expr:tree2 ")"     
       MutationSimplify::Subtree.new(   'same',       0, 0 ),   # 7. * expr:same 
       MutationSimplify::Expansion.new( 'op',    3,   0, 1 ),   # 8. op = "*" 
@@ -490,6 +490,31 @@ class TC_MutationSimplify < Test::Unit::TestCase
    
   end
 
- 
+  def test_equal_replace_extension_first
+    m = Mapper::DepthFirst.new @grammar
+    m.track_support_on = true
+   
+    genotype_src1 = [5, 5, 2,3,2, 3, 2,4,2, 0, 5, 2,3,2, 3, 0] 
+    assert_equal( '((3.2*4.2)+(3.2*x))', m.phenotype( genotype_src1 ) )
+    track_src1 = m.track_support
+
+    genotype_dest1 = [5, 2, 3, 2, 3, 5, 2, 4, 2, 0, 0] 
+    assert_equal( '(3.2*(4.2+x))', m.phenotype( genotype_dest1 ) )   
+
+    s = MutationSimplify.new 
+    s.mapper_type = 'DepthFirst'
+    s.rules = @rules   
+
+    mutant = s.mutation( genotype_src1, track_src1 )
+    assert_equal( genotype_dest1, mutant ) # simplified
+
+    genotype_src2 = [5, 5, 2,3,2, 3, 2,4,2, 0, 5, 2,3,1, 3, 0] 
+    assert_equal( '((3.2*4.2)+(3.1*x))', m.phenotype( genotype_src2 ) )
+    track_src2 = m.track_support
+
+    mutant = s.mutation( genotype_src2, track_src2 )
+    assert_equal( genotype_src2, mutant ) # 3.2 != 3.1, not simplified
+  end 
+  
 end
 

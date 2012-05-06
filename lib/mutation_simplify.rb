@@ -18,7 +18,9 @@ module Operator
       mutant = parent.clone
       @rules.each do |rule|
         ptm = match( track_reloc, rule.match )
-        return replace( mutant, ptm, rule.match, rule.outcome, track_reloc ) unless ptm.empty?
+        next if ptm.empty?
+        next unless check_equals( track_reloc, rule.equals, ptm )
+        return replace( mutant, ptm, rule.match, rule.outcome, track_reloc )
       end
       mutant
     end
@@ -54,7 +56,6 @@ module Operator
         end
 
       end
-
       ptx
     end
 
@@ -100,6 +101,13 @@ module Operator
     end
 
     protected
+
+    def check_equals( track_reloc, equals, ptm )
+      equals.each do |pair|
+        return false unless nodes_equal( track_reloc, ptm[pair.first], ptm[pair.last] )
+      end
+      true
+    end
 
     def load_tree( track_reloc, idx )
       indices = [ idx ]
