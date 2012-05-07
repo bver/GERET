@@ -6,9 +6,17 @@ module Operator
     Subtree = Struct.new( :id, :dir, :parent_arg )
     RuleCase = Struct.new( :match, :outcome, :equals  )
 
-    def initialize
+    def initialize grammar
+      @grammar = grammar
       @rules = []
       @mapper_type = nil
+
+      @grammar_texts = {}
+      @grammar.each_pair do |symbol, alt| 
+        rule = {}
+        (0...alt.size).each { |i| rule[ alt_idx2text( symbol, i ) ] = i }
+        @grammar_texts[symbol] = rule
+      end
     end
 
     attr_accessor :rules, :mapper_type
@@ -100,6 +108,24 @@ module Operator
       true
     end
 
+    def alt_idxs( track_reloc, matching, ptm )
+      res = []
+      ptm.each_with_index do |node_idx,patt_idx|
+        res << track_reloc[node_idx].alt_idx if matching[patt_idx].alt_idx.nil?
+      end
+      res
+    end
+
+    def alt_idx2text( symbol, alt_idx )
+      (@grammar[symbol][alt_idx].map {|t| t.type == :symbol ? "<#{t.data}>" : t.data }).join
+    end
+
+    def text2alt_idx( symbol, text )
+      found = @grammar_texts[symbol]
+      return nil if found.nil?
+      found[text]
+    end
+
     protected
 
     def check_equals( track_reloc, equals, ptm )
@@ -157,7 +183,7 @@ module Operator
     end
 
     def match_node?( node, pattern )
-      node.symbol == pattern.symbol and node.alt_idx == pattern.alt_idx
+      node.symbol == pattern.symbol and ( pattern.alt_idx.nil? or node.alt_idx == pattern.alt_idx )
     end
 
   end

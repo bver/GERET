@@ -174,7 +174,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
       Mapper::TrackNode.new( 'expr',  8, 8, 0,   0, 2 )
     ]   
 
-    s = MutationSimplify.new 
+    s = MutationSimplify.new @grammar
     ptm = s.match_patterns( track_reloc, @rules.first.match, 1 )
     ptm_expected = [ 1, 2, 3, 4, 5, 6 ]
 
@@ -212,7 +212,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
       Mapper::TrackNode.new( 'expr',  8, 8, 0,   0, 2 )
     ]   
 
-    s = MutationSimplify.new 
+    s = MutationSimplify.new @grammar 
     s.mapper_type = 'DepthFirst'
     assert_equal( track_reloc, s.reloc(track) )
 
@@ -244,7 +244,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
       Mapper::TrackNode.new( 'expr',  8, 8, 0,   0, 2 )
     ]   
    
-    s = MutationSimplify.new
+    s = MutationSimplify.new @grammar
 
     outcome = [ 
       3, # digit:Af -> genome[4..4] -> 0
@@ -284,7 +284,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
     assert_equal( '((0.0*y)/x)', m.phenotype( genotype_src4 ) )
     track_src4 = m.track_support   
    
-    s = MutationSimplify.new
+    s = MutationSimplify.new @grammar
     s.rules = @rules
     s.mapper_type = 'DepthFirst'      
     assert_equal( @rules, s.rules )
@@ -317,7 +317,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
     assert_equal( 'EXP(LOG(x))', m.phenotype( genotype ) ) 
     track = m.track_support 
 
-    s = MutationSimplify.new
+    s = MutationSimplify.new @grammar
     s.rules = @rules
     s.mapper_type = 'DepthFirst'      
   
@@ -329,7 +329,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
   end
 
   def test_mapper_type_wrong
-    s = MutationSimplify.new
+    s = MutationSimplify.new @grammar
     assert_nil( s.mapper_type )
 
     exception = assert_raise( RuntimeError ) { s.reloc [] }
@@ -367,7 +367,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
       Mapper::TrackNode.new( 'op',    16, 17, 3,   3, 1 )  # 8. op = "*"
     ]
 
-    s = MutationSimplify.new
+    s = MutationSimplify.new @grammar
     s.mapper_type = 'DepthLocus'
 
     assert_equal( track_reloc, s.reloc(track) )
@@ -392,7 +392,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
      genotype_dest1 = [0,5,  1,2,  1,0,             0,2,  0,0,  0,0        ]
      assert_equal( '(0.0/x)', m.phenotype( genotype_dest1 ) )
 
-     s = MutationSimplify.new
+     s = MutationSimplify.new @grammar
      s.mapper_type = 'DepthLocus'
      s.rules = @rules
 
@@ -411,7 +411,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
     genotype_dest1 = [0,3, 1,1, 0,1]
     assert_equal( 'SIN(y)', m.phenotype( genotype_dest1 ) )
 
-    s = MutationSimplify.new
+    s = MutationSimplify.new @grammar
     s.mapper_type = 'DepthLocus'
     s.rules = @rules
 
@@ -430,7 +430,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
     genotype_dest1 = [3,4,3,1,1] 
     assert_equal( 'LOG(SIN(y))', m.phenotype( genotype_dest1 ) )
 
-    s = MutationSimplify.new
+    s = MutationSimplify.new @grammar
     s.mapper_type = 'DepthFirst'
     s.rules = @rules
 
@@ -462,7 +462,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
     #14. op genome:14..14 parent:10 locus:0 expansion:'"*"'
     #15. expr genome:15..15 parent:10 locus:0 expansion:'"x"'
 
-    s = MutationSimplify.new 
+    s = MutationSimplify.new @grammar 
     s.mapper_type = 'DepthFirst'
     track_reloc_src1 = s.reloc track
 
@@ -487,7 +487,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
       Mapper::TrackNode.new( 'expr',  8, 8, 0,   0, 2 )
     ]   
    
-    s = MutationSimplify.new
+    s = MutationSimplify.new @grammar
 
     outcome = [ 
       3, # digit:Af -> genome[4..4] -> 0
@@ -518,7 +518,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
     genotype_dest1 = [5, 2, 3, 2, 3, 5, 2, 4, 2, 0, 0] 
     assert_equal( '(3.2*(4.2+x))', m.phenotype( genotype_dest1 ) )   
 
-    s = MutationSimplify.new 
+    s = MutationSimplify.new @grammar 
     s.mapper_type = 'DepthFirst'
     s.rules = @rules   
 
@@ -558,7 +558,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
     genotype_dest1 = [0,3, 1,5, 1,3,   0,2, 0,0, 0,0,   0,0, 0,0] 
     assert_equal( 'ABS((0.0*x))', m.phenotype( genotype_dest1 ) )
    
-    s = MutationSimplify.new 
+    s = MutationSimplify.new @grammar 
     s.mapper_type = 'DepthLocus'
     s.rules = @rules   
    
@@ -574,5 +574,51 @@ class TC_MutationSimplify < Test::Unit::TestCase
    
   end
 
+  def test_match_expansion_with_nil
+
+    track_reloc = [
+      # :symbol, :from, :to, :back, :alt_idx, :loc_idx      
+      Mapper::TrackNode.new( 'expr',  0, 8, nil, 5, 0 ),
+      Mapper::TrackNode.new( 'expr',  1, 6, 0,   5, 0 ),     
+      Mapper::TrackNode.new( 'expr',  2, 4, 1,   2, 0 ), #2   
+      Mapper::TrackNode.new( 'digit', 3, 3, 2,   4, 0 ), #3        
+      Mapper::TrackNode.new( 'digit', 4, 4, 2,   7, 1 ), #4
+      Mapper::TrackNode.new( 'op',    5, 5, 1,   3, 1 ),     
+      Mapper::TrackNode.new( 'expr',  6, 6, 1,   1, 2 ),     
+      Mapper::TrackNode.new( 'op',    7, 7, 0,   2, 1 ),     
+      Mapper::TrackNode.new( 'expr',  8, 8, 0,   0, 2 )
+    ]   
+
+    matching = [
+      # :symbol, :alt_idx, :dir, :parent_arg      
+      MutationSimplify::Expansion.new( 'expr',  2,  -1, 0 ),   # 1. expr:zero = _digit:Ai "." _digit:Af
+      MutationSimplify::Expansion.new( 'digit', nil, 0, 0 ),   # 2. digit:Ai = ?
+      MutationSimplify::Expansion.new( 'digit', nil, 1, 1 ),   # 3. digit:Af = ?
+    ]
+
+    s = MutationSimplify.new @grammar 
+    ptm = s.match_patterns( track_reloc, matching, 2 )
+    ptm_expected = [ 2, 3, 4 ]
+
+    assert_equal( ptm_expected, ptm ) # matches
+    assert_equal( [4, 7],  s.alt_idxs( track_reloc, matching, ptm ) )
+
+    assert_equal( [], s.match_patterns( track_reloc, matching, 1 ) )
+    assert_equal( [], s.alt_idxs( track_reloc, matching, [] ) )
+
+  end
+
+  def test_alt_idx_text_grammar_conversions
+    s = MutationSimplify.new @grammar
+
+    assert_equal( "y", s.alt_idx2text( 'expr', 1 ) )
+    assert_equal( "<fn1arg>(<expr>)", s.alt_idx2text( 'expr', 3 ) ) 
+    assert_equal( "COS", s.alt_idx2text( 'fn1arg', 2 ) )
+
+    assert_equal( 5, s.text2alt_idx( 'expr', '(<expr><op><expr>)' ) )
+    assert_equal( nil, s.text2alt_idx( 'expr', 'unknown' ) )
+    assert_equal( 2, s.text2alt_idx( 'op', '/' ) )    
+    assert_equal( nil, s.text2alt_idx( 'unknown', 'irrelevant' ) )   
+  end
 end
 
