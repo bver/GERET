@@ -492,15 +492,16 @@ class TC_MutationSimplify < Test::Unit::TestCase
     outcome = [ 
       3, # digit:Af -> genome[4..4] -> 0
       MutationSimplify::Expansion.new( 'expr',  5 ),
+      MutationSimplify::Expansion.new( 'op',  proc { |args| 21*2 } ),     
     ]    
 
     s.mapper_type = 'DepthFirst'   
-    expected = [ 5,    0, 5,   2, 0 ]
+    expected = [ 5,    0, 5, 42,  2, 0 ]
     replaced = s.replace( genome, ptm, @rules.first.match, outcome, track_reloc )
     assert_equal(expected, replaced)
 
     s.mapper_type = 'DepthLocus'   
-    expected = [ 5,    0, 0,5,   2, 0 ]
+    expected = [ 5,    0, 0,5, 0,42,  2, 0 ]
     replaced = s.replace( genome, ptm, @rules.first.match, outcome, track_reloc )
     assert_equal(expected, replaced)
    
@@ -585,15 +586,19 @@ class TC_MutationSimplify < Test::Unit::TestCase
       Mapper::TrackNode.new( 'digit', 4, 4, 2,   7, 1 ), #4
       Mapper::TrackNode.new( 'op',    5, 5, 1,   3, 1 ),     
       Mapper::TrackNode.new( 'expr',  6, 6, 1,   1, 2 ),     
-      Mapper::TrackNode.new( 'op',    7, 7, 0,   2, 1 ),     
+      Mapper::TrackNode.new( 'op',    7, 7, 0,   2, 1 ), #7    
       Mapper::TrackNode.new( 'expr',  8, 8, 0,   0, 2 )
     ]   
 
     matching = [
       # :symbol, :alt_idx, :dir, :parent_arg      
-      MutationSimplify::Expansion.new( 'expr',  2,  -1, 0 ),   # 1. expr:zero = _digit:Ai "." _digit:Af
-      MutationSimplify::Expansion.new( 'digit', nil, 0, 0 ),   # 2. digit:Ai = ?
-      MutationSimplify::Expansion.new( 'digit', nil, 1, 1 ),   # 3. digit:Af = ?
+      MutationSimplify::Expansion.new( 'expr',  2,  -1, 0 ),   # 0. expr:zero = _digit:Ai "." _digit:Af
+      MutationSimplify::Expansion.new( 'digit', nil, 0, 0 ),   # 1. digit:Ai = ?
+      MutationSimplify::Expansion.new( 'digit', nil, 1, 1 ),   # 2. digit:Af = ?
+    ]
+
+    matching2 = [
+      MutationSimplify::Expansion.new( 'op', nil, -1, 0 ),   # 0. op = ?
     ]
 
     s = MutationSimplify.new @grammar 
@@ -601,11 +606,13 @@ class TC_MutationSimplify < Test::Unit::TestCase
     ptm_expected = [ 2, 3, 4 ]
 
     assert_equal( ptm_expected, ptm ) # matches
-    assert_equal( [4, 7],  s.alt_idxs( track_reloc, matching, ptm ) )
+    assert_equal( ['4', '7'],  s.exp_args( track_reloc, matching, ptm ) )
 
     assert_equal( [], s.match_patterns( track_reloc, matching, 1 ) )
-    assert_equal( [], s.alt_idxs( track_reloc, matching, [] ) )
+    assert_equal( [], s.exp_args( track_reloc, matching, [] ) )
 
+    assert_equal( ptm_expected, ptm ) # matches
+    assert_equal( ['/'],  s.exp_args( track_reloc, matching2, [7] ) ) # op -> '7'
   end
 
   def test_alt_idx_text_grammar_conversions

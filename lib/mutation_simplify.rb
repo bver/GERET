@@ -74,7 +74,11 @@ module Operator
      replacement.each do |idx|
        if idx.kind_of? Expansion
          res << 0 if @mapper_type == 'DepthLocus' # TODO: different Codon types?
-         res << idx.alt_idx
+         if idx.alt_idx.respond_to? 'call'
+           res << idx.alt_idx.call( nil ) 
+         else 
+           res << idx.alt_idx
+         end
        else
          node = track_reloc[ ptm[idx] ]
          res.concat genome[node.from .. node.to]
@@ -108,10 +112,12 @@ module Operator
       true
     end
 
-    def alt_idxs( track_reloc, matching, ptm )
+    def exp_args( track_reloc, matching, ptm )
       res = []
       ptm.each_with_index do |node_idx,patt_idx|
-        res << track_reloc[node_idx].alt_idx if matching[patt_idx].alt_idx.nil?
+        patt = matching[patt_idx]
+        next unless patt.alt_idx.nil? 
+        res << alt_idx2text( patt.symbol, track_reloc[node_idx].alt_idx )
       end
       res
     end
