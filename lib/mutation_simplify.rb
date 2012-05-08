@@ -36,8 +36,8 @@ module Operator
     def match( track_reloc, patterns )
       track_reloc.each_with_index do |node, index|
         next unless match_node?( node, patterns.first )
-        ptx = match_patterns( track_reloc, patterns, index )
-        return ptx unless ptx.empty?
+        ptm = match_patterns( track_reloc, patterns, index )
+        return ptm unless ptm.empty?
       end
       []
     end
@@ -69,7 +69,7 @@ module Operator
 
     def replace( genome, ptm, patterns, replacement, track_reloc )
      args = exp_args( track_reloc, patterns, ptm )
-
+     
      root_node = track_reloc[ptm.first]
      res = genome[0 ... root_node.from].clone
 
@@ -77,7 +77,8 @@ module Operator
        if idx.kind_of? Expansion
          res << 0 if @mapper_type == 'DepthLocus' # TODO: different Codon types?
          if idx.alt_idx.respond_to? 'call'
-           out = idx.alt_idx.call args  
+           out = idx.alt_idx.call args
+           return genome.clone if out.nil?  
            res << text2alt_idx( idx.symbol, out )
          else 
            res << idx.alt_idx
@@ -132,8 +133,10 @@ module Operator
 
     def text2alt_idx( symbol, text )
       found = @grammar_texts[symbol]
-      return nil if found.nil?
-      found[text]
+      raise "MutationSimplify: altidx for symbol '#{symbol}' not found" if found.nil?
+      res = found[text]
+      raise "MutationSimplify: altidx for RuleAlt '#{text}' not found" if res.nil?
+      res
     end
 
     protected

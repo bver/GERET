@@ -112,6 +112,8 @@ class TC_MutationSimplify < Test::Unit::TestCase
       1 # wildcard expr:inner     
     ]
 
+    # expansions in outcome
+    #
     match4 = [ # '((same*term1)+(same*term2))' -->
       MutationSimplify::Expansion.new( 'expr',  5,  -1, 0 ),   # 0. expr = "(" expr:term1 op expr:term2 ")"
       MutationSimplify::Expansion.new( 'expr',  5,  -1, 0 ),   # 1. expr:term1 = "(" expr:same op expr:tree1 ")"     
@@ -137,6 +139,8 @@ class TC_MutationSimplify < Test::Unit::TestCase
       [2, 7]
     ]
 
+    # testing equals
+    #
     match5 = [ # A-A  --> 
       MutationSimplify::Expansion.new( 'expr',  5,  -1, 0 ),   # 0. expr = "(" expr:same op expr:same ")"
       MutationSimplify::Subtree.new(   'same',       0, 0 ),   # 1. * expr:same
@@ -152,12 +156,45 @@ class TC_MutationSimplify < Test::Unit::TestCase
       [1, 3]
     ]
 
+    # constant arithmetic
+    match6 = [
+      # :symbol, :alt_idx, :dir, :parent_arg      
+      MutationSimplify::Expansion.new( 'expr',  5,   -1,  0 ),   # 0. expr = "(" expr:constA op expr:constB ")"
+      MutationSimplify::Expansion.new( 'expr',  2,   -1,  0 ),   # 1. expr:constA = digit:Ai "." digit:Af     
+      MutationSimplify::Expansion.new( 'digit', nil,  0,  0 ),   # 2. digit:Ai = ?
+      MutationSimplify::Expansion.new( 'digit', nil,  1,  1 ),   # 3. digit:Af = ?
+      MutationSimplify::Expansion.new( 'op',    nil,  0,  1 ),   # 4. op = ?
+      MutationSimplify::Expansion.new( 'expr',  2,   -1,  2 ),   # 5. expr:constB = digit:Bi "." digit:Bf     
+      MutationSimplify::Expansion.new( 'digit', nil,  0,  0 ),   # 6. digit:Bi = ?
+      MutationSimplify::Expansion.new( 'digit', nil,  2,  1 )    # 7. digit:Bf = ?
+    ]
+
+    $digitCore = proc do |a| 
+      out = eval("#{a[0]}.#{a[1]} #{a[2]} #{a[3]}.#{a[4]}")
+      if out >= 0.0 and out <= 9.9
+        out.round(1).to_s.split '.'
+      else
+        nil
+      end
+    end
+    digitCi = proc {|args| out = $digitCore.call(args) ; out.nil? ? nil : out.first }
+    digitCf = proc {|args| out = $digitCore.call(args) ; out.nil? ? nil : out.last }   
+
+    outcome6 = [
+      MutationSimplify::Expansion.new( 'expr',  2 ),         # 0. expr:zero = digit:Ci "." digit:Cf
+      MutationSimplify::Expansion.new( 'digit', digitCi ),   # 1. * digit:Ci
+      MutationSimplify::Expansion.new( 'digit', digitCf )    # 2. * digit:Cf
+    ]
+ 
+    # all together
+    #
     @rules = [ 
       MutationSimplify::RuleCase.new(match1,outcome1,[]), 
       MutationSimplify::RuleCase.new(match2,outcome2,[]), 
       MutationSimplify::RuleCase.new(match3,outcome3,[]), 
       MutationSimplify::RuleCase.new(match4,outcome4,equals4),
-      MutationSimplify::RuleCase.new(match5,outcome5,equals5)     
+      MutationSimplify::RuleCase.new(match5,outcome5,equals5),
+      MutationSimplify::RuleCase.new(match6,outcome6,[])      
     ]
   end
 
@@ -623,9 +660,13 @@ class TC_MutationSimplify < Test::Unit::TestCase
     assert_equal( "COS", s.alt_idx2text( 'fn1arg', 2 ) )
 
     assert_equal( 5, s.text2alt_idx( 'expr', '(<expr><op><expr>)' ) )
-    assert_equal( nil, s.text2alt_idx( 'expr', 'unknown' ) )
     assert_equal( 2, s.text2alt_idx( 'op', '/' ) )    
-    assert_equal( nil, s.text2alt_idx( 'unknown', 'irrelevant' ) )   
+
+    exception = assert_raise( RuntimeError ) { s.text2alt_idx( 'expr', 'unknown' ) }
+    assert_equal( "MutationSimplify: altidx for RuleAlt 'unknown' not found", exception.message )
+
+    exception = assert_raise( RuntimeError ) { s.text2alt_idx( 'unknown', 'irrelevant' ) }
+    assert_equal( "MutationSimplify: altidx for symbol 'unknown' not found", exception.message )
   end
 
   def test_replace_proc_args
@@ -663,6 +704,38 @@ class TC_MutationSimplify < Test::Unit::TestCase
     expected = [0,1,   8,3,    5,6,7,8]
     replaced = s.replace( genotype, ptm, matching, outcome, track_reloc )
     assert_equal(expected, replaced)
+
+    outcome_nil = [ 
+      MutationSimplify::Expansion.new( 'digit', proc { |args| nil } ),
+    ]    
+    replaced = s.replace( genotype, ptm, matching, outcome_nil, track_reloc )
+    assert_equal(genotype, replaced) # not matched because the proc returns nil
+  end
+
+  def test_arithmetic_simplification
+    m = Mapper::DepthLocus.new @grammar
+    m.track_support_on = true
+    
+    genotype_src1 = [0,3, 1,5, 1,3, 0,5, 2,2, 0,2, 0,3, 1,1, 0,2, 1,1, 0,7, 0,0, 0,0] 
+    assert_equal( 'ABS(((7.1-2.3)*x))', m.phenotype( genotype_src1 ) )
+    track_src1 = m.track_support
+   
+    genotype_dest1 = [0,3, 1,5, 1,3,   0,2, 0,4, 0,8,   0,0, 0,0] 
+    assert_equal( 'ABS((4.8*x))', m.phenotype( genotype_dest1 ) )
+   
+    s = MutationSimplify.new @grammar 
+    s.mapper_type = 'DepthLocus'
+    s.rules = @rules   
+   
+    mutant = s.mutation( genotype_src1, track_src1 )
+    assert_equal( genotype_dest1, mutant ) # simplified 
+
+    genotype_src2 = [0,3, 1,5, 1,3, 0,5, 2,2, 0,2, 0,3, 1,3, 0,2, 1,1, 0,7, 0,0, 0,0] 
+    assert_equal( 'ABS(((7.1*2.3)*x))', m.phenotype( genotype_src2 ) )
+    track_src2 = m.track_support
+
+    mutant = s.mutation( genotype_src2, track_src2 )
+    assert_equal( genotype_src2, mutant ) # not simplified (16.33 does not fit in the grammar)
   end
 
 end
