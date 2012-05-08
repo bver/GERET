@@ -68,6 +68,8 @@ module Operator
     end
 
     def replace( genome, ptm, patterns, replacement, track_reloc )
+     args = exp_args( track_reloc, patterns, ptm )
+
      root_node = track_reloc[ptm.first]
      res = genome[0 ... root_node.from].clone
 
@@ -75,7 +77,8 @@ module Operator
        if idx.kind_of? Expansion
          res << 0 if @mapper_type == 'DepthLocus' # TODO: different Codon types?
          if idx.alt_idx.respond_to? 'call'
-           res << idx.alt_idx.call( nil ) 
+           out = idx.alt_idx.call args  
+           res << text2alt_idx( idx.symbol, out )
          else 
            res << idx.alt_idx
          end
@@ -116,6 +119,7 @@ module Operator
       res = []
       ptm.each_with_index do |node_idx,patt_idx|
         patt = matching[patt_idx]
+        next unless patt.respond_to? 'alt_idx'
         next unless patt.alt_idx.nil? 
         res << alt_idx2text( patt.symbol, track_reloc[node_idx].alt_idx )
       end

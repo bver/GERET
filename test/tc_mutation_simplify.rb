@@ -68,7 +68,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '6' ) ] ),        # 6
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '7' ) ] ),        # 7                 
                   Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '8' ) ] ),        # 8                
-                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '8' ) ] )         # 9
+                  Mapper::RuleAlt.new( [ Mapper::Token.new( :literal, '9' ) ] )         # 9
                 ] )
     }, 'expr' )
 
@@ -492,16 +492,16 @@ class TC_MutationSimplify < Test::Unit::TestCase
     outcome = [ 
       3, # digit:Af -> genome[4..4] -> 0
       MutationSimplify::Expansion.new( 'expr',  5 ),
-      MutationSimplify::Expansion.new( 'op',  proc { |args| 21*2 } ),     
+      MutationSimplify::Expansion.new( 'fn1arg',  proc { |args| 'LOG' } ),     
     ]    
 
     s.mapper_type = 'DepthFirst'   
-    expected = [ 5,    0, 5, 42,  2, 0 ]
+    expected = [ 5,    0, 5, 4,  2, 0 ]
     replaced = s.replace( genome, ptm, @rules.first.match, outcome, track_reloc )
     assert_equal(expected, replaced)
 
     s.mapper_type = 'DepthLocus'   
-    expected = [ 5,    0, 0,5, 0,42,  2, 0 ]
+    expected = [ 5,    0, 0,5, 0,4,  2, 0 ]
     replaced = s.replace( genome, ptm, @rules.first.match, outcome, track_reloc )
     assert_equal(expected, replaced)
    
@@ -627,5 +627,43 @@ class TC_MutationSimplify < Test::Unit::TestCase
     assert_equal( 2, s.text2alt_idx( 'op', '/' ) )    
     assert_equal( nil, s.text2alt_idx( 'unknown', 'irrelevant' ) )   
   end
+
+  def test_replace_proc_args
+    matching = [
+      # :symbol, :alt_idx, :dir, :parent_arg      
+      MutationSimplify::Expansion.new( 'expr',  2,  -1, 0 ),   # 0. expr:swap = _digit:Ai "." _digit:Af
+      MutationSimplify::Expansion.new( 'digit', nil, 0, 0 ),   # 1. digit:Ai = ?
+      MutationSimplify::Expansion.new( 'digit', nil, 1, 1 ),   # 2. digit:Af = ?
+    ]
+   
+    outcome = [ 
+      MutationSimplify::Expansion.new( 'digit', proc { |args| (args.last.to_i+1).to_s } ),
+      MutationSimplify::Expansion.new( 'digit', proc { |args| (args.first.to_i-1).to_s } ),     
+    ]    
+
+    track_reloc = [
+      # :symbol, :from, :to, :back, :alt_idx, :loc_idx      
+      Mapper::TrackNode.new( 'expr',  0, 8, nil, 5, 0 ),
+      Mapper::TrackNode.new( 'expr',  1, 6, 0,   5, 0 ),     
+      Mapper::TrackNode.new( 'expr',  2, 4, 1,   2, 0 ), #2   
+      Mapper::TrackNode.new( 'digit', 3, 3, 2,   4, 0 ), #3        
+      Mapper::TrackNode.new( 'digit', 4, 4, 2,   7, 1 ), #4
+      Mapper::TrackNode.new( 'op',    5, 5, 1,   3, 1 ),     
+      Mapper::TrackNode.new( 'expr',  6, 6, 1,   1, 2 ),     
+      Mapper::TrackNode.new( 'op',    7, 7, 0,   2, 1 ), #7    
+      Mapper::TrackNode.new( 'expr',  8, 8, 0,   0, 2 )
+    ]   
+   
+    s = MutationSimplify.new @grammar
+    s.mapper_type = 'DepthFirst'   
+    
+    genotype = [0,1,2,3,4,5,6,7,8] 
+    ptm = [2,3,4]
+   
+    expected = [0,1,   8,3,    5,6,7,8]
+    replaced = s.replace( genotype, ptm, matching, outcome, track_reloc )
+    assert_equal(expected, replaced)
+  end
+
 end
 
