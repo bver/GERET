@@ -1041,6 +1041,10 @@ class TC_MutationSimplify < Test::Unit::TestCase
     assert_equal( "5", replacement[1].alt_idx.call(input) )
     assert_equal( "7", replacement[2].alt_idx.call(input) )
  
+    texts[2] = "digit = unk()"
+    exception = assert_raise( RuntimeError ) { s.parse_replacement( texts, refs, lambdas ) }
+    assert_equal( "MutationSimplify: unknown lambda 'unk()'", exception.message )
+ 
   end
 
 end

@@ -249,10 +249,11 @@ module Operator
           symb.strip!
           rule.strip!
           all,fn = /(\w+)\(\)/.match(rule).to_a
-          alt_idx = if fn.nil?
-            text2alt( symb, rule )   
+          if fn.nil?
+            alt_idx = text2alt( symb, rule )   
           else
-            lambdas[fn]
+            raise "MutationSimplify: unknown lambda '#{fn}()'" unless lambdas.has_key? fn
+            alt_idx = lambdas[fn]
           end
           replacement << Expansion.new( symb, alt_idx )
         else
