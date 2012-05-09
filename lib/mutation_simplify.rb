@@ -3,7 +3,7 @@ module Operator
 
   class MutationSimplify
     Expansion = Struct.new( :symbol, :alt_idx, :dir, :parent_arg )
-    Subtree = Struct.new( :id, :dir, :parent_arg )
+    Subtree = Struct.new( :dir, :parent_arg )
     RuleCase = Struct.new( :match, :outcome, :equals  )
 
     def initialize grammar
@@ -12,10 +12,18 @@ module Operator
       @mapper_type = nil
 
       @grammar_texts = {}
+      @grammar_texts2 = {}
       @grammar.each_pair do |symbol, alt| 
         rule = {}
-        (0...alt.size).each { |i| rule[ alt_idx2text( symbol, i ) ] = i }
+        rule2 = {}       
+
+        (0...alt.size).each do |i|
+          rule[ alt_idx2text( symbol, i ) ] = i
+          rule2[ alt2text( symbol, i ) ] = i         
+        end
+
         @grammar_texts[symbol] = rule
+        @grammar_texts2[symbol] = rule2       
       end
     end
 
@@ -128,7 +136,7 @@ module Operator
     end
 
     def alt_idx2text( symbol, alt_idx )
-      (@grammar[symbol][alt_idx].map {|t| t.type == :symbol ? "<#{t.data}>" : t.data }).join
+      (@grammar[symbol][alt_idx].map {|t| t.type == :symbol ? "<#{t.data}>" : t.data }).join     
     end
 
     def text2alt_idx( symbol, text )
@@ -137,6 +145,61 @@ module Operator
       res = found[text]
       raise "MutationSimplify: altidx for RuleAlt '#{text}' not found" if res.nil?
       res
+    end
+
+    def alt2text( symbol, alt_idx )
+      (@grammar[symbol][alt_idx].map {|t| t.type == :symbol ? t.data : %Q["#{t.data}"] }).join(' ')
+    end
+
+    # TODO: DRY
+    def text2alt( symbol, text )
+      found = @grammar_texts2[symbol]
+      raise "MutationSimplify: altidx for symbol '#{symbol}' not found" if found.nil?
+      res = found[text]
+      raise "MutationSimplify: altidx for RuleAlt '#{text}' not found" if res.nil?
+      res
+    end
+
+    # TODO: DRY
+    def parse_rules input
+      rules = []
+      input.each do |rule_case|
+        patterns, subtrees = parse_pattern rule_case['pattern']
+        lambdas = parse_lambdas rule_case['lambdas'] if rule_case.has_key? 'lambdas'
+        replacement = parse_replacement( rule_case['replacement'], subtrees, lambdas )
+        rules << RuleCase.new(patterns,replacement,parse_equals(subtrees))
+      end
+      rules
+    end
+
+    def parse_pattern texts
+      patterns = []
+      refs = []
+      uses = [] 
+
+      texts.each_with_index do |text,index|
+        symb_dot,rule = text.split('=')
+        symb_dot.strip!
+        symb,dot = symb_dot.split('.')
+        raise "MutationSimplify: '#{symb_dot}' must follow symbol.var syntax" if dot.nil?
+
+        if rule.nil?
+          # Subtree 
+          patterns << Subtree.new()
+          uses << []
+        else
+          # Expansion
+          raise  "MutationSimplify: '#{symb_dot}' is defined more times" unless refs.index(symb_dot).nil?
+          uses << rule.scan(/\w+\.\w+/)
+          rule = rule.strip.gsub(/\.\w+/,'')
+          alt_idx = (rule == '?') ? nil : text2alt( symb, rule )
+          patterns << Expansion.new( symb, alt_idx )        
+        end
+        refs << symb_dot
+       
+      end
+      
+      return [patterns, refs, uses] 
     end
 
     protected

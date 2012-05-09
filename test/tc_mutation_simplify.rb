@@ -77,11 +77,11 @@ class TC_MutationSimplify < Test::Unit::TestCase
     match1 = [ # '(0.0*omit)' -->
       # :symbol, :alt_idx, :dir, :parent_arg 
       MutationSimplify::Expansion.new( 'expr',  5,-1, 0 ),   # 0. expr = "(" expr:zero op expr:omit ")"
-      MutationSimplify::Expansion.new( 'expr',  2,-1, 0 ),   # 1. expr:zero = _digit:Ai "." _digit:Af
+      MutationSimplify::Expansion.new( 'expr',  2,-1, 0 ),   # 1. expr:zero = digit:Ai "." digit:Af
       MutationSimplify::Expansion.new( 'digit', 0, 0, 0 ),   # 2. digit:Ai = "0"
       MutationSimplify::Expansion.new( 'digit', 0, 1, 1 ),   # 3. digit:Af = "0"
       MutationSimplify::Expansion.new( 'op',    3, 0, 1 ),   # 4. op:er = "*"
-      MutationSimplify::Subtree.new(   'omit',     1, 2 )    # 5. * expr:omit    
+      MutationSimplify::Subtree.new(               1, 2 )    # 5. * expr:omit    
     ]
     outcome1 = [ # --> '0.0'
       1  # expr:zero
@@ -93,7 +93,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
       MutationSimplify::Expansion.new( 'fn1arg',  3, 0, 0 ),   # 1. fn1arg:exp = "EXP"
       MutationSimplify::Expansion.new( 'expr',    3,-1, 1 ),   # 2. expr:log = fn1arg:log "(" expr:inner ")" 
       MutationSimplify::Expansion.new( 'fn1arg',  4, 0, 0 ),   # 3. fn1arg:log = "LOG"
-      MutationSimplify::Subtree.new(   'inner',      2, 1 )    # 4. * expr:inner     
+      MutationSimplify::Subtree.new(                 2, 1 )    # 4. * expr:inner     
     ]
     outcome2 = [ # --> 'inner'
       4  # wildcard expr:inner
@@ -102,9 +102,9 @@ class TC_MutationSimplify < Test::Unit::TestCase
     match3 = [ # '(inner*1.0)' -->
       # :symbol, :alt_idx, :dir, :parent_arg     
       MutationSimplify::Expansion.new( 'expr',  5,  -1, 0 ),   # 0. expr = "(" expr:inner op expr:one ")" 
-      MutationSimplify::Subtree.new(   'inner',      0, 0 ),   # 1. * inner     
+      MutationSimplify::Subtree.new(                 0, 0 ),   # 1. * inner     
       MutationSimplify::Expansion.new( 'op',    3,   0, 1 ),   # 2. op:er = "*"
-      MutationSimplify::Expansion.new( 'expr',  2,  -1, 2 ),   # 3. expr:zero = digit:Ai "." digit:Af     
+      MutationSimplify::Expansion.new( 'expr',  2,  -1, 2 ),   # 3. expr:one = digit:Ai "." digit:Af     
       MutationSimplify::Expansion.new( 'digit', 1,   0, 0 ),   # 2. digit:Ai = "1"
       MutationSimplify::Expansion.new( 'digit', 0,   2, 1 )    # 3. digit:Af = "0"
     ]
@@ -114,17 +114,17 @@ class TC_MutationSimplify < Test::Unit::TestCase
 
     # expansions in outcome
     #
-    match4 = [ # '((same*term1)+(same*term2))' -->
+    @match4 = [ # '((same*term1)+(same*term2))' -->
       MutationSimplify::Expansion.new( 'expr',  5,  -1, 0 ),   # 0. expr = "(" expr:term1 op expr:term2 ")"
       MutationSimplify::Expansion.new( 'expr',  5,  -1, 0 ),   # 1. expr:term1 = "(" expr:same op expr:tree1 ")"     
-      MutationSimplify::Subtree.new(   'same',       0, 0 ),   # 2. * expr:same 
+      MutationSimplify::Subtree.new(                 0, 0 ),   # 2. * expr:same 
       MutationSimplify::Expansion.new( 'op',    3,   0, 1 ),   # 3. op = "*" 
-      MutationSimplify::Subtree.new(   'tree1',      1, 2 ),   # 4. * expr:tree1     
+      MutationSimplify::Subtree.new(                 1, 2 ),   # 4. * expr:tree1     
       MutationSimplify::Expansion.new( 'op',    0,   0, 1 ),   # 5. op = "+"      
       MutationSimplify::Expansion.new( 'expr',  5,  -1, 2 ),   # 6. expr:term2 = "(" expr:same op expr:tree2 ")"     
-      MutationSimplify::Subtree.new(   'same',       0, 0 ),   # 7. * expr:same 
+      MutationSimplify::Subtree.new(                 0, 0 ),   # 7. * expr:same 
       MutationSimplify::Expansion.new( 'op',    3,   0, 1 ),   # 8. op = "*" 
-      MutationSimplify::Subtree.new(   'tree2',      2, 2 )    # 9. * expr:tree2
+      MutationSimplify::Subtree.new(                 2, 2 )    # 9. * expr:tree2
     ]
     outcome4 = [ # --> '(same*(term1+term2))'
       MutationSimplify::Expansion.new( 'expr',  5 ),   # expr = "(" expr:same op expr:sum ")"
@@ -143,9 +143,9 @@ class TC_MutationSimplify < Test::Unit::TestCase
     #
     match5 = [ # A-A  --> 
       MutationSimplify::Expansion.new( 'expr',  5,  -1, 0 ),   # 0. expr = "(" expr:same op expr:same ")"
-      MutationSimplify::Subtree.new(   'same',       0, 0 ),   # 1. * expr:same
+      MutationSimplify::Subtree.new(                 0, 0 ),   # 1. * expr:same
       MutationSimplify::Expansion.new( 'op',    1,   0, 1 ),   # 2. op = "-"
-      MutationSimplify::Subtree.new(   'same',       1, 2 ),   # 3. * expr:same     
+      MutationSimplify::Subtree.new(                 1, 2 ),   # 3. * expr:same     
     ]
     outcome5 = [ # --> 0.0
       MutationSimplify::Expansion.new( 'expr',  2 ),   # 0. expr:zero = digit:Ai "." digit:Af
@@ -157,28 +157,35 @@ class TC_MutationSimplify < Test::Unit::TestCase
     ]
 
     # constant arithmetic
-    match6 = [
+    @match6 = [
       # :symbol, :alt_idx, :dir, :parent_arg      
-      MutationSimplify::Expansion.new( 'expr',  5,   -1,  0 ),   # 0. expr = "(" expr:constA op expr:constB ")"
+      MutationSimplify::Expansion.new( 'expr',  5,   -1,  0 ),   # 0. expr = "(" expr:constA op:er expr:constB ")"
       MutationSimplify::Expansion.new( 'expr',  2,   -1,  0 ),   # 1. expr:constA = digit:Ai "." digit:Af     
       MutationSimplify::Expansion.new( 'digit', nil,  0,  0 ),   # 2. digit:Ai = ?
       MutationSimplify::Expansion.new( 'digit', nil,  1,  1 ),   # 3. digit:Af = ?
-      MutationSimplify::Expansion.new( 'op',    nil,  0,  1 ),   # 4. op = ?
+      MutationSimplify::Expansion.new( 'op',    nil,  0,  1 ),   # 4. op:er = ?
       MutationSimplify::Expansion.new( 'expr',  2,   -1,  2 ),   # 5. expr:constB = digit:Bi "." digit:Bf     
       MutationSimplify::Expansion.new( 'digit', nil,  0,  0 ),   # 6. digit:Bi = ?
       MutationSimplify::Expansion.new( 'digit', nil,  2,  1 )    # 7. digit:Bf = ?
     ]
 
-    $digitCore = proc do |a| 
-      out = eval("#{a[0]}.#{a[1]} #{a[2]} #{a[3]}.#{a[4]}")
+    digitCi = proc do |a|
+      out = eval(a[0] + '.' + a[1] + a[2] + a[3] + '.' + a[4])     
       if out >= 0.0 and out <= 9.9
-        out.round(1).to_s.split '.'
+        out.round(1).to_s.split('.').first
       else
         nil
       end
     end
-    digitCi = proc {|args| out = $digitCore.call(args) ; out.nil? ? nil : out.first }
-    digitCf = proc {|args| out = $digitCore.call(args) ; out.nil? ? nil : out.last }   
+    
+    digitCf = proc do |a| 
+      out = eval(a[0] + '.' + a[1] + a[2] + a[3] + '.' + a[4])          
+      if out >= 0.0 and out <= 9.9
+        out.round(1).to_s.split('.').last
+      else
+        nil
+      end
+    end
 
     outcome6 = [
       MutationSimplify::Expansion.new( 'expr',  2 ),         # 0. expr:zero = digit:Ci "." digit:Cf
@@ -192,9 +199,9 @@ class TC_MutationSimplify < Test::Unit::TestCase
       MutationSimplify::RuleCase.new(match1,outcome1,[]), 
       MutationSimplify::RuleCase.new(match2,outcome2,[]), 
       MutationSimplify::RuleCase.new(match3,outcome3,[]), 
-      MutationSimplify::RuleCase.new(match4,outcome4,equals4),
+      MutationSimplify::RuleCase.new(@match4,outcome4,equals4),
       MutationSimplify::RuleCase.new(match5,outcome5,equals5),
-      MutationSimplify::RuleCase.new(match6,outcome6,[])      
+      MutationSimplify::RuleCase.new(@match6,outcome6,[])      
     ]
   end
 
@@ -656,7 +663,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
     s = MutationSimplify.new @grammar
 
     assert_equal( "y", s.alt_idx2text( 'expr', 1 ) )
-    assert_equal( "<fn1arg>(<expr>)", s.alt_idx2text( 'expr', 3 ) ) 
+    assert_equal( '<fn1arg>(<expr>)', s.alt_idx2text( 'expr', 3 ) ) 
     assert_equal( "COS", s.alt_idx2text( 'fn1arg', 2 ) )
 
     assert_equal( 5, s.text2alt_idx( 'expr', '(<expr><op><expr>)' ) )
@@ -736,6 +743,124 @@ class TC_MutationSimplify < Test::Unit::TestCase
 
     mutant = s.mutation( genotype_src2, track_src2 )
     assert_equal( genotype_src2, mutant ) # not simplified (16.33 does not fit in the grammar)
+  end
+
+  def test_parse_pattern
+    text = [
+      "expr.main = \"(\" expr.constA op.er expr.constB \")\"", 
+      "expr.constA = digit.Ai \".\" digit.Af", 
+      "digit.Ai = ?", 
+      "digit.Af = ?", 
+      "op.er = ?", 
+      "expr.constB = digit.Bi \".\" digit.Bf", 
+      "digit.Bi = ?", 
+      "digit.Bf = ?"
+    ]
+ 
+    expected_refs = [ 
+      'expr.main', 
+      'expr.constA', 
+      'digit.Ai',
+      'digit.Af',     
+      'op.er', 
+      'expr.constB',
+      'digit.Bi',
+      'digit.Bf',          
+    ]
+
+    half6 = [
+      # :symbol, :alt_idx, :dir, :parent_arg      
+      MutationSimplify::Expansion.new( 'expr',  5   ),   # 0. expr = "(" expr:constA op:er expr:constB ")"
+      MutationSimplify::Expansion.new( 'expr',  2   ),   # 1. expr:constA = digit:Ai "." digit:Af     
+      MutationSimplify::Expansion.new( 'digit', nil ),   # 2. digit:Ai = ?
+      MutationSimplify::Expansion.new( 'digit', nil ),   # 3. digit:Af = ?
+      MutationSimplify::Expansion.new( 'op',    nil ),   # 4. op:er = ?
+      MutationSimplify::Expansion.new( 'expr',  2   ),   # 5. expr:constB = digit:Bi "." digit:Bf     
+      MutationSimplify::Expansion.new( 'digit', nil ),   # 6. digit:Bi = ?
+      MutationSimplify::Expansion.new( 'digit', nil )    # 7. digit:Bf = ?
+    ]
+  
+    expected_uses = [                          # stacks                 depth=0    dir
+      ['expr.constA', 'op.er', 'expr.constB'], # m  d0=[cA,op,cB]            -1     -1
+      ['digit.Ai', 'digit.Af'],                # cA d0=[op,cB], d1=[dAi,dAf] -2     -1
+      [],                                      # Ai d0=[op,cB], d1=[dAf]     -2      0
+      [],                                      # Af d0=[op,cB]               -1      1
+      [],                                      # op d0=[cB]                  -1      0
+      ['digit.Bi', 'digit.Bf'],                # cB d1=[dBi,dBf]             -2     -1
+      [],                                      # Bi d1=[dBi]                 -2      0
+      []                                       # Bf                           0      2
+    ]
+
+    s = MutationSimplify.new @grammar 
+
+    patterns, refs, uses = s.parse_pattern text   
+    assert_equal( half6, patterns )
+    assert_equal( expected_refs, refs )
+    assert_equal( expected_uses, uses )   
+
+    text2 = [
+      "expr.main = \"(\" expr.term1 op.plus expr.term2 \")\"", 
+      "expr.term1 = \"(\" expr.same op.mult1 expr.tree1 \")\"", 
+      "expr.same", 
+      "op.mult1 = \"*\"", 
+      "expr.tree1", 
+      "op.plus = \"+\"", 
+      "expr.term2 = \"(\" expr.same op.mult2 expr.tree2 \")\"", 
+      "expr.same", 
+      "op.mult2 = \"*\"", 
+      "expr.tree2"
+    ]   
+
+    expected_refs2 = [
+      "expr.main",
+      "expr.term1",
+      "expr.same",
+      "op.mult1",
+      "expr.tree1",
+      "op.plus",
+      "expr.term2",
+      "expr.same", 
+      "op.mult2",
+      "expr.tree2"
+    ]
+
+    half4 = [ # '((same*term1)+(same*term2))' -->
+      MutationSimplify::Expansion.new( 'expr',  5 ),   # 0. expr = "(" expr:term1 op expr:term2 ")"
+      MutationSimplify::Expansion.new( 'expr',  5 ),   # 1. expr:term1 = "(" expr:same op expr:tree1 ")"     
+      MutationSimplify::Subtree.new(              ),   # 2. * expr:same 
+      MutationSimplify::Expansion.new( 'op',    3 ),   # 3. op = "*" 
+      MutationSimplify::Subtree.new(              ),   # 4. * expr:tree1     
+      MutationSimplify::Expansion.new( 'op',    0 ),   # 5. op = "+"      
+      MutationSimplify::Expansion.new( 'expr',  5 ),   # 6. expr:term2 = "(" expr:same op expr:tree2 ")"     
+      MutationSimplify::Subtree.new(              ),   # 7. * expr:same 
+      MutationSimplify::Expansion.new( 'op',    3 ),   # 8. op = "*" 
+      MutationSimplify::Subtree.new(              )    # 9. * expr:tree2
+    ]
+   
+    expected_uses2 = [
+      ['expr.term1', 'op.plus', 'expr.term2'],
+      ['expr.same', 'op.mult1', 'expr.tree1'],
+      [],
+      [],
+      [],
+      [],
+      ['expr.same', 'op.mult2', 'expr.tree2'],
+      [],
+      [],
+      []
+    ]
+
+    patterns, refs, uses = s.parse_pattern text2    
+    assert_equal( half4, patterns )
+    assert_equal( expected_refs2, refs )
+    assert_equal( expected_uses2, uses )
+
+    exception = assert_raise( RuntimeError ) { s.parse_pattern(["unknown"]) }
+    assert_equal( "MutationSimplify: 'unknown' must follow symbol.var syntax", exception.message )
+
+    exception = assert_raise( RuntimeError ) { s.parse_pattern(["op.twice = \"+\"", "op.twice = \"+\""]) }
+    assert_equal( "MutationSimplify: 'op.twice' is defined more times", exception.message )
+ 
   end
 
 end
