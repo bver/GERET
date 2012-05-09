@@ -3,11 +3,13 @@ require 'yaml'
 
 module Operator
 
+  #
   class MutationSimplify
     Expansion = Struct.new( :symbol, :alt_idx, :dir, :parent_arg )
     Subtree = Struct.new( :dir, :parent_arg )
     RuleCase = Struct.new( :match, :outcome, :equals  )
 
+    #
     def initialize grammar
       @grammar = grammar
       @rules = []
@@ -29,8 +31,17 @@ module Operator
       end
     end
 
-    attr_accessor :rules, :mapper_type
+    attr_accessor :rules
 
+    #
+    attr_accessor :mapper_type
+
+    #
+    def filename= fname
+      @rules = parse_rules( YAML::load( File.open(fname) ) )
+    end
+
+    #
     def mutation( parent, track )
       track_reloc = reloc(track)     
       mutant = parent.clone
@@ -141,22 +152,8 @@ module Operator
       (@grammar[symbol][alt_idx].map {|t| t.type == :symbol ? "<#{t.data}>" : t.data }).join     
     end
 
-    def text2alt_idx( symbol, text )
-      found = @grammar_texts[symbol]
-      raise "MutationSimplify: altidx for symbol '#{symbol}' not found" if found.nil?
-      res = found[text]
-      raise "MutationSimplify: altidx for RuleAlt '#{text}' not found" if res.nil?
-      res
-    end
-
-    # TODO: DRY
-    def alt2text( symbol, alt_idx )
-      (@grammar[symbol][alt_idx].map {|t| t.type == :symbol ? t.data : %Q["#{t.data}"] }).join(' ')
-    end
-
-    # TODO: DRY
-    def text2alt( symbol, text )
-      found = @grammar_texts2[symbol]
+    def text2alt_idx( symbol, text, hash=@grammar_texts )
+      found = hash[symbol]
       raise "MutationSimplify: altidx for symbol '#{symbol}' not found" if found.nil?
       res = found[text]
       raise "MutationSimplify: altidx for RuleAlt '#{text}' not found" if res.nil?
@@ -278,6 +275,14 @@ module Operator
 
     protected
 
+    def alt2text( symbol, alt_idx )
+      (@grammar[symbol][alt_idx].map {|t| t.type == :symbol ? t.data : %Q["#{t.data}"] }).join(' ')
+    end
+
+    def text2alt( symbol, text )
+      text2alt_idx( symbol, text, hash=@grammar_texts2 )
+    end
+   
     DepthStack = Struct.new( :symbols, :depth, :loc )
 
     def check_equals( track_reloc, equals, ptm )
