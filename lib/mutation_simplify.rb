@@ -247,7 +247,14 @@ module Operator
           symb,rule = line.split('=')
           raise "MutationSimplify: replacement '#{line}' unknown" if rule.nil?
           symb.strip!
-          replacement << Expansion.new( symb, text2alt( symb, rule.strip ) )         
+          rule.strip!
+          all,fn = /(\w+)\(\)/.match(rule).to_a
+          alt_idx = if fn.nil?
+            text2alt( symb, rule )   
+          else
+            lambdas[fn]
+          end
+          replacement << Expansion.new( symb, alt_idx )
         else
           replacement << idx
         end

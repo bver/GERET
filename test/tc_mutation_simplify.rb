@@ -1028,6 +1028,19 @@ class TC_MutationSimplify < Test::Unit::TestCase
     exception = assert_raise( RuntimeError ) { s.parse_replacement( texts, refs, [] ) }
     assert_equal( "MutationSimplify: replacement 'un.known' unknown", exception.message )
  
+    texts = [
+      "expr = digit \".\" digit",
+      "digit = digitCi()", 
+      "digit = digitCf()"
+    ]   
+    lambdas = { 'digitCi' => @digitCi, 'digitCf' => @digitCf }
+    replacement = s.parse_replacement( texts, refs, lambdas )
+
+    input = ['3','4','+','2','3']
+    assert_equal( MutationSimplify::Expansion.new( 'expr',  2 ), replacement[0] )
+    assert_equal( "5", replacement[1].alt_idx.call(input) )
+    assert_equal( "7", replacement[2].alt_idx.call(input) )
+ 
   end
 
 end
