@@ -62,7 +62,7 @@
   pattern:
     - expr.main = "(" expr.same op.minus expr.same ")"
     - expr.same
-    - op.minus
+    - op.minus = "-"
     - expr.same
   replacement:
     - expr = digit "." digit

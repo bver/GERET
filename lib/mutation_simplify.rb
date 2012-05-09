@@ -1,4 +1,6 @@
 
+require 'yaml'
+
 module Operator
 
   class MutationSimplify

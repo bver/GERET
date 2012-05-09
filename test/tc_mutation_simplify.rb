@@ -1070,5 +1070,25 @@ class TC_MutationSimplify < Test::Unit::TestCase
     assert_equal( expected_equals, s.parse_equals(refs) )
   end
 
+  def test_parse_yaml
+    text = YAML::load( File.open('test/data/mutation_simplify.yaml') )
+    s = MutationSimplify.new @grammar
+    rules = s.parse_rules text
+
+    assert_equal( @rules[0], rules[0] )
+    assert_equal( @rules[1], rules[1] )
+    assert_equal( @rules[2], rules[2] )   
+    assert_equal( @rules[3], rules[3] )   
+    assert_equal( @rules[4], rules[4] )   
+    assert_equal( @rules[5].match, rules[5].match )   
+    assert_equal( @rules[5].equals, rules[5].equals )
+  
+    replacement = rules[5].outcome
+    input = ['3','4','+','2','3']
+    assert_equal( MutationSimplify::Expansion.new( 'expr',  2 ), replacement[0] )
+    assert_equal( "5", replacement[1].alt_idx.call(input) )
+    assert_equal( "7", replacement[2].alt_idx.call(input) )
+  end
+
 end
 
