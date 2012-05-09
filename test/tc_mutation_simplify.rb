@@ -907,7 +907,6 @@ class TC_MutationSimplify < Test::Unit::TestCase
     s.parse_depths(half6, refs, uses)
     assert_equal(@match6,half6)
 
-    #TODO: exceptions
     exception = assert_raise( RuntimeError ) { s.parse_depths(half6b, refs, uses[1...uses.size]) }
     assert_equal( "MutationSimplify: wrong order: required 'expr.constA', declared 'digit.Ai'", exception.message )
 
@@ -919,6 +918,47 @@ class TC_MutationSimplify < Test::Unit::TestCase
     exception = assert_raise( RuntimeError ) { s.parse_depths(half6d, refs, uses) }
     assert_equal( "MutationSimplify: some symbols undefined", exception.message )
  
+    refs2 = [
+      "expr.main",
+      "expr.term1",
+      "expr.same",
+      "op.mult1",
+      "expr.tree1",
+      "op.plus",
+      "expr.term2",
+      "expr.same", 
+      "op.mult2",
+      "expr.tree2"
+    ]
+
+    half4 = [ # '((same*term1)+(same*term2))' -->
+      MutationSimplify::Expansion.new( 'expr',  5 ),   # 0. expr = "(" expr:term1 op expr:term2 ")"
+      MutationSimplify::Expansion.new( 'expr',  5 ),   # 1. expr:term1 = "(" expr:same op expr:tree1 ")"     
+      MutationSimplify::Subtree.new(              ),   # 2. * expr:same 
+      MutationSimplify::Expansion.new( 'op',    3 ),   # 3. op = "*" 
+      MutationSimplify::Subtree.new(              ),   # 4. * expr:tree1     
+      MutationSimplify::Expansion.new( 'op',    0 ),   # 5. op = "+"      
+      MutationSimplify::Expansion.new( 'expr',  5 ),   # 6. expr:term2 = "(" expr:same op expr:tree2 ")"     
+      MutationSimplify::Subtree.new(              ),   # 7. * expr:same 
+      MutationSimplify::Expansion.new( 'op',    3 ),   # 8. op = "*" 
+      MutationSimplify::Subtree.new(              )    # 9. * expr:tree2
+    ]
+   
+    uses2 = [
+      ['expr.term1', 'op.plus', 'expr.term2'],
+      ['expr.same', 'op.mult1', 'expr.tree1'],
+      [],
+      [],
+      [],
+      [],
+      ['expr.same', 'op.mult2', 'expr.tree2'],
+      [],
+      [],
+      []
+    ]
+
+    s.parse_depths(half4, refs2, uses2)
+    assert_equal(@match4,half4)
   end
 end
 
