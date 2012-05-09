@@ -85,14 +85,14 @@
     - digit = digitCi()
     - digit = digitCf()
   lambdas:
-    digitCi: 
+    digitCi: |+ 
       out = eval( digit.Ai + '.' + digit.Af + op.er + digit.Bi + '.' + digit.Bf )
       if out >= 0.0 and out <= 9.9
         out.round(1).to_s.split('.').first
       else
         nil
       end 
-    digitCf:
+    digitCf: |+
       out = eval( digit.Ai + '.' + digit.Af + op.er + digit.Bi + '.' + digit.Bf )
       if out >= 0.0 and out <= 9.9
         out.round(1).to_s.split('.').last

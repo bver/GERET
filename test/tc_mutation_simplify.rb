@@ -169,7 +169,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
       MutationSimplify::Expansion.new( 'digit', nil,  2,  1 )    # 7. digit:Bf = ?
     ]
 
-    digitCi = proc do |a|
+    @digitCi = proc do |a|
       out = eval(a[0] + '.' + a[1] + a[2] + a[3] + '.' + a[4])     
       if out >= 0.0 and out <= 9.9
         out.round(1).to_s.split('.').first
@@ -178,7 +178,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
       end
     end
     
-    digitCf = proc do |a| 
+    @digitCf = proc do |a| 
       out = eval(a[0] + '.' + a[1] + a[2] + a[3] + '.' + a[4])          
       if out >= 0.0 and out <= 9.9
         out.round(1).to_s.split('.').last
@@ -189,8 +189,8 @@ class TC_MutationSimplify < Test::Unit::TestCase
 
     outcome6 = [
       MutationSimplify::Expansion.new( 'expr',  2 ),         # 0. expr:zero = digit:Ci "." digit:Cf
-      MutationSimplify::Expansion.new( 'digit', digitCi ),   # 1. * digit:Ci
-      MutationSimplify::Expansion.new( 'digit', digitCf )    # 2. * digit:Cf
+      MutationSimplify::Expansion.new( 'digit', @digitCi ),   # 1. * digit:Ci
+      MutationSimplify::Expansion.new( 'digit', @digitCf )    # 2. * digit:Cf
     ]
  
     # all together
@@ -959,6 +959,40 @@ class TC_MutationSimplify < Test::Unit::TestCase
 
     s.parse_depths(half4, refs2, uses2)
     assert_equal(@match4,half4)
+  end
+
+  def test_parse_lambdas
+    texts = {
+      "digitCi"=>"out = eval( digit.Ai + '.' + digit.Af + op.er + digit.Bi + '.' + digit.Bf )\nif out >= 0.0 and out <= 9.9\n  out.round(1).to_s.split('.').first\nelse\n  nil\nend \n", 
+      "digitCf"=>"out = eval( digit.Ai + '.' + digit.Af + op.er + digit.Bi + '.' + digit.Bf )\nif out >= 0.0 and out <= 9.9\n  out.round(1).to_s.split('.').last\nelse\n  nil\nend\n\n\n"
+    }
+
+    refs = [ 
+      'expr.main', 
+      'expr.constA', 
+      'digit.Ai',
+      'digit.Af',     
+      'op.er', 
+      'expr.constB',
+      'digit.Bi',
+      'digit.Bf',          
+    ]
+
+    s = MutationSimplify.new @grammar  
+
+    lambdas = s.parse_lambdas( texts, @match6, refs )
+    input = ['3','4','+','2','3']
+    assert_equal( "5", lambdas['digitCi'].call(input) )
+    assert_equal( "7", lambdas['digitCf'].call(input) )
+
+    input = ['3','4','+','8','3']
+    assert_equal( nil, lambdas['digitCi'].call(input) )
+    assert_equal( nil, lambdas['digitCf'].call(input) )
+
+    input = ['2','4','*','1','3']
+    assert_equal( "3", lambdas['digitCi'].call(input) )
+    assert_equal( "1", lambdas['digitCf'].call(input) )
+   
   end
 end
 

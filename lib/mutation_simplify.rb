@@ -147,6 +147,7 @@ module Operator
       res
     end
 
+    # TODO: DRY
     def alt2text( symbol, alt_idx )
       (@grammar[symbol][alt_idx].map {|t| t.type == :symbol ? t.data : %Q["#{t.data}"] }).join(' ')
     end
@@ -160,14 +161,14 @@ module Operator
       res
     end
 
-    # TODO: DRY
     def parse_rules input
       rules = []
       input.each do |rule_case|
-        patterns, subtrees = parse_pattern rule_case['pattern']
-        lambdas = parse_lambdas rule_case['lambdas'] if rule_case.has_key? 'lambdas'
-        replacement = parse_replacement( rule_case['replacement'], subtrees, lambdas )
-        rules << RuleCase.new(patterns,replacement,parse_equals(subtrees))
+        patterns, refs, uses = parse_pattern rule_case['pattern']
+        parse_depths( patterns, refs, uses )
+        lambdas = parse_lambdas( rule_case['lambdas'], patterns, refs ) if rule_case.has_key? 'lambdas'
+        replacement = parse_replacement( rule_case['replacement'], refs, lambdas )
+        rules << RuleCase.new(patterns,replacement,parse_equals(refs))
       end
       rules
     end
@@ -221,6 +222,20 @@ module Operator
         pattern.dir = stack.empty? ? -current_depth : stack.last.depth - current_depth
       end
       raise "MutationSimplify: some symbols undefined" unless stack.empty?
+    end
+
+    def parse_lambdas( texts, patterns, refs )
+      lambdas = {}
+      var_idxs = []
+      patterns.each_with_index { |p,i| var_idxs << i if p.alt_idx.nil? }     
+
+      texts.each_pair do |key,value|
+        text = "lambda do |a|\n#{value.clone}\nend"
+        var_idxs.each_with_index { |v,i| text.gsub!( refs[v], "a[#{i}]" ) }
+        lambdas[key] = eval(text)
+      end
+
+      lambdas
     end
 
     protected
