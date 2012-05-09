@@ -1024,6 +1024,10 @@ class TC_MutationSimplify < Test::Unit::TestCase
     replacement = s.parse_replacement( texts, refs, [] )
     assert_equal( @outcome4, replacement )
 
+    texts[1] = 'un.known'
+    exception = assert_raise( RuntimeError ) { s.parse_replacement( texts, refs, [] ) }
+    assert_equal( "MutationSimplify: replacement 'un.known' unknown", exception.message )
+ 
   end
 
 end
