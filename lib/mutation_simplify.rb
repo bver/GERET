@@ -239,6 +239,21 @@ module Operator
     end
 
     def parse_replacement( texts, refs, lambdas )
+      replacement = []
+
+      texts.each do |line|
+        idx = refs.index line.strip
+        if idx.nil?
+          symb,rule = line.split('=')
+          symb.strip!
+          # TODO: unknown replacement if rule.nil?
+          replacement << Expansion.new( symb, text2alt( symb, rule.strip ) )         
+        else
+          replacement << idx
+        end
+      end
+
+      replacement
     end
 
     protected

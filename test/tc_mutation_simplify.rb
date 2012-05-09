@@ -1019,7 +1019,9 @@ class TC_MutationSimplify < Test::Unit::TestCase
       'expr.tree2'
     ]
 
-    replacement = parse_replacement( texts, refs, [] )
+    s = MutationSimplify.new @grammar   
+
+    replacement = s.parse_replacement( texts, refs, [] )
     assert_equal( @outcome4, replacement )
 
   end
