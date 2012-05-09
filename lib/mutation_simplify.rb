@@ -264,6 +264,16 @@ module Operator
       replacement
     end
 
+    def parse_equals refs
+      res = []
+      refs.each_with_index do |ref,idx|
+        for i in idx+1 ... refs.size
+          res << [idx, i] if ref == refs[i]
+        end
+      end
+      res
+    end
+
     protected
 
     DepthStack = Struct.new( :symbols, :depth, :loc )

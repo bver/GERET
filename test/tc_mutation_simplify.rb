@@ -1047,5 +1047,28 @@ class TC_MutationSimplify < Test::Unit::TestCase
  
   end
 
+  def test_parse_equals
+    refs = [ 
+      'expr.main',    
+      'expr.term1', #1
+      'expr.same',    #2
+      'op.mult1',
+      'expr.tree1',
+      'op.plus',
+      'expr.term1', #6
+      'expr.same',    #7
+      'op.mult2',
+      'expr.tree2'
+    ]
+    
+    expected_equals = [
+      [1, 6],
+      [2, 7]
+    ]
+
+    s = MutationSimplify.new @grammar   
+    assert_equal( expected_equals, s.parse_equals(refs) )
+  end
+
 end
 
