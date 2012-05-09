@@ -166,7 +166,7 @@ module Operator
       input.each do |rule_case|
         patterns, refs, uses = parse_pattern rule_case['pattern']
         parse_depths( patterns, refs, uses )
-        lambdas = parse_lambdas( rule_case['lambdas'], patterns, refs ) if rule_case.has_key? 'lambdas'
+        lambdas = rule_case.has_key?('lambdas') ? parse_lambdas( rule_case['lambdas'], patterns, refs ) : []
         replacement = parse_replacement( rule_case['replacement'], refs, lambdas )
         rules << RuleCase.new(patterns,replacement,parse_equals(refs))
       end
@@ -236,6 +236,9 @@ module Operator
       end
 
       lambdas
+    end
+
+    def parse_replacement( texts, refs, lambdas )
     end
 
     protected

@@ -51,10 +51,10 @@
   replacement:
     - expr = "(" expr op expr ")"
     - expr.same
-    - op = '*'
+    - op.mult1
     - expr = "(" expr op expr ")"
     - expr.tree1
-    - op = '+'
+    - op.plus
     - expr.tree2
 
 -

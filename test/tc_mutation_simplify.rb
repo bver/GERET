@@ -126,7 +126,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
       MutationSimplify::Expansion.new( 'op',    3,   0, 1 ),   # 8. op = "*" 
       MutationSimplify::Subtree.new(                 2, 2 )    # 9. * expr:tree2
     ]
-    outcome4 = [ # --> '(same*(term1+term2))'
+    @outcome4 = [ # --> '(same*(term1+term2))'
       MutationSimplify::Expansion.new( 'expr',  5 ),   # expr = "(" expr:same op expr:sum ")"
       2,                                               # * expr:same
       3,                                               # op = '*'
@@ -199,7 +199,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
       MutationSimplify::RuleCase.new(match1,outcome1,[]), 
       MutationSimplify::RuleCase.new(match2,outcome2,[]), 
       MutationSimplify::RuleCase.new(match3,outcome3,[]), 
-      MutationSimplify::RuleCase.new(@match4,outcome4,equals4),
+      MutationSimplify::RuleCase.new(@match4,@outcome4,equals4),
       MutationSimplify::RuleCase.new(match5,outcome5,equals5),
       MutationSimplify::RuleCase.new(@match6,outcome6,[])      
     ]
@@ -994,5 +994,35 @@ class TC_MutationSimplify < Test::Unit::TestCase
     assert_equal( "1", lambdas['digitCf'].call(input) )
    
   end
+
+  def test_replace_replace
+    texts = [
+      "expr = \"(\" expr op expr \")\"",
+      "expr.same",
+      "op.mult1",
+      "expr = \"(\" expr op expr \")\"",
+      "expr.tree1",
+      "op.plus",
+      "expr.tree2"
+    ]
+  
+    refs = [ 
+      'expr.main',    
+      'expr.term1',
+      'expr.same',
+      'op.mult1',
+      'expr.tree1',
+      'op.plus',
+      'expr.term2',
+      'expr.same',
+      'op.mult2',
+      'expr.tree2'
+    ]
+
+    replacement = parse_replacement( texts, refs, [] )
+    assert_equal( @outcome4, replacement )
+
+  end
+
 end
 
