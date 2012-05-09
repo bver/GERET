@@ -202,7 +202,30 @@ module Operator
       return [patterns, refs, uses] 
     end
 
+    def parse_depths( patterns, refs, uses )
+      stack = [ DepthStack.new( [refs.first], 0, 0 ) ]
+
+      patterns.each_with_index do |pattern, index|
+        raise "MutationSimplify: parsing error" if stack.empty?
+        current_symb = stack.last.symbols.shift
+        raise  "MutationSimplify: wrong order: required '#{refs[index]}', declared '#{current_symb}'" if current_symb != refs[index] 
+        current_depth = stack.last.depth
+        pattern.parent_arg = stack.last.loc
+        stack.last.loc += 1
+
+        stack.pop if stack.last.symbols.empty?
+
+        expansions = uses[index].clone
+        stack <<  DepthStack.new( expansions, current_depth-1, 0 ) unless expansions.empty?
+
+        pattern.dir = stack.empty? ? -current_depth : stack.last.depth - current_depth
+      end
+      raise "MutationSimplify: some symbols undefined" unless stack.empty?
+    end
+
     protected
+
+    DepthStack = Struct.new( :symbols, :depth, :loc )
 
     def check_equals( track_reloc, equals, ptm )
       equals.each do |pair|

@@ -863,5 +863,62 @@ class TC_MutationSimplify < Test::Unit::TestCase
  
   end
 
+  def test_parse_depths
+    refs = [ 
+      'expr.main', 
+      'expr.constA', 
+      'digit.Ai',
+      'digit.Af',     
+      'op.er', 
+      'expr.constB',
+      'digit.Bi',
+      'digit.Bf',          
+    ]
+
+    half6 = [
+      # :symbol, :alt_idx, :dir, :parent_arg      
+      MutationSimplify::Expansion.new( 'expr',  5   ),   # 0. expr = "(" expr:constA op:er expr:constB ")"
+      MutationSimplify::Expansion.new( 'expr',  2   ),   # 1. expr:constA = digit:Ai "." digit:Af     
+      MutationSimplify::Expansion.new( 'digit', nil ),   # 2. digit:Ai = ?
+      MutationSimplify::Expansion.new( 'digit', nil ),   # 3. digit:Af = ?
+      MutationSimplify::Expansion.new( 'op',    nil ),   # 4. op:er = ?
+      MutationSimplify::Expansion.new( 'expr',  2   ),   # 5. expr:constB = digit:Bi "." digit:Bf     
+      MutationSimplify::Expansion.new( 'digit', nil ),   # 6. digit:Bi = ?
+      MutationSimplify::Expansion.new( 'digit', nil )    # 7. digit:Bf = ?
+    ]
+    half6b = half6.clone
+    half6c = half6.clone
+    half6d = half6.clone   
+   
+  
+    uses = [                          # stacks                 depth=0    dir
+      ['expr.constA', 'op.er', 'expr.constB'], # m  d0=[cA,op,cB]            -1     -1
+      ['digit.Ai', 'digit.Af'],                # cA d0=[op,cB], d1=[dAi,dAf] -2     -1
+      [],                                      # Ai d0=[op,cB], d1=[dAf]     -2      0
+      [],                                      # Af d0=[op,cB]               -1      1
+      [],                                      # op d0=[cB]                  -1      0
+      ['digit.Bi', 'digit.Bf'],                # cB d1=[dBi,dBf]             -2     -1
+      [],                                      # Bi d1=[dBi]                 -2      0
+      []                                       # Bf                           0      2
+    ]
+
+    s = MutationSimplify.new @grammar   
+
+    s.parse_depths(half6, refs, uses)
+    assert_equal(@match6,half6)
+
+    #TODO: exceptions
+    exception = assert_raise( RuntimeError ) { s.parse_depths(half6b, refs, uses[1...uses.size]) }
+    assert_equal( "MutationSimplify: wrong order: required 'expr.constA', declared 'digit.Ai'", exception.message )
+
+    half6c <<  MutationSimplify::Expansion.new( 'op',    nil )
+    exception = assert_raise( RuntimeError ) { s.parse_depths(half6c, refs, uses) }
+    assert_equal( "MutationSimplify: parsing error", exception.message )
+
+    uses.last << 'undefined'
+    exception = assert_raise( RuntimeError ) { s.parse_depths(half6d, refs, uses) }
+    assert_equal( "MutationSimplify: some symbols undefined", exception.message )
+ 
+  end
 end
 
