@@ -1,0 +1,103 @@
+---
+
+- 
+  comment: (0.0*omit) --> 0.0
+  pattern:
+    - expr.main = "(" expr.zero op.er expr.omit ")"
+    - expr.zero = digit.Ai "." digit.Af
+    - digit.Ai = "0"
+    - digit.Af = "0"
+    - op.er = "*"
+    - expr.omit
+  replacement:
+    - expr.zero
+
+-
+  comment: EXP(LOG(inner)) --> inner
+  pattern:
+    - expr.main = fn1arg.exp "(" expr.log ")"
+    - fn1arg.exp = "EXP"
+    - expr.log = fn1arg.log "(" expr.inner ")"
+    - fn1arg.log = "LOG"
+    - expr.inner
+  replacement:
+    - expr.inner
+
+-
+  comment: (inner*1.0) --> inner
+  pattern:
+    - expr.main = "(" expr.inner op.er expr.one ")"
+    - expr.inner
+    - op.er = "*"
+    - expr.one = digit.Ai "." digit.Af
+    - digit.Ai = "1"
+    - digit.Af = "0"
+  replacement:
+    - expr.inner
+
+-
+  comment: ((same*term1)+(same*term2)) --> (same*(term1+term2))
+  pattern: 
+    - expr.main = "(" expr.term1 op.plus expr.term2 ")"
+    - expr.term1 = "(" expr.same op.mult1 expr.tree1 ")"
+    - expr.same
+    - op.mult1 = "*"
+    - expr.tree1
+    - op.plus = "+"
+    - expr.term2 = "(" expr.same op.mult2 expr.tree2 ")"
+    - expr.same
+    - op.mult2 = "*"
+    - expr.tree2
+  replacement:
+    - expr = "(" expr op expr ")"
+    - expr.same
+    - op.mult1
+    - expr = "(" expr op expr ")"
+    - expr.tree1
+    - op.plus
+    - expr.tree2
+
+-
+  comment: (same-same) --> 0.0
+  pattern:
+    - expr.main = "(" expr.same op.minus expr.same ")"
+    - expr.same
+    - op.minus = "-"
+    - expr.same
+  replacement:
+    - expr = digit "." digit
+    - digit = "0"
+    - digit = "0"
+
+-
+  comment: Ai.Af OP Bi.Bf --> Ci.Cf
+  pattern:
+    - expr.main = "(" expr.constA op.er expr.constB ")"
+    - expr.constA = digit.Ai "." digit.Af
+    - digit.Ai = ?
+    - digit.Af = ?
+    - op.er = ?
+    - expr.constB = digit.Bi "." digit.Bf
+    - digit.Bi = ?
+    - digit.Bf = ?
+  replacement:
+    - expr = digit "." digit
+    - digit = digitCi()
+    - digit = digitCf()
+  lambdas:
+    digitCi: |+ 
+      out = eval( digit.Ai + '.' + digit.Af + op.er + digit.Bi + '.' + digit.Bf )
+      if out >= 0.0 and out <= 9.9
+        out.round(1).to_s.split('.').first
+      else
+        nil
+      end 
+    digitCf: |+
+      out = eval( digit.Ai + '.' + digit.Af + op.er + digit.Bi + '.' + digit.Bf )
+      if out >= 0.0 and out <= 9.9
+        out.round(1).to_s.split('.').last
+      else
+        nil
+      end
+
+

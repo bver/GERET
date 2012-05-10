@@ -2,27 +2,18 @@
 $LOAD_PATH << '.'
 
 #
-# gpmap: map genotype to phenotype
+# mutate: apply mutation to the genotype
 #
 # usage:
-#   tools/gpmap.rb [OPTIONS] config.yaml < genotype > phenotype
+#   tools/mutate.rb [OPTIONS] config.yaml < genotype > mutant
 #
 # -h, --help:
 #    show help
 #
-# -t, --track:
-#    print track support info (for the LHS crossover)
-#
-# -u, --used:
-#    print number of codons used for GP mapping
-#
-# -s, --supress:
-#    supress printing of the phenotype
-#
 # -g, --genotype:
 #    copy the genotype from $stdin before another output
 #
-# config.yaml is a configuration file with [grammar] and [mapper] sections.
+# config.yaml is a configuration file with [grammar], [mapper] and [mutation] sections.
 # for instance:
 #   grammar:
 #     class: Abnf::File
@@ -30,12 +21,14 @@ $LOAD_PATH << '.'
 #   mapper:
 #     class: DepthBucket
 #     consume_trivial_codons: false
+#   mutation:
+#     class: MutationRipple
 #
 # genotype is read from STDIN and has the form of ruby array:
 #   eg: [42, 23, 34, 4]
 #
-# phenotype is written to STDOUT and its syntax is specified
-#   by the grammar
+# mutant is written to STDOUT and its syntax is same
+#   as genotype's
 #    
 
 require 'getoptlong'
@@ -44,16 +37,10 @@ require 'lib/geret'
 begin
 
   opts = GetoptLong.new(
-    [ "--track", '-t', GetoptLong::NO_ARGUMENT ],
-    [ "--used", '-u', GetoptLong::NO_ARGUMENT ],
     [ "--help", '-h', GetoptLong::NO_ARGUMENT ],
-    [ "--supress", '-s', GetoptLong::NO_ARGUMENT ],
     [ "--genotype", '-g', GetoptLong::NO_ARGUMENT ]   
   )
  
-  used = false
-  track = false
-  supress = false
   mirror = false
   opts.each do |opt, arg|
     case opt
@@ -64,12 +51,6 @@ begin
           puts matched[1] unless matched.nil?
         end 
         exit 0
-      when '--used'
-        used = true
-      when '--track'
-        track = true
-      when '--supress'
-        supress = true
       when '--genotype'
         mirror = true
     end
@@ -80,7 +61,8 @@ begin
   config = ConfigYaml.new ARGV.shift
   grammar = config.factory('grammar')
   mapper = config.factory('mapper', grammar)
-  mapper.track_support_on = track
+  mapper.track_support_on = true
+  mutation = config.factory('mutation', grammar) 
 
   $stdin.each_line do |chromozome|
     puts chromozome if mirror
@@ -88,12 +70,7 @@ begin
     next unless genotype.kind_of? Array
     phenotype = mapper.phenotype genotype 
     next if phenotype.nil?
-    puts phenotype unless supress
-    mapper.track_support.each_with_index do |node,i| 
-      text = (grammar[node.symbol][node.alt_idx].map {|token| token.type == :symbol ? %Q[<#{token.data}>] : %Q["#{token.data}"] }).join(' ')
-      puts "#{i}. #{node.symbol} genome:#{node.from}..#{node.to} parent:#{node.back} locus:#{node.loc_idx} expansion:'#{text}'"
-    end if track
-    puts "used_length = #{mapper.used_length}" if used
+    puts mutation.mutation( genotype, mapper.track_support ).inspect   
   end
 
 rescue => msg
