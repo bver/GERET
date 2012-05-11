@@ -100,20 +100,20 @@ module Operator
      root_node = track_reloc[ptm.first]
      res = genome[0 ... root_node.from].clone
 
-     replacement.each_with_index do |idx,i|
-       if idx.kind_of? Expansion
+     replacement.each_with_index do |replacing,i|
+       if replacing.kind_of? Expansion
          res << (i==0 ? root_node.loc_idx : 0) if @mapper_type == 'DepthLocus' # TODO: different Codon types?
-         if idx.alt_idx.respond_to? 'call'
-           out = idx.alt_idx.call args
+         if replacing.alt_idx.respond_to? 'call'
+           out = replacing.alt_idx.call args
            return genome.clone if out.nil?  
-           res << text2alt_idx( idx.symbol, out )
+           res << text2alt_idx( replacing.symbol, out )
          else 
-           res << idx.alt_idx
+           res << replacing.alt_idx
          end
-       else # subtree
-         node = track_reloc[ ptm[idx] ]
+       else # replacing is the subtree index
+         node = track_reloc[ ptm[replacing] ]
          subtree = genome[node.from .. node.to].clone
-         subtree[0] = root_node.loc_idx if @mapper_type == 'DepthLocus' and i==0 
+         subtree[0] = root_node.loc_idx if @mapper_type == 'DepthLocus' and i==0 # TODO: different Codon types?
          res.concat subtree
        end
      end
