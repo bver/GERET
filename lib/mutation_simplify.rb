@@ -97,12 +97,12 @@ module Operator
 
     def replace( genome, ptm, patterns, replacement, track_reloc )
      args = exp_args( track_reloc, patterns, ptm )
-     
      root_node = track_reloc[ptm.first]
      res = genome[0 ... root_node.from].clone
-     replacement.each do |idx|
+
+     replacement.each_with_index do |idx,i|
        if idx.kind_of? Expansion
-         res << 0 if @mapper_type == 'DepthLocus' # TODO: different Codon types?
+         res << (i==0 ? root_node.loc_idx : 0) if @mapper_type == 'DepthLocus' # TODO: different Codon types?
          if idx.alt_idx.respond_to? 'call'
            out = idx.alt_idx.call args
            return genome.clone if out.nil?  
@@ -110,9 +110,11 @@ module Operator
          else 
            res << idx.alt_idx
          end
-       else
+       else # subtree
          node = track_reloc[ ptm[idx] ]
-         res.concat genome[node.from .. node.to]
+         subtree = genome[node.from .. node.to].clone
+         subtree[0] = root_node.loc_idx if @mapper_type == 'DepthLocus' and i==0 
+         res.concat subtree
        end
      end
     
@@ -162,7 +164,7 @@ module Operator
       found = hash[symbol]
       raise "MutationSimplify: altidx for symbol '#{symbol}' not found" if found.nil?
       res = found[text]
-      raise "MutationSimplify: altidx for RuleAlt '#{text}' not found" if res.nil?
+      raise "MutationSimplify: altidx for RuleAlt '#{text}' (symbol '#{symbol}') not found" if res.nil?
       res
     end
 

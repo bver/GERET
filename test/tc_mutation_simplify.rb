@@ -705,7 +705,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
     assert_equal( 2, s.text2alt_idx( 'op', '/' ) )    
 
     exception = assert_raise( RuntimeError ) { s.text2alt_idx( 'expr', 'unknown' ) }
-    assert_equal( "MutationSimplify: altidx for RuleAlt 'unknown' not found", exception.message )
+    assert_equal( "MutationSimplify: altidx for RuleAlt 'unknown' (symbol 'expr') not found", exception.message )
 
     exception = assert_raise( RuntimeError ) { s.text2alt_idx( 'unknown', 'irrelevant' ) }
     assert_equal( "MutationSimplify: altidx for symbol 'unknown' not found", exception.message )
@@ -1123,6 +1123,88 @@ class TC_MutationSimplify < Test::Unit::TestCase
     assert_equal( MutationSimplify::Expansion.new( 'expr',  2 ), replacement[0] )
     assert_equal( "5", replacement[1].alt_idx.call(input) )
     assert_equal( "7", replacement[2].alt_idx.call(input) )
+  end
+
+  def test_mult_by_two_bugfix
+    #[38,219,  206,216,  239,178,  117,33,  251,35,  234,145,  244,104,  141,199,  190,132]
+    #SIN(COS((y+y)))
+    #0. expr genome:0..17 parent: locus:0 expansion:'<fn1arg> "(" <expr> ")"'        38,219,
+    #1. fn1arg genome:2..3 parent:0 locus:0 expansion:'"SIN"'                        206,216,
+    #2. expr genome:4..17 parent:0 locus:0 expansion:'<expr>'                        239,178,
+    #3. expr genome:6..17 parent:2 locus:0 expansion:'<fn1arg> "(" <expr> ")"'       117,33,
+    #4. expr genome:8..15 parent:3 locus:1 expansion:'"(" <expr> <op> <expr> ")"'    251,35,
+    #5. expr genome:10..11 parent:4 locus:0 expansion:'"y"'                          234,145,
+    #6. op genome:12..13 parent:4 locus:0 expansion:'"+"'                            244,104,
+    #7. expr genome:14..15 parent:4 locus:0 expansion:'"y"'                          141,199,
+    #8. fn1arg genome:16..17 parent:3 locus:0 expansion:'"COS"'                      190,132
+    #
+    #"#<struct Struct::TrackNode symbol=\"expr\", from=0, to=17, back=nil, alt_idx=3,  loc_idx=0>" '<fn1arg> "(" <expr> ")"'
+    #"#<struct Struct::TrackNode symbol=\"fn1arg\", from=2, to=3, back=0, alt_idx=1,   loc_idx=0>" '"SIN"'
+    #"#<struct Struct::TrackNode symbol=\"expr\", from=4, to=17, back=0, alt_idx=4,    loc_idx=1>" '<expr>'
+    #"#<struct Struct::TrackNode symbol=\"expr\", from=6, to=17, back=2, alt_idx=3,    loc_idx=0>" '<fn1arg> "(" <expr> ")"'
+    #"#<struct Struct::TrackNode symbol=\"expr\", from=8, to=15, back=3, alt_idx=5,    loc_idx=1>" '"(" <expr> <op> <expr> ")"'   root_node
+    #"#<struct Struct::TrackNode symbol=\"expr\", from=10, to=11, back=4, alt_idx=1,   loc_idx=0>" '"y"'
+    #"#<struct Struct::TrackNode symbol=\"op\", from=12, to=13, back=4, alt_idx=0,     loc_idx=1>" '"+"'
+    #"#<struct Struct::TrackNode symbol=\"expr\", from=14, to=15, back=4, alt_idx=1,   loc_idx=2>" '"y"'
+    #"#<struct Struct::TrackNode symbol=\"fn1arg\", from=16, to=17, back=3, alt_idx=2, loc_idx=0>" '"COS"'
+    #
+ 
+    #[38,219,  206,216,  239,178,  117,33,       0,       5,  0,2,  0,2,  0,0,  0,3,  234,145,  190,132]  !!! loc=0 and should be 1
+    #SIN(ABS(2.0))
+    #0. expr genome:0..15 parent: locus:0 expansion:'<fn1arg> "(" <expr> ")"'        38,219,       
+    #1. fn1arg genome:2..3 parent:0 locus:0 expansion:'"SIN"'                        206,216,
+    #2. expr genome:4..15 parent:0 locus:0 expansion:'<expr>'                        239,178,
+    #3. expr genome:6..15 parent:2 locus:0 expansion:'<fn1arg> "(" <expr> ")"'       117,33,
+    #4. fn1arg genome:8..9 parent:3 locus:0 expansion:'"ABS"'                        0,5,
+    #5. expr genome:10..15 parent:3 locus:0 expansion:'<_digit> "." <_digit>'        0,2,
+    #6. _digit genome:12..13 parent:5 locus:0 expansion:'"2"'                        0,2,
+    #7. _digit genome:14..15 parent:5 locus:0 expansion:'"0"'                        0,0,
+    #                                                                                234,145,
+    #                                                                                190,132 
+    #
+    #pattern:
+    #- expr.main = "(" expr.same op.plus expr.same ")"
+    #- expr.same
+    #- op.plus = "+"
+    #- expr.same
+    #replacement:
+    #- expr = "(" expr op expr ")"
+    #- expr = digit "." digit
+    #- digit = "2"
+    #- digit = "0"
+    #- op = "*"
+    #- expr.same   
+   
+    s = MutationSimplify.new @grammar 
+    s.mapper_type = 'DepthLocus'
+    s.filename = 'test/data/simplify_bug.yaml'
+
+    m = Mapper::DepthLocus.new @grammar
+    m.track_support_on = true
+   
+    # 1st case (expansion)
+    genotype_src1 = [38,219,  206,216,  239,178,  117,33,  251,35,  234,145,  244,104,  141,199,  190,132]
+    assert_equal( 'SIN(COS((y+y)))', m.phenotype( genotype_src1 ) )
+    track_src1 = m.track_support   
+
+    track_reloc = s.reloc(track_src1)
+    ptm = s.match(s.reloc(track_src1), s.rules.first.match )
+    #[4, 5, 6, 7]
+    assert_equal( [[1, 3]],  s.rules.first.equals )
+    #[[1, 3]] -> ptm -> 5,7
+    assert( s.nodes_equal( track_reloc, 5, 7 ) )
+
+#    mutant = s.mutation( genotype_src1, track_src1 )
+#    assert_equal( 'SIN(COS((2.0*y)))', m.phenotype( mutant ) )  # simplified 
+ 
+    # 2nd case (subtree)
+    genotype_src2 = [0,3,  1,5,  0,0,  0,0,  0,2,  0,0,  1,0,  0,2]
+    assert_equal( 'COS((x+0.0))', m.phenotype( genotype_src2 ) )
+    track_src2 = m.track_support
+
+    mutant = s.mutation( genotype_src2, track_src2 )
+    assert_equal( 'COS(x)', m.phenotype( mutant ) )  # simplified 
+
   end
 
 end
