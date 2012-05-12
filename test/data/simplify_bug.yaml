@@ -1,0 +1,32 @@
+---
+
+-
+  comment: (same+same) --> 2.0*same
+  pattern:
+    - expr.main = "(" expr.same op.plus expr.same ")"
+    - expr.same
+    - op.plus = "+"
+    - expr.same
+  replacement:
+    - expr = "(" expr op expr ")"
+    - expr = digit "." digit
+    - digit = "2"
+    - digit = "0"
+    - op = "*"
+    - expr.same  
+
+-
+  comment: (inner+0.0) --> inner
+  pattern:
+    - expr.main = "(" expr.inner op.er expr.zero ")"
+    - expr.inner   
+    - op.er = "+"
+    - expr.zero = digit.Ai "." digit.Af
+    - digit.Ai = "0"
+    - digit.Af = "0"
+  replacement:
+    - expr.inner
+
+   
+  
+
