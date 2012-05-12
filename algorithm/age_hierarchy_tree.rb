@@ -171,7 +171,9 @@ class AgeHierarchyTree < AlgorithmBase
     init_population( [], @deme_size ) 
   end
 
-  def breeding( layer ) 
+  def breeding( parents ) 
+
+   layer = sort_spea2( parents )
 
     # xover, mutations
     children = []   
