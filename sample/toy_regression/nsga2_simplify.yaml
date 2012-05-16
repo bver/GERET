@@ -1,0 +1,56 @@
+---
+algorithm:
+  class: Nsga2
+
+  population_size: 200
+
+  probabilities:
+    crossover: 0.5
+    mutation: 0.1
+    injection: 0.4
+
+  shorten_individual: true
+
+  init:
+    method: ramped # grow or full or ramped
+    sensible_depth: 7   
+
+  inject:
+    method: grow # grow or full or random
+    sensible_depth: 7   
+ 
+  termination:
+    max_steps: 1000
+    on_individual: stopping_condition
+
+grammar:
+  class: Abnf::File
+  filename: sample/toy_regression/grammar.abnf
+
+mapper:
+  class: DepthLocus
+        
+crossover:
+  class: CrossoverRipple
+  margin: 2 #1
+  step: 2
+ 
+mutation:
+  class: MutationSimplify
+  mapper_type: DepthLocus
+  filename: sample/toy_regression/simplify.yaml
+
+store:
+  class: Store
+  filename: ./toy_nsga2.store
+       
+report:
+  class: ToyReport
+  require: sample/toy_regression/toy_report.rb
+
+individual:
+  class: ToyIndividualMOStrict # ToyIndividualMOWeak 
+  require: sample/toy_regression/toy_individual.rb
+  shorten_chromozome: false 
+         
+   

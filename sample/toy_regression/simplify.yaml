@@ -1,0 +1,49 @@
+---
+
+-
+  comment: (same/same) --> 1.0
+  pattern:
+    - expr.main = "(" expr.same op.div expr.same ")"
+    - expr.same
+    - op.div = "/"
+    - expr.same
+  replacement:
+    - expr = var
+    - var = "1.0"
+
+-
+  comment: ((same*inner)/same) --> inner
+  pattern:
+    - expr.main = "(" expr.prod op.div expr.same ")"
+    - expr.prod = "(" expr.same op.mult expr.inner ")"
+    - expr.same
+    - op.mult = "*"
+    - expr.inner
+    - op.div = "/"
+    - expr.same
+  replacement:
+    - expr.inner
+
+-
+  comment: EXP(LOG(inner)) --> inner
+  pattern:
+    - expr.main = pre-op.exp "(" expr.log ")"
+    - pre-op.exp = "exp"
+    - expr.log = pre-op.log "(" expr.inner ")"
+    - pre-op.log = "log"
+    - expr.inner
+  replacement:
+    - expr.inner
+
+-
+  comment: (1.0*inner) --> inner
+  pattern:
+    - expr.main = "(" expr.one op.er expr.inner ")"
+    - expr.one = var.one
+    - var.one = "1.0"
+    - op.er = "*"
+    - expr.inner   
+  replacement:
+    - expr.inner
+ 
+
