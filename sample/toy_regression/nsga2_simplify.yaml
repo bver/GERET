@@ -29,6 +29,7 @@ grammar:
 
 mapper:
   class: DepthLocus
+  track_support_on: true 
         
 crossover:
   class: CrossoverRipple

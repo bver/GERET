@@ -11,7 +11,7 @@ module ToyRegression
   end
   @@required_values = (0...Samples).map { |i| f(i) }
 
-  attr_reader :error 
+  attr_reader :error
 
   def evaluate
     @error = Inf

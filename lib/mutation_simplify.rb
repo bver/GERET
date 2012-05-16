@@ -256,8 +256,8 @@ module Operator
         else
           # Expansion
           raise  "MutationSimplify: '#{symb_dot}' is defined more times" unless refs.index(symb_dot).nil?
-          uses << rule.scan(/\w+\.\w+/)
-          rule = rule.strip.gsub(/\.\w+/,'')
+          uses << rule.scan(/[a-zA-Z_\-][a-zA-Z0-9_\-]*\.[a-zA-Z_\-][a-zA-Z0-9_\-]*/)
+          rule = rule.strip.gsub(/\.[a-zA-Z_\-][a-zA-Z0-9_\-]*/,'')
           alt_idx = (rule == '?') ? nil : text2alt( symb, rule )
           patterns << Expansion.new( symb, alt_idx )        
         end
@@ -313,7 +313,7 @@ module Operator
           raise "MutationSimplify: replacement '#{line}' unknown" if rule.nil?
           symb.strip!
           rule.strip!
-          all,fn = /(\w+)\(\)/.match(rule).to_a
+          all,fn = /([a-zA-Z_\-][a-zA-Z0-9_\-]*)\(\)/.match(rule).to_a
           if fn.nil?
             alt_idx = text2alt( symb, rule )   
           else
