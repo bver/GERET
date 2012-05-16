@@ -6,55 +6,34 @@ module Operator
   # Algebraic simplification inspired by:
   # http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.96.7953
   #
-  # Checks if the genotype-phenotype mapping tree contains the specific patterns and if it finds one it replaces 
+  # MutationSimplify checks if the genotype-phenotype mapping tree contains the specific patterns and if it finds one it replaces 
   # the according part of the genotype with a new part folowing certain rules. The motivation is that the phenotype
   # which represents the algebraic expression can be often simplified by algebraic rules eg.:
   #
-  #  A * 1 = A
-  #  A * B + A * C = A * (B + C)
-  #  sin(0) = 0
+  #  A * 1 -> A
+  #  A * B + A * C -> A * (B + C)
+  #  sin(0) -> 0
   #  ...
+  #  etc. 
   #
-  #  etc. This process incorporates a domain knowledge into the evolutionary process an may help to lower the average
-  #  complexity of phenotypes.
-  #
-  # This class can be seen as the kind of mutation so it is compatible with the mutation operator interface.
+  # This process incorporates a domain knowledge into the evolutionary process an may help to lower the average
+  # complexity of phenotypes. It can be seen as the kind of mutation so it is compatible with the mutation operator interface.
   # The description of the patterns and replacements is stored in the yaml file with the syntax resembling 
   # ABNF grammar.
   # MutationSimplify currently supports only DepthFirst and DepthLocus mappers.
   #
-  # The rules are stored in the YAML format file and read by the filename= method. The YAML represents the array of
+  # The rules are stored in the YAML format file and read by the filename= method. The YAML file represents the array of
   # modification rules, each rule is the YAML object which has the mandatory attributes (pattern, replacement) and 
   # can have optional attributes (comment, lambdas).
   # Pattern and replacement attributes are arrays of derivation rules matching the grammar of the GE process.
-  # Symbols in pattern array have to be qualified in the form
-  #   symbol.instance
+  # Symbols in pattern array have to be qualified in the form:
+  #
+  #  symbol.instance
+  #
   # The rule may have the right-hand side (it then represents a single derivation rule from the grammar) or the RHS
-  # may be omitted (the symbol.instance left-hand side then represents the named subtree). If there are two 
-  # occurences of the same subtree instances the both subtrees must match.
-  # For example:
-  # -
-  #   comment: (same-same) --> 0.0
-  #   pattern:
-  #     - expr.main = "(" expr.same op.minus expr.same ")"
-  #     - expr.same
-  #     - op.minus = "-"
-  #     - expr.same
-  #   replacement:
-  #     - expr = digit "." digit
-  #     - digit = "0"
-  #     - digit = "0"
-  #  - 
-  #   comment: (0.0*omit) --> 0.0
-  #   pattern:
-  #     - expr.main = "(" expr.zero op.er expr.omit ")"
-  #     - expr.zero = digit.Ai "." digit.Af
-  #     - digit.Ai = "0"
-  #     - digit.Af = "0"
-  #     - op.er = "*"
-  #     - expr.omit
-  #   replacement:
-  #     - expr.zero
+  # may be omitted (the symbol.instance left-hand side then represents the subtree defined in the pattern section). 
+  # If there are two occurences of the same subtree instances then both subtrees must match.
+  # See the example of the format: sample/toy_regression/simplify.yaml
   #    
   class MutationSimplify
     Expansion = Struct.new( :symbol, :alt_idx, :dir, :parent_arg )
