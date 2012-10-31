@@ -84,12 +84,12 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     assert_equal( [ 'a_start', 'node1' ], sf.keys.sort )
     assert( sf['node1'].kind_of?( Hash ))
 
-    assert_equal( [ '_text', '_valid', 'id', 'x', 'y' ], sf.attributes ) 
+    assert_equal( [ '_text', '_valid', 'id', 'y', 'x' ], sf.attributes ) 
 
     assert_equal( ['fn'], sf['a_start'].keys )
     rule0 = sf['a_start']['fn']
     assert( rule0.kind_of?( Array ))
-    assert_equal( 1, rule0.size )   
+    assert_equal( 1, rule0.size )
     assert_equal( 1, rule0.first.target.node_idx ) # c0=1
     assert_equal( 2, rule0.first.target.attr_idx ) # id=2
     assert_equal( [], rule0.first.args )
@@ -100,24 +100,24 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     assert_equal( ['*', 'node2 $'], sf['node1'].keys.sort )
     rule1 = sf['node1']['node2 $']
     assert_equal( 2, rule1.size )
-    rule1.reverse! if AttrRef.new( 0, 2 ) != rule1.first.target # due to the fact ruby 1.9 does not sort hash.keys
-    assert_equal( AttrRef.new( 0, 2 ), rule1.first.target ) # p=0, id=1
-    assert_equal( [ AttrRef.new( 1, 3 ) ], rule1.first.args ) # c0=1, x=2
-    assert_equal( 1, rule1.first.func.arity )
-    assert_equal( "c0.x + 'x'", rule1.first.orig )
-    assert_equal( 'foox', rule1.first.func.call(['foo']) )   
-    assert_equal( AttrRef.new( 1, 3 ), rule1.last.target ) # c0.x
-    assert_equal( AttrRef.new( 0, 2 ), rule1.last.args[0] ) # p.id
-    assert_equal( AttrRef.new( 2, 0 ), rule1.last.args[1] ) # c1._text
-    assert_equal( AttrRef.new( 1, 4 ), rule1.last.args[2] ) # c0.y   
+    assert_equal( AttrRef.new( 0, 2 ), rule1.last.target ) # p.id
+    assert_equal( [ AttrRef.new( 1, 4 ) ], rule1.last.args ) # c0.x
     assert_equal( 1, rule1.last.func.arity )
-    assert_equal( 'foobarbaz', rule1.last.func.call(['foo','bar','baz']) )   
-    assert_equal( "p.id + c1._text + c0.y", rule1.last.orig )   
+    assert_equal( "c0.x + 'x'", rule1.last.orig )
+    assert_equal( 'foox', rule1.last.func.call(['foo']) )  
+
+    assert_equal( AttrRef.new( 1, 4 ), rule1.first.target ) # c0.x
+    assert_equal( AttrRef.new( 0, 2 ), rule1.first.args[0] ) # p.id
+    assert_equal( AttrRef.new( 2, 0 ), rule1.first.args[1] ) # c1._text
+    assert_equal( AttrRef.new( 1, 3 ), rule1.first.args[2] ) # c0.y   
+    assert_equal( 1, rule1.first.func.arity )
+    assert_equal( 'foobarbaz', rule1.first.func.call(['foo','bar','baz']) )   
+    assert_equal( "p.id + c1._text + c0.y", rule1.first.orig )   
  
     rule2 = sf['node1']['*']
     assert_equal( 1, rule2.size )
-    assert_equal( AttrRef.new( 0, 4 ), rule2.first.target ) # p.y
-    assert_equal( [ AttrRef.new( 1, 4 ) ], rule2.first.args ) # c0.y
+    assert_equal( AttrRef.new( 0, 3 ), rule2.first.target ) # p.y
+    assert_equal( [ AttrRef.new( 1, 3 ) ], rule2.first.args ) # c0.y
     assert_equal( 1, rule2.first.func.arity )
     assert_equal( 'xyz', rule2.first.func.call(['xyz']) )   
     assert_equal( "c0.y", rule2.last.orig )   
@@ -141,9 +141,9 @@ class TC_SemanticFunctions < Test::Unit::TestCase
     # deep copies: 
     batch.first.orig = 'shallow copy?'
     assert_equal( "c0.y", sf['node1']['*'].first.orig ) # deep copy 
-    assert_equal( [ AttrRef.new( 1, 4 ) ], sf['node1']['*'].first.args )
+    assert_equal( [ AttrRef.new( 1, 3 ) ], sf['node1']['*'].first.args )
     batch.first.args = [ AttrRef.new( 0, 0 ) ]
-    assert_equal( [ AttrRef.new( 1, 4 ) ], sf['node1']['*'].first.args ) # deep copy
+    assert_equal( [ AttrRef.new( 1, 3 ) ], sf['node1']['*'].first.args ) # deep copy
 
     expansion = [ Token.new( :symbol, 'node2' ), Token.new( :literal, 'whatever' ) ]
     batch = sf.node_expansion( symbol, expansion ) 

@@ -5,7 +5,7 @@ module Mapper
   module ConstantsInGenotype
 
     class EmbeddedConstantData 
-      attr  :type, :codons, :min, :step
+      attr_reader :type, :codons, :min, :step
 
       def initialize( type, codons, min, step )
          @type = type

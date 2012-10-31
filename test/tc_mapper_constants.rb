@@ -6,7 +6,7 @@ require 'lib/grammar'
 require 'lib/mapper_constants'
 
 class ConstCodonMock
-  attr :seq
+  attr_reader :seq
 
   def initialize seq
     @seq = seq
@@ -28,7 +28,7 @@ end
 class ConstantsTest
   include Mapper::ConstantsInGenotype
 
-  attr :used_length, :codon 
+  attr_reader :used_length, :codon 
 
   def initialize seq=[]
     @used_length = 0

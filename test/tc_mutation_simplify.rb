@@ -172,7 +172,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
     @digitCi = proc do |a|
       out = eval(a[0] + '.' + a[1] + a[2] + a[3] + '.' + a[4])     
       if out >= 0.0 and out <= 9.9
-        out.round(1).to_s.split('.').first
+        ((out*10).round/10.0).to_s.split('.').first
       else
         nil
       end
@@ -181,7 +181,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
     @digitCf = proc do |a| 
       out = eval(a[0] + '.' + a[1] + a[2] + a[3] + '.' + a[4])          
       if out >= 0.0 and out <= 9.9
-        out.round(1).to_s.split('.').last
+        ((out*10).round/10.0).to_s.split('.').last
       else
         nil
       end
@@ -998,8 +998,8 @@ class TC_MutationSimplify < Test::Unit::TestCase
 
   def test_parse_lambdas
     texts = {
-      "digitCi"=>"out = eval( digit.Ai + '.' + digit.Af + op.er + digit.Bi + '.' + digit.Bf )\nif out >= 0.0 and out <= 9.9\n  out.round(1).to_s.split('.').first\nelse\n  nil\nend \n", 
-      "digitCf"=>"out = eval( digit.Ai + '.' + digit.Af + op.er + digit.Bi + '.' + digit.Bf )\nif out >= 0.0 and out <= 9.9\n  out.round(1).to_s.split('.').last\nelse\n  nil\nend\n\n\n"
+      "digitCi"=>"out = eval( digit.Ai + '.' + digit.Af + op.er + digit.Bi + '.' + digit.Bf )\nif out >= 0.0 and out <= 9.9\n  ((out*10).round/10.0).to_s.split('.').first\nelse\n  nil\nend \n", 
+      "digitCf"=>"out = eval( digit.Ai + '.' + digit.Af + op.er + digit.Bi + '.' + digit.Bf )\nif out >= 0.0 and out <= 9.9\n  ((out*10).round/10.0).to_s.split('.').last\nelse\n  nil\nend\n\n\n"
     }
 
     refs = [ 

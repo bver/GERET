@@ -81,10 +81,12 @@ module Semantic
         rules = yaml[symbol]
 
         newrules = {}
-        rules.each_pair do |expansion,funcs|
+        rules.keys.sort.each do |expansion|
+          funcs = rules[expansion]
 
           batch = []
-          funcs.each_pair do |dest,body|
+          funcs.keys.sort.each do |dest|
+            body = funcs[dest]
 
             target = new_attr_ref dest
             args = Functions.extract_args( body )
