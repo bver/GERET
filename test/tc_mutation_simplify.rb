@@ -5,6 +5,7 @@ require 'test/unit'
 require 'lib/mapper'
 require 'lib/validator'
 require 'lib/mutation_simplify'
+require 'lib/abnf_file'
 
 include Operator
 
@@ -253,33 +254,26 @@ class TC_MutationSimplify < Test::Unit::TestCase
   def test_reloc_match_depth_first
     # [5, 5, 2, 0, 0, 3, 1, 2, 0] -> ((0.0*y)/x)
     # :symbol, :from, :to, :back, :alt_idx, :loc_idx  
+
     track = [
       Mapper::TrackNode.new( 'expr',  0, 8, nil, 5, 0 ),
-      Mapper::TrackNode.new( 'expr',  1, 6, 0,   5, 0 ),     
-      Mapper::TrackNode.new( 'expr',  2, 4, 1,   2, 0 ),    
-      Mapper::TrackNode.new( 'digit', 3, 3, 2,   0, 0 ),         
-      Mapper::TrackNode.new( 'digit', 4, 4, 2,   0, 0 ), #4
-      Mapper::TrackNode.new( 'op',    5, 5, 1,   3, 0 ),     
-      Mapper::TrackNode.new( 'expr',  6, 6, 1,   1, 0 ),     
-      Mapper::TrackNode.new( 'op',    7, 7, 0,   2, 0 ),     
-      Mapper::TrackNode.new( 'expr',  8, 8, 0,   0, 0 )
-    ]
-   
-    track_reloc = [
-      Mapper::TrackNode.new( 'expr',  0, 8, nil, 5, 0 ),
-      Mapper::TrackNode.new( 'expr',  1, 6, 0,   5, 0 ),     
-      Mapper::TrackNode.new( 'expr',  2, 4, 1,   2, 0 ),    
-      Mapper::TrackNode.new( 'digit', 3, 3, 2,   0, 0 ),         
+      Mapper::TrackNode.new( 'expr',  1, 6, 0,   5, 0 ),
+      Mapper::TrackNode.new( 'expr',  2, 4, 1,   2, 0 ),
+      Mapper::TrackNode.new( 'digit', 3, 3, 2,   0, 0 ),
       Mapper::TrackNode.new( 'digit', 4, 4, 2,   0, 1 ), #4
-      Mapper::TrackNode.new( 'op',    5, 5, 1,   3, 1 ),     
-      Mapper::TrackNode.new( 'expr',  6, 6, 1,   1, 2 ),     
-      Mapper::TrackNode.new( 'op',    7, 7, 0,   2, 1 ),     
+      Mapper::TrackNode.new( 'op',    5, 5, 1,   3, 1 ),
+      Mapper::TrackNode.new( 'expr',  6, 6, 1,   1, 2 ),
+      Mapper::TrackNode.new( 'op',    7, 7, 0,   2, 1 ),
       Mapper::TrackNode.new( 'expr',  8, 8, 0,   0, 2 )
-    ]   
+    ]
+
+    gen = [5, 5, 2, 0, 0, 3, 1, 2, 0]
 
     s = MutationSimplify.new @grammar 
     s.mapper_type = 'DepthFirst'
-    assert_equal( track_reloc, s.reloc(track) )
+    gen_reloc, track_reloc =  s.reloc(gen, track)
+    assert_equal( gen, gen_reloc )
+    assert_equal( track, track_reloc )
 
     assert_equal( 9, track.size )
     ptm = s.match( track_reloc, @rules.first.match ) 
@@ -354,24 +348,11 @@ class TC_MutationSimplify < Test::Unit::TestCase
     s.mapper_type = 'DepthFirst'      
     assert_equal( @rules, s.rules )
 
-    genotype_dest = [5, 0, 1, 2, 0, 0]
-    assert_equal( '(x-0.0)', m.phenotype( genotype_dest ) )   
-   
-    mutant = s.mutation( genotype_src1, track_src1 )
-    assert_equal( genotype_dest, mutant ) # simplified
-
     mutant = s.mutation( genotype_src2, track_src2 )
     assert_equal( genotype_src2, mutant ) # no match, no change
 
-    mutant = s.mutation( genotype_src3, track_src3 )
-    assert_equal( genotype_dest, mutant ) # simplified
-
-    genotype_dest4 = [5, 2, 0, 0, 2, 0]
-    assert_equal( '(0.0/x)', m.phenotype( genotype_dest4 ) )   
-
     mutant = s.mutation( genotype_src4, track_src4 )
-    assert_equal( genotype_dest4, mutant ) # simplified
-   
+    assert_equal( '(0.0/x)', m.phenotype( mutant ) )
   end
 
   def test_depth_first_log_exp
@@ -397,19 +378,18 @@ class TC_MutationSimplify < Test::Unit::TestCase
     s = MutationSimplify.new @grammar
     assert_nil( s.mapper_type )
 
-    exception = assert_raise( RuntimeError ) { s.reloc [] }
+    exception = assert_raise( RuntimeError ) { s.reloc([], []) }
     assert_equal( "MutationSimplify: mapper_type not selected", exception.message )
    
     s.mapper_type = 'undefined'
-    exception = assert_raise( RuntimeError ) { s.reloc [] }
+    exception = assert_raise( RuntimeError ) { s.reloc([], []) }
     assert_equal( "MutationSimplify: mapper_type not supported", exception.message )
   end
 
   def test_reloc_depth_locus
-    # [0,5,  1,2,  1,0,  0,5,  2,1,  0,2,  0,0,  0,0,  0,3 ] => '((0.0*y)/x)'
     # :symbol, :from, :to, :back, :alt_idx, :loc_idx  
     track = [
-      Mapper::TrackNode.new( 'expr',  0,  17, nil, 5, 0 ), # 0. expr = <expr> <op> <expr> ")"
+      Mapper::TrackNode.new( 'expr',  0,  17, nil, 5, 0 ), # 0. expr = "(" <expr> <op> <expr> ")"
       Mapper::TrackNode.new( 'op',    2,  3,  0,   2, 1 ), # 1. op = "/"
       Mapper::TrackNode.new( 'expr',  4,  5,  0,   0, 1 ), # 2. expr = "x"
       Mapper::TrackNode.new( 'expr',  6,  17, 0,   5, 0 ), # 3. expr = "(" <expr> <op> <expr> ")"
@@ -420,44 +400,37 @@ class TC_MutationSimplify < Test::Unit::TestCase
       Mapper::TrackNode.new( 'op',    16, 17, 3,   3, 0 )  # 8. op = "*"
     ]
 
+    gen = [0,5,  1,2,  1,0,  0,5,  2,1,  0,2,  0,0,  1,0,  1,3 ]
+    m = Mapper::DepthLocus.new @grammar
+    m.track_support_on = true
+    #m.phenotype( gen )
+    assert_equal( '((0.0*y)/x)', m.phenotype( gen ) )
+    track_src1 = m.track_support
+    assert_equal(track, track_src1)
+
     track_reloc = [
-      Mapper::TrackNode.new( 'expr',  0,  17, nil, 5, 0 ), # 0. expr = <expr> <op> <expr> ")"
-      Mapper::TrackNode.new( 'op',    2,  3,  0,   2, 1 ), # 1. op = "/"
-      Mapper::TrackNode.new( 'expr',  4,  5,  0,   0, 2 ), # 2. expr = "x"
-      Mapper::TrackNode.new( 'expr',  6,  17, 0,   5, 0 ), # 3. expr = "(" <expr> <op> <expr> ")"
-      Mapper::TrackNode.new( 'expr',  8,  9,  3,   1, 2 ), # 4. expr = "y"
-      Mapper::TrackNode.new( 'expr',  10, 15, 3,   2, 0 ), # 5. expr = '<digit> "." <digit>'
-      Mapper::TrackNode.new( 'digit', 12, 13, 5,   0, 0 ), # 6. digit = "0"
-      Mapper::TrackNode.new( 'digit', 14, 15, 5,   0, 1 ), # 7. digit = "0"
-      Mapper::TrackNode.new( 'op',    16, 17, 3,   3, 1 )  # 8. op = "*"
+      Mapper::TrackNode.new( 'expr',  0,  17, nil, 5, 0 ), # 0. expr = "(" <expr> <op> <expr> ")"
+      Mapper::TrackNode.new( 'expr',  2,  13, 0,   5, 0 ), # 3. expr = "(" <expr> <op> <expr> ")"
+      Mapper::TrackNode.new( 'expr',  4,  9,  1,   2, 0 ), # 5. expr = '<digit> "." <digit>'
+      Mapper::TrackNode.new( 'digit', 6,  7,  2,   0, 0 ), # 6. digit = "0"
+      Mapper::TrackNode.new( 'digit', 8,  9,  2,   0, 1 ), # 7. digit = "0"
+      Mapper::TrackNode.new( 'op',    10, 11, 1,   3, 1 ), # 8. op = "*"
+      Mapper::TrackNode.new( 'expr',  12, 13, 1,   1, 2 ), # 4. expr = "y"
+      Mapper::TrackNode.new( 'op',    14, 15, 0,   2, 1 ), # 1. op = "/"
+      Mapper::TrackNode.new( 'expr',  16, 17, 0,   0, 2 )  # 2. expr = "x"
     ]
 
     s = MutationSimplify.new @grammar
     s.mapper_type = 'DepthLocus'
 
-    assert_equal( track_reloc, s.reloc(track) )
+    grel, trel = s.reloc(gen, track)
+    gen_reloc = [0,5, 0,5, 0,2, 0,0, 0,0, 0,3, 0,1, 0,2, 0,0]
+    assert_equal( track_reloc, trel )
+    assert_equal( gen_reloc, grel )
 
-    expected_ptm = [3, 5, 6, 7, 8, 4]
-
+    expected_ptm = [1, 2, 3, 4, 5, 6]
     ptm = s.match( track_reloc, @rules.first.match )   
     assert_equal( expected_ptm, ptm )
-
-    track_nil = [
-      Mapper::TrackNode.new( 'expr',  0,  17, nil, 5, 0 ), # 0. expr = <expr> <op> <expr> ")"
-      Mapper::TrackNode.new( 'op',    2,  3,  0,   2, 1 ), # 1. op = "/"
-      Mapper::TrackNode.new( 'expr',  4,  5,  0,   0, 1 ), # 2. expr = "x"
-      Mapper::TrackNode.new( 'expr',  6,  17, 0,   5, nil ), # 3. expr = "(" <expr> <op> <expr> ")"
-      Mapper::TrackNode.new( 'expr',  8,  9,  3,   1, 2 ), # 4. expr = "y"
-      Mapper::TrackNode.new( 'expr',  10, 15, 3,   2, 0 ), # 5. expr = '<digit> "." <digit>'
-      Mapper::TrackNode.new( 'digit', 12, 13, 5,   0, nil ), # 6. digit = "0"
-      Mapper::TrackNode.new( 'digit', 14, 15, 5,   0, 0 ), # 7. digit = "0"
-      Mapper::TrackNode.new( 'op',    16, 17, 3,   3, 0 )  # 8. op = "*"
-    ]
-
-    assert_equal( track_reloc, s.reloc(track_nil) )   
-
-    track_reloc[7].alt_idx = 1 # disable matching by 0.0 -> 0.1
-    assert_equal( [], s.match( track_reloc, @rules.first.match ) )
   end
 
   def test_depth_locus
@@ -468,7 +441,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
      assert_equal( '((0.0*y)/x)', m.phenotype( genotype_src1 ) )
      track_src1 = m.track_support
 
-     genotype_dest1 = [0,5,  1,2,  1,0,             0,2,  0,0,  0,0        ]
+     genotype_dest1 = [0, 5, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0]
      assert_equal( '(0.0/x)', m.phenotype( genotype_dest1 ) )
 
      s = MutationSimplify.new @grammar
@@ -487,7 +460,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
     assert_equal( '(SIN(y)*1.0)', m.phenotype( genotype_src1 ) )
     track_src1 = m.track_support
 
-    genotype_dest1 = [0,3, 1,1, 0,1]
+    genotype_dest1 = [0, 3, 0, 1, 0, 1]
     assert_equal( 'SIN(y)', m.phenotype( genotype_dest1 ) )
 
     s = MutationSimplify.new @grammar
@@ -543,7 +516,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
 
     s = MutationSimplify.new @grammar 
     s.mapper_type = 'DepthFirst'
-    track_reloc_src1 = s.reloc track
+    gen_reloc, track_reloc_src1 = s.reloc(genotype_src1, track)
 
     assert_equal( true, s.nodes_equal( track_reloc_src1, 2, 11 ) ) # 3.2 ~ 3.2
     assert_equal( false, s.nodes_equal( track_reloc_src1, 2, 6 ) ) # 3.2 ~ 4.2   
@@ -635,7 +608,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
     #11. expr genome:22..23 parent:1 locus:0 expansion:'"x"'
     #12. fn1arg genome:24..25 parent:0 locus:0 expansion:'"ABS"'
    
-    genotype_dest1 = [0,3, 1,5, 1,3,   0,2, 0,0, 0,0,   0,0, 0,0] 
+    genotype_dest1 = [0, 3, 0, 0, 0, 5, 0, 2, 0, 0, 0, 0, 0, 3, 0, 0] #[0,3, 1,5, 1,3,   0,2, 0,0, 0,0,   0,0, 0,0]
     assert_equal( 'ABS((0.0*x))', m.phenotype( genotype_dest1 ) )
    
     s = MutationSimplify.new @grammar 
@@ -645,13 +618,12 @@ class TC_MutationSimplify < Test::Unit::TestCase
     mutant = s.mutation( genotype_src1, track_src1 )
     assert_equal( genotype_dest1, mutant ) # simplified
 
-    genotype_src2 = [0,3, 1,5, 1,3, 0,5, 2,2, 0,2, 0,1, 1,1, 0,0, 0,0, 0,0] 
+    genotype_src2 = [0,3, 1,5, 1,3, 0,5, 2,2, 0,2, 0,1, 1,1, 0,0, 0,0, 0,0]
     assert_equal( 'ABS(((x-2.1)*x))', m.phenotype( genotype_src2 ) )
     track_src2 = m.track_support
     
     mutant = s.mutation( genotype_src2, track_src2 )
-    assert_equal( genotype_src2, mutant ) # x != 2.1, not simplified
-   
+    assert_equal( 'ABS(((x-2.1)*x))', m.phenotype( mutant ) ) # x != 2.1, not simplified
   end
 
   def test_match_expansion_with_nil
@@ -762,7 +734,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
     assert_equal( 'ABS(((7.1-2.3)*x))', m.phenotype( genotype_src1 ) )
     track_src1 = m.track_support
    
-    genotype_dest1 = [0,3, 1,5, 1,3,   0,2, 0,4, 0,8,   0,0, 0,0] 
+    genotype_dest1 = [0, 3, 0, 0, 0, 5, 0, 2, 0, 4, 0, 8, 0, 3, 0, 0]
     assert_equal( 'ABS((4.8*x))', m.phenotype( genotype_dest1 ) )
    
     s = MutationSimplify.new @grammar 
@@ -777,7 +749,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
     track_src2 = m.track_support
 
     mutant = s.mutation( genotype_src2, track_src2 )
-    assert_equal( genotype_src2, mutant ) # not simplified (16.33 does not fit in the grammar)
+    assert_equal( 'ABS(((7.1*2.3)*x))', m.phenotype( mutant ) ) # not simplified (16.33 does not fit in the grammar)
   end
 
   def test_parse_pattern
@@ -1126,55 +1098,7 @@ class TC_MutationSimplify < Test::Unit::TestCase
   end
 
   def test_mult_by_two_bugfix
-    #[38,219,  206,216,  239,178,  117,33,  251,35,  234,145,  244,104,  141,199,  190,132]
-    #SIN(COS((y+y)))
-    #0. expr genome:0..17 parent: locus:0 expansion:'<fn1arg> "(" <expr> ")"'        38,219,
-    #1. fn1arg genome:2..3 parent:0 locus:0 expansion:'"SIN"'                        206,216,
-    #2. expr genome:4..17 parent:0 locus:0 expansion:'<expr>'                        239,178,
-    #3. expr genome:6..17 parent:2 locus:0 expansion:'<fn1arg> "(" <expr> ")"'       117,33,
-    #4. expr genome:8..15 parent:3 locus:1 expansion:'"(" <expr> <op> <expr> ")"'    251,35,
-    #5. expr genome:10..11 parent:4 locus:0 expansion:'"y"'                          234,145,
-    #6. op genome:12..13 parent:4 locus:0 expansion:'"+"'                            244,104,
-    #7. expr genome:14..15 parent:4 locus:0 expansion:'"y"'                          141,199,
-    #8. fn1arg genome:16..17 parent:3 locus:0 expansion:'"COS"'                      190,132
-    #
-    #"#<struct Struct::TrackNode symbol=\"expr\", from=0, to=17, back=nil, alt_idx=3,  loc_idx=0>" '<fn1arg> "(" <expr> ")"'
-    #"#<struct Struct::TrackNode symbol=\"fn1arg\", from=2, to=3, back=0, alt_idx=1,   loc_idx=0>" '"SIN"'
-    #"#<struct Struct::TrackNode symbol=\"expr\", from=4, to=17, back=0, alt_idx=4,    loc_idx=1>" '<expr>'
-    #"#<struct Struct::TrackNode symbol=\"expr\", from=6, to=17, back=2, alt_idx=3,    loc_idx=0>" '<fn1arg> "(" <expr> ")"'
-    #"#<struct Struct::TrackNode symbol=\"expr\", from=8, to=15, back=3, alt_idx=5,    loc_idx=1>" '"(" <expr> <op> <expr> ")"'   root_node
-    #"#<struct Struct::TrackNode symbol=\"expr\", from=10, to=11, back=4, alt_idx=1,   loc_idx=0>" '"y"'
-    #"#<struct Struct::TrackNode symbol=\"op\", from=12, to=13, back=4, alt_idx=0,     loc_idx=1>" '"+"'
-    #"#<struct Struct::TrackNode symbol=\"expr\", from=14, to=15, back=4, alt_idx=1,   loc_idx=2>" '"y"'
-    #"#<struct Struct::TrackNode symbol=\"fn1arg\", from=16, to=17, back=3, alt_idx=2, loc_idx=0>" '"COS"'
-    #
- 
-    #[38,219,  206,216,  239,178,  117,33,       0,       5,  0,2,  0,2,  0,0,  0,3,  234,145,  190,132]  !!! loc=0 and should be 1
-    #SIN(ABS(2.0))
-    #0. expr genome:0..15 parent: locus:0 expansion:'<fn1arg> "(" <expr> ")"'        38,219,       
-    #1. fn1arg genome:2..3 parent:0 locus:0 expansion:'"SIN"'                        206,216,
-    #2. expr genome:4..15 parent:0 locus:0 expansion:'<expr>'                        239,178,
-    #3. expr genome:6..15 parent:2 locus:0 expansion:'<fn1arg> "(" <expr> ")"'       117,33,
-    #4. fn1arg genome:8..9 parent:3 locus:0 expansion:'"ABS"'                        0,5,
-    #5. expr genome:10..15 parent:3 locus:0 expansion:'<_digit> "." <_digit>'        0,2,
-    #6. _digit genome:12..13 parent:5 locus:0 expansion:'"2"'                        0,2,
-    #7. _digit genome:14..15 parent:5 locus:0 expansion:'"0"'                        0,0,
-    #                                                                                234,145,
-    #                                                                                190,132 
-    #
-    #pattern:
-    #- expr.main = "(" expr.same op.plus expr.same ")"
-    #- expr.same
-    #- op.plus = "+"
-    #- expr.same
-    #replacement:
-    #- expr = "(" expr op expr ")"
-    #- expr = digit "." digit
-    #- digit = "2"
-    #- digit = "0"
-    #- op = "*"
-    #- expr.same   
-   
+  
     s = MutationSimplify.new @grammar 
     s.mapper_type = 'DepthLocus'
     s.filename = 'test/data/simplify_bug.yaml'
@@ -1185,18 +1109,8 @@ class TC_MutationSimplify < Test::Unit::TestCase
     # 1st case (expansion)
     genotype_src1 = [38,219,  206,216,  239,178,  117,33,  251,35,  234,145,  244,104,  141,199,  190,132]
     assert_equal( 'SIN(COS((y+y)))', m.phenotype( genotype_src1 ) )
-    track_src1 = m.track_support   
-
-    track_reloc = s.reloc(track_src1)
-    ptm = s.match(s.reloc(track_src1), s.rules.first.match )
-    #[4, 5, 6, 7]
     assert_equal( [[1, 3]],  s.rules.first.equals )
-    #[[1, 3]] -> ptm -> 5,7
-    assert( s.nodes_equal( track_reloc, 5, 7 ) )
 
-#    mutant = s.mutation( genotype_src1, track_src1 )
-#    assert_equal( 'SIN(COS((2.0*y)))', m.phenotype( mutant ) )  # simplified 
- 
     # 2nd case (subtree)
     genotype_src2 = [0,3,  1,5,  0,0,  0,0,  0,2,  0,0,  1,0,  0,2]
     assert_equal( 'COS((x+0.0))', m.phenotype( genotype_src2 ) )
@@ -1205,6 +1119,24 @@ class TC_MutationSimplify < Test::Unit::TestCase
     mutant = s.mutation( genotype_src2, track_src2 )
     assert_equal( 'COS(x)', m.phenotype( mutant ) )  # simplified 
 
+  end
+
+  def test_arithmetic_bugfix
+    grammar = Abnf::File.new 'test/data/arithmetic_bug.abnf'
+
+    s = MutationSimplify.new grammar 
+    s.mapper_type = 'DepthLocus'
+    s.filename = 'test/data/arithmetic_bug.yaml'
+
+    m = Mapper::DepthLocus.new grammar
+    m.track_support_on = true
+
+    genotype_src = [161, 131, 189, 228, 69, 26, 3, 213, 10, 58, 10, 19, 216, 89, 123, 18]
+    assert_equal( '(x/log(8.9))', m.phenotype( genotype_src ) )
+    track_src = m.track_support
+
+    mutant = s.mutation( genotype_src, track_src )
+    assert_equal( '(x/2.2)', m.phenotype( mutant ) )  # simplified 
   end
 
 end

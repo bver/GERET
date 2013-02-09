@@ -80,8 +80,8 @@ module Operator
     # track is the genotype-prenotype process track (see mappers descriptions).
     # Return the mutated copy of the orig. genotype.
     def mutation( parent, track )
-      mutant = wrapped_copy( parent, track )     
-      track_reloc = reloc(track)     
+      wrapped = wrapped_copy( parent, track )     
+      mutant, track_reloc = reloc(wrapped, track)
 
       @rules.each do |rule|
         ptm = match( track_reloc, rule.match )
@@ -136,7 +136,6 @@ module Operator
      args = exp_args( track_reloc, patterns, ptm )
      root_node = track_reloc[ptm.first]
      res = genome[0 ... root_node.from].clone
-
      replacement.each_with_index do |replacing,i|
        if replacing.kind_of? Expansion
          res << (i==0 ? root_node.loc_idx : 0) if @mapper_type == 'DepthLocus' # TODO: different Codon types?
@@ -159,12 +158,12 @@ module Operator
      res
     end
    
-    def reloc track
+    def reloc(wrapped, track)
       case @mapper_type     
       when 'DepthFirst'
-        reloc_first track
+        reloc_first(wrapped, track)
       when 'DepthLocus'
-        reloc_locus track
+        reloc_locus(wrapped, track)
       when nil
         raise "MutationSimplify: mapper_type not selected"
       else
@@ -320,6 +319,66 @@ module Operator
 
     protected
 
+    def reloc_first(wrapped, track)
+      rel = track.clone
+      counts = {}
+      counts.default = 0
+
+      rel.each do |node|
+        node.loc_idx = counts[node.back]
+        counts[node.back] += 1
+      end
+
+      [wrapped, rel]
+    end
+
+    FifoItem = Struct.new( :index, :track )
+
+    def reloc_locus(wrapped, track)
+      genome = []
+      outrack = []
+      stack = [ FifoItem.new(0, track.first) ]
+
+      until stack.empty?
+        node = stack.shift
+
+        out = node.track.clone
+        idx = out.from
+
+        out.from = genome.size
+        genome.push 0 # loc
+        genome.push wrapped[idx+1] # alt
+
+        expansion = []
+        track.each_with_index do |n, i|
+          next unless n.back == node.index
+          childnode = FifoItem.new( i, n.clone )
+          childnode = FifoItem.new( i, n.clone )
+          childnode.track.back = outrack.size
+          expansion.push childnode
+        end
+
+        used = out.from + 1
+        out.to = used
+
+        outrack.push out
+
+        back = out.back
+        until back.nil?
+          outrack[back].to = used
+          back = outrack[back].back
+        end
+
+        indices = []
+        (0...expansion.size).each {|i| indices << i }
+        expansion.each {|ext| ext.track.loc_idx = indices.delete_at(ext.track.loc_idx) }
+        expansion.sort! {|a,b| a.track.loc_idx <=> b.track.loc_idx }
+        stack = expansion + stack
+      end
+
+      [genome, outrack]
+    end
+
     def alt2text( symbol, alt_idx )
       (@grammar[symbol][alt_idx].map {|t| t.type == :symbol ? t.data : %Q["#{t.data}"] }).join(' ')
     end
@@ -348,44 +407,6 @@ module Operator
         indices.concat( children.map { |c| track_reloc.index c } )
       end
       result
-    end
-
-    def reloc_locus track
-      rel = track.map do |node| 
-        n = node.clone
-        n.loc_idx = 0 if n.loc_idx.nil?
-        n
-      end
-      counts = {}
-
-      rel.each do |node|
-        count = counts[node.back] 
-        if count.nil?
-          counts[node.back] = [0]
-        else
-          counts[node.back] << count.size        
-        end
-      end
-
-      rel.each do |node|
-        node.loc_idx = counts[node.back][node.loc_idx]
-        counts[node.back].delete node.loc_idx
-      end
-
-      rel
-    end
-    
-    def reloc_first track
-      rel = track.clone
-      counts = {}
-      counts.default = 0
-
-      rel.each do |node|
-        node.loc_idx = counts[node.back]
-        counts[node.back] += 1
-      end
-
-      rel
     end
 
     def match_node?( node, pattern )
