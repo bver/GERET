@@ -1,0 +1,9 @@
+expr = "x" /
+       DIGIT "." DIGIT /
+       fn1arg "(" expr ")" /
+       "(" expr op expr ")"
+
+op = "+" / "-" / "/" / "*"
+
+fn1arg = "sin" / "cos" / "log"
+

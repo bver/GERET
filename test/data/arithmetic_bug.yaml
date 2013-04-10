@@ -1,0 +1,38 @@
+---
+
+-
+  comment: fn1arg(Ai.Af) --> Ci.Cf
+  pattern:
+    - expr.main = fn1arg.fn "(" expr.constA ")"
+    - fn1arg.fn = ?
+    - expr.constA = _digit.Ai "." _digit.Af
+    - _digit.Ai = ?
+    - _digit.Af = ?
+  replacement:
+    - expr = _digit "." _digit
+    - _digit = digitCi()
+    - _digit = digitCf()
+  lambdas:
+    digitCi: |+ 
+      begin
+        out = eval( 'Math.' + fn1arg.fn + '(' + _digit.Ai + '.' + _digit.Af + ')' )
+      rescue
+        return nil
+      end
+      if out >= 0.0 and out <= 9.9
+        out.round(1).to_s.split('.').first
+      else
+        nil
+      end 
+    digitCf: |+
+      begin
+        out = eval( 'Math.' + fn1arg.fn + '(' + _digit.Ai + '.' + _digit.Af + ')' )
+      rescue
+        return nil
+      end
+      if out >= 0.0 and out <= 9.9
+        out.round(1).to_s.split('.').last
+      else
+        nil
+      end
+
