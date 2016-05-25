@@ -1,7 +1,7 @@
 h1. Age Hierarchy Tree Algorithm
 
-* based on "Age Layered Population Structure":http://idesign.ucsc.edu/projects/alps.html general principle
-* supporting multiple objectives, using "Pareto Strength (SPEA fitness)":http://www.cs.uu.nl/docs/vakken/ea/SPEA2.pdf
+* based on "Age Layered Population Structure":https://scholar.google.cz/scholar?cluster=2468631924043796534&hl=en&as_sdt=0,5&as_vis=1 general principle
+* supporting multiple objectives, using "Pareto Strength (SPEA fitness)":http://www.kddresearch.org/Courses/Spring-2007/CIS830/Handouts/P8.pdf
 * uses "Phenotypic Duplicate Elimination":https://www.ads.tuwien.ac.at/publications/bib/pdf/raidl-99c.pdf 
 * scaling computational effort (complex tasks use larger population and more restarts than simpler ones)
 * effective implementation (easily paralelizable, a fitness computation complexity scales well)
