@@ -3,6 +3,7 @@ h1. Age Hierarchy Tree Algorithm
 * based on "Age Layered Population Structure":https://scholar.google.cz/scholar?cluster=2468631924043796534&hl=en&as_sdt=0,5&as_vis=1 general principle
 * supporting multiple objectives, using "Pareto Strength (SPEA fitness)":http://www.kddresearch.org/Courses/Spring-2007/CIS830/Handouts/P8.pdf
 * uses "Phenotypic Duplicate Elimination":https://www.ads.tuwien.ac.at/publications/bib/pdf/raidl-99c.pdf 
+* balanced exploration/expoitation
 * scaling computational effort (complex tasks use larger population and more restarts than simpler ones)
 * effective implementation (easily paralelizable, a fitness computation complexity scales well)
 
@@ -10,37 +11,40 @@ h2. Description
 
 The entire population has the tree topology, each node of the tree represents a small subpopulation (deme). The binary tree is used in this implementation but the number of subnodes of the node is not strictly limited to 2.
 
-The initial subpopulation is seen as a "root node." 
-The SPEA2's pareto strength fitness is computed for all individuals in the current subpopulation. Parents are then selected by the tournament from two candidates, selecting the winner with the better pareto strength. The selection is repeated until some target size of the parent pool is reached. (This is the "mating selection" in a SPEA terminology.)
-The standard breeding operators (crossover, mutation) are applied to the parent pool, producing the offspring subpopulation. The "age" parameter of the offspring individual is computed using the classic ALPS method -- the age of the offspring is the maximal age of parents plus one. A small amount of individuals (elite) with the best fitness is then copied from the current subpopulation to the offspring subpopulation to guarantee the best solutions are maintained. The "age" parameter is incremented for each individual copy.
-Then the phenotypic duplication is performed (if needed) and unique individuals are considered as the new current subpopulation for the next generation.
+The initial subpopulation is seen as the "root node."
+The SPEA2's pareto strength fitness is computed for all individuals in the current subpopulation. Parents are then selected by the tournament from two candidates, selecting the winner with the better pareto strength. The selection is repeated until some target size of the parent pool is reached. (This is the "mating selection" in the SPEA terminology.)
+Standard breeding operators (crossover, mutation) are applied to the parent pool, producing the offspring subpopulation. The "age" parameter of the offspring individual is computed using the classic ALPS method -- the age of the offspring is a maximal age of parents plus one. A small amount of individuals (so called "elite") with the best fitness is then copied from the current subpopulation to the offspring subpopulation to guarantee the best solutions are maintained, supporting the exploitation effect. The "age" parameter is incremented for each individual copy.
+Then the phenotypic duplication elimination is performed and unique individuals are considered as the new current subpopulation for the next generation.
 
-When the certain number of generations is processed (the "age limit" parameter in the original ALPS paper), a new set of subpopulations is added: For each existing leaf node (a subpopulation) two new subpopulations are created as children, eg. if there are 4 leaf nodes, new 8 children nodes are attached.
-If the subpopulation node has a parent subpopulation node, the individuals for selection are taken from the current population AND from the parent subpopulation. It enables flowing the genetic material from younger subpopulations to older ones, from leaf nodes to the root node.  (This technique is inspired by the similar policy in the original ALPS algorithm -- breeding from two neighboring layers.)
+When the certain number of generations is processed (the "age limit" parameter in the original ALPS paper), a new set of subpopulations is added: For each existing leaf node (a subpopulation) two new subpopulations are created as children, e.g. if there are 4 leaf nodes, new 8 children nodes are attached.
+If the subpopulation node has a parent subpopulation node, the individuals for selection are taken from both the current population AND the parent subpopulation. It enables flowing the genetic material from younger subpopulations to older ones, from leaf nodes to the root node.  (This technique is inspired by the similar policy in the original ALPS algorithm -- breeding from two neighboring layers.)
 Offsprings created by the breeding process are separated by the age parameter (the same technique as used in ALPS for passing individuals to older layers): If the age-layer index of the offspring is the same as the age index of the layer, the offspring remains in the current subpopulation, otherwise it is sent to the parent's (older) subpopulation.
-There is the second selection mechanism applied to the parent pool (the "environmental selection" in the SPEA terminology): When current population of some node is bigger than needed -- because of immigrants from the younger subpopulations -- it is sorted by the pareto strength fitness first and then truncated to the target size - it ensures the old individuals with inferior fitness are removed from the population. The fitness evaluation and sorting required by the environmental selection is effectively used again for the mating selection in the next generation step.
+There is the second selection mechanism applied to the parent pool (the "environmental selection" in the SPEA terminology): When a population of some node is bigger than needed -- because of immigrants from the younger subpopulations -- it is sorted by the pareto strength fitness first and then truncated to the target size - it ensures old individuals with inferior fitness are removed from the population. The fitness evaluation and sorting required by the environmental selection is effectively used again for the mating selection in the next generation step.
 
-Some subpopulations in the youngest (leaf) nodes are then restarted. The node is restarted when 
+Some subpopulations in the youngest (leaf) nodes are then restarted (the exploration effect). The node is restarted when
 step % age_gap == index 
-where step is the number of the population generations computed, age_gap has the same meaning as in the original ALPS paper, an index is the order of the subpopulation in the leaf layer. The above rule means the youngest level (all leaf nodes) is not restarted completely, instead single nodes are restarted in the round-robin way.
+where
+* 'step' is the number of the population generations computed,
+* 'age_gap' has the same meaning as in the original ALPS paper, and
+* 'index' is the order of the subpopulation in the leaf layer. The above rule means the youngest level (all leaf nodes) is not restarted completely, instead single nodes are restarted in the round-robin way.
 
 h2. Scaling computational effort
 
 The population size grows when the algorithm runs for enough time (triggered by the "age limit" parameter). New subpopulations are added, nearly doubling the entire population size, enhancing the exploration aspect of the search. The number of "restarted individuals" also increases with time. 
-This design ensures CPU cycles are not wasted for easy tasks, however for harder tasks the population size quickly grows and new individuals are rapidly planted across the search space.
+This design ensures the computation power is not wasted for easy tasks but for harder tasks the population size quickly grows and new individuals are rapidly planted across the search space.
 
 h2. Effective implementation 
 
-The evaluation of task-dependent phenotypes (individuals) aside, the most complex parts of this algorithm are: 
-- the computation of the pareto strength, 
-- the phenotype duplicates elimination and 
-- the sorting individuals by the fitness. 
-For each of these three parts the complexity parameter is the number of individuals in the subpopulation - not the number of individuals in the whole population.
-Although a growth of the entire population size is quadratic with the "age limit" parameter, the target size of the subpopulation remains constant and small, which is the advantage.
+Along with the evaluation of task-dependent phenotypes (individuals' fitness), the most demanding parts of the algorithm are:
+* the computation of the pareto strength,
+* the phenotype duplicates elimination and
+* the sorting individuals by the fitness.
+Luckily, for each of these three parts the O() complexity parameter is the number of individuals in the subpopulation - not the number of individuals in the whole population.
+Although a growth of the entire population size is quadratic with the "age limit" parameter, the target size of the subpopulation remains constant and small, which is the great advantage of this approach.
 
-The majority of subpopulation processing can be done concurrently - the only parts requiring synchronisation are:
+The majority of the subpopulation processing can be done concurrently - only parts requiring synchronisation are:
 - creating the parent pool where individuals are taken also from the older node,
-- sending some ("too old") offspring to the older node.
+- sending some ("old enough") offsprings to an older node.
 
 See the "source":https://github.com/bver/GERET/blob/master/algorithm/age_hierarchy_tree.rb
 or mail to bver-AT-geret.org for details.
