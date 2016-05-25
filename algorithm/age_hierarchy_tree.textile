@@ -26,7 +26,9 @@ step % age_gap == index
 where
 * 'step' is the number of the population generations computed,
 * 'age_gap' has the same meaning as in the original ALPS paper, and
-* 'index' is the order of the subpopulation in the leaf layer. The above rule means the youngest level (all leaf nodes) is not restarted completely, instead single nodes are restarted in the round-robin way.
+* 'index' is the order of the subpopulation in the leaf layer. 
+
+The above rule means the youngest level (all leaf nodes) is not restarted completely, instead single nodes are restarted in the round-robin way.
 
 h2. Scaling computational effort
 
@@ -39,6 +41,7 @@ Along with the evaluation of task-dependent phenotypes (individuals' fitness), t
 * the computation of the pareto strength,
 * the phenotype duplicates elimination and
 * the sorting individuals by the fitness.
+
 Luckily, for each of these three parts the O() complexity parameter is the number of individuals in the subpopulation - not the number of individuals in the whole population.
 Although a growth of the entire population size is quadratic with the "age limit" parameter, the target size of the subpopulation remains constant and small, which is the great advantage of this approach.
 
