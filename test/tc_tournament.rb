@@ -45,11 +45,11 @@ class TC_Tournament < Test::Unit::TestCase
 
     t.random = MockRand.new [{8=>4}, {8=>1}, {8=>5}, {0=>0.8}, {2=>1}]
     winner = t.select_one @population
-    assert_equal( @population[1].object_id, winner.object_id )
+    assert_equal( @population[5].object_id, winner.object_id )
 
     t.random = MockRand.new [{8=>4}, {8=>1}, {8=>5}, {0=>0.8}, {2=>0}]
     winner = t.select_one @population
-    assert_equal( @population[5].object_id, winner.object_id )
+    assert_equal( @population[1].object_id, winner.object_id )
   end
 
   def test_pressure_modifier

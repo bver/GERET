@@ -4,14 +4,28 @@ module Moea
 
 # Crowding distance computation class for preserving good spread of the pareto front (diversity of MOEA solutions).
 # Fully described in the original NSGA-II paper:
-# http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?arnumber=996017 or
-# http://sci2s.ugr.es/docencia/doctobio/2002-6-2-DEB-NSGA-II.pdf
+# http://www.dmi.unict.it/mpavone/nc-cs/materiale/NSGA-II.pdf
 #
 class Crowding
   Inf = 1.0/0.0
   CrowdingFields = Struct.new( 'CrowdingFields', :original, :cdist, :index )
 
   # Compute the crowding distance for each member of the population.
+  #
+  # The crowding-distance computation requires sorting the population
+  # according to each objective function value in ascending
+  # order of magnitude. Thereafter, for each objective function, the
+  # boundary solutions (solutions with smallest and largest function
+  # values) are assigned an infinite distance value. All other intermediate
+  # solutions are assigned a distance value equal to the absolute
+  # normalized difference in the function values of two adjacent solutions.
+  # This calculation is continued with other objective
+  # functions. The overall crowding-distance value is calculated as
+  # the sum of individual distance values corresponding to each objective.
+  # Each objective function is normalized before calculating
+  # the crowding distance.
+  #
+  #
   # There are two variants:
   #   population2 = Crowding.distance population
   #     where population2[i].original is the original population[i] member, population2[i].cdist is the crowding distance, or:

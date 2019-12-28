@@ -31,7 +31,7 @@ See the library "documentation.":http://geret.org/doc.html
 h2. Requirements
 
 The library itself is written in pure Ruby, no gem dependencies needed.
-Ruby versions tested: 1.8.7-p334, 1.9.2-p180, 1.9.2-p290, 1.9.3-preview1
+Ruby versions tested: 2.4.0p0
 
 Samples require various software (tcc compiler, Java VM, GHDL simulator). Please read a particular sample/*/README.
 
