@@ -63,9 +63,20 @@ class SubPopulation
     copy_size = @@algo.elite_size if copy_size < @@algo.elite_size # but at least elite_size of them
     @current.slice( 0 ... copy_size ).each do |individual| # assuming @current is sorted
       copy = individual.clone
+      next if uniq.include? copy.phenotype
       copy.parents individual   # increment age
       elite << copy
-      uniq << copy.phenotype unless uniq.include? copy.phenotype 
+      uniq << copy.phenotype
+    end
+
+    # preserve elite individuals based on objectives
+    @current.first.objective_symbols.each do |symb|
+      individual = Pareto.objective_best( @current, @current.first.class, symb )
+      copy = individual.clone
+      next if uniq.include? copy.phenotype
+      copy.parents individual   # increment age
+      elite << copy
+      uniq << copy.phenotype
     end
 
     # phenotype duplicate elimination
@@ -77,7 +88,8 @@ class SubPopulation
     end
 
     # concat, sort, truncate
-    @current = @@algo.sort_spea2( elite + offspring ).slice( 0 ... @@algo.deme_size )
+    @current = @@algo.sort_spea2( offspring ).slice( 0 ... (@@algo.deme_size-elite.size) )
+    @current.concat elite
 
     @@algo.report << "#{@name}.environmental pde: #{@children.size} -> #{offspring.size} + copied: #{elite.size} => #{elite.size + offspring.size} truncated: #{@current.size}"        
 

@@ -5,7 +5,7 @@ algorithm:
   deme_size: 200 
   elite_size: 5
 
-  max_layers: 5 
+  max_layers: 7
   aging_scheme: :fibonacci
   age_gap: 13 
 
