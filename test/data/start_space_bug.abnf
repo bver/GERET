@@ -1,0 +1,5 @@
+; test for Abnf::File class
+; empty space on the line #3 causes exception: "RuntimeError: Parser: unexpected token 'space' when in start"
+    
+expr = "x" / "y" / "(" expr op expr ")"
+op = "+" / "*"

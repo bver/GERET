@@ -32,7 +32,8 @@ module Abnf
         :start =>    {
                        :symbol => proc {|g,t| g.rule=t; g.start_symbol=t.data; :equals },
                        :newline => proc { :start },
-                       :comment => proc { :start }
+                       :comment => proc { :start },
+                       :space => proc { :start }
                      },
         :equals =>   {
                        :equals => proc { :elements },

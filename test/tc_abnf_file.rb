@@ -66,5 +66,12 @@ class TC_AbnfFile < Test::Unit::TestCase
    
   end
 
+  def test_start_space_bug
+    grammar_file = Abnf::File.new
+
+    grammar_file.filename = 'test/data/start_space_bug.abnf'
+    assert_equal( @grammar_ref, grammar_file )
+  end
+
 end
 
