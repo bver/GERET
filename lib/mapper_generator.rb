@@ -14,7 +14,8 @@ module Mapper
   # Chapter 7 Sensible Initialisation
   #
   # or:
-  # http://www.essex.ac.uk/dces/research/publications/technicalreports/2007/ces475.pdf
+  # https://cswww.essex.ac.uk/staff/rpoli/technical-reports/tr-ces-475.pdf
+  # Chapter 2.2 Initialising the Population
   # 
   # Mapper::Generator uses Mapper::Grammar and the source of randomness to create 
   # "syntactically correct" genotypes with a given depth of a phenotype tree.
